@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FECHA MÊS: Multiplique seu Faturamento por 4 em Agosto | Vitao</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Bloco 1 - Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #1B5E20 0%, #2E7D32 100%);
+            color: white;
+            padding: 40px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .urgency-banner {
+            background: #D32F2F;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            font-weight: bold;
+            font-size: 16px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.8; }
+            100% { opacity: 1; }
+        }
+        
+        .hero-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+            min-height: 500px;
+        }
+        
+        .hero-text h1 {
+            font-size: 48px;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            font-weight: 800;
+        }
+        
+        .hero-text h2 {
+            font-size: 24px;
+            font-weight: 400;
+            margin-bottom: 30px;
+            color: #B2DFDB;
+        }
+        
+        .benefits {
+            list-style: none;
+            margin-bottom: 30px;
+        }
+        
+        .benefits li {
+            padding: 10px 0;
+            padding-left: 30px;
+            position: relative;
+            font-size: 18px;
+        }
+        
+        .benefits li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #4CAF50;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background: #FFD54F;
+            color: #333;
+            padding: 20px 40px;
+            font-size: 20px;
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 50px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+            background: #FFC107;
+        }
+        
+        .sub-cta {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #B2DFDB;
+        }
+        
+        .hero-image {
+            text-align: center;
+            position: relative;
+        }
+        
+        /* Bloco 2 - Desejo de Compra */
+        .desire-section {
+            padding: 80px 0;
+            background: #f8f8f8;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 36px;
+            color: #2E7D32;
+            margin-bottom: 50px;
+            font-weight: 700;
+        }
+        
+        .how-it-works {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            margin-bottom: 50px;
+        }
+        
+        .step {
+            background: white;
+            padding: 40px 30px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        
+        .step:hover {
+            transform: translateY(-5px);
+        }
+        
+        .step-number {
+            background: #2E7D32;
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 0 auto 20px;
+        }
+        
+        .step h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .step p {
+            color: #666;
+            font-size: 16px;
+        }
+        
+        /* Bloco 3 - Prova Social */
+        .social-proof {
+            padding: 80px 0;
+            background: white;
+        }
+        
+        .proof-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+        
+        .bio-content h3 {
+            font-size: 32px;
+            color: #2E7D32;
+            margin-bottom: 20px;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            margin: 40px 0;
+        }
+        
+        .stat-box {
+            text-align: center;
+            padding: 20px;
+            background: #E8F5E9;
+            border-radius: 10px;
+        }
+        
+        .stat-number {
+            font-size: 36px;
+            font-weight: bold;
+            color: #2E7D32;
+        }
+        
+        .stat-label {
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .testimonials {
+            background: #f8f8f8;
+            padding: 30px;
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+        
+        .testimonial {
+            margin-bottom: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            border-left: 4px solid #2E7D32;
+        }
+        
+        .testimonial-text {
+            font-style: italic;
+            color: #555;
+            margin-bottom: 10px;
+        }
+        
+        .testimonial-author {
+            font-weight: bold;
+            color: #333;
+        }
+        
+        /* Bloco 4 - Contato */
+        .contact-section {
+            padding: 60px 0;
+            background: #2E7D32;
+            color: white;
+        }
+        
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            text-align: center;
+        }
+        
+        .contact-item h4 {
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .contact-item p {
+            font-size: 16px;
+            line-height: 1.8;
+        }
+        
+        .contact-item a {
+            color: #FFD54F;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .hero-content,
+            .how-it-works,
+            .proof-content,
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .hero-text h1 {
+                font-size: 32px;
+            }
+            
+            .stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- BLOCO 1: HERO SECTION -->
+    <div class="urgency-banner">
+        ⏰ FECHA MÊS VITAO: Oferta válida apenas até 23:59 de HOJE!
+    </div>
+    
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <!-- Promessa Principal -->
+                    <h1>Multiplique Seu Faturamento Por 4 em Apenas 30 Dias</h1>
+                    
+                    <!-- Sub-Promessa -->
+                    <h2>A estratégia validada por 387 lojistas que transformou agosto no mês mais lucrativo do ano</h2>
+                    
+                    <!-- Bullets de Benefícios -->
+                    <ul class="benefits">
+                        <li>6 datas estratégicas = 30 dias de vendas ininterruptas</li>
+                        <li>Kits prontos com até 40% OFF + Frete Grátis Brasil</li>
+                        <li>Materiais de marketing completos (só baixar e usar)</li>
+                    </ul>
+                    
+                    <!-- CTA Principal -->
+                    <a href="#form" class="cta-button">QUERO MULTIPLICAR MEU FATURAMENTO →</a>
+                    
+                    <!-- Sub-texto de Autoridade -->
+                    <p class="sub-cta">Junte-se a mais de 15.000 lojistas que confiam na Vitao há 35 anos</p>
+                </div>
+                
+                <div class="hero-image">
+                    <!-- Descrição da Imagem: Mockup de tablet e smartphone mostrando o portal B2B da Vitao com gráficos de crescimento ascendente, produtos em destaque e o calendário de agosto visível. Incluir selo "35 Anos" e "387 Lojistas Aprovam" -->
+                    <img src="hero-mockup.png" alt="Portal Vitao - Multiplique suas vendas" style="max-width: 100%; height: auto;">
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- BLOCO 2: DESEJO DE COMPRA -->
+    <section class="desire-section">
+        <div class="container">
+            <h2 class="section-title">Como Funciona o Método Agosto 4X</h2>
+            
+            <div class="how-it-works">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Acesse o Portal Exclusivo</h3>
+                    <p>Entre no portal B2B 24h e veja todos os kits estratégicos já montados e precificados para cada data</p>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Baixe os Materiais Prontos</h3>
+                    <p>Receba e-books, posts, receitas e campanhas completas. Tudo pronto para usar imediatamente</p>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Venda e Lucre 4X Mais</h3>
+                    <p>Execute a estratégia validada e veja seu faturamento multiplicar com risco zero</p>
+                </div>
+            </div>
+            
+            <div style="text-align: center;">
+                <a href="#form" class="cta-button">ACESSAR PORTAL AGORA →</a>
+            </div>
+            
+            <!-- Descrição da Imagem: Infográfico visual mostrando a jornada do lojista em 3 etapas, com ícones representativos e setas conectando cada fase. Usar cores verde e dourado da marca -->
+        </div>
+    </section>
+    
+    <!-- BLOCO 3: BIO/PROVA SOCIAL -->
+    <section class="social-proof">
+        <div class="container">
+            <div class="proof-content">
+                <div class="bio-content">
+                    <h3>Por Que 15.000 Lojistas Escolhem a Vitao</h3>
+                    <p style="font-size: 18px; color: #666; margin-bottom: 30px;">
+                        Há 35 anos, transformamos o mercado de produtos naturais no Brasil. Nossa missão é simples: fazer nossos parceiros lojistas lucrarem mais, com menos esforço e risco zero.
+                    </p>
+                    
+                    <div class="stats">
+                        <div class="stat-box">
+                            <div class="stat-number">35</div>
+                            <div class="stat-label">Anos de Mercado</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-number">15K+</div>
+                            <div class="stat-label">Lojistas Parceiros</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-number">387</div>
+                            <div class="stat-label">Cases de Sucesso</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-number">412%</div>
+                            <div class="stat-label">Aumento Máximo</div>
+                        </div>
+                    </div>
+                    
+                    <a href="#form" class="cta-button">QUERO SER O PRÓXIMO CASO DE SUCESSO →</a>
+                </div>
+                
+                <div class="testimonials">
+                    <div class="testimonial">
+                        <p class="testimonial-text">"Em apenas 15 dias seguindo a estratégia da Vitao, meu faturamento triplicou. Os kits prontos facilitaram tudo!"</p>
+                        <p class="testimonial-author">Maria Silva - Natural & Vida, SP</p>
+                    </div>
+                    
+                    <div class="testimonial">
+                        <p class="testimonial-text">"O suporte e os materiais prontos fizeram toda diferença. Agosto se tornou nosso melhor mês!"</p>
+                        <p class="testimonial-author">João Santos - Empório Saudável, PR</p>
+                    </div>
+                    
+                    <div class="testimonial">
+                        <p class="testimonial-text">"387% de aumento em vendas. Números que falam por si. Vitao é parceira de verdade!"</p>
+                        <p class="testimonial-author">Ana Costa - Mundo Natural, RJ</p>
+                    </div>
+                </div>
+                
+                <!-- Descrição da Imagem: Colagem com fotos de lojistas sorridentes em suas lojas, mostrando produtos Vitao nas prateleiras, com overlay dos números de crescimento -->
+            </div>
+        </div>
+    </section>
+    
+    <!-- BLOCO 4: LOCALIZAÇÃO E CONTATO -->
+    <section class="contact-section" id="form">
+        <div class="container">
+            <div class="contact-grid">
+                <div class="contact-item">
+                    <h4>📍 Localização</h4>
+                    <p>
+                        Vitao Alimentos<br>
+                        Curitiba - PR<br>
+                        Atendimento Nacional
+                    </p>
+                </div>
+                
+                <div class="contact-item">
+                    <h4>📞 Contato Direto</h4>
+                    <p>
+                        WhatsApp: <a href="https://wa.me/554135236546">(41) 3523-6546</a><br>
+                        Portal 24h: <a href="https://vitaomais.meuspedidos.com.br/">Acesse Agora</a><br>
+                        Atendimento: Seg-Sex 8h-18h
+                    </p>
+                </div>
+                
+                <div class="contact-item">
+                    <h4>🚀 Comece Agora</h4>
+                    <p>
+                        <a href="https://vitaomais.meuspedidos.com.br/" style="display: inline-block; background: #FFD54F; color: #333; padding: 15px 30px; border-radius: 50px; text-decoration: none; font-weight: bold; margin-top: 10px;">
+                            ACESSAR PORTAL B2B →
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

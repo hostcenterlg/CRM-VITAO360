@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JARVIS CRM — Arquitetura Fonte Única da Verdade</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f8f9fb;
+  --surface: #ffffff;
+  --surface2: #f1f3f7;
+  --border: #dce1e8;
+  --accent: #0d7a5f;
+  --accent-light: #e6f5f0;
+  --accent2: #d4540a;
+  --accent2-light: #fef0e8;
+  --text: #1a2332;
+  --text-dim: #5c6b7f;
+  --green: #00864a;
+  --green-bg: #e6f5ee;
+  --yellow: #b38600;
+  --yellow-bg: #fff8e1;
+  --red: #c62828;
+  --red-bg: #fce8e8;
+  --blue: #1565c0;
+  --blue-bg: #e3f0ff;
+  --draft: #7c3aed;
+  --draft-bg: #f3eeff;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; line-height: 1.6; }
+.hero { padding: 60px 40px 40px; background: linear-gradient(135deg, #e6f5f0 0%, #ffffff 50%, #f3eeff 100%); border-bottom: 2px solid var(--border); }
+.hero h1 { font-family: 'JetBrains Mono', monospace; font-size: 2rem; font-weight: 700; color: var(--accent); margin-bottom: 8px; letter-spacing: -1px; }
+.hero .subtitle { font-size: 1.1rem; color: var(--text-dim); max-width: 700px; }
+.hero .version { display: inline-block; margin-top: 12px; padding: 4px 12px; background: var(--accent-light); border: 1px solid rgba(13,122,95,0.25); border-radius: 20px; font-size: 0.8rem; color: var(--accent); font-family: 'JetBrains Mono', monospace; }
+.container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
+.section { margin-bottom: 50px; }
+.section-title { font-family: 'JetBrains Mono', monospace; font-size: 1.3rem; font-weight: 700; color: var(--accent); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+.section-title .num { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; background: var(--accent-light); border: 1px solid rgba(13,122,95,0.3); border-radius: 8px; font-size: 0.9rem; }
+.comparison { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 40px; }
+.comp-card { background: var(--surface); border-radius: 12px; padding: 24px; border: 1px solid var(--border); box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+.comp-card.before { border-left: 4px solid var(--red); }
+.comp-card.after { border-left: 4px solid var(--accent); }
+.comp-card h3 { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 16px; }
+.comp-card.before h3 { color: var(--red); }
+.comp-card.after h3 { color: var(--accent); }
+.comp-card ul { list-style: none; padding: 0; }
+.comp-card li { padding: 6px 0; font-size: 0.9rem; color: var(--text-dim); display: flex; align-items: flex-start; gap: 8px; }
+.comp-card li::before { content: '×'; color: var(--red); font-weight: bold; flex-shrink: 0; }
+.comp-card.after li::before { content: '→'; color: var(--accent); }
+.arch-file { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+.arch-file-header { background: var(--surface2); padding: 20px 24px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--border); }
+.arch-file-header .icon { font-size: 1.5rem; }
+.arch-file-header .name { font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 1.1rem; color: var(--accent); }
+.arch-file-header .desc { font-size: 0.85rem; color: var(--text-dim); margin-left: auto; }
+.tab-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1px; background: var(--border); }
+.tab-card { background: var(--surface); padding: 16px 20px; transition: background 0.2s; }
+.tab-card:hover { background: var(--surface2); }
+.tab-card .tab-name { font-family: 'JetBrains Mono', monospace; font-weight: 600; font-size: 0.9rem; margin-bottom: 4px; display: flex; align-items: center; gap: 8px; color: var(--text); }
+.tab-card .tab-desc { font-size: 0.8rem; color: var(--text-dim); }
+.tab-card .tab-size { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--text-dim); margin-top: 4px; }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.65rem; font-family: 'JetBrains Mono', monospace; text-transform: uppercase; letter-spacing: 1px; }
+.badge-core { background: var(--accent-light); color: var(--accent); border: 1px solid rgba(13,122,95,0.25); }
+.badge-draft { background: var(--draft-bg); color: var(--draft); border: 1px solid rgba(124,58,237,0.25); }
+.badge-ref { background: var(--surface2); color: var(--text-dim); border: 1px solid var(--border); }
+.badge-view { background: var(--blue-bg); color: var(--blue); border: 1px solid rgba(21,101,192,0.25); }
+.badge-new { background: var(--accent2-light); color: var(--accent2); border: 1px solid rgba(212,84,10,0.25); }
+.flow { display: flex; flex-direction: column; gap: 3px; margin: 30px 0; }
+.flow-step { display: flex; align-items: center; gap: 16px; padding: 14px 20px; background: var(--surface); border-radius: 10px; border: 1px solid var(--border); box-shadow: 0 1px 2px rgba(0,0,0,0.03); transition: transform 0.2s, border-color 0.2s; }
+.flow-step:hover { transform: translateX(4px); border-color: var(--accent); }
+.flow-num { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; background: var(--accent-light); border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; font-weight: 700; color: var(--accent); flex-shrink: 0; }
+.flow-content { flex: 1; }
+.flow-content strong { font-size: 0.9rem; color: var(--text); }
+.flow-content .detail { font-size: 0.8rem; color: var(--text-dim); }
+.flow-arrow { text-align: center; color: var(--accent); font-size: 1.2rem; padding: 2px 0; opacity: 0.4; }
+.col-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; margin: 16px 0; }
+.col-table th { background: var(--surface2); padding: 10px 14px; text-align: left; font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-dim); border-bottom: 2px solid var(--border); }
+.col-table td { padding: 8px 14px; border-bottom: 1px solid var(--border); color: var(--text-dim); }
+.col-table tr:hover td { background: rgba(13,122,95,0.03); }
+.col-table .col-id { font-family: 'JetBrains Mono', monospace; color: var(--accent); font-weight: 600; }
+.col-table .col-name { color: var(--text); font-weight: 500; }
+.col-table .group-header td { background: var(--accent-light); font-weight: 600; color: var(--accent); font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; padding-top: 14px; border-bottom: 1px solid rgba(13,122,95,0.2); }
+.filter-demo { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin: 20px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+.filter-toolbar { background: var(--surface2); padding: 12px 16px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center; border-bottom: 1px solid var(--border); }
+.filter-btn { padding: 6px 14px; background: var(--accent-light); border: 1px solid rgba(13,122,95,0.25); border-radius: 6px; color: var(--accent); font-size: 0.8rem; font-family: 'JetBrains Mono', monospace; cursor: pointer; }
+.filter-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+.filter-label { font-size: 0.75rem; color: var(--text-dim); font-family: 'JetBrains Mono', monospace; text-transform: uppercase; letter-spacing: 1px; }
+.excel-sim { padding: 0; font-size: 0.78rem; }
+.excel-sim table { width: 100%; border-collapse: collapse; }
+.excel-sim th, .excel-sim td { padding: 6px 10px; border: 1px solid var(--border); white-space: nowrap; }
+.excel-sim th { background: var(--surface2); font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--text-dim); text-align: center; }
+.excel-sim .group-row { background: var(--accent-light); cursor: pointer; }
+.excel-sim .group-toggle { color: var(--accent); font-weight: bold; }
+.excel-sim .ativo { color: var(--green); font-weight: 600; }
+.excel-sim .inat-rec { color: var(--yellow); font-weight: 600; }
+.excel-sim .prospect { color: var(--blue); font-weight: 600; }
+.note { background: var(--accent-light); border-left: 3px solid var(--accent); padding: 16px 20px; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 0.9rem; }
+.note.warning { background: var(--yellow-bg); border-left-color: var(--yellow); }
+.note.draft-note { background: var(--draft-bg); border-left-color: var(--draft); }
+.note strong { color: var(--accent); }
+.note.warning strong { color: var(--yellow); }
+.note.draft-note strong { color: var(--draft); }
+.concept-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 20px 0; }
+.concept-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.04); transition: transform 0.2s, border-color 0.2s; }
+.concept-card:hover { transform: translateY(-2px); border-color: var(--accent); }
+.concept-card .emoji { font-size: 2rem; margin-bottom: 8px; }
+.concept-card h4 { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--accent); margin-bottom: 6px; }
+.concept-card p { font-size: 0.8rem; color: var(--text-dim); }
+@media (max-width: 768px) { .comparison { grid-template-columns: 1fr; } .concept-grid { grid-template-columns: 1fr; } .hero h1 { font-size: 1.5rem; } }
+</style>
+</head>
+<body>
+<div class="hero">
+  <h1>JARVIS CRM — FONTE ÚNICA DA VERDADE</h1>
+  <p class="subtitle">Arquitetura do arquivo central com aba DRAFT para inputs do Claude + filtros e agrupamentos para visualização seletiva</p>
+  <span class="version">v5.0 — Fev 2026</span>
+</div>
+<div class="container">
+
+<div class="section">
+  <div class="section-title"><span class="num">1</span> POR QUE MUDAR</div>
+  <div class="comparison">
+    <div class="comp-card before">
+      <h3>❌ Hoje: Múltiplos Arquivos</h3>
+      <ul>
+        <li>CONTROLE_FUNIL separado do LAYOUT_LOG separado das REDES</li>
+        <li>Agenda gerada em arquivo avulso — desconecta do histórico</li>
+        <li>Claude gera XLSX → copiar manualmente → colar no arquivo certo</li>
+        <li>Follow-ups vivem em arquivo diferente dos atendimentos</li>
+        <li>3 DOCs (Agenda, Controle, Dashboard) = 3 fontes parciais</li>
+        <li>Impossível filtrar "tudo da Manu" em um clique</li>
+      </ul>
+    </div>
+    <div class="comp-card after">
+      <h3>✅ Novo: Arquivo Único</h3>
+      <ul>
+        <li>UM arquivo Excel = TODA a operação comercial</li>
+        <li>Aba DRAFT onde você cola qualquer output do Claude</li>
+        <li>Dados fluem do DRAFT para o LOG após validação</li>
+        <li>Filtros + Agrupamento mostram só o que você quer ver</li>
+        <li>Agenda, Follow-ups e Prospecção = visões filtradas, não arquivos</li>
+        <li>"Manu + hoje + follow-ups" = 3 cliques no mesmo arquivo</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title"><span class="num">2</span> CONCEITO: DRAFT → BASE CENTRAL → VISÕES</div>
+  <div class="concept-grid">
+    <div class="concept-card"><div class="emoji">📋</div><h4>ABA DRAFT</h4><p>Cola aqui tudo que o Claude gera. Vendas, atendimentos, agendas. Formato padronizado 25 colunas.</p></div>
+    <div class="concept-card"><div class="emoji">⚙️</div><h4>ABA LOG (motor)</h4><p>Puxa do DRAFT via validação. Deduplicação automática. Fórmula FOLLOW-UP calcula datas.</p></div>
+    <div class="concept-card"><div class="emoji">👁️</div><h4>VISÕES (filtros)</h4><p>Agenda do dia, Follow-ups pendentes, Dashboard — tudo é FILTRO sobre o mesmo LOG.</p></div>
+  </div>
+  <div class="note draft-note"><strong>Princípio:</strong> O Claude nunca edita o LOG direto. Ele gera dados na aba DRAFT. Você revisa, valida, e os dados fluem para o LOG via processo controlado.</div>
+</div>
+
+<div class="section">
+  <div class="section-title"><span class="num">3</span> ESTRUTURA DO ARQUIVO ÚNICO</div>
+  <div class="arch-file">
+    <div class="arch-file-header"><span class="icon">📊</span><span class="name">JARVIS_CRM_CENTRAL_FEV2026.xlsx</span><span class="desc">~12 abas | Fonte Única da Verdade</span></div>
+    <div class="tab-grid">
+      <div class="tab-card"><div class="tab-name"><span class="badge badge-draft">DRAFT</span> 📋 DRAFT</div><div class="tab-desc">Zona de entrada. Cole qualquer output do Claude. Formato 25 cols + 3 cols controle.</div><div class="tab-size">~500 rows (limpar após processar)</div></div>
+      <div class="tab-card"><div class="tab-name"><span class="badge badge-core">CORE</span> 📝 LOG</div><div class="tab-desc">FONTE DA VERDADE. Todos os contatos comerciais. 25 colunas (A-Y). FOLLOW-UP automático.</div><div class="tab-size">12.000+ rows | +1.500/mês</div></div>
+      <div class="tab-card"><div class="tab-name"><span class="badge badge-core">CORE</span> 👥 BASE</div><div class="tab-desc">1 row por CNPJ. Dados consolidados. Fórmulas buscam último contato, resultado, follow-up.</div><div class="tab-size">2.500+ CNPJs únicos</div></div>
+      <div class="tab-card"><div class="tab-name"><span class="badge badge-view">VIEW</span> 📅 AGENDA</div><div class="tab-desc">3 blocos: Carteira + Follow-ups + Prospecção. Filtro por consultor e data.</div><div class="tab-size">Calculada | Filtros: vendedor, data</div></div>
+      <div class="tab-card"><div class="tab-name"><span class="badge badge-view">VIEW</span> 📊 DASH</div><div class="tab-desc">Dashboard gerencial. Filtros por vendedor e período. Métricas do funil e conversão.</div><div class="tab-size">14 rows | COUNTIFS sobre LOG</div></div>
+      <div class="tab-card"><div class="tab-name"><span class="badge badge-view">VIEW</span> 🔄 FOLLOW-UPS</div><div class="tab-desc">Follow-ups pendentes por data. Filtro: vendedor, FOLLOW-UP ≤ HOJE, atrasados.</div><div class="tab-size">Calculada | Origem: col V do LOG</div></div>
+      <div class="tab-card"><div class="tab-name"><span class="badge badge-core">CORE</span> 📏 REGRAS</div><div class="tab-desc">STATUS, FOLLOW-UP dias, TIPO CONTATO, VENDEDORES. Base de todas as fórmulas.</div><div class="tab-size">11 rows | INTOCÁVEL</div></div>
+      <div class="tab-card"><div class="tab-name"><span class="badge badge-ref">REF</span> 🏪 REDES</div><div class="tab-desc">760 CNPJs de franquias com GRUPO CHAVE. Lookup para REDE/TAG automático.</div><div class="tab-size">760 rows | 11 redes</div></div>
+      <div class="tab-card"><div class="tab-name"><span class="badge badge-new">NEW</span> 🎯 PROSPECÇÃO</div><div class="tab-desc">816 prospects de franquias + leads. Alimenta BLOCO 3 da agenda.</div><div class="tab-size">816+ rows</div></div>
+      <div class="tab-card"><div class="tab-name"><span class="badge badge-ref">REF</span> 🏢 BASE SAP</div><div class="tab-desc">Base completa SAP. Referência para COD_SAP, dados cadastrais.</div><div class="tab-size">6.658 rows | Read-only</div></div>
+      <div class="tab-card"><div class="tab-name"><span class="badge badge-ref">REF</span> 📦 BASE MERCOS</div><div class="tab-desc">Base ativa Mercos. Atualizar semanalmente com export.</div><div class="tab-size">6.078 rows | Semanal</div></div>
+      <div class="tab-card"><div class="tab-name"><span class="badge badge-ref">REF</span> 💰 BASE VENDAS</div><div class="tab-desc">Vendas mensais consolidadas. ÚNICO local com R$ real.</div><div class="tab-size">~900 vendas/ano</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title"><span class="num">4</span> FLUXO: COMO A ABA DRAFT FUNCIONA</div>
+  <div class="flow">
+    <div class="flow-step"><div class="flow-num">1</div><div class="flow-content"><strong>Claude gera dados</strong><div class="detail">Vendas, atendimentos, agenda, LOG — sempre no formato padronizado de 25 colunas</div></div></div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-step"><div class="flow-num">2</div><div class="flow-content"><strong>Você cola na aba DRAFT</strong><div class="detail">Zona segura — nada afeta o LOG até você validar. Pode colar múltiplos outputs seguidos.</div></div></div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-step"><div class="flow-num">3</div><div class="flow-content"><strong>Indicadores visuais mostram status</strong><div class="detail">🟢 Novo (não existe no LOG) | 🟡 Possível duplicata | 🔴 Duplicata confirmada</div></div></div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-step"><div class="flow-num">4</div><div class="flow-content"><strong>Você revisa e seleciona</strong><div class="detail">Checkbox "PROCESSAR" — marque as linhas válidas. Corrija o que precisar.</div></div></div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-step"><div class="flow-num">5</div><div class="flow-content"><strong>Move para LOG (copiar + colar especial valores)</strong><div class="detail">Linhas marcadas → Ctrl+C → LOG → última linha → Colar Especial. FOLLOW-UP calcula sozinha.</div></div></div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-step"><div class="flow-num">6</div><div class="flow-content"><strong>Limpar DRAFT</strong><div class="detail">Apagar linhas processadas. Mantém limpo para próximo batch.</div></div></div>
+  </div>
+  <div class="note"><strong>Vantagem:</strong> Se o Claude errar algo, você pega na DRAFT antes de poluir o LOG. O LOG nunca é contaminado com dados não validados.</div>
+</div>
+
+<div class="section">
+  <div class="section-title"><span class="num">5</span> AGENDA = VISÃO COM FILTRO (não arquivo separado)</div>
+  <p style="color: var(--text-dim); margin-bottom: 16px;">A agenda do dia é uma <strong style="color:var(--accent)">aba que LÊ a BASE + LOG</strong> e monta os 3 blocos automaticamente.</p>
+  <div class="filter-demo">
+    <div class="filter-toolbar">
+      <span class="filter-label">Consultor:</span>
+      <span class="filter-btn active">MANU</span><span class="filter-btn">LARISSA</span><span class="filter-btn">JULIO</span><span class="filter-btn">DAIANE</span>
+      <span class="filter-label" style="margin-left:20px;">Data:</span>
+      <span class="filter-btn active">06/02/2026</span>
+    </div>
+    <div class="excel-sim">
+      <table>
+        <tr><th></th><th>BLOCO</th><th>NOME FANTASIA</th><th>CNPJ</th><th>UF</th><th>SITUAÇÃO</th><th>ÚLT. CONTATO</th><th>RESULTADO ANT.</th><th>FOLLOW-UP</th><th>AÇÃO SUGERIDA</th></tr>
+        <tr class="group-row"><td class="group-toggle">▼</td><td colspan="9" style="color:var(--accent); font-weight:600; font-family:'JetBrains Mono',monospace;">☀️ BLOCO 1 — CARTEIRA (27 clientes programados)</td></tr>
+        <tr><td></td><td><span class="badge badge-core" style="font-size:0.6rem">CART</span></td><td style="color:var(--text)">MERCADO BOM PREÇO</td><td style="font-family:'JetBrains Mono',monospace; font-size:0.7rem">12.345.678/0001-99</td><td>PR</td><td class="ativo">ATIVO</td><td>30/01</td><td>VENDA</td><td>—</td><td>Recompra 45d</td></tr>
+        <tr><td></td><td><span class="badge badge-core" style="font-size:0.6rem">CART</span></td><td style="color:var(--text)">CASA NATURAL</td><td style="font-family:'JetBrains Mono',monospace; font-size:0.7rem">98.765.432/0001-10</td><td>SC</td><td class="inat-rec">INAT.REC</td><td>15/12</td><td>—</td><td>—</td><td>Retomar contato</td></tr>
+        <tr style="color:var(--text-dim); font-style:italic;"><td></td><td colspan="9">... +25 clientes da carteira</td></tr>
+        <tr class="group-row"><td class="group-toggle">▼</td><td colspan="9" style="color:var(--yellow); font-weight:600; font-family:'JetBrains Mono',monospace;">🔄 BLOCO 2 — FOLLOW-UPS (12 pendentes para hoje)</td></tr>
+        <tr><td></td><td><span class="badge badge-new" style="font-size:0.6rem">FUP</span></td><td style="color:var(--text)">EMPÓRIO VIDA SAUDÁVEL</td><td style="font-family:'JetBrains Mono',monospace; font-size:0.7rem">11.222.333/0001-44</td><td>RS</td><td class="ativo">ATIVO</td><td>04/02</td><td style="color:var(--yellow)">ORÇAMENTO</td><td style="color:var(--green)">06/02 ✓</td><td>Retornar proposta</td></tr>
+        <tr><td></td><td><span class="badge badge-new" style="font-size:0.6rem">FUP</span></td><td style="color:var(--text)">NATURAL POINT</td><td style="font-family:'JetBrains Mono',monospace; font-size:0.7rem">44.555.666/0001-77</td><td>PR</td><td class="ativo">ATIVO</td><td>03/02</td><td style="color:var(--yellow)">EM ATENDIMENTO</td><td style="color:var(--green)">06/02 ✓</td><td>Continuar negociação</td></tr>
+        <tr style="color:var(--text-dim); font-style:italic;"><td></td><td colspan="9">... +10 follow-ups automáticos</td></tr>
+        <tr class="group-row"><td class="group-toggle">▼</td><td colspan="9" style="color:var(--blue); font-weight:600; font-family:'JetBrains Mono',monospace;">🎯 BLOCO 3 — PROSPECÇÃO (11 novos para completar 50/dia)</td></tr>
+        <tr><td></td><td><span class="badge badge-view" style="font-size:0.6rem">NEW</span></td><td style="color:var(--text)">VIDA LEVE MARINGÁ</td><td style="font-family:'JetBrains Mono',monospace; font-size:0.7rem">55.666.777/0001-88</td><td>PR</td><td class="prospect">PROSPECT</td><td>—</td><td>—</td><td>—</td><td>1º contato</td></tr>
+        <tr style="color:var(--text-dim); font-style:italic;"><td></td><td colspan="9">... +10 prospects para completar 50/dia</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="note"><strong>Conta da Manu:</strong> 27 carteira + 12 follow-ups + 11 prospecção = 50 contatos/dia (capacidade máxima).</div>
+</div>
+
+<div class="section">
+  <div class="section-title"><span class="num">6</span> LAYOUT DA ABA DRAFT</div>
+  <p style="color: var(--text-dim); margin-bottom: 16px;">Mesmo layout do LOG + 3 colunas extras de controle:</p>
+  <table class="col-table">
+    <tr><th>COL</th><th>NOME</th><th>FUNÇÃO</th><th>TIPO</th></tr>
+    <tr class="group-header"><td colspan="4">🟣 COLUNAS DE CONTROLE DRAFT</td></tr>
+    <tr><td class="col-id">A</td><td class="col-name">✅ PROCESSAR</td><td>Checkbox — marcar para mover ao LOG</td><td><span class="badge badge-draft">DRAFT</span></td></tr>
+    <tr><td class="col-id">B</td><td class="col-name">🔍 STATUS DEDUP</td><td>Fórmula: 🟢 NOVO | 🟡 VERIFICAR | 🔴 DUPLICATA</td><td><span class="badge badge-draft">DRAFT</span></td></tr>
+    <tr><td class="col-id">C</td><td class="col-name">📅 FONTE</td><td>"VENDAS FEV", "ATENDIMENTOS", "AGENDA MANU", etc.</td><td><span class="badge badge-draft">DRAFT</span></td></tr>
+    <tr class="group-header"><td colspan="4">🟢 COLUNAS DO LOG (D em diante)</td></tr>
+    <tr><td class="col-id">D</td><td class="col-name">DATA</td><td>Data do contato</td><td><span class="badge badge-core">LOG</span></td></tr>
+    <tr><td class="col-id">E</td><td class="col-name">REDE / TAG</td><td>Franquia identificada</td><td><span class="badge badge-core">LOG</span></td></tr>
+    <tr><td class="col-id">F</td><td class="col-name">NOME FANTASIA</td><td>Nome do cliente</td><td><span class="badge badge-core">LOG</span></td></tr>
+    <tr><td class="col-id">...</td><td class="col-name">...</td><td>Demais 22 colunas idênticas ao LOG</td><td><span class="badge badge-core">LOG</span></td></tr>
+  </table>
+  <div class="note draft-note"><strong>Fórmula STATUS DEDUP (col B):</strong><br><code style="font-family:'JetBrains Mono',monospace; font-size:0.8rem; color:var(--draft);">=IF(D2="","",IF(COUNTIFS(LOG!A:A,D2,LOG!D:D,G2,LOG!F:F,I2)>0,"🔴 DUPLICATA",IF(COUNTIFS(DRAFT!D:D,D2,DRAFT!G:G,G2,DRAFT!I:I,I2)>1,"🟡 VERIFICAR","🟢 NOVO")))</code></div>
+</div>
+
+<div class="section">
+  <div class="section-title"><span class="num">7</span> ROTINA NA PRÁTICA</div>
+  <div class="flow">
+    <div class="flow-step"><div class="flow-num">☀️</div><div class="flow-content"><strong>MANHÃ — Abrir aba AGENDA, filtrar seu nome</strong><div class="detail">3 blocos: Carteira + Follow-ups + Prospecção. Total ≤ 50 contatos.</div></div></div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-step"><div class="flow-num">📞</div><div class="flow-content"><strong>DIA TODO — Registrar atendimentos no LOG</strong><div class="detail">RESULTADO + TIPO CONTATO → FOLLOW-UP calcula → Próxima ação aparece na agenda certa.</div></div></div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-step"><div class="flow-num">📊</div><div class="flow-content"><strong>SEMANAL — Processar dados novos via DRAFT</strong><div class="detail">Claude gera → Cola na DRAFT → Revisa → Move para LOG → Limpa DRAFT</div></div></div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-step"><div class="flow-num">📈</div><div class="flow-content"><strong>MENSAL — Atualizar bases de referência</strong><div class="detail">Export Mercos → BASE MERCOS. Carteira nova → BASE. Dashboard mostra evolução.</div></div></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title"><span class="num">8</span> FILTROS E AGRUPAMENTOS NO EXCEL</div>
+  <div class="concept-grid">
+    <div class="concept-card"><div class="emoji">📑</div><h4>AGRUPAR COLUNAS</h4><p>Dados > Agrupar. Oculta colunas de referência com um clique. Mostra só o essencial.</p></div>
+    <div class="concept-card"><div class="emoji">📐</div><h4>AGRUPAR LINHAS</h4><p>Blocos da Agenda como grupos colapsáveis. Expandir só o bloco que está trabalhando.</p></div>
+    <div class="concept-card"><div class="emoji">🔽</div><h4>FILTROS AVANÇADOS</h4><p>Ctrl+Shift+L. Filtrar por vendedor, data, situação, resultado, REDE. Múltiplos critérios.</p></div>
+  </div>
+  <div class="note warning"><strong>Limitação Excel:</strong> Agrupamentos são manuais. A aba AGENDA será TABELA com filtro + formatação condicional. Para agrupamento dinâmico: VBA ou Google Sheets + Apps Script.</div>
+</div>
+
+<div class="section">
+  <div class="section-title"><span class="num">9</span> PRÓXIMOS PASSOS</div>
+  <div class="flow">
+    <div class="flow-step"><div class="flow-num">A</div><div class="flow-content"><strong>Validar esta arquitetura</strong><div class="detail">Confirmar se o modelo faz sentido antes de construir.</div></div></div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-step"><div class="flow-num">B</div><div class="flow-content"><strong>Construir JARVIS_CRM_CENTRAL_FEV2026.xlsx</strong><div class="detail">Migrar LOG (11.758) + BASE (2.472) + REGRAS + REDES + criar DRAFT e AGENDA.</div></div></div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-step"><div class="flow-num">C</div><div class="flow-content"><strong>Testar com dados reais</strong><div class="detail">Gerar batch via Claude → DRAFT → validar fluxo completo.</div></div></div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-step"><div class="flow-num">D</div><div class="flow-content"><strong>Atualizar prompt de continuidade</strong><div class="detail">Referenciar arquivo único em vez de múltiplos.</div></div></div>
+  </div>
+</div>
+
+</div>
+<div style="padding: 30px 40px; background: var(--surface); border-top: 2px solid var(--border); text-align: center; color: var(--text-dim); font-size: 0.8rem;">
+  JARVIS CRM — VITAO Alimentos — Arquitetura v5.0 — Fev 2026<br>
+  <span style="color: var(--accent);">Fonte Única da Verdade + Aba DRAFT</span>
+</div>
+</body>
+</html>

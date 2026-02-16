@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>DASH FINAL — VITAO360</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: Calibri, Arial, sans-serif; background:#fff; color:#000; padding:16px; font-size:11px; }
+  .excel-sheet { max-width:1380px; margin:0 auto; }
+
+  table { border-collapse:collapse; width:100%; }
+  th, td { border:1px solid #bbb; padding:3px 6px; text-align:center; font-size:11px; }
+  th { font-weight:700; font-size:10px; }
+  td.left { text-align:left; font-weight:500; }
+  .hdr-dark th { background:#404040; color:#fff; }
+  .hdr-group { background:#595959; color:#fff; font-weight:700; text-align:center; font-size:10px; letter-spacing:0.5px; }
+  .total-row td { background:#404040; color:#fff; font-weight:700; }
+  .spacer { height:60px; }
+  .section-label { font-weight:700; font-size:12px; padding:6px 4px; background:#d9d9d9; border:1px solid #bbb; }
+  .side-by-side { display:flex; gap:0; }
+  .side-left { flex:1; }
+  .side-right { flex:1; }
+  .side-gap { width:24px; }
+  .sep { width:8px; background:#f2f2f2; border:none !important; }
+  .pct { color:#555; font-size:10px; }
+
+  .bar-row { display:flex; align-items:center; gap:2px; margin:2px 0; }
+  .bar-label { width:90px; text-align:right; font-size:9px; padding-right:4px; color:#404040; }
+  .bar { height:16px; display:flex; align-items:center; justify-content:flex-end; padding-right:4px; font-size:9px; color:#fff; font-weight:700; border-radius:1px; }
+  .bars-area { padding:6px 12px; border-left:2px solid #bbb; }
+  .bars-title { font-weight:700; font-size:10px; color:#404040; margin-bottom:4px; }
+</style>
+</head>
+<body>
+<div class="excel-sheet">
+
+<!-- CABEÇALHO -->
+<table style="width:auto; margin-bottom:8px;">
+  <tr>
+    <td class="left" style="background:#f2f2f2; font-weight:700; width:120px;">VENDEDOR</td>
+    <td style="width:200px;"></td>
+    <td style="background:#f2f2f2; font-weight:700; width:80px;">PERÍODO</td>
+    <td style="width:90px;"></td>
+    <td style="width:90px;"></td>
+  </tr>
+  <tr>
+    <td class="left" colspan="2">[Filtro dropdown]</td>
+    <td></td>
+    <td>__/__/2026</td>
+    <td>__/__/2026</td>
+  </tr>
+</table>
+
+<!-- ════════════════════════════════════════════════ -->
+<!-- BLOCO 1: TIPO DO CONTATO × RESULTADO + BARRAS  -->
+<!-- ════════════════════════════════════════════════ -->
+<div class="section-label">TIPO DO CONTATO × RESULTADO DO CONTATO</div>
+
+<div class="side-by-side">
+
+<div style="flex:2.5;">
+<table>
+  <thead class="hdr-dark">
+    <tr>
+      <th style="text-align:left; width:170px;">TIPO DO CONTATO</th>
+      <th style="width:40px;">TOTAL</th>
+      <th>ORÇAM.</th>
+      <th>CADAST.</th>
+      <th>RELAC.</th>
+      <th>EM ATEND.</th>
+      <th>SUPORTE</th>
+      <th>VENDA</th>
+      <th style="background:#8b0000;">Ñ ATENDE</th>
+      <th style="background:#8b0000;">RECUSOU</th>
+      <th style="background:#8b0000;">Ñ RESP.</th>
+      <th style="background:#8b0000;">PERDA</th>
+      <th style="background:#2e7d32;">FOLLOW UP</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td class="left">PROSPECÇÃO</td><td>52</td><td>4</td><td>12</td><td>2</td><td>13</td><td>0</td><td>1</td><td>7</td><td>4</td><td>9</td><td>0</td><td>0</td></tr>
+    <tr><td class="left">NEGOCIAÇÃO</td><td>39</td><td>16</td><td>3</td><td>0</td><td>11</td><td>0</td><td>6</td><td>1</td><td>0</td><td>0</td><td>0</td><td>2</td></tr>
+    <tr><td class="left">FOLLOW UP</td><td>49</td><td>12</td><td>0</td><td>3</td><td>8</td><td>4</td><td>2</td><td>5</td><td>0</td><td>4</td><td>0</td><td>11</td></tr>
+    <tr><td class="left">ATEND. CLIENTES ATIVOS</td><td>123</td><td>13</td><td>0</td><td>26</td><td>8</td><td>14</td><td>26</td><td>10</td><td>0</td><td>0</td><td>0</td><td>26</td></tr>
+    <tr><td class="left">ATEND. CLIENTES INATIVOS</td><td>50</td><td>2</td><td>3</td><td>0</td><td>6</td><td>0</td><td>2</td><td>7</td><td>9</td><td>11</td><td>4</td><td>6</td></tr>
+    <tr><td class="left">PÓS-VENDA / RELAC.</td><td>96</td><td>6</td><td>0</td><td>27</td><td>0</td><td>21</td><td>10</td><td>5</td><td>0</td><td>6</td><td>0</td><td>21</td></tr>
+    <tr><td class="left">PERDA / NUTRIÇÃO</td><td>31</td><td>0</td><td>0</td><td>0</td><td>1</td><td>2</td><td>0</td><td>7</td><td>3</td><td>5</td><td>10</td><td>3</td></tr>
+    <tr class="total-row"><td class="left">TOTAL</td><td>440</td><td>53</td><td>18</td><td>58</td><td>47</td><td>41</td><td>47</td><td>42</td><td>16</td><td>35</td><td>14</td><td>69</td></tr>
+  </tbody>
+</table>
+</div>
+
+<!-- BARRAS RESULTADO (subiu, sem radar) -->
+<div class="bars-area" style="flex:1;">
+  <div class="bars-title">RESULTADO DO CONTATO</div>
+  <div class="bar-row"><div class="bar-label">FOLLOW UP</div><div class="bar" style="width:100%; background:#4caf50;">69</div></div>
+  <div class="bar-row"><div class="bar-label">RELAC.</div><div class="bar" style="width:84%; background:#2196f3;">58</div></div>
+  <div class="bar-row"><div class="bar-label">ORÇAM.</div><div class="bar" style="width:77%; background:#2196f3;">53</div></div>
+  <div class="bar-row"><div class="bar-label">EM ATEND.</div><div class="bar" style="width:68%; background:#ff9800;">47</div></div>
+  <div class="bar-row"><div class="bar-label">VENDA</div><div class="bar" style="width:68%; background:#404040;">47</div></div>
+  <div class="bar-row"><div class="bar-label">Ñ ATENDE</div><div class="bar" style="width:61%; background:#c62828;">42</div></div>
+  <div class="bar-row"><div class="bar-label">SUPORTE</div><div class="bar" style="width:59%; background:#7b1fa2;">41</div></div>
+  <div class="bar-row"><div class="bar-label">Ñ RESP.</div><div class="bar" style="width:51%; background:#c62828;">35</div></div>
+  <div class="bar-row"><div class="bar-label">CADASTRO</div><div class="bar" style="width:26%; background:#2196f3;">18</div></div>
+  <div class="bar-row"><div class="bar-label">RECUSOU</div><div class="bar" style="width:23%; background:#c62828;">16</div></div>
+  <div class="bar-row"><div class="bar-label">PERDA</div><div class="bar" style="width:20%; background:#333;">14</div></div>
+</div>
+
+</div>
+
+<!-- ════════════ 4 LINHAS EM BRANCO ════════════ -->
+<div class="spacer"></div>
+
+<!-- ════════════════════════════════════════════════ -->
+<!-- BLOCO 2: CONTATOS & FUNIL DE VENDA             -->
+<!-- ════════════════════════════════════════════════ -->
+<div class="section-label">CONTATOS REALIZADOS + FUNIL DE VENDA</div>
+
+<table>
+  <thead>
+    <tr>
+      <th rowspan="2" style="text-align:left; width:170px; background:#404040; color:#fff;">TIPO DO CONTATO</th>
+      <th rowspan="2" style="width:40px; background:#404040; color:#fff;">TOTAL</th>
+      <td class="sep" rowspan="2"></td>
+      <th colspan="4" class="hdr-group" style="background:#595959;">CONTATOS REALIZADOS</th>
+      <td class="sep" rowspan="2"></td>
+      <th colspan="4" class="hdr-group" style="background:#595959;">FUNIL DE VENDA</th>
+      <td class="sep" rowspan="2"></td>
+      <th colspan="2" class="hdr-group" style="background:#595959;">RELACIONAMENTO</th>
+      <td class="sep" rowspan="2"></td>
+      <th colspan="2" class="hdr-group" style="background:#595959;">NÃO VENDA</th>
+    </tr>
+    <tr>
+      <th style="background:#404040; color:#fff; font-size:9px;">CONTATO<br>WHATSAPP</th>
+      <th style="background:#404040; color:#fff; font-size:9px;">LIGAÇÃO<br>REALIZADAS</th>
+      <th style="background:#404040; color:#fff; font-size:9px;">LIGAÇÕES<br>ATENDIDAS</th>
+      <th style="background:#404040; color:#fff; font-size:9px;">LIGAÇÕES NÃO<br>ATENDIDAS</th>
+      <th style="background:#404040; color:#fff; font-size:9px;">EM<br>ATENDIMENTO</th>
+      <th style="background:#404040; color:#fff; font-size:9px;">ORÇAMENTO</th>
+      <th style="background:#404040; color:#fff; font-size:9px;">CADASTRO</th>
+      <th style="background:#404040; color:#fff; font-size:9px;">VENDA</th>
+      <th style="background:#404040; color:#fff; font-size:9px;">FOLLOW UP</th>
+      <th style="background:#404040; color:#fff; font-size:9px;">SUPORTE</th>
+      <th style="background:#404040; color:#fff; font-size:9px;">CLIENTE<br>INATIVO</th>
+      <th style="background:#404040; color:#fff; font-size:9px;">PERDA / NÃO<br>VENDA</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td class="left">PROSPECÇÃO</td><td>147</td><td class="sep"></td><td>41</td><td>28</td><td>20</td><td>8</td><td class="sep"></td><td>13</td><td>4</td><td>12</td><td>1</td><td class="sep"></td><td>0</td><td>0</td><td class="sep"></td><td>20</td><td>0</td></tr>
+    <tr><td class="left">NEGOCIAÇÃO</td><td>91</td><td class="sep"></td><td>28</td><td>12</td><td>6</td><td>6</td><td class="sep"></td><td>11</td><td>16</td><td>3</td><td>6</td><td class="sep"></td><td>2</td><td>0</td><td class="sep"></td><td>1</td><td>0</td></tr>
+    <tr><td class="left">FOLLOW UP</td><td>131</td><td class="sep"></td><td>37</td><td>24</td><td>14</td><td>10</td><td class="sep"></td><td>8</td><td>12</td><td>0</td><td>2</td><td class="sep"></td><td>11</td><td>4</td><td class="sep"></td><td>9</td><td>0</td></tr>
+    <tr><td class="left">ATEND. CLIENTES ATIVOS</td><td>309</td><td class="sep"></td><td>88</td><td>62</td><td>36</td><td>26</td><td class="sep"></td><td>8</td><td>13</td><td>0</td><td>26</td><td class="sep"></td><td>26</td><td>14</td><td class="sep"></td><td>10</td><td>0</td></tr>
+    <tr><td class="left">ATEND. CLIENTES INATIVOS</td><td>129</td><td class="sep"></td><td>29</td><td>25</td><td>11</td><td>14</td><td class="sep"></td><td>6</td><td>2</td><td>3</td><td>2</td><td class="sep"></td><td>6</td><td>0</td><td class="sep"></td><td>27</td><td>4</td></tr>
+    <tr><td class="left">PÓS-VENDA / RELAC.</td><td>205</td><td class="sep"></td><td>64</td><td>36</td><td>22</td><td>14</td><td class="sep"></td><td>0</td><td>6</td><td>0</td><td>10</td><td class="sep"></td><td>21</td><td>21</td><td class="sep"></td><td>11</td><td>0</td></tr>
+    <tr><td class="left">PERDA / NUTRIÇÃO</td><td>77</td><td class="sep"></td><td>20</td><td>13</td><td>8</td><td>5</td><td class="sep"></td><td>1</td><td>0</td><td>0</td><td>0</td><td class="sep"></td><td>3</td><td>2</td><td class="sep"></td><td>15</td><td>10</td></tr>
+    <tr class="total-row"><td class="left">TOTAL</td><td>1089</td><td class="sep" style="background:#f2f2f2;"></td><td>307</td><td>200</td><td>117</td><td>83</td><td class="sep" style="background:#f2f2f2;"></td><td>47</td><td>53</td><td>18</td><td>47</td><td class="sep" style="background:#f2f2f2;"></td><td>69</td><td>41</td><td class="sep" style="background:#f2f2f2;"></td><td>93</td><td>14</td></tr>
+  </tbody>
+</table>
+
+<!-- ════════════ 4 LINHAS EM BRANCO ════════════ -->
+<div class="spacer"></div>
+
+<!-- ════════════════════════════════════════════════ -->
+<!-- BLOCO 3: MOTIVOS + INDICADORES TAREFAS          -->
+<!-- ════════════════════════════════════════════════ -->
+<div class="section-label">MOTIVOS DE NÃO COMPRA + INDICADORES DE TAREFAS POR CONSULTOR</div>
+
+<div class="side-by-side">
+
+<!-- MOTIVOS -->
+<div class="side-left">
+<table>
+  <thead class="hdr-dark">
+    <tr>
+      <th style="text-align:left; width:180px;">MOTIVO</th>
+      <th>QTD</th>
+      <th>%</th>
+      <th>PROSP</th>
+      <th>ATIVOS</th>
+      <th>INAT</th>
+      <th>PÓS-V</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td class="left">AINDA TEM ESTOQUE</td><td>43</td><td class="pct">24%</td><td>7</td><td>8</td><td>4</td><td>8</td></tr>
+    <tr><td class="left">PROD. NÃO VENDEU / SEM GIRO</td><td>19</td><td class="pct">11%</td><td>2</td><td>3</td><td>6</td><td>5</td></tr>
+    <tr><td class="left">LOJA ANEXO/PRÓXIMO - SM</td><td>9</td><td class="pct">5%</td><td>1</td><td>2</td><td>1</td><td>0</td></tr>
+    <tr><td class="left">SÓ QUER COMPRAR GRANEL</td><td>20</td><td class="pct">11%</td><td>1</td><td>5</td><td>4</td><td>5</td></tr>
+    <tr><td class="left">PROBLEMA LOGÍSTICO / ENTREGA</td><td>33</td><td class="pct">19%</td><td>5</td><td>4</td><td>14</td><td>2</td></tr>
+    <tr><td class="left">PROBLEMA FINANCEIRO / CRÉDITO</td><td>11</td><td class="pct">6%</td><td>0</td><td>3</td><td>1</td><td>5</td></tr>
+    <tr><td class="left">PROPRIETÁRIO INDISPONÍVEL</td><td>12</td><td class="pct">7%</td><td>0</td><td>1</td><td>1</td><td>4</td></tr>
+    <tr><td class="left">FECHANDO / FECHOU LOJA</td><td>2</td><td class="pct">1%</td><td>1</td><td>1</td><td>0</td><td>0</td></tr>
+    <tr><td class="left">SEM INTERESSE NO MOMENTO</td><td>18</td><td class="pct">10%</td><td>1</td><td>4</td><td>5</td><td>3</td></tr>
+    <tr><td class="left">1º CONTATO / SEM RESPOSTA</td><td>9</td><td class="pct">5%</td><td>2</td><td>5</td><td>1</td><td>0</td></tr>
+    <tr class="total-row"><td class="left">TOTAL</td><td>176</td><td>100%</td><td>20</td><td>36</td><td>37</td><td>32</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="side-gap"></div>
+
+<!-- INDICADORES TAREFAS -->
+<div class="side-right">
+<table>
+  <thead class="hdr-dark">
+    <tr>
+      <th style="text-align:left;">CONSULTOR</th>
+      <th>CONTATOS</th>
+      <th>VENDAS</th>
+      <th>ORÇAM.</th>
+      <th>CADAST.</th>
+      <th>% CONV</th>
+      <th>Ñ ATENDE</th>
+      <th>PERDA</th>
+      <th>% MERCOS</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td class="left">MANU DITZEL</td><td>133</td><td>19</td><td>11</td><td>5</td><td class="pct">16%</td><td>14</td><td>2</td><td class="pct">68%</td></tr>
+    <tr><td class="left">LARISSA PADILHA</td><td>110</td><td>8</td><td>22</td><td>6</td><td class="pct">8%</td><td>13</td><td>4</td><td class="pct">68%</td></tr>
+    <tr><td class="left">JULIO GADRET</td><td>86</td><td>8</td><td>10</td><td>3</td><td class="pct">10%</td><td>9</td><td>4</td><td class="pct">66%</td></tr>
+    <tr><td class="left">DAIANE STAVICKI</td><td>111</td><td>12</td><td>10</td><td>4</td><td class="pct">11%</td><td>6</td><td>4</td><td class="pct">59%</td></tr>
+    <tr class="total-row"><td class="left">TOTAL EQUIPE</td><td>440</td><td>47</td><td>53</td><td>18</td><td>12%</td><td>42</td><td>14</td><td>65%</td></tr>
+  </tbody>
+</table>
+
+<table style="margin-top:8px;">
+  <thead class="hdr-dark">
+    <tr>
+      <th style="text-align:left;">CONSULTOR</th>
+      <th>FUNIL</th>
+      <th>RELAC.</th>
+      <th>NÃO VENDA</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td class="left">MANU DITZEL</td><td>49</td><td>50</td><td>34</td></tr>
+    <tr><td class="left">LARISSA PADILHA</td><td>46</td><td>36</td><td>28</td></tr>
+    <tr><td class="left">JULIO GADRET</td><td>32</td><td>33</td><td>21</td></tr>
+    <tr><td class="left">DAIANE STAVICKI</td><td>38</td><td>49</td><td>24</td></tr>
+    <tr class="total-row"><td class="left">TOTAL</td><td>165</td><td>168</td><td>107</td></tr>
+  </tbody>
+</table>
+</div>
+
+</div>
+
+</div>
+</body>
+</html>

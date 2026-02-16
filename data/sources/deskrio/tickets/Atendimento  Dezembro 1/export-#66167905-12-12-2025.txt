@@ -1,0 +1,435 @@
+Ticket: 66167905 [12/11/2025 14:30:23] Eu: Oii
+
+Ticket: 66167905 [12/11/2025 14:30:24] DESKRIO - SUPORTE: DeskRio agradece seu contato. Como podemos ajudar?
+
+Ticket: 66167905 [12/11/2025 14:30:37] Eu: O desk está dando erro 503
+
+Ticket: 66167905 [12/11/2025 14:30:52] DESKRIO - SUPORTE: *Lucas Carvalho:* 
+Já identificamos o erro, 2 minutos já normaliza.
+
+Ticket: 66167905 [12/11/2025 14:30:57] Eu: Ok
+
+Ticket: 66167905 [12/11/2025 14:39:06] Eu: Caiu de novo
+
+Ticket: 66167905 [12/11/2025 14:39:06] Eu: Caiu de novo
+
+Ticket: 66167905 [12/11/2025 14:40:30] DESKRIO - SUPORTE: Pessoal, boa tarde. Tudo bem?
+
+A AWS está passando por uma instabilidade, o que acaba afetando momentaneamente o nosso sistema.
+Estamos monitorando a situação de perto.
+
+🔗 https://downdetector.com/status/aws-amazon-web-services/
+
+Ticket: 66167905 [12/11/2025 14:42:56] DESKRIO - SUPORTE: *Lucas Carvalho*:
+Estamos fazendo troca das maquinas acredito que 5 minutos normalize
+
+Ticket: 66167905 [12/11/2025 14:45:09] DESKRIO - SUPORTE: *Lucas Carvalho*:
+*Pessoal, sistema normalizado*. ✅
+*Peço que atualizem a página e verifiquem, por favor*.
+
+*Ocorrido*:
+Utilizamos servidores da AWS com máquinas spot. A AWS realizou uma troca automática de máquina, o que acabou gerando instabilidade e lentidão.
+
+Agora migramos para máquinas on-demand, que não sofrem esse tipo de interrupção.
+
+*Motivo do ocorrido*:
+Houve uma instabilidade na própria AWS.
+🔗 https://downdetector.com/status/aws-amazon-web-services/
+
+Ticket: 66167905 [12/11/2025 14:52:12] DESKRIO - SUPORTE: *Lucas Carvalho*:
+Tudo certo por ai? Ajudo em algo mais?
+
+Ticket: 66167905 [12/11/2025 15:00:36] Eu: null
+
+Ticket: 66167905 [12/11/2025 15:00:37] Eu: null
+
+Ticket: 66167905 [12/11/2025 15:00:37] Eu: Sim
+
+Ticket: 66167905 [12/11/2025 15:00:48] Eu: Eu tenho alguns grupos que não está aparecendo no desk
+
+Ticket: 66167905 [12/11/2025 15:00:59] Eu: Só aparece no celular
+
+Ticket: 66167905 [12/11/2025 15:01:06] DESKRIO - SUPORTE: *Lucas Carvalho*:
+Pode mandar os grupos por favor, vou transferir para o time de N1 te ajudar
+
+Ticket: 66167905 [12/11/2025 15:02:23] DESKRIO - SUPORTE: *Rakel Monteiro*:
+Opa, tudo bem?
+
+Ticket: 66167905 [12/11/2025 15:02:36] DESKRIO - SUPORTE: *Rakel Monteiro*:
+Se puder me enviar os grupos por gentileza
+
+Ticket: 66167905 [12/11/2025 15:09:32] Eu: *Manu  - Vitao*:
+Sim so um min
+
+Ticket: 66167905 [12/11/2025 15:09:51] DESKRIO - SUPORTE: *Rakel Monteiro*:
+Tranquilo
+
+Ticket: 66167905 [12/11/2025 15:11:00] Eu: 
+
+Ticket: 66167905 [12/11/2025 15:11:35] Eu: 
+
+Ticket: 66167905 [12/11/2025 15:12:14] Eu: *Manu  - Vitao*:
+Esses dois não estão aparecendo aqui ainda
+
+Ticket: 66167905 [12/11/2025 15:12:28] DESKRIO - SUPORTE: *Rakel Monteiro*:
+Beleza
+
+Ticket: 66167905 [12/11/2025 15:12:36] DESKRIO - SUPORTE: *Rakel Monteiro*:
+Vou verificar aqui para você
+
+Ticket: 66167905 [12/11/2025 15:14:19] DESKRIO - SUPORTE: *Rakel Monteiro*:
+Manu, só uma dúvida: Esses grupos estão em quais conexões, sabe me dizer?
+
+Ticket: 66167905 [12/11/2025 15:19:39] DESKRIO - SUPORTE: *Rakel Monteiro*:
+E uma outra dúvida, uma das conexões que estão conectadas na plataforma esta nesse grupo?
+
+Ticket: 66167905 [14/11/2025 09:28:47] Eu: null
+
+Ticket: 66167905 [14/11/2025 09:28:48] Eu: null
+
+Ticket: 66167905 [14/11/2025 09:28:49] Eu: Oiii
+
+Ticket: 66167905 [14/11/2025 09:28:56] Eu: Como assim quais confecções ?
+
+Ticket: 66167905 [14/11/2025 09:29:12] Eu: Foi colocado esse número no grupo
+
+Ticket: 66167905 [14/11/2025 09:29:20] Eu: E no telefone aparece só o no desk que não
+
+Ticket: 66167905 [14/11/2025 09:29:38] DESKRIO - SUPORTE: *Rakel Monteiro*:
+Oii, bom dia! Tudo bem?
+
+Ticket: 66167905 [14/11/2025 09:29:55] DESKRIO - SUPORTE: *Rakel Monteiro*:
+Conexão é o número que esta conectado na plataforma de vocês
+
+Ticket: 66167905 [14/11/2025 09:30:09] Eu: Ah sim é esse aqui que estamos falando
+
+Ticket: 66167905 [14/11/2025 09:30:31] DESKRIO - SUPORTE: *Rakel Monteiro*:
+Beleza, só me envia um print da conversa dentro do grupo para a gente pegar o horário por favor?
+
+Ticket: 66167905 [14/11/2025 09:32:26] Eu: 
+
+Ticket: 66167905 [14/11/2025 09:32:51] Eu: 
+
+Ticket: 66167905 [14/11/2025 09:33:33] DESKRIO - SUPORTE: *Rakel Monteiro*:
+Belezaa, um instante por favor
+
+Ticket: 66167905 [14/11/2025 09:37:12] DESKRIO - SUPORTE: *Rakel Monteiro*:
+Manu, vou passar aqui para o time de programação e qualquer novidade eu te aviso por aqui😊
+
+Ticket: 66167905 [14/11/2025 09:38:33] Eu: *Manu  - Vitao*:
+ok
+
+Ticket: 66167905 [14/11/2025 10:00:32] DESKRIO - SUPORTE: *Rakel Monteiro*:
+Oii Manu
+
+Ticket: 66167905 [14/11/2025 10:00:37] DESKRIO - SUPORTE: *Rakel Monteiro*:
+Esta por ai?
+
+Ticket: 66167905 [14/11/2025 10:01:07] DESKRIO - SUPORTE: *Rakel Monteiro*:
+Consegue enviar uma mensagem de teste nesses dois grupos pelo celular por gentileza?
+
+Ticket: 66167905 [14/11/2025 10:03:34] Eu: *Manu  - Vitao*:
+oii
+
+Ticket: 66167905 [14/11/2025 10:04:25] Eu: *Manu  - Vitao*:
+Em um deles consigo sim
+
+Ticket: 66167905 [14/11/2025 10:04:38] Eu: *Manu  - Vitao*:
+Só no outro que não pois esta o dono da empresa e aquele rupo é bem serio
+
+Ticket: 66167905 [14/11/2025 10:05:29] Eu: *Manu  - Vitao*:
+mandei
+
+Ticket: 66167905 [14/11/2025 10:05:44] DESKRIO - SUPORTE: *Rakel Monteiro*:
+Beleza, um instante
+
+Ticket: 66167905 [14/11/2025 10:06:04] DESKRIO - SUPORTE: *Rakel Monteiro*:
+Só para saber, você mandou em qual?
+
+Ticket: 66167905 [14/11/2025 10:06:31] DESKRIO - SUPORTE: *Rakel Monteiro*:
+Processos internos certo
+
+Ticket: 66167905 [14/11/2025 10:06:55] DESKRIO - SUPORTE: *Rakel Monteiro*:
+Prontinho, os dois estão aparecendo na plataforma
+
+Ticket: 66167905 [14/11/2025 10:07:01] DESKRIO - SUPORTE: *Rakel Monteiro*:
+Qual setor posso colocar eles?
+
+Ticket: 66167905 [14/11/2025 10:10:11] Eu: *Manu  - Vitao*:
+muito obrigada meu querido !!
+
+Ticket: 66167905 [14/11/2025 10:10:17] Eu: *Manu  - Vitao*:
+Um otimo dia para ti viu !!
+
+Ticket: 66167905 [14/11/2025 10:10:27] DESKRIO - SUPORTE: *Rakel Monteiro*:
+Nada, qualquer coisa só falar! 💚
+
+Ticket: 66167905 [14/11/2025 10:10:40] DESKRIO - SUPORTE: *Rakel Monteiro*:
+Quer que eu vincule eles em algum setor?
+
+Ticket: 66167905 [14/11/2025 10:11:24] DESKRIO - SUPORTE: *Rakel Monteiro*:
+Otimo dia para você também! 
+Bom final de semana😊
+
+Ticket: 66167905 [14/11/2025 10:12:31] Eu: *Manu  - Vitao*:
+Só os nomes que estão errado
+
+Ticket: 66167905 [14/11/2025 10:12:39] Eu: *Manu  - Vitao*:
+o processo esta no financeiro
+
+Ticket: 66167905 [14/11/2025 10:12:48] Eu: *Manu  - Vitao*:
+e o financeiro nos processos
+
+Ticket: 66167905 [14/11/2025 10:13:07] Eu: 
+
+Ticket: 66167905 [14/11/2025 10:13:46] DESKRIO - SUPORTE: *Rakel Monteiro*:
+Opa, vou verificar aqui
+
+Ticket: 66167905 [14/11/2025 10:15:32] DESKRIO - SUPORTE: *Rakel Monteiro*:
+Atualiza a página e verifica se esta certinho agora
+
+Ticket: 66167905 [14/11/2025 10:16:00] Eu: *Manu  - Vitao*:
+Agora simmm
+
+Ticket: 66167905 [14/11/2025 10:16:03] Eu: *Manu  - Vitao*:
+Obrigada
+
+Ticket: 66167905 [14/11/2025 10:16:12] DESKRIO - SUPORTE: *Rakel Monteiro*:
+Nada, qualquer coisa só falar! 💚
+
+Ticket: 66167905 [14/11/2025 10:21:14] DESKRIO - SUPORTE: *Rakel Monteiro*:
+Irei finalizar o atendimento, se precisar de ajuda estaremos a disposição para ajudar!🚀💚
+
+Ticket: 66167905 [14/11/2025 10:35:51] Eu: ok
+
+Ticket: 66167905 [24/11/2025 13:45:36] Eu: Só um minuto
+
+Ticket: 66167905 [24/11/2025 13:46:16] Eu: Nao tem nenhuma pendente de atualização
+
+Ticket: 66167905 [24/11/2025 13:47:09] DESKRIO - SUPORTE: *Rakel Monteiro*:
+Verifica o envio agora por gentileza
+
+Ticket: 66167905 [24/11/2025 13:47:16] Eu: *Manu  - Vitao*:
+Agora foi
+
+Ticket: 66167905 [24/11/2025 13:47:17] Eu: *Manu  - Vitao*:
+Obrigada
+
+Ticket: 66167905 [24/11/2025 13:47:23] DESKRIO - SUPORTE: *Rakel Monteiro*:
+Nada, qualquer coisa só falar! 💚
+
+Ticket: 66167905 [24/11/2025 13:56:03] DESKRIO - SUPORTE: *Rakel Monteiro*:
+Pode verificar se vai enviar por ai por gentileza?
+
+Ticket: 66167905 [24/11/2025 13:56:59] DESKRIO - SUPORTE: *Rakel Monteiro*:
+Estou verificando aqui para você
+
+Ticket: 66167905 [24/11/2025 13:57:54] DESKRIO - SUPORTE: *Rakel Monteiro*:
+Tenta fazer um teste no envio por favor
+
+Ticket: 66167905 [24/11/2025 13:58:36] Eu: *Manu  - Vitao*:
+Esta meio devagar
+
+Ticket: 66167905 [24/11/2025 13:58:41] Eu: *Manu  - Vitao*:
+mas esta indo
+
+Ticket: 66167905 [24/11/2025 13:59:45] DESKRIO - SUPORTE: *Rakel Monteiro*:
+Da um F5 na página e verifica como vai por favor
+
+Ticket: 66167905 [24/11/2025 14:00:09] DESKRIO - SUPORTE: *Rakel Monteiro*:
+Belezinha
+
+Ticket: 66167905 [25/11/2025 10:55:45] Eu: Oiii
+
+Ticket: 66167905 [25/11/2025 10:55:45] Eu: Oiii
+
+Ticket: 66167905 [25/11/2025 10:57:15] Eu: Oiiii
+
+Ticket: 66167905 [25/11/2025 10:57:20] Eu: Desk está com muito delei
+
+Ticket: 66167905 [25/11/2025 10:57:32] Eu: E está desligando dando erro aí buscar chats
+
+Ticket: 66167905 [25/11/2025 10:59:26] DESKRIO - SUPORTE: *Lucas Carvalho:* 
+Já estamos verificando, dentro de 5 minutos acreditamos que estará normalizado
+
+Ticket: 66167905 [25/11/2025 11:13:50] DESKRIO - SUPORTE: *Waslley Freixo*:
+Já estamos verificando, dentro de 5 minutos acreditamos que estará normalizado
+
+Ticket: 66167905 [25/11/2025 11:20:39] DESKRIO - SUPORTE: *Lucas Carvalho*:
+Já está normalizando, quando tiver 100% aviso por aqui.
+
+Ticket: 66167905 [25/11/2025 11:36:55] Eu: *Manu  - Vitao*:
+ok
+
+Ticket: 66167905 [25/11/2025 11:44:04] DESKRIO - SUPORTE: *Waslley Freixo*:
+Já fizemos os ajustes necessários aqui, podem testar por gentileza?
+
+Ticket: 66167905 [25/11/2025 11:46:10] Eu: *Manu  - Vitao*:
+tudo certinho
+
+Ticket: 66167905 [25/11/2025 11:52:14] DESKRIO - SUPORTE: *Waslley Freixo*:
+O sistema já foi normalizado e nosso time de desenvolvimento irá detalhar o ocorrido.
+
+Pedimos desculpas pelo transtorno e agradecemos a compreensão de todos.
+
+Ticket: 66167905 [25/11/2025 12:03:31] DESKRIO - SUPORTE: *Waslley Freixo*:
+vou só transferir para o canal N2 para passar uma devolutiva sobre a instabilidade ok?
+
+Ticket: 66167905 [25/11/2025 12:03:44] Eu: *Manu  - Vitao*:
+ok
+
+Ticket: 66167905 [25/11/2025 12:40:29] DESKRIO - SUPORTE: *Cláudio Medeiros*:
+Opa! tudo bom?
+
+Nós conseguimos descobrir o motivo da lentidão. Ele estava relacionado a um *compressor de vídeos* que usamos.
+
+Já fizemos a correção e com isso esse problema não deve vir a ocorrer novamente 🚀
+
+Qualquer coisa só chamar 😉😉
+
+Ticket: 66167905 [25/11/2025 13:25:46] Eu: *Manu  - Vitao*:
+ok
+
+Ticket: 66167905 [27/11/2025 10:38:23] DESKRIO - SUPORTE: *Waslley Freixo*:
+Olá, pessoal! Tudo bem? 😄
+
+Dando uma olhadinha aqui nas bases, identificamos que o seu QR Code foi desconectado.
+
+Antes de reconectar, por gentileza, verifique se o WhatsApp está atualizado.
+Depois disso, tente fazer a conexão novamente e, se precisar de ajuda, estamos por aqui! 😊
+
+Conexão: *Daiane Vitao*
+
+Ticket: 66167905 [02/12/2025 11:10:52] Eu: Bom dia
+
+Ticket: 66167905 [02/12/2025 11:10:58] DESKRIO - SUPORTE: Olá, bom dia. Tudo bem? 
+Já estamos verificando o ocorrido. Acreditamos que dentro de 10 minutos já estará nornakizaod
+
+Ticket: 66167905 [02/12/2025 11:10:58] Eu: Desk está com bastante inconsistência
+
+Ticket: 66167905 [02/12/2025 11:19:42] DESKRIO - SUPORTE: *Waslley Freixo*:
+pode atualizar a página e verificar se já normalizou?
+
+Ticket: 66167905 [02/12/2025 11:20:03] Eu: *Manu  - Vitao*:
+Tudo certo a principio
+
+Ticket: 66167905 [02/12/2025 11:22:13] DESKRIO - SUPORTE: *Waslley Freixo*:
+Sistema normalizado. Pedimos desculpas pelo ocorrido. Vou encaminhar ao time de programação para que possam fornecer a devolutiva sobre o caso.
+
+Ticket: 66167905 [02/12/2025 12:58:25] DESKRIO - SUPORTE: null
+
+Ticket: 66167905 [02/12/2025 13:54:17] DESKRIO - SUPORTE: null
+
+Ticket: 66167905 [02/12/2025 13:54:27] DESKRIO - SUPORTE: Para que eu continue sempre evoluindo, de 1 a 5, qual nota você daria para esse atendimento?
+
+Ticket: 66167905 [02/12/2025 13:54:28] DESKRIO - SUPORTE: *5*. Encantado 🤩
+*4*. Satisfeito 😊
+*3*. Neutro 😐
+*2*. Chateado 😕
+*1*. Mal atendido 😠
+
+
+Ticket: 66167905 [03/12/2025 08:43:24] Eu: Desk está com instabilidade de novo
+
+Ticket: 66167905 [03/12/2025 08:45:00] DESKRIO - SUPORTE: *Waslley Freixo*:
+Bom dia! A aws servidor da Amazon está com uma instabilidade, já estamos atuando para resolver
+
+Ticket: 66167905 [03/12/2025 10:57:41] DESKRIO - SUPORTE: *Waslley Freixo*:
+Sistema normalizado. Pedimos desculpas pelo ocorrido. Vou encaminhar ao time de programação para que possam fornecer a devolutiva sobre o caso.
+
+Ticket: 66167905 [09/12/2025 08:23:14] Eu: Bom dia
+
+Ticket: 66167905 [09/12/2025 08:23:28] Eu: Desk caiu
+
+Ticket: 66167905 [09/12/2025 08:23:28] Eu: Desk caiu
+
+Ticket: 66167905 [09/12/2025 08:29:55] DESKRIO - SUPORTE: *Waslley Freixo*:
+Bom dia, tudo bem?
+
+Ticket: 66167905 [09/12/2025 08:35:39] Eu: Tudo certo
+
+Ticket: 66167905 [09/12/2025 08:35:48] Eu: Mas ainda está fora
+
+Ticket: 66167905 [09/12/2025 08:39:13] DESKRIO - SUPORTE: *Waslley Freixo*:
+Já estamos fazendo alguns ajustes e em 10 minutos já vai normalizar
+
+Ticket: 66167905 [09/12/2025 08:55:44] DESKRIO - SUPORTE: *Waslley Freixo*:
+Sistema normalizado. Pedimos desculpas pelo ocorrido. Vou encaminhar ao time de programação para que possam fornecer a devolutiva sobre o caso.
+
+Ticket: 66167905 [09/12/2025 09:07:48] DESKRIO - SUPORTE: *Cláudio Medeiros*:
+Bom dia, tudo bom?
+
+Já identificamos o problema e foi uma ação isolada. Isolamos essa ação para evitar problemas problemas.
+
+Peço desculpa pela instabilidade e estamos monitorando 🚀
+
+Ticket: 66167905 [09/12/2025 09:22:37] DESKRIO - SUPORTE: Acabei de finalizar o seu atendimento por enquanto. Precisando de mais alguma coisa, estamos por aqui! 😊💚💬
+Vou te mandar o número de protocolo novamente: 66408521.
+
+Ticket: 66167905 [09/12/2025 09:22:41] DESKRIO - SUPORTE: Para que eu continue sempre evoluindo, de 1 a 5, qual nota você daria para esse atendimento?
+
+Ticket: 66167905 [09/12/2025 09:22:42] DESKRIO - SUPORTE: *5*. Encantado 🤩
+*4*. Satisfeito 😊
+*3*. Neutro 😐
+*2*. Chateado 😕
+*1*. Mal atendido 😠
+
+
+Ticket: 66167905 [09/12/2025 09:37:25] Eu: *Manu  - Vitao*:
+5
+
+Ticket: 66167905 [09/12/2025 09:37:26] DESKRIO - SUPORTE: Informe a nota de 1 a 5
+
+Ticket: 66167905 [09/12/2025 16:54:36] Eu: Boa tarde
+
+Ticket: 66167905 [09/12/2025 16:55:02] Eu: Tenho um dúvida, eu gostaria de fazer um lembrete em um cliente mas sem enviar uma mensagem para ele
+
+Ticket: 66167905 [09/12/2025 16:55:05] Eu: Consigo
+
+Ticket: 66167905 [09/12/2025 16:56:14] DESKRIO - SUPORTE: *Rakel Monteiro*:
+Olá, boa tarde! Tudo bem?😊
+
+Ticket: 66167905 [09/12/2025 16:56:38] DESKRIO - SUPORTE: *Rakel Monteiro*:
+Tipo colocar um lembrete na conversa, seria isso?
+
+Ticket: 66167905 [09/12/2025 16:59:10] Eu: *Manu  - Vitao*:
+não, tipo um agendamento mesmo, para entrar em contato com o cliente naquela hora
+
+Ticket: 66167905 [09/12/2025 16:59:23] Eu: *Manu  - Vitao*:
+mas sem mandar a mensagem patra ele
+
+Ticket: 66167905 [09/12/2025 16:59:30] DESKRIO - SUPORTE: *Rakel Monteiro*:
+Humm, entendi!
+
+Ticket: 66167905 [09/12/2025 16:59:31] Eu: *Manu  - Vitao*:
+que fique só para mim
+
+Ticket: 66167905 [09/12/2025 17:02:37] DESKRIO - SUPORTE: *Rakel Monteiro*:
+Não temos essa funcionalidade para te lembrar de enviar a mensagem para o cliente. 
+Mas temos a funcionalidade do agendamento de mensagem, que é muito interessante. 
+
+No agendamento de mensagem, você agenda alguma mensagem (de sua preferência), você consegue colocar a hora, o setor, o dia e os números para quem você deseja enviar essa mensagem e ela vai certinho. 
+
+Acho que ficaria interessante para você pq já vai com a mensagem certinha no dia e no horário que você precisar😉😊
+
+Ticket: 66167905 [09/12/2025 17:04:59] Eu: *Manu  - Vitao*:
+Entendo muito obrigada !!
+
+Ticket: 66167905 [09/12/2025 17:09:37] DESKRIO - SUPORTE: *Rakel Monteiro*:
+Manu, vi aqui que tem o modulo de "tarefas", ali você consegue agendar uma tarefa e tem a opção de prazo, que é a data dessa tarefa. 
+Se eu não me recordo, vai notificar no app do DeskRio essa tarefa para você fazer.😉
+
+Como você quer algo para te lembrar de mandar mensagem, acho interessante o agendamento de mensagem, que ali você já agenda a mensagem que precisa enviar e o sistema mesmo já envia no dia e horário certinho
+
+Ticket: 66167905 [09/12/2025 17:09:45] DESKRIO - SUPORTE: *Rakel Monteiro*:
+Nada!😊
+
+Ticket: 66167905 [09/12/2025 17:14:01] Eu: *Manu  - Vitao*:
+Ahh legal, vou dar uma olhada aqui
+
+Ticket: 66167905 [09/12/2025 17:14:15] DESKRIO - SUPORTE: *Rakel Monteiro*:
+Belezinhaa
+
+Ticket: 66167905 [09/12/2025 17:14:26] DESKRIO - SUPORTE: *Rakel Monteiro*:
+😊
+

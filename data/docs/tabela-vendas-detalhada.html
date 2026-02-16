@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análise de Vendas por Vendedor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background: #f0f2f5;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #1a1a1a;
+            margin-bottom: 30px;
+        }
+        
+        .vendedor-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+        
+        .vendedor-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .vendedor-nome {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .vendedor-meta {
+            font-size: 1.8em;
+            font-weight: 300;
+        }
+        
+        .tabela-produtos {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        .tabela-produtos th {
+            background: #f8f9fa;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #495057;
+            border-bottom: 2px solid #dee2e6;
+        }
+        
+        .tabela-produtos td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .tabela-produtos tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .categoria-nome {
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        .produto-exemplo {
+            font-size: 0.85em;
+            color: #6c757d;
+            font-style: italic;
+        }
+        
+        .resumo-box {
+            background: #e7f3ff;
+            border-left: 4px solid #0066cc;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        
+        .resumo-titulo {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #0066cc;
+            margin-bottom: 15px;
+        }
+        
+        .resumo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .resumo-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .resumo-numero {
+            font-size: 2em;
+            font-weight: bold;
+            color: #0066cc;
+            display: block;
+        }
+        
+        .resumo-label {
+            font-size: 0.9em;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+        
+        .cenarios {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        
+        .cenario {
+            margin-bottom: 15px;
+            padding: 15px;
+            background: white;
+            border-radius: 6px;
+            border-left: 3px solid #28a745;
+        }
+        
+        .cenario-titulo {
+            font-weight: 600;
+            color: #28a745;
+            margin-bottom: 8px;
+        }
+        
+        .cenario-itens {
+            list-style: none;
+            padding-left: 20px;
+        }
+        
+        .cenario-itens li {
+            margin: 4px 0;
+            position: relative;
+        }
+        
+        .cenario-itens li:before {
+            content: "✓";
+            position: absolute;
+            left: -20px;
+            color: #28a745;
+        }
+        
+        .numero-destaque {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        
+        @media print {
+            .vendedor-card {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 Análise Detalhada de Vendas por Vendedor - Julho 2024</h1>
+        
+        <!-- HELDER -->
+        <div class="vendedor-card">
+            <div class="vendedor-header">
+                <div class="vendedor-nome">HELDER DA SILVA BRUNKOW</div>
+                <div class="vendedor-meta">Meta: R$ 113.000,00</div>
+            </div>
+            
+            <table class="tabela-produtos">
+                <thead>
+                    <tr>
+                        <th>Categoria</th>
+                        <th>Meta (R$)</th>
+                        <th>Unidades</th>
+                        <th>Displays</th>
+                        <th>Caixas</th>
+                        <th>KG/Granel</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <span class="categoria-nome">BISCOITO</span><br>
+                            <span class="produto-exemplo">Cookies, Wafer, Rosquinha</span>
+                        </td>
+                        <td>5.650</td>
+                        <td class="numero-destaque">348 un<br>@ R$ 6,50</td>
+                        <td>33 dp<br>@ R$ 51,00</td>
+                        <td>14 cx<br>@ R$ 120,00</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span class="categoria-nome">CHOCOLATES</span><br>
+                            <span class="produto-exemplo">Choc 22g, 70g, Kibbled</span>
+                        </td>
+                        <td>5.650</td>
+                        <td class="numero-destaque">161 un<br>@ R$ 14,00</td>
+                        <td>20 dp<br>@ R$ 84,00</td>
+                        <td>5 cx<br>@ R$ 336,00</td>
+                        <td>3 kg<br>@ R$ 1.980,00</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span class="categoria-nome">DISNEY</span><br>
+                            <span class="produto-exemplo">Bolinhos, Cereais, Cookies</span>
+                        </td>
+                        <td>9.040</td>
+                        <td class="numero-destaque">723 un<br>@ R$ 5,00</td>
+                        <td>53 dp<br>@ R$ 51,00</td>
+                        <td>17 cx<br>@ R$ 156,00</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span class="categoria-nome">DOCES</span><br>
+                            <span class="produto-exemplo">Beijinho, Brigadeiro, Doce Leite</span>
+                        </td>
+                        <td>11.300</td>
+                        <td class="numero-destaque">215 un<br>@ R$ 21,00</td>
+                        <td>-</td>
+                        <td>19 cx<br>@ R$ 174,00</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span class="categoria-nome">GELEIA</span><br>
+                            <span class="produto-exemplo">Geleia 180g diversos sabores</span>
+                        </td>
+                        <td>2.260</td>
+                        <td class="numero-destaque">46 un<br>@ R$ 19,50</td>
+                        <td>-</td>
+                        <td>4 cx<br>@ R$ 162,00</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span class="categoria-nome">GRANOLA</span><br>
+                            <span class="produto-exemplo">Granola 250g, 800g</span>
+                        </td>
+                        <td>2.260</td>
+                        <td class="numero-destaque">82 un<br>@ R$ 11,00</td>
+                        <td>-</td>
+                        <td>4 cx<br>@ R$ 168,00</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span class="categoria-nome">MAIS GRANEL</span><br>
+                            <span class="produto-exemplo">Produtos 1kg+, 10kg</span>
+                        </td>
+                        <td>28.250</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td class="numero-destaque">71 kg<br>@ R$ 400,00</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="resumo-box">
+                <div class="resumo-titulo">📦 RESUMO TOTAL DE PRODUTOS NECESSÁRIOS</div>
+                <div class="resumo-grid">
+                    <div class="resumo-item">
+                        <span class="resumo-numero">1.575</span>
+                        <span class="resumo-label">Unidades</span>
+                    </div>
+                    <div class="resumo-item">
+                        <span class="resumo-numero">106</span>
+                        <span class="resumo-label">Displays</span>
+                    </div>
+                    <div class="resumo-item">
+                        <span class="resumo-numero">63</span>
+                        <span class="resumo-label">Caixas</span>
+                    </div>
+                    <div class="resumo-item">
+                        <span class="resumo-numero">74</span>
+                        <span class="resumo-label">KG/Granel</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="cenarios">
+                <h3>🎯 Cenários de Venda por Cliente</h3>
+                <div class="cenario">
+                    <div class="cenario-titulo">Cliente Pequeno (Ticket R$ 500)</div>
+                    <ul class="cenario-itens">
+                        <li>2-3 unidades avulsas (biscoitos/cookies)</li>
+                        <li>1 display de chocolates</li>
+                        <li>1-2 geleias</li>
+                    </ul>
+                </div>
+                <div class="cenario">
+                    <div class="cenario-titulo">Cliente Médio (Ticket R$ 1.000)</div>
+                    <ul class="cenario-itens">
+                        <li>1 caixa de biscoitos</li>
+                        <li>1 display de Disney</li>
+                        <li>2-3 unidades de granola</li>
+                        <li>1 kg de produto granel</li>
+                    </ul>
+                </div>
+                <div class="cenario">
+                    <div class="cenario-titulo">Cliente Grande (Ticket R$ 2.500)</div>
+                    <ul class="cenario-itens">
+                        <li>2-3 caixas variadas</li>
+                        <li>2-3 displays de chocolates</li>
+                        <li>3-4 kg de produtos granel</li>
+                        <li>Mix de unidades avulsas</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- HEMANUELE -->
+        <div class="vendedor-card">
+            <div class="vendedor-header">
+                <div class="vendedor-nome">HEMANUELE ROSA DITZEL</div>
+                <div class="vendedor-meta">Meta: R$ 115.000,00</div>
+            </div>
+            
+            <table class="tabela-produtos">
+                <thead>
+                    <tr>
+                        <th>Categoria</th>
+                        <th>Meta (R$)</th>
+                        <th>Unidades</th>
+                        <th>Displays</th>
+                        <th>Caixas</th>
+                        <th>KG/Granel</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <span class="categoria-nome">BISCOITO</span><br>
+                            <span class="produto-exemplo">Cookies, Wafer, Rosquinha</span>
+                        </td>
+                        <td>5.750</td>
+                        <td class="numero-destaque">354 un<br>@ R$ 6,50</td>
+                        <td>34 dp<br>@ R$ 51,00</td>
+                        <td>14 cx<br>@ R$ 120,00</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span class="categoria-nome">CHOCOLATES</span><br>
+                            <span class="produto-exemplo">Choc 22g, 70g, Kibbled</span>
+                        </td>
+                        <td>5.750</td>
+                        <td class="numero-destaque">164 un<br>@ R$ 14,00</td>
+                        <td>21 dp<br>@ R$ 84,00</td>
+                        <td>5 cx<br>@ R$ 336,00</td>
+                        <td>3 kg<br>@ R$ 1.980,00</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span class="categoria-nome">DISNEY</span><br>
+                            <span class="produto-exemplo">Bolinhos, Cereais, Cookies</span>
+                        </td>
+                        <td>9.200</td>
+                        <td class="numero-destaque">736 un<br>@ R$ 5,00</td>
+                        <td>54 dp<br>@ R$ 51,00</td>
+                        <td>18 cx<br>@ R$ 156,00</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span class="categoria-nome">DOCES</span><br>
+                            <span class="produto-exemplo">Beijinho, Brigadeiro, Doce Leite</span>
+                        </td>
+                        <td>11.500</td>
+                        <td class="numero-destaque">219 un<br>@ R$ 21,00</td>
+                        <td>-</td>
+                        <td>20 cx<br>@ R$ 174,00</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span class="categoria-nome">GELEIA</span><br>
+                            <span class="produto-exemplo">Geleia 180g diversos sabores</span>
+                        </td>
+                        <td>2.300</td>
+                        <td class="numero-destaque">47 un<br>@ R$ 19,50</td>
+                        <td>-</td>
+                        <td>4 cx<br>@ R$ 162,00</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span class="categoria-nome">GRANOLA</span><br>
+                            <span class="produto-exemplo">Granola 250g, 800g</span>
+                        </td>
+                        <td>2.300</td>
+                        <td class="numero-destaque">84 un<br>@ R$ 11,00</td>
+                        <td>-</td>
+                        <td>4 cx<br>@ R$ 168,00</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span class="categoria-nome">MAIS GRANEL</span><br>
+                            <span class="produto-exemplo">Produtos 1kg+, 10kg</span>
+                        </td>
+                        <td>28.750</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td class="numero-destaque">72 kg<br>@ R$ 400,00</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="resumo-box">
+                <div class="resumo-titulo">📦 RESUMO TOTAL DE PRODUTOS NECESSÁRIOS</div>
+                <div class="resumo-grid">
+                    <div class="resumo-item">
+                        <span class="resumo-numero">1.604</span>
+                        <span class="resumo-label">Unidades</span>
+                    </div>
+                    <div class="resumo-item">
+                        <span class="resumo-numero">109</span>
+                        <span class="resumo-label">Displays</span>
+                    </div>
+                    <div class="resumo-item">
+                        <span class="resumo-numero">65</span>
+                        <span class="resumo-label">Caixas</span>
+                    </div>
+                    <div class="resumo-item">
+                        <span class="resumo-numero">75</span>
+                        <span class="resumo-label">KG/Granel</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- CONVENIÊNCIA -->
+        <div class="vendedor-card">
+            <div class="vendedor-header">
+                <div class="vendedor-nome">REGIONAL VENDA INTERNA - CONVENIÊNCIA</div>
+                <div class="vendedor-meta">Meta: R$ 18.400,00</div>
+            </div>
+            
+            <table class="tabela-produtos">
+                <thead>
+                    <tr>
+                        <th>Categoria</th>
+                        <th>Meta (R$)</th>
+                        <th>Unidades</th>
+                        <th>Displays</th>
+                        <th>Caixas</th>
+                        <th>KG/Granel</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <span class="categoria-nome">BISCOITO</span><br>
+                            <span class="produto-exemplo">Cookies, Wafer, Rosquinha</span>
+                        </td>
+                        <td>1.840</td>
+                        <td class="numero-destaque">113 un<br>@ R$ 6,50</td>
+                        <td>11 dp<br>@ R$ 51,00</td>
+                        <td>5 cx<br>@ R$ 120,00</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span class="categoria-nome">CHOCOLATES</span><br>
+                            <span class="produto-exemplo">Choc 22g, 70g, Kibbled</span>
+                        </td>
+                        <td>4.600</td>
+                        <td class="numero-destaque">131 un<br>@ R$ 14,00</td>
+                        <td>16 dp<br>@ R$ 84,00</td>
+                        <td>4 cx<br>@ R$ 336,00</td>
+                        <td>2 kg<br>@ R$ 1.980,00</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span class="categoria-nome">DISNEY</span><br>
+                            <span class="produto-exemplo">Bolinhos, Cereais, Cookies</span>
+                        </td>
+                        <td>2.760</td>
+                        <td class="numero-destaque">221 un<br>@ R$ 5,00</td>
+                        <td>16 dp<br>@ R$ 51,00</td>
+                        <td>5 cx<br>@ R$ 156,00</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span class="categoria-nome">DOCES</span><br>
+                            <span class="produto-exemplo">Beijinho, Brigadeiro, Doce Leite</span>
+                        </td>
+                        <td>368</td>
+                        <td class="numero-destaque">7 un<br>@ R$ 21,00</td>
+                        <td>-</td>
+                        <td>1 cx<br>@ R$ 174,00</td>
+                        <td>-</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="resumo-box">
+                <div class="resumo-titulo">📦 RESUMO TOTAL DE PRODUTOS NECESSÁRIOS</div>
+                <div class="resumo-grid">
+                    <div class="resumo-item">
+                        <span class="resumo-numero">483</span>
+                        <span class="resumo-label">Unidades</span>
+                    </div>
+                    <div class="resumo-item">
+                        <span class="resumo-numero">43</span>
+                        <span class="resumo-label">Displays</span>
+                    </div>
+                    <div class="resumo-item">
+                        <span class="resumo-numero">15</span>
+                        <span class="resumo-label">Caixas</span>
+                    </div>
+                    <div class="resumo-item">
+                        <span class="resumo-numero">2</span>
+                        <span class="resumo-label">KG/Granel</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- KEY ACCOUNT -->
+        <div class="vendedor-card">
+            <div class="vendedor-header">
+                <div class="vendedor-nome">REGIONAL VENDA INTERNA - KEY ACCOUNT</div>
+                <div class="vendedor-meta">Meta: R$ 48.000,00</div>
+            </div>
+            
+            <table class="tabela-produtos">
+                <thead>
+                    <tr>
+                        <th>Categoria</th>
+                        <th>Meta (R$)</th>
+                        <th>Unidades</th>
+                        <th>Displays</th>
+                        <th>Caixas</th>
+                        <th>KG/Granel</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <span class="categoria-nome">BISCOITO</span><br>
+                            <span class="produto-exemplo">Cookies, Wafer, Rosquinha</span>
+                        </td>
+                        <td>2.400</td>
+                        <td class="numero-destaque">148 un<br>@ R$ 6,50</td>
+                        <td>14 dp<br>@ R$ 51,00</td>
+                        <td>6 cx<br>@ R$ 120,00</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span class="categoria-nome">CHOCOLATES</span><br>
+                            <span class="produto-exemplo">Choc 22g, 70g, Kibbled</span>
+                        </td>
+                        <td>2.400</td>
+                        <td class="numero-destaque">69 un<br>@ R$ 14,00</td>
+                        <td>9 dp<br>@ R$ 84,00</td>
+                        <td>2 cx<br>@ R$ 336,00</td>
+                        <td>1 kg<br>@ R$ 1.980,00</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span class="categoria-nome">DISNEY</span><br>
+                            <span class="produto-exemplo">Bolinhos, Cereais, Cookies</span>
+                        </td>
+                        <td>3.840</td>
+                        <td class="numero-destaque">307 un<br>@ R$ 5,00</td>
+                        <td>23 dp<br>@ R$ 51,00</td>
+                        <td>7 cx<br>@ R$ 156,00</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span class="categoria-nome">DOCES</span><br>
+                            <span class="produto-exemplo">Beijinho, Brigadeiro, Doce Leite</span>
+                        </td>
+                        <td>4.800</td>
+                        <td class="numero-destaque">91 un<br>@ R$ 21,00</td>
+                        <td>-</td>
+                        <td>8 cx<br>@ R$ 174,00</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span class="categoria-nome">MAIS GRANEL</span><br>
+                            <span class="produto-exemplo">Produtos 1kg+, 10kg</span>
+                        </td>
+                        <td>12.000</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td class="numero-destaque">30 kg<br>@ R$ 400,00</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="resumo-box">
+                <div class="resumo-titulo">📦 RESUMO TOTAL DE PRODUTOS NECESSÁRIOS</div>
+                <div class="resumo-grid">
+                    <div class="resumo-item">
+                        <span class="resumo-numero">670</span>
+                        <span class="resumo-label">Unidades</span>
+                    </div>
+                    <div class="resumo-item">
+                        <span class="resumo-numero">46</span>
+                        <span class="resumo-label">Displays</span>
+                    </div>
+                    <div class="resumo-item">
+                        <span class="resumo-numero">27</span>
+                        <span class="resumo-label">Caixas</span>
+                    </div>
+                    <div class="resumo-item">
+                        <span class="resumo-numero">31</span>
+                        <span class="resumo-label">KG/Granel</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Resumo Geral -->
+        <div class="vendedor-card" style="background: #f8f9fa;">
+            <h2 style="text-align: center; margin-bottom: 20px;">📊 RESUMO GERAL - TODOS OS VENDEDORES</h2>
+            <div class="resumo-grid">
+                <div class="resumo-item" style="background: white;">
+                    <span class="resumo-numero" style="color: #e74c3c;">4.332</span>
+                    <span class="resumo-label">Total de Unidades</span>
+                </div>
+                <div class="resumo-item" style="background: white;">
+                    <span class="resumo-numero" style="color: #3498db;">304</span>
+                    <span class="resumo-label">Total de Displays</span>
+                </div>
+                <div class="resumo-item" style="background: white;">
+                    <span class="resumo-numero" style="color: #2ecc71;">170</span>
+                    <span class="resumo-label">Total de Caixas</span>
+                </div>
+                <div class="resumo-item" style="background: white;">
+                    <span class="resumo-numero" style="color: #f39c12;">182</span>
+                    <span class="resumo-label">Total KG/Granel</span>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px; padding: 20px; background: #e7f3ff; border-radius: 8px;">
+                <h3 style="color: #0066cc; margin-bottom: 10px;">META TOTAL DE JULHO</h3>
+                <div style="font-size: 2.5em; font-weight: bold; color: #0066cc;">R$ 294.400,00</div>
+                <div style="margin-top: 10px; color: #6c757d;">
+                    Média por dia útil (22 dias): R$ 13.382,00
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

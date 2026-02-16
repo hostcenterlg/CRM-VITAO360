@@ -1,0 +1,499 @@
+# ═══════════════════════════════════════════════════════════════════════════
+# VITAO JARVIS - Claude Code Development Orchestrator
+# Configuração Principal v1.1
+# Atualizado: 2026-01-27 - Regras comerciais definitivas
+# ═══════════════════════════════════════════════════════════════════════════
+
+# Informações do Projeto
+project:
+  name: "VITAO JARVIS CRM"
+  version: "1.1.0"
+  description: "Sistema CRM integrado com WhatsApp e ERP"
+  company: "VITAO Alimentos"
+  location: "Curitiba, PR, Brasil"
+
+# ═══════════════════════════════════════════════════════════════════════════
+# EQUIPE COMERCIAL - ESTRUTURA DEFINITIVA
+# ═══════════════════════════════════════════════════════════════════════════
+
+sales_team:
+  
+  # DAIANE - Gerente + Key Account
+  - id: "daiane"
+    name: "Daiane Stavicki"
+    role: "Gerente + Key Account"
+    type: "INTERNO"
+    territory: "BRASIL"
+    focus: "Redes e Grandes Contas"
+    status: "active"
+    
+    # Contas exclusivas (redes)
+    exclusive_accounts:
+      - "Divina Terra"
+      - "Biomundo"
+      - "Mundo Verde"
+      - "Tudo em Grãos"
+      - "Vida Leve"
+    
+    # Também atende clientes com esta tag
+    tags: ["redes e franquias"]
+    
+    # NÃO atende (exclusivo Julio)
+    excluded_accounts:
+      - "Cia da Saúde"
+      - "Fitland"
+    
+    # Fluxos especiais
+    special_flows:
+      - "Atendimento recorrente de redes (positivação)"
+      - "Prospecção de novos franqueados das redes"
+
+  # JULIO - RCA Externo
+  - id: "julio"
+    name: "Julio Gadret"
+    role: "Consultor"
+    type: "RCA_EXTERNO"  # Visita presencial loja a loja
+    territory_base: "SC"
+    status: "active"
+    
+    # Contas exclusivas (BRASIL INTEIRO)
+    exclusive_accounts:
+      - name: "Cia da Saúde"
+        scope: "BRASIL"
+        note: "Central em SC + todas as filiais"
+      - name: "Fitland"
+        scope: "BRASIL"
+        note: "Central em SC + todas as filiais"
+    
+    # Regras especiais RCA
+    rca_rules:
+      priority: "Quando atende presencial e traz pedido"
+      handoff_trigger: "vendedor_ultimo_pedido == JULIO"
+      default_before_visit: "INTERNO (Manu/Larissa)"
+      note: "Cliente só passa para Julio quando ele faz venda presencial"
+    
+    # Fluxos especiais
+    special_flows:
+      - "Prospecção presencial de franqueados Cia da Saúde"
+      - "Prospecção presencial de franqueados Fitland"
+
+  # MANU - Consultora Sul
+  - id: "manu"
+    name: "Manu Ditzel"
+    role: "Consultora"
+    type: "INTERNO"
+    territory:
+      - "SC"
+      - "PR"
+      - "RS"
+    territory_name: "Região Sul"
+    exclusions: "Redes e franquias (são da Daiane)"
+    status: "maternity_leave_2026"
+    revenue_share_2025: 32.5
+
+  # LARISSA - Consultora Brasil
+  - id: "larissa"
+    name: "Larissa Padilha"
+    role: "Consultora"
+    type: "INTERNO"
+    territory: "Restante do Brasil"
+    territory_exclude:
+      - "SC"
+      - "PR"
+      - "RS"
+    exclusions: "Redes e franquias (são da Daiane)"
+    status: "active"
+
+# ═══════════════════════════════════════════════════════════════════════════
+# LÓGICA DE ROTEAMENTO DE CLIENTES
+# ═══════════════════════════════════════════════════════════════════════════
+
+routing_rules:
+  # Ordem de prioridade (aplicar de cima para baixo)
+  priority_order:
+    
+    # REGRA 1: Cia da Saúde e Fitland → JULIO (sempre, qualquer estado)
+    - rule_id: 1
+      name: "Contas Exclusivas Julio"
+      condition:
+        cliente_nome_contains:
+          - "Cia da Saúde"
+          - "Cia da Saude"
+          - "Fitland"
+      assign_to: "julio"
+      scope: "BRASIL"
+      note: "Independente do estado, Julio atende todas filiais"
+    
+    # REGRA 2: Redes e Franquias → DAIANE
+    - rule_id: 2
+      name: "Redes e Franquias"
+      condition:
+        OR:
+          - tag: "redes e franquias"
+          - cliente_nome_contains:
+              - "Divina Terra"
+              - "Biomundo"
+              - "Mundo Verde"
+              - "Tudo em Grãos"
+              - "Tudo em Graos"
+              - "Vida Leve"
+      assign_to: "daiane"
+      scope: "BRASIL"
+    
+    # REGRA 3: Sul com venda presencial Julio → JULIO
+    - rule_id: 3
+      name: "Carteira Julio (venda presencial)"
+      condition:
+        AND:
+          - estado_in: ["SC", "PR", "RS"]
+          - vendedor_ultimo_pedido: "julio"
+      assign_to: "julio"
+      note: "Cliente que Julio já atendeu presencial"
+    
+    # REGRA 4: Região Sul → MANU
+    - rule_id: 4
+      name: "Território Sul"
+      condition:
+        estado_in: ["SC", "PR", "RS"]
+      assign_to: "manu"
+      fallback_if_unavailable: "larissa"  # Durante licença maternidade
+    
+    # REGRA 5: Restante do Brasil → LARISSA
+    - rule_id: 5
+      name: "Território Nacional"
+      condition:
+        estado_not_in: ["SC", "PR", "RS"]
+      assign_to: "larissa"
+      default: true
+
+# ═══════════════════════════════════════════════════════════════════════════
+# CLASSIFICAÇÃO DE CLIENTES
+# ═══════════════════════════════════════════════════════════════════════════
+
+client_classification:
+  
+  # Hierarquia de status
+  status_hierarchy:
+    
+    # CLIENTE = Tem código SAP + Venda
+    cliente:
+      definition: "Tem código SAP E tem venda registrada"
+      required_fields:
+        - codigo_sap: "NOT NULL"
+        - venda_sap: "> 0"
+      sub_status:
+        - ativo: "Comprou nos últimos 90 dias"
+        - inativo_recente: "Última compra 91-180 dias"
+        - inativo_antigo: "Última compra > 180 dias"
+      systems: ["SAP", "Mercos"]
+    
+    # LEAD/PROSPECT = Não tem código SAP
+    lead_prospect:
+      definition: "NÃO tem código SAP OU nunca comprou"
+      conditions:
+        OR:
+          - codigo_sap: "NULL"
+          - venda_sap: "0 ou NULL"
+      systems: ["CRM apenas"]
+      note: "Cadastrar no SAP/Mercos somente quando fechar pedido"
+
+  # Caso especial: Redes e Franquias
+  redes_franquias:
+    source: "Listagem fornecida pelas redes (contrato)"
+    process:
+      1: "Receber listagem de franqueados da rede"
+      2: "Padronizar CNPJs (14 dígitos)"
+      3: "Cruzar com base SAP"
+      4: "Classificar resultado"
+    
+    classification_after_cross:
+      - condition: "Tem código SAP"
+        result: "CLIENTE"
+        flow: "Atendimento recorrente"
+        objective: "Melhorar positivação"
+      
+      - condition: "NÃO tem código SAP"
+        result: "PROSPECT DE REDE"
+        flow: "Pipeline de prospecção"
+        objective: "Converter/Positivar"
+        responsible: ["daiane", "julio"]
+        note: "Julio = Cia Saúde/Fitland | Daiane = demais redes"
+
+# ═══════════════════════════════════════════════════════════════════════════
+# REDES E FRANQUIAS - CONFIGURAÇÃO
+# ═══════════════════════════════════════════════════════════════════════════
+
+networks_franchises:
+  
+  # Lista de redes conhecidas
+  known_networks:
+    
+    - name: "Cia da Saúde"
+      responsible: "julio"
+      headquarters: "SC"
+      has_branches: true
+      scope: "BRASIL"
+      base_status: "PENDENTE"  # Aguardando listagem
+    
+    - name: "Fitland"
+      responsible: "julio"
+      headquarters: "SC"
+      has_branches: true
+      scope: "BRASIL"
+      base_status: "PENDENTE"
+    
+    - name: "Divina Terra"
+      responsible: "daiane"
+      scope: "BRASIL"
+      base_status: "PENDENTE"
+    
+    - name: "Biomundo"
+      responsible: "daiane"
+      scope: "BRASIL"
+      base_status: "PENDENTE"
+    
+    - name: "Mundo Verde"
+      responsible: "daiane"
+      scope: "BRASIL"
+      base_status: "PENDENTE"
+    
+    - name: "Tudo em Grãos"
+      responsible: "daiane"
+      scope: "BRASIL"
+      base_status: "PENDENTE"
+    
+    - name: "Vida Leve"
+      responsible: "daiane"
+      scope: "BRASIL"
+      base_status: "PENDENTE"
+
+  # Processo de importação de listagem
+  import_process:
+    steps:
+      1: "Receber arquivo da rede"
+      2: "Validar campos (CNPJ, razão social, endereço)"
+      3: "Padronizar CNPJ (14 dígitos)"
+      4: "Cruzar com SAP (código_sap)"
+      5: "Cruzar com Mercos (status)"
+      6: "Classificar: Cliente vs Prospect"
+      7: "Atribuir responsável (Daiane ou Julio)"
+      8: "Gerar agenda de prospecção"
+    
+    expected_fields:
+      required:
+        - cnpj
+        - razao_social
+      optional:
+        - nome_fantasia
+        - endereco
+        - cidade
+        - estado
+        - telefone
+        - email
+
+# ═══════════════════════════════════════════════════════════════════════════
+# AGENDA DE ATENDIMENTOS - FLUXOS
+# ═══════════════════════════════════════════════════════════════════════════
+
+attendance_flows:
+  
+  # FLUXO 1: Base Mercos/SAP (Todos os consultores)
+  flow_recorrente:
+    name: "Atendimento Recorrente"
+    applies_to: "Clientes com código SAP"
+    consultants: ["daiane", "julio", "manu", "larissa"]
+    
+    triggers:
+      ativo:
+        action: "Recompra"
+        timing: "Baseado em ciclo de compra"
+      inativo_recente:
+        action: "Reativação"
+        timing: "Contato em até 7 dias"
+        priority: "ALTA"
+      inativo_antigo:
+        action: "Recuperação"
+        timing: "Campanha mensal"
+        priority: "MÉDIA"
+      primeira_compra:
+        action: "Pós-venda"
+        timing: "3-5 dias após pedido"
+        priority: "ALTA"
+
+  # FLUXO 2: Prospects de Redes (Exclusivo Daiane + Julio)
+  flow_prospecao_redes:
+    name: "Prospecção de Redes"
+    applies_to: "Franqueados sem código SAP"
+    consultants: ["daiane", "julio"]
+    exclusive: true
+    
+    source: "Listagem fornecida pela rede"
+    
+    pipeline:
+      - stage: "Novo Lead"
+        action: "Primeiro contato"
+        timing: "Até 48h após importação"
+      - stage: "Contato Realizado"
+        action: "Apresentação VITAO"
+        timing: "Agendar em até 7 dias"
+      - stage: "Apresentação"
+        action: "Envio de proposta"
+        timing: "Mesmo dia ou D+1"
+      - stage: "Negociação"
+        action: "Follow-up"
+        timing: "A cada 3 dias"
+      - stage: "Fechamento"
+        action: "Cadastrar SAP + Mercos"
+        timing: "Imediato"
+        result: "Vira CLIENTE → Fluxo Recorrente"
+
+# ═══════════════════════════════════════════════════════════════════════════
+# BASES DE DADOS - STATUS
+# ═══════════════════════════════════════════════════════════════════════════
+
+data_sources:
+  
+  available:
+    - name: "SAP Vendas"
+      status: "✅ TEMOS"
+      content: "Clientes com venda, códigos SAP"
+      file_pattern: "BASE_SAP*.xlsx"
+    
+    - name: "Mercos Ativos"
+      status: "✅ TEMOS"
+      content: "Clientes ativos"
+      file_pattern: "Carteira*.xlsx"
+    
+    - name: "Mercos Inativos"
+      status: "✅ TEMOS"
+      content: "Inativos antigos + recentes"
+      file_pattern: "Carteira*.xlsx"
+    
+    - name: "Curva ABC"
+      status: "✅ TEMOS"
+      content: "Classificação ABC mensal"
+      file_pattern: "Curva_ABC*.xlsx"
+    
+    - name: "Tickets Deskrio"
+      status: "✅ TEMOS"
+      content: "Conversas WhatsApp"
+      file_pattern: "exporttickets*.xlsx"
+  
+  pending:
+    - name: "Listagem Cia da Saúde"
+      status: "⏳ AGUARDANDO"
+      responsible: "julio"
+      content: "Franqueados da rede"
+    
+    - name: "Listagem Fitland"
+      status: "⏳ AGUARDANDO"
+      responsible: "julio"
+      content: "Franqueados da rede"
+    
+    - name: "Listagem Divina Terra"
+      status: "⏳ AGUARDANDO"
+      responsible: "daiane"
+      content: "Franqueados da rede"
+    
+    - name: "Listagem Biomundo"
+      status: "⏳ AGUARDANDO"
+      responsible: "daiane"
+      content: "Franqueados da rede"
+    
+    - name: "Listagem Mundo Verde"
+      status: "⏳ AGUARDANDO"
+      responsible: "daiane"
+      content: "Franqueados da rede"
+    
+    - name: "Listagem Tudo em Grãos"
+      status: "⏳ AGUARDANDO"
+      responsible: "daiane"
+      content: "Franqueados da rede"
+    
+    - name: "Listagem Vida Leve"
+      status: "⏳ AGUARDANDO"
+      responsible: "daiane"
+      content: "Franqueados da rede"
+
+# ═══════════════════════════════════════════════════════════════════════════
+# CONFIGURAÇÃO AIOS/GSM
+# ═══════════════════════════════════════════════════════════════════════════
+
+aios_gsm:
+  version: "1.0"
+  enabled: true
+  
+  goals:
+    G1_DATA_INTEGRITY:
+      weight: 1.5
+      target: 95
+      current: 91.2
+    G2_DATA_COMPLETENESS:
+      weight: 1.5
+      target: 90
+      current: 90.6
+    G3_DATA_CONSISTENCY:
+      weight: 1.5
+      target: 90
+      current: 69.9
+    G4_TRACEABILITY:
+      weight: 1.0
+      target: 100
+      current: 100
+    G5_SCHEMA_COMPLIANCE:
+      weight: 1.0
+      target: 100
+      current: 100
+  
+  last_audit:
+    date: "2026-01-27"
+    score: 88.84
+    certification: "BRONZE"
+
+# ═══════════════════════════════════════════════════════════════════════════
+# TWO-BASE ARCHITECTURE
+# ═══════════════════════════════════════════════════════════════════════════
+
+two_base_architecture:
+  enabled: true
+  golden_rules:
+    - "Valores financeiros APENAS em BASE_VENDAS (fct_vendas)"
+    - "LOG_ATENDIMENTOS sempre com R$ 0.00"
+    - "CNPJ padronizado (14 dígitos) como chave"
+
+# ═══════════════════════════════════════════════════════════════════════════
+# REGRAS ESPECIAIS VITAO
+# ═══════════════════════════════════════════════════════════════════════════
+
+vitao_rules:
+  - "VITAO sempre sem acento (nunca Vitao ou VITÃO)"
+  - "HTMLs devem ser responsivos para mobile"
+  - "Zero tolerância para dados fabricados"
+  - "100% rastreabilidade para fonte original"
+  - "Respeitar territórios de vendedores"
+  - "WhatsApp é canal prioritário (98.3%)"
+  - "Julio só assume cliente quando traz pedido presencial"
+  - "Redes/Franquias são responsabilidade de Daiane (exceto Cia Saúde/Fitland)"
+  - "Cia da Saúde e Fitland são EXCLUSIVOS do Julio (Brasil todo)"
+
+# ═══════════════════════════════════════════════════════════════════════════
+# VERSIONING
+# ═══════════════════════════════════════════════════════════════════════════
+
+versioning:
+  orchestrator_version: "1.1.0"
+  config_version: "1.1.0"
+  last_updated: "2026-01-27"
+  updated_by: "Claude AI"
+  changelog:
+    - version: "1.1.0"
+      date: "2026-01-27"
+      changes:
+        - "Corrigida estrutura comercial completa"
+        - "Daiane: Gerente + Key Account, foco redes (Brasil)"
+        - "Julio: RCA externo, Cia Saúde + Fitland exclusivo (Brasil)"
+        - "Manu: SC, PR, RS (exceto redes)"
+        - "Larissa: Restante Brasil (exceto redes)"
+        - "Adicionada lógica de classificação Cliente vs Lead"
+        - "Adicionado fluxo especial de prospecção de redes"
+        - "Marcadas bases pendentes (listagens das redes)"

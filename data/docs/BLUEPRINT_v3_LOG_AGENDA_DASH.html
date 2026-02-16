@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JARVIS CRM — Blueprint v3: LOG, AGENDA, DASH & REGRAS</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #FAFAF9;
+  --card: #FFFFFF;
+  --border: #E5E5E5;
+  --text: #1A1A1A;
+  --muted: #6B7280;
+  --accent: #2563EB;
+  --green: #00B050;
+  --yellow: #FFC000;
+  --red: #FF0000;
+  --purple: #7B2FF2;
+  --orange: #F97316;
+  --teal: #0D9488;
+  --header-dark: #333333;
+  --header-mid: #666666;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; padding: 24px; max-width: 1400px; margin: 0 auto; }
+
+h1 { font-size: 28px; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.5px; }
+h2 { font-size: 22px; font-weight: 700; margin: 40px 0 16px; padding-bottom: 8px; border-bottom: 3px solid var(--accent); letter-spacing: -0.3px; }
+h3 { font-size: 17px; font-weight: 700; margin: 24px 0 12px; color: var(--accent); }
+h4 { font-size: 14px; font-weight: 700; margin: 16px 0 8px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); }
+p { margin: 8px 0; color: #374151; font-size: 14px; }
+
+.badge { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; }
+.badge-blue { background: #DBEAFE; color: #1E40AF; }
+.badge-green { background: #D1FAE5; color: #065F46; }
+.badge-red { background: #FEE2E2; color: #991B1B; }
+.badge-orange { background: #FFEDD5; color: #9A3412; }
+.badge-purple { background: #EDE9FE; color: #5B21B6; }
+.badge-teal { background: #CCFBF1; color: #134E4A; }
+
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin: 16px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+.card-accent { border-left: 4px solid var(--accent); }
+.card-green { border-left: 4px solid var(--green); }
+.card-orange { border-left: 4px solid var(--orange); }
+.card-red { border-left: 4px solid var(--red); }
+.card-purple { border-left: 4px solid var(--purple); }
+.card-teal { border-left: 4px solid var(--teal); }
+
+.meta { display: flex; gap: 16px; flex-wrap: wrap; margin: 12px 0; font-size: 12px; color: var(--muted); }
+
+table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 12px 0; }
+th { background: var(--header-dark); color: white; padding: 8px 12px; text-align: left; font-weight: 600; font-size: 12px; letter-spacing: 0.3px; }
+th.sub { background: var(--header-mid); }
+td { padding: 7px 12px; border: 1px solid #E5E5E5; vertical-align: top; }
+tr:nth-child(even) { background: #F9FAFB; }
+tr:hover { background: #F0F7FF; }
+td.mono { font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+td.center { text-align: center; }
+
+.flow-container { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 16px 0; }
+.flow-box { padding: 10px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; text-align: center; min-width: 120px; }
+.flow-arrow { font-size: 20px; color: var(--muted); }
+
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+
+.section-num { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: var(--accent); color: white; font-weight: 800; font-size: 14px; margin-right: 8px; }
+
+.dash-preview { background: #F5F5F5; border: 2px solid #D1D5DB; border-radius: 8px; padding: 16px; margin: 12px 0; font-family: 'JetBrains Mono', monospace; font-size: 11px; overflow-x: auto; }
+.dash-preview table { font-family: 'JetBrains Mono', monospace; }
+.dash-preview th { background: var(--header-dark); padding: 6px 8px; font-size: 11px; white-space: nowrap; }
+.dash-preview td { padding: 4px 8px; font-size: 11px; text-align: center; white-space: nowrap; }
+.dash-preview td:first-child { text-align: left; font-weight: 600; }
+
+.highlight { background: #FEF3C7; padding: 2px 6px; border-radius: 4px; font-weight: 600; }
+.code { font-family: 'JetBrains Mono', monospace; background: #F3F4F6; padding: 2px 6px; border-radius: 4px; font-size: 12px; }
+
+.rule-box { display: flex; align-items: center; gap: 12px; padding: 8px 16px; background: #F9FAFB; border-radius: 8px; margin: 4px 0; font-size: 13px; }
+.rule-result { font-weight: 700; min-width: 160px; }
+.rule-arrow { color: var(--muted); }
+.rule-days { font-weight: 700; color: var(--accent); }
+
+.warn { background: #FEF2F2; border: 1px solid #FECACA; padding: 12px 16px; border-radius: 8px; margin: 12px 0; }
+.info { background: #EFF6FF; border: 1px solid #BFDBFE; padding: 12px 16px; border-radius: 8px; margin: 12px 0; }
+.success { background: #ECFDF5; border: 1px solid #A7F3D0; padding: 12px 16px; border-radius: 8px; margin: 12px 0; }
+</style>
+</head>
+<body>
+
+<!-- ================================================================ -->
+<!-- HEADER -->
+<!-- ================================================================ -->
+<div style="margin-bottom: 32px;">
+  <h1>🤖 JARVIS CRM — Blueprint v3</h1>
+  <p style="font-size: 16px; color: var(--muted); margin-bottom: 4px;">LOG · AGENDA · DRAFT 2 · DASH · REGRAS</p>
+  <div class="meta">
+    <span>📅 07/02/2026</span>
+    <span>👤 Leandro — AI Solutions Engineer</span>
+    <span>🏢 VITAO Alimentos</span>
+    <span>📋 Fase: Especificação</span>
+  </div>
+  <div class="info">
+    <strong>🔗 Continuação do Blueprint v2 (Aba 1 — CARTEIRA, 81 colunas).</strong>
+    Este documento especifica as 5 abas restantes: LOG (fonte da verdade histórica), AGENDA (view diária dos consultores), DRAFT 2 (entrada segura de atendimentos), DASH (dashboards combinados) e REGRAS (tabelas de validação).
+  </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- ARQUITETURA GERAL -->
+<!-- ================================================================ -->
+<h2><span class="section-num">0</span> ARQUITETURA — FLUXO COMPLETO</h2>
+
+<div class="card card-accent">
+  <h3>O ciclo diário do CRM inteligente</h3>
+  <div class="flow-container">
+    <div class="flow-box" style="background:#DBEAFE;color:#1E40AF;">📥 DRAFT 1<br><small>Mercos diário</small></div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-box" style="background:#D1FAE5;color:#065F46;">📊 CARTEIRA<br><small>Fonte única</small></div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-box" style="background:#FFEDD5;color:#9A3412;">📋 AGENDA<br><small>Filtro consultor</small></div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-box" style="background:#FEE2E2;color:#991B1B;">✍️ Consultor<br><small>Preenche resultado</small></div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-box" style="background:#EDE9FE;color:#5B21B6;">📥 DRAFT 2<br><small>Cola atendimentos</small></div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-box" style="background:#CCFBF1;color:#134E4A;">📝 LOG<br><small>Histórico oficial</small></div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-box" style="background:#FEF3C7;color:#92400E;">📈 DASH<br><small>Inteligência</small></div>
+  </div>
+
+  <div class="grid-2" style="margin-top: 16px;">
+    <div>
+      <h4>Manhã (Leandro)</h4>
+      <p>1. Extrai relatório Mercos → cola no <strong>DRAFT 1</strong></p>
+      <p>2. Fórmulas atualizam a <strong>CARTEIRA</strong> (novos pedidos, status)</p>
+      <p>3. Filtra CARTEIRA por consultor → gera <strong>AGENDA</strong> do dia</p>
+      <p>4. Envia agenda por WhatsApp para cada consultor</p>
+    </div>
+    <div>
+      <h4>Final do dia (Leandro)</h4>
+      <p>5. Consultores devolvem planilhas preenchidas</p>
+      <p>6. Cola no <strong>DRAFT 2</strong> (zona de quarentena)</p>
+      <p>7. Validação automática → flui para <strong>LOG</strong> oficial</p>
+      <p>8. LOG alimenta <strong>DASH</strong> + atualiza próximos follow-ups na CARTEIRA</p>
+    </div>
+  </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- ABA 2: LOG -->
+<!-- ================================================================ -->
+<h2><span class="section-num">2</span> ABA LOG — Histórico Oficial de Interações</h2>
+
+<div class="card card-green">
+  <h3>Princípio: cada linha = 1 interação com 1 cliente em 1 data</h3>
+  <p>O LOG é <strong>append-only</strong> (só adiciona, nunca edita). É a fonte da verdade histórica que alimenta os DASHs e a inteligência da JORNADA na CARTEIRA. Zero valores financeiros aqui (princípio Two-Base).</p>
+  <div class="meta">
+    <span class="badge badge-green">FONTE: DRAFT 2 validado</span>
+    <span class="badge badge-blue">TAMANHO ESTIMADO: ~5.000-15.000 linhas/ano</span>
+    <span class="badge badge-purple">IMUTÁVEL: Nunca editar linhas existentes</span>
+  </div>
+</div>
+
+<h3>Estrutura: 20 colunas</h3>
+<p>Consolidação do melhor da Manu (28 cols) + simplicidade do CRM Food (9 cols) + contadores de falha da Rotina Diária.</p>
+
+<table>
+  <tr>
+    <th style="width:40px;">#</th>
+    <th style="width:50px;">COL</th>
+    <th style="width:180px;">CAMPO</th>
+    <th style="width:100px;">TIPO</th>
+    <th style="width:120px;">PREENCHIDO POR</th>
+    <th>FONTE / REGRA</th>
+    <th style="width:80px;">OBRIGATÓRIO</th>
+  </tr>
+  <!-- BLOCO 1: IDENTIFICAÇÃO (auto-preenchido) -->
+  <tr><td colspan="7" style="background:#DBEAFE;font-weight:700;color:#1E40AF;font-size:12px;">📌 IDENTIFICAÇÃO — Auto-preenchido pela CARTEIRA via CNPJ</td></tr>
+  <tr>
+    <td class="center">1</td><td class="mono">A</td>
+    <td><strong>DATA</strong></td>
+    <td class="mono">Data</td>
+    <td><span class="badge badge-green">Auto</span></td>
+    <td>Data do atendimento (preenchida na agenda)</td>
+    <td class="center">✅</td>
+  </tr>
+  <tr>
+    <td class="center">2</td><td class="mono">B</td>
+    <td><strong>CONSULTOR</strong></td>
+    <td class="mono">Texto</td>
+    <td><span class="badge badge-green">Auto</span></td>
+    <td>Puxa da CARTEIRA col D via CNPJ</td>
+    <td class="center">✅</td>
+  </tr>
+  <tr>
+    <td class="center">3</td><td class="mono">C</td>
+    <td><strong>NOME FANTASIA</strong></td>
+    <td class="mono">Texto</td>
+    <td><span class="badge badge-green">Auto</span></td>
+    <td>Puxa da CARTEIRA col A via CNPJ</td>
+    <td class="center">✅</td>
+  </tr>
+  <tr>
+    <td class="center">4</td><td class="mono">D</td>
+    <td><strong>CNPJ</strong></td>
+    <td class="mono">Texto 14</td>
+    <td><span class="badge badge-green">Auto</span></td>
+    <td>Chave primária — vínculo com CARTEIRA</td>
+    <td class="center">✅</td>
+  </tr>
+  <tr>
+    <td class="center">5</td><td class="mono">E</td>
+    <td><strong>UF</strong></td>
+    <td class="mono">Texto 2</td>
+    <td><span class="badge badge-green">Auto</span></td>
+    <td>Puxa da CARTEIRA col C</td>
+    <td class="center">✅</td>
+  </tr>
+  <tr>
+    <td class="center">6</td><td class="mono">F</td>
+    <td><strong>REDE / REGIONAL</strong></td>
+    <td class="mono">Texto</td>
+    <td><span class="badge badge-green">Auto</span></td>
+    <td>Puxa da CARTEIRA col B</td>
+    <td class="center">✅</td>
+  </tr>
+  <tr>
+    <td class="center">7</td><td class="mono">G</td>
+    <td><strong>SITUAÇÃO</strong></td>
+    <td class="mono">Texto</td>
+    <td><span class="badge badge-green">Auto</span></td>
+    <td>ATIVO / EM RISCO / INAT.REC / INAT.ANT / PROSPECT / LEAD</td>
+    <td class="center">✅</td>
+  </tr>
+  <!-- BLOCO 2: CONTATO (preenchido pelo consultor) -->
+  <tr><td colspan="7" style="background:#FFEDD5;font-weight:700;color:#9A3412;font-size:12px;">📞 CONTATO — Preenchido pelo consultor (dropdowns na agenda)</td></tr>
+  <tr>
+    <td class="center">8</td><td class="mono">H</td>
+    <td><strong>WHATSAPP</strong></td>
+    <td class="mono">Dropdown</td>
+    <td><span class="badge badge-orange">Consultor</span></td>
+    <td>SIM / NÃO</td>
+    <td class="center">✅</td>
+  </tr>
+  <tr>
+    <td class="center">9</td><td class="mono">I</td>
+    <td><strong>LIGAÇÃO</strong></td>
+    <td class="mono">Dropdown</td>
+    <td><span class="badge badge-orange">Consultor</span></td>
+    <td>SIM / NÃO</td>
+    <td class="center">✅</td>
+  </tr>
+  <tr>
+    <td class="center">10</td><td class="mono">J</td>
+    <td><strong>LIGAÇÃO ATENDIDA</strong></td>
+    <td class="mono">Dropdown</td>
+    <td><span class="badge badge-orange">Consultor</span></td>
+    <td>SIM / NÃO / N/A (se LIGAÇÃO=NÃO)</td>
+    <td class="center">✅</td>
+  </tr>
+  <tr>
+    <td class="center">11</td><td class="mono">K</td>
+    <td><strong>TIPO AÇÃO</strong></td>
+    <td class="mono">Dropdown</td>
+    <td><span class="badge badge-orange">Consultor</span></td>
+    <td>ATIVO (nós ligamos) / RECEPTIVO (cliente ligou)</td>
+    <td class="center">✅</td>
+  </tr>
+  <!-- BLOCO 3: CLASSIFICAÇÃO (preenchido pelo consultor) -->
+  <tr><td colspan="7" style="background:#EDE9FE;font-weight:700;color:#5B21B6;font-size:12px;">🏷️ CLASSIFICAÇÃO — Alimenta o DASH diretamente</td></tr>
+  <tr>
+    <td class="center">12</td><td class="mono">L</td>
+    <td><strong>TIPO DO CONTATO</strong></td>
+    <td class="mono">Dropdown</td>
+    <td><span class="badge badge-orange">Consultor</span></td>
+    <td>7 opções fixas (ver REGRAS)</td>
+    <td class="center">✅</td>
+  </tr>
+  <tr>
+    <td class="center">13</td><td class="mono">M</td>
+    <td><strong>RESULTADO</strong></td>
+    <td class="mono">Dropdown</td>
+    <td><span class="badge badge-orange">Consultor</span></td>
+    <td>12 opções fixas — gera follow-up automático (ver REGRAS)</td>
+    <td class="center">✅</td>
+  </tr>
+  <tr>
+    <td class="center">14</td><td class="mono">N</td>
+    <td><strong>MOTIVO</strong></td>
+    <td class="mono">Dropdown</td>
+    <td><span class="badge badge-orange">Consultor</span></td>
+    <td>10 opções fixas — inteligência estratégica (ver REGRAS)</td>
+    <td class="center">✅</td>
+  </tr>
+  <!-- BLOCO 4: AÇÃO FUTURA (auto + consultor) -->
+  <tr><td colspan="7" style="background:#CCFBF1;font-weight:700;color:#134E4A;font-size:12px;">🔮 AÇÃO FUTURA — Gera o próximo follow-up</td></tr>
+  <tr>
+    <td class="center">15</td><td class="mono">O</td>
+    <td><strong>FOLLOW-UP</strong></td>
+    <td class="mono">Data</td>
+    <td><span class="badge badge-green">Auto</span></td>
+    <td>Calculado: DATA + dias do RESULTADO (via REGRAS). Ex: VENDA → DATA + 45d</td>
+    <td class="center">✅</td>
+  </tr>
+  <tr>
+    <td class="center">16</td><td class="mono">P</td>
+    <td><strong>AÇÃO</strong></td>
+    <td class="mono">Dropdown</td>
+    <td><span class="badge badge-orange">Consultor</span></td>
+    <td>Próxima ação: RECOMPRA, PÓS-VENDA, CS, REATIVAÇÃO, etc.</td>
+    <td class="center">✅</td>
+  </tr>
+  <!-- BLOCO 5: CONTROLE (operacional) -->
+  <tr><td colspan="7" style="background:#FEF3C7;font-weight:700;color:#92400E;font-size:12px;">⚙️ CONTROLE — Rastreabilidade operacional</td></tr>
+  <tr>
+    <td class="center">17</td><td class="mono">Q</td>
+    <td><strong>MERCOS ATUALIZADO</strong></td>
+    <td class="mono">Dropdown</td>
+    <td><span class="badge badge-orange">Consultor</span></td>
+    <td>SIM / NÃO — consultor registrou no Mercos?</td>
+    <td class="center">✅</td>
+  </tr>
+  <tr>
+    <td class="center">18</td><td class="mono">R</td>
+    <td><strong>FASE</strong></td>
+    <td class="mono">Texto</td>
+    <td><span class="badge badge-green">Auto</span></td>
+    <td>Puxa da CARTEIRA col I (PÓS-VENDA / CS / RECOMPRA / etc.)</td>
+    <td class="center">✅</td>
+  </tr>
+  <tr>
+    <td class="center">19</td><td class="mono">S</td>
+    <td><strong>TENTATIVA</strong></td>
+    <td class="mono">Texto</td>
+    <td><span class="badge badge-green">Auto</span></td>
+    <td>Puxa da CARTEIRA col J (T1 / T2 / T3 / T4 / NUTRIÇÃO)</td>
+    <td class="center">✅</td>
+  </tr>
+  <tr>
+    <td class="center">20</td><td class="mono">T</td>
+    <td><strong>NOTA DO DIA / AÇÃO</strong></td>
+    <td class="mono">Texto livre</td>
+    <td><span class="badge badge-orange">Consultor</span></td>
+    <td>Campo aberto para observações relevantes do atendimento</td>
+    <td class="center">❌</td>
+  </tr>
+</table>
+
+<div class="success">
+  <strong>✅ Decisão: 20 colunas</strong> — Reduzidas das 28 da Manu eliminando redundâncias (STATUS, ULTIMO CONTATO, RESULTADO ATUAL, DATA ULTIMO PEDIDO, VALOR PEDIDO, DIAS SEM COMPRAR, CICLO MÉDIO, EXACTSALES ATUALIZADO). Esses dados já existem na CARTEIRA e não precisam se repetir no LOG (princípio Two-Base). O LOG registra apenas O QUE ACONTECEU, não o estado do cliente.
+</div>
+
+<!-- ================================================================ -->
+<!-- ABA 3: AGENDA -->
+<!-- ================================================================ -->
+<h2><span class="section-num">3</span> ABA AGENDA — View Diária dos Consultores</h2>
+
+<div class="card card-orange">
+  <h3>Princípio: a agenda NÃO é uma aba separada no master. É um export filtrado da CARTEIRA.</h3>
+  <p>Todo dia, Leandro filtra a CARTEIRA (CONSULTOR = "MANU" + PRÓX. FOLLOW-UP ≤ HOJE) e exporta um .xlsx simplificado. O consultor recebe, trabalha, e devolve. Leandro cola no DRAFT 2.</p>
+  <div class="meta">
+    <span class="badge badge-orange">ARQUIVO SEPARADO: 1 por consultor por dia</span>
+    <span class="badge badge-blue">~15-40 linhas/dia por consultor</span>
+    <span class="badge badge-green">DROPDOWNS: todas as colunas de resultado</span>
+  </div>
+</div>
+
+<h3>Estrutura da Agenda: 24 colunas</h3>
+<p>Colunas 1-14 = contexto do cliente (read-only, preenchido por Leandro). Colunas 15-24 = ação do consultor (dropdowns).</p>
+
+<table>
+  <tr>
+    <th style="width:40px;">#</th>
+    <th style="width:180px;">CAMPO</th>
+    <th style="width:80px;">EDITÁVEL?</th>
+    <th>FUNÇÃO</th>
+  </tr>
+  <tr><td colspan="4" style="background:#D1FAE5;font-weight:700;color:#065F46;font-size:12px;">📋 CONTEXTO — Preenchido por Leandro (read-only para consultor)</td></tr>
+  <tr><td class="center">1</td><td><strong>NOME FANTASIA</strong></td><td class="center">🔒</td><td>Identificação</td></tr>
+  <tr><td class="center">2</td><td><strong>CNPJ</strong></td><td class="center">🔒</td><td>Chave para vincular ao LOG</td></tr>
+  <tr><td class="center">3</td><td><strong>UF</strong></td><td class="center">🔒</td><td>Localização</td></tr>
+  <tr><td class="center">4</td><td><strong>REDE / REGIONAL</strong></td><td class="center">🔒</td><td>Rede ou regional</td></tr>
+  <tr><td class="center">5</td><td><strong>TELEFONE</strong></td><td class="center">🔒</td><td>Contato direto</td></tr>
+  <tr><td class="center">6</td><td><strong>EMAIL</strong></td><td class="center">🔒</td><td>Contato alternativo</td></tr>
+  <tr><td class="center">7</td><td><strong>SITUAÇÃO</strong></td><td class="center">🔒</td><td>ATIVO / INAT.REC / INAT.ANT / PROSPECT</td></tr>
+  <tr><td class="center">8</td><td><strong>DIAS SEM COMPRA</strong></td><td class="center">🔒</td><td>Urgência visual</td></tr>
+  <tr><td class="center">9</td><td><strong>🚦 SINALEIRO</strong></td><td class="center">🔒</td><td>🟢🟡🔴🟣</td></tr>
+  <tr><td class="center">10</td><td><strong>FASE</strong></td><td class="center">🔒</td><td>PÓS-VENDA / CS / RECOMPRA / PROSPECÇÃO / etc.</td></tr>
+  <tr><td class="center">11</td><td><strong>TENTATIVA</strong></td><td class="center">🔒</td><td>T1 / T2 / T3 / T4</td></tr>
+  <tr><td class="center">12</td><td><strong>AÇÃO SUGERIDA</strong></td><td class="center">🔒</td><td>LIGAÇÃO - OFERECER REPOSIÇÃO, 1º CONTATO, etc.</td></tr>
+  <tr><td class="center">13</td><td><strong>BLOCO</strong></td><td class="center">🔒</td><td>MANHÃ / TARDE</td></tr>
+  <tr><td class="center">14</td><td><strong>ÚLTIMO RESULTADO</strong></td><td class="center">🔒</td><td>O que aconteceu no contato anterior</td></tr>
+  <tr><td colspan="4" style="background:#FEE2E2;font-weight:700;color:#991B1B;font-size:12px;">✍️ AÇÃO DO CONSULTOR — Dropdowns para preenchimento rápido</td></tr>
+  <tr><td class="center">15</td><td><strong>WHATSAPP</strong></td><td class="center">✏️ Dropdown</td><td>SIM / NÃO</td></tr>
+  <tr><td class="center">16</td><td><strong>LIGAÇÃO</strong></td><td class="center">✏️ Dropdown</td><td>SIM / NÃO</td></tr>
+  <tr><td class="center">17</td><td><strong>LIGAÇÃO ATENDIDA</strong></td><td class="center">✏️ Dropdown</td><td>SIM / NÃO / N/A</td></tr>
+  <tr><td class="center">18</td><td><strong>TIPO AÇÃO</strong></td><td class="center">✏️ Dropdown</td><td>ATIVO / RECEPTIVO</td></tr>
+  <tr><td class="center">19</td><td><strong>TIPO DO CONTATO</strong></td><td class="center">✏️ Dropdown</td><td>7 opções (ver REGRAS)</td></tr>
+  <tr><td class="center">20</td><td><strong>RESULTADO</strong></td><td class="center">✏️ Dropdown</td><td>12 opções (ver REGRAS)</td></tr>
+  <tr><td class="center">21</td><td><strong>MOTIVO</strong></td><td class="center">✏️ Dropdown</td><td>10 opções (ver REGRAS)</td></tr>
+  <tr><td class="center">22</td><td><strong>AÇÃO FUTURA</strong></td><td class="center">✏️ Dropdown</td><td>RECOMPRA / PÓS-VENDA / CS / REATIVAÇÃO / etc.</td></tr>
+  <tr><td class="center">23</td><td><strong>MERCOS ATUALIZADO</strong></td><td class="center">✏️ Dropdown</td><td>SIM / NÃO</td></tr>
+  <tr><td class="center">24</td><td><strong>NOTA DO DIA</strong></td><td class="center">✏️ Texto livre</td><td>Observação do atendimento</td></tr>
+</table>
+
+<div class="card" style="background:#FEF3C7;">
+  <h4>⚡ Cabeçalho da Agenda (igual à aba DAIANE que já existe)</h4>
+  <p>Linha 1: <strong>📋 AGENDA DD/MM/AAAA — NOME DO CONSULTOR (Descrição)</strong></p>
+  <p>Linha 2: <strong>Cart:XX | Prosp:XX | Follow-ups:XX | Novos:XX</strong></p>
+  <p>Linha 3: <strong>⏰ 8:00 Reunião equipe | ☀ 9-12 CARTEIRA (manhã) | 🌙 13-17 PROSPECÇÃO (tarde)</strong></p>
+  <p>Linha 4: <strong>⚠ REGISTRAR TUDO: Mercos (portal pedido) + Kanban WhatsApp + Esta planilha</strong></p>
+  <p>Linha 5: <em>vazia (separador)</em></p>
+  <p>Linha 6: <strong>Headers (24 colunas acima)</strong></p>
+  <p>Linha 7+: <strong>Dados dos clientes</strong></p>
+</div>
+
+<!-- ================================================================ -->
+<!-- ABA 4: DRAFT 2 -->
+<!-- ================================================================ -->
+<h2><span class="section-num">4</span> ABA DRAFT 2 — Entrada Segura de Atendimentos</h2>
+
+<div class="card card-purple">
+  <h3>Princípio: zona de quarentena entre consultor e LOG</h3>
+  <p>O consultor NUNCA toca o LOG. Ele devolve a agenda preenchida, Leandro cola no DRAFT 2, fórmulas validam, e só o que passa vai pro LOG oficial.</p>
+</div>
+
+<h3>Estrutura: espelho da AGENDA (24 colunas) + 3 de validação</h3>
+
+<table>
+  <tr>
+    <th style="width:50px;">COL</th>
+    <th style="width:200px;">CAMPO</th>
+    <th>REGRA DE VALIDAÇÃO</th>
+  </tr>
+  <tr><td class="mono">A-X</td><td><strong>Mesmas 24 cols da AGENDA</strong></td><td>Cola direto do arquivo que o consultor devolveu</td></tr>
+  <tr style="background:#FEF2F2;"><td class="mono">Y</td><td><strong>✅ VÁLIDO</strong></td><td class="mono">SE(E(CNPJ≠"", RESULTADO≠"", TIPO_CONTATO≠""), "OK", "ERRO")</td></tr>
+  <tr style="background:#FEF2F2;"><td class="mono">Z</td><td><strong>⚠ ERRO</strong></td><td class="mono">SE(CNPJ não existe na CARTEIRA, "CNPJ INVÁLIDO", SE(RESULTADO vazio, "SEM RESULTADO", ""))</td></tr>
+  <tr style="background:#D1FAE5;"><td class="mono">AA</td><td><strong>📝 MIGRADO</strong></td><td class="mono">SIM/NÃO — marca quando a linha já foi transferida pro LOG (evita duplicatas)</td></tr>
+</table>
+
+<div class="warn">
+  <strong>🚨 Regra de ouro:</strong> Só linhas com Y = "OK" e AA = vazio entram no LOG. Após migrar, marca AA = "SIM". Nunca deletar linhas do DRAFT 2 — manter como backup auditável.
+</div>
+
+<!-- ================================================================ -->
+<!-- ABA 5: REGRAS -->
+<!-- ================================================================ -->
+<h2><span class="section-num">5</span> ABA REGRAS — Tabelas de Validação</h2>
+
+<div class="card card-teal">
+  <h3>Princípio: toda validação, dropdown e cálculo automático referencia esta aba</h3>
+  <p>Fonte única para todas as regras do CRM. Se algo mudar (novo motivo, novo resultado, novo prazo), edita AQUI e propaga pra todo o sistema.</p>
+</div>
+
+<!-- REGRA 1: RESULTADO → FOLLOW-UP -->
+<h3>5.1 RESULTADO DO CONTATO → Dias de Follow-Up</h3>
+<p>Consolidação: Manu (validado operacionalmente) + Rotina Diária (contadores de falha)</p>
+
+<table>
+  <tr>
+    <th style="width:40px;">#</th>
+    <th style="width:220px;">RESULTADO</th>
+    <th style="width:100px;">FOLLOW-UP</th>
+    <th style="width:120px;">GRUPO DASH</th>
+    <th>QUANDO USAR</th>
+  </tr>
+  <tr><td class="center">1</td><td><strong>EM ATENDIMENTO</strong></td><td class="center" style="color:var(--accent);font-weight:700;">+2 dias</td><td><span class="badge badge-blue">FUNIL</span></td><td>Cliente respondeu, está em negociação ativa</td></tr>
+  <tr><td class="center">2</td><td><strong>ORÇAMENTO</strong></td><td class="center" style="color:var(--accent);font-weight:700;">+1 dia</td><td><span class="badge badge-blue">FUNIL</span></td><td>Enviou proposta/orçamento, espera resposta</td></tr>
+  <tr><td class="center">3</td><td><strong>CADASTRO</strong></td><td class="center" style="color:var(--accent);font-weight:700;">+2 dias</td><td><span class="badge badge-blue">FUNIL</span></td><td>Cliente novo em processo de cadastro</td></tr>
+  <tr><td class="center">4</td><td><strong>VENDA / PEDIDO</strong></td><td class="center" style="color:var(--green);font-weight:700;">+45 dias</td><td><span class="badge badge-blue">FUNIL</span></td><td>Pedido fechado! Próximo = pós-venda no ciclo médio</td></tr>
+  <tr><td class="center">5</td><td><strong>RELACIONAMENTO</strong></td><td class="center" style="color:var(--accent);font-weight:700;">+7 dias</td><td><span class="badge badge-green">RELAC.</span></td><td>Contato de relacionamento, pós-venda, CS</td></tr>
+  <tr><td class="center">6</td><td><strong>FOLLOW UP 7</strong></td><td class="center" style="color:var(--accent);font-weight:700;">+7 dias</td><td><span class="badge badge-green">RELAC.</span></td><td>Precisa retomar em 1 semana</td></tr>
+  <tr><td class="center">7</td><td><strong>FOLLOW UP 15</strong></td><td class="center" style="color:var(--accent);font-weight:700;">+15 dias</td><td><span class="badge badge-green">RELAC.</span></td><td>Precisa retomar em 2 semanas</td></tr>
+  <tr><td class="center">8</td><td><strong>SUPORTE</strong></td><td class="center" style="color:var(--muted);">SEM</td><td><span class="badge badge-green">RELAC.</span></td><td>Problema técnico resolvido, sem ação futura</td></tr>
+  <tr><td class="center">9</td><td><strong>NÃO ATENDE</strong></td><td class="center" style="color:var(--orange);font-weight:700;">+1 dia</td><td><span class="badge badge-red">NÃO VENDA</span></td><td>Ligou mas não atendeu → escalona T+1</td></tr>
+  <tr><td class="center">10</td><td><strong>NÃO RESPONDE</strong></td><td class="center" style="color:var(--orange);font-weight:700;">+1 dia</td><td><span class="badge badge-red">NÃO VENDA</span></td><td>WhatsApp enviado sem resposta → escalona T+1</td></tr>
+  <tr><td class="center">11</td><td><strong>RECUSOU LIGAÇÃO</strong></td><td class="center" style="color:var(--orange);font-weight:700;">+2 dias</td><td><span class="badge badge-red">NÃO VENDA</span></td><td>Rejeitou chamada ativamente → muda canal</td></tr>
+  <tr><td class="center">12</td><td><strong>PERDA / FECHOU LOJA</strong></td><td class="center" style="color:var(--muted);">SEM</td><td><span class="badge badge-red">NÃO VENDA</span></td><td>Cliente perdido definitivamente</td></tr>
+</table>
+
+<div class="info">
+  <strong>💡 Melhoria vs Manu:</strong> Adicionamos NÃO ATENDE, NÃO RESPONDE e RECUSOU LIGAÇÃO (da Rotina Diária). Isso alimenta o DASH com inteligência sobre tipos de falha e permite estratégia de canal: se NÃO RESPONDE WhatsApp → próximo = Ligação. Se RECUSOU LIGAÇÃO → muda abordagem.
+</div>
+
+<!-- REGRA 2: TIPO DO CONTATO -->
+<h3>5.2 TIPO DO CONTATO</h3>
+<p>Consolidação: Manu (Imagem 1) + Rotina Diária (Imagem 2)</p>
+
+<table>
+  <tr>
+    <th style="width:40px;">#</th>
+    <th style="width:300px;">TIPO DO CONTATO</th>
+    <th>QUANDO USAR</th>
+  </tr>
+  <tr><td class="center">1</td><td><strong>PROSPECÇÃO</strong></td><td>1º contato com prospect/lead que nunca comprou</td></tr>
+  <tr><td class="center">2</td><td><strong>NEGOCIAÇÃO</strong></td><td>Cliente em processo ativo de negociação (orçamento, amostra)</td></tr>
+  <tr><td class="center">3</td><td><strong>FOLLOW UP</strong></td><td>Retorno agendado de contato anterior</td></tr>
+  <tr><td class="center">4</td><td><strong>ATENDIMENTO CLIENTES ATIVOS</strong></td><td>Contato com cliente que está dentro do ciclo de compra</td></tr>
+  <tr><td class="center">5</td><td><strong>ATENDIMENTO CLIENTES INATIVOS</strong></td><td>Contato com cliente que ultrapassou o ciclo (salvamento/recuperação)</td></tr>
+  <tr><td class="center">6</td><td><strong>PÓS-VENDA / RELACIONAMENTO</strong></td><td>CS, pós-venda, verificar se produto vendeu no PDV</td></tr>
+  <tr><td class="center">7</td><td><strong>MOTIVO / PAROU DE COMPRAR</strong></td><td>Investigar por que parou — feedback para diretoria e fábrica</td></tr>
+</table>
+
+<div class="info">
+  <strong>💡 Canal VITAO Embalados:</strong> O tipo 7 (MOTIVO / PAROU DE COMPRAR) é crítico para o seu canal. Quando o consultor marca esse tipo, o MOTIVO se torna obrigatório e aparece no DASH como inteligência para a diretoria — ex: "35% pararam por falta de giro do produto" = sinal pra fábrica inovar.
+</div>
+
+<!-- REGRA 3: MOTIVO -->
+<h3>5.3 MOTIVO (10 opções padronizadas)</h3>
+<p>Inteligência estratégica — cada motivo tem um "dono" na empresa que deveria agir.</p>
+
+<table>
+  <tr>
+    <th style="width:40px;">#</th>
+    <th style="width:250px;">MOTIVO</th>
+    <th style="width:120px;">DONO DA AÇÃO</th>
+    <th>INSIGHT ESTRATÉGICO</th>
+  </tr>
+  <tr><td class="center">1</td><td><strong>AINDA TEM ESTOQUE</strong></td><td><span class="badge badge-green">Normal</span></td><td>Ciclo mais longo que o esperado — ajustar CICLO MÉDIO</td></tr>
+  <tr><td class="center">2</td><td><strong>PRODUTO NÃO VENDEU / SEM GIRO</strong></td><td><span class="badge badge-red">DIRETORIA / FÁBRICA</span></td><td>⚠️ Sinal crítico: produto não tem fit no PDV — inovar/reformular</td></tr>
+  <tr><td class="center">3</td><td><strong>PREÇO ALTO / MARGEM</strong></td><td><span class="badge badge-orange">COMERCIAL</span></td><td>Problema de competitividade — revisar tabela ou condição</td></tr>
+  <tr><td class="center">4</td><td><strong>PREFERIU CONCORRENTE</strong></td><td><span class="badge badge-red">COMERCIAL / MKT</span></td><td>Perda ativa — qual concorrente? Qual produto?</td></tr>
+  <tr><td class="center">5</td><td><strong>PROBLEMA LOGÍSTICO / ENTREGA</strong></td><td><span class="badge badge-orange">LOGÍSTICA</span></td><td>Atraso, avaria, falta de produto — ação operacional</td></tr>
+  <tr><td class="center">6</td><td><strong>PROBLEMA FINANCEIRO / CRÉDITO</strong></td><td><span class="badge badge-purple">FINANCEIRO</span></td><td>Cliente quer comprar mas está bloqueado ou sem crédito</td></tr>
+  <tr><td class="center">7</td><td><strong>CLIENTE VIAJANDO / INDISPONÍVEL</strong></td><td><span class="badge badge-blue">Normal</span></td><td>Temporário — reagendar follow-up</td></tr>
+  <tr><td class="center">8</td><td><strong>FECHANDO / FECHOU LOJA</strong></td><td><span class="badge badge-red">PERDA</span></td><td>Saiu do mercado — atualizar status para PERDA</td></tr>
+  <tr><td class="center">9</td><td><strong>SEM INTERESSE NO MOMENTO</strong></td><td><span class="badge badge-blue">NUTRIÇÃO</span></td><td>Não fechou a porta, mas não quer agora — ir pra nutrição</td></tr>
+  <tr><td class="center">10</td><td><strong>PRIMEIRO CONTATO / SEM MOTIVO</strong></td><td><span class="badge badge-green">Normal</span></td><td>Prospecção inicial ou contato de rotina sem motivo especial</td></tr>
+</table>
+
+<!-- REGRA 4: SITUAÇÃO -->
+<h3>5.4 SITUAÇÃO (auto-calculada)</h3>
+<table>
+  <tr><th>DIAS SEM COMPRA</th><th>SITUAÇÃO</th><th>COR</th></tr>
+  <tr><td>≤ 50 dias</td><td><strong>ATIVO</strong></td><td style="background:#00B050;color:white;text-align:center;">🟢</td></tr>
+  <tr><td>51-60 dias</td><td><strong>EM RISCO</strong></td><td style="background:#FFC000;text-align:center;">🟡</td></tr>
+  <tr><td>61-90 dias</td><td><strong>INATIVO RECENTE</strong></td><td style="background:#FFC000;text-align:center;">🟡</td></tr>
+  <tr><td>> 90 dias</td><td><strong>INATIVO ANTIGO</strong></td><td style="background:#FF0000;color:white;text-align:center;">🔴</td></tr>
+  <tr><td>Nunca comprou</td><td><strong>PROSPECT / LEAD / NOVO</strong></td><td style="background:#7B2FF2;color:white;text-align:center;">🟣</td></tr>
+</table>
+
+<!-- REGRA 5: TENTATIVA -->
+<h3>5.5 CADÊNCIA DE TENTATIVA (T1→T4→NUTRIÇÃO)</h3>
+<table>
+  <tr><th>TENTATIVA</th><th>CANAL</th><th>INTERVALO</th><th>COMPORTAMENTO</th></tr>
+  <tr><td><strong>T1</strong></td><td>WhatsApp</td><td>Dia 0</td><td>Primeira abordagem</td></tr>
+  <tr><td><strong>T2</strong></td><td>Ligação</td><td>+1 dia útil</td><td>Se não respondeu T1</td></tr>
+  <tr><td><strong>T3</strong></td><td>WhatsApp</td><td>+2 dias</td><td>Mudança de abordagem</td></tr>
+  <tr><td><strong>T4</strong></td><td>Ligação final</td><td>+2 dias</td><td>Última tentativa ativa</td></tr>
+  <tr><td><strong>NUTRIÇÃO</strong></td><td>Email + WhatsApp esporádico</td><td>Ciclo 15 dias</td><td>Sem resposta após T4 — manter contato passivo</td></tr>
+  <tr style="background:#D1FAE5;"><td colspan="4"><strong>↩️ RESET:</strong> Quando cliente responde em qualquer T → volta pra T1 de novo ciclo</td></tr>
+</table>
+
+<!-- ================================================================ -->
+<!-- ABA 6: DASH -->
+<!-- ================================================================ -->
+<h2><span class="section-num">6</span> ABA DASH — Dashboard Vertical Integrado</h2>
+
+<div class="card card-accent">
+  <h3>Princípio: vertical infinito, horizontal fixo (mesma largura das tabelas acima)</h3>
+  <p>Múltiplos dashboards empilhados verticalmente. Cada seção mostra uma dimensão diferente. CEO rola pra baixo pra ver mais detalhe. Layout mantém o estilo visual das Imagens 1, 2 e 3 que já foram aprovados pela diretoria.</p>
+  <div class="meta">
+    <span class="badge badge-blue">FONTE: 100% derivado do LOG via COUNTIFS/SUMIFS</span>
+    <span class="badge badge-green">FILTROS: VENDEDOR + PERÍODO (data início, data fim)</span>
+    <span class="badge badge-purple">SCROLL: Vertical infinito, horizontal fixo</span>
+  </div>
+</div>
+
+<!-- DASH 1: CONTATOS + FUNIL (Imagem 1 - Manu) -->
+<h3>6.1 DASH CONTATOS & FUNIL — Estilo Imagem 1 (Manu)</h3>
+<p>Matriz: TIPO DO CONTATO × (CONTATOS REALIZADOS + FUNIL DE VENDA + RELACIONAMENTO + NÃO VENDA)</p>
+
+<div class="dash-preview">
+  <div style="margin-bottom:8px;">
+    <strong>VENDEDOR:</strong> <span style="background:#DBEAFE;padding:2px 8px;border-radius:4px;">Time</span> &nbsp;
+    <strong>PERÍODO:</strong> <span style="background:#D1FAE5;padding:2px 8px;border-radius:4px;">01/02/2026</span> a <span style="background:#D1FAE5;padding:2px 8px;border-radius:4px;">07/02/2026</span>
+  </div>
+  <table>
+    <tr>
+      <th rowspan="2" style="min-width:200px;">TIPO DO CONTATO</th>
+      <th rowspan="2">TOTAL</th>
+      <th colspan="4" style="background:#555;">CONTATOS REALIZADOS</th>
+      <th colspan="4" style="background:#2563EB;">FUNIL DE VENDA</th>
+      <th colspan="2" style="background:#0D9488;">RELACIONAMENTO</th>
+      <th colspan="4" style="background:#991B1B;">NÃO VENDA</th>
+    </tr>
+    <tr>
+      <th class="sub">WHATS</th><th class="sub">LIGAÇÃO</th><th class="sub">ATENDIDA</th><th class="sub">NÃO ATEND.</th>
+      <th class="sub">EM ATEND.</th><th class="sub">ORÇAM.</th><th class="sub">CADASTRO</th><th class="sub">VENDA</th>
+      <th class="sub">FOLLOW</th><th class="sub">SUPORTE</th>
+      <th class="sub">NÃO ATENDE</th><th class="sub">NÃO RESP.</th><th class="sub">RECUSOU</th><th class="sub">PERDA</th>
+    </tr>
+    <tr><td>PROSPECÇÃO</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+    <tr><td>NEGOCIAÇÃO</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+    <tr><td>ATEND. CLIENTES ATIVOS</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+    <tr><td>ATEND. CLIENTES INATIVOS</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+    <tr><td>PÓS-VENDA / RELACIONAMENTO</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+    <tr><td>MOTIVO / PAROU COMPRAR</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+    <tr><td>FOLLOW UP</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+    <tr style="font-weight:700;background:#E5E5E5;"><td>TOTAL</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+  </table>
+  <p style="font-size:10px;color:#999;margin-top:4px;">Fórmula: =COUNTIFS(LOG!$L:$L, TIPO_CONTATO, LOG!$M:$M, RESULTADO, LOG!$B:$B, VENDEDOR, LOG!$A:$A, ">="&DATA_INICIO, LOG!$A:$A, "<="&DATA_FIM)</p>
+</div>
+
+<!-- DASH 2: TIPO × RESULTADO (Imagem 2 - Rotina Diária) -->
+<h3>6.2 DASH TIPO × RESULTADO — Estilo Imagem 2 (Rotina Diária)</h3>
+<p>Complementa o Dash 1 com a visão cruzada completa. Mostra onde cada tipo de contato terminou.</p>
+
+<div class="dash-preview">
+  <table>
+    <tr>
+      <th style="min-width:200px;">TIPO DO CONTATO</th>
+      <th>TOTAL</th>
+      <th>ORÇAM.</th><th>CADASTRO</th><th>RELAC.</th><th>EM ATEND.</th><th>SUPORTE</th><th>VENDA</th>
+      <th>NÃO AT.</th><th>RECUSOU</th><th>NÃO RESP.</th><th>FECHOU</th><th>PERDA</th>
+    </tr>
+    <tr><td>PROSPECÇÃO</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+    <tr><td>NEGOCIAÇÃO</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+    <tr><td>FOLLOW UP</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+    <tr><td>ATEND. ATIVOS</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+    <tr><td>ATEND. INATIVOS</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+    <tr><td>PÓS-VENDA / RELAC.</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+    <tr><td>MOTIVO / PAROU</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+    <tr style="font-weight:700;background:#E5E5E5;"><td>TOTAL</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+  </table>
+</div>
+
+<!-- DASH 3: MOTIVOS ESTRATÉGICOS -->
+<h3>6.3 DASH MOTIVOS — Inteligência para Diretoria</h3>
+<p><strong>NOVO — não existe em nenhum dos 4 arquivos de referência.</strong> Este dash responde: POR QUE os clientes não compram?</p>
+
+<div class="dash-preview">
+  <table>
+    <tr>
+      <th style="min-width:250px;">MOTIVO</th>
+      <th>TOTAL</th>
+      <th>% DO TOTAL</th>
+      <th>PROSPECÇÃO</th>
+      <th>ATIVOS</th>
+      <th>INATIVOS</th>
+      <th>PÓS-VENDA</th>
+    </tr>
+    <tr><td>PRODUTO NÃO VENDEU / SEM GIRO</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+    <tr><td>PREÇO ALTO / MARGEM</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+    <tr><td>PREFERIU CONCORRENTE</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+    <tr><td>PROBLEMA LOGÍSTICO</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+    <tr><td>PROBLEMA FINANCEIRO</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+    <tr><td>AINDA TEM ESTOQUE</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+    <tr><td>FECHOU LOJA</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+    <tr><td>SEM INTERESSE</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+    <tr><td>VIAJANDO / INDISPONÍVEL</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+    <tr><td>1º CONTATO / SEM MOTIVO</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+    <tr style="font-weight:700;background:#E5E5E5;"><td>TOTAL</td><td>—</td><td>100%</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+  </table>
+  <p style="font-size:10px;color:#999;">Se "PRODUTO NÃO VENDEU" for 35%+ → flag automático para diretoria no comitê de quarta</p>
+</div>
+
+<!-- DASH 4: FORMA DO CONTATO (gráfico de pizza) -->
+<h3>6.4 DASH FORMA DO CONTATO — Canais utilizados</h3>
+<p>Derivado da Imagem 2 (Rotina Diária). Mostra distribuição: WhatsApp vs Ligação vs WhatsApp+Ligação.</p>
+
+<div class="dash-preview">
+  <table>
+    <tr>
+      <th style="min-width:200px;">FORMA DO CONTATO</th>
+      <th>TOTAL</th>
+      <th>%</th>
+    </tr>
+    <tr><td>📱 WHATSAPP (apenas)</td><td>—</td><td>—</td></tr>
+    <tr><td>📞 LIGAÇÃO (apenas)</td><td>—</td><td>—</td></tr>
+    <tr><td>📱📞 WHATSAPP + LIGAÇÃO</td><td>—</td><td>—</td></tr>
+    <tr style="font-weight:700;background:#E5E5E5;"><td>TOTAL</td><td>—</td><td>100%</td></tr>
+  </table>
+  <p style="font-size:10px;color:#999;">Fórmula: SE(WHATS="SIM" E LIGAÇÃO="SIM", "WHATS+LIGAÇÃO", SE(WHATS="SIM", "WHATSAPP", "LIGAÇÃO"))</p>
+</div>
+
+<!-- DASH 5: PRODUTIVIDADE POR CONSULTOR -->
+<h3>6.5 DASH PRODUTIVIDADE — Comparativo entre consultores</h3>
+<p><strong>NOVO.</strong> Responde: quem tá performando? Quem precisa de ajuda?</p>
+
+<div class="dash-preview">
+  <table>
+    <tr>
+      <th style="min-width:150px;">CONSULTOR</th>
+      <th>CONTATOS</th>
+      <th>VENDAS</th>
+      <th>ORÇAM.</th>
+      <th>CADASTROS</th>
+      <th>% CONVERSÃO</th>
+      <th>NÃO ATENDE</th>
+      <th>PERDA</th>
+      <th>MERCOS OK</th>
+    </tr>
+    <tr><td>MANU DITZEL</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+    <tr><td>LARISSA PADILHA</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+    <tr><td>JULIO GADRET</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+    <tr><td>CENTRAL - DAIANE</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+    <tr style="font-weight:700;background:#E5E5E5;"><td>TOTAL TIME</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+  </table>
+  <p style="font-size:10px;color:#999;">% CONVERSÃO = VENDAS / (CONTATOS - NÃO ATENDE - NÃO RESPONDE) × 100</p>
+</div>
+
+<!-- DASH 6: KPIs RESUMO (cards no topo) -->
+<h3>6.6 KPIs RESUMO — Cards no topo do DASH</h3>
+<p>Primeira coisa que o CEO vê ao abrir. Números-chave em cards.</p>
+
+<div style="display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin:16px 0;">
+  <div style="background:#D1FAE5;border-radius:8px;padding:16px;text-align:center;">
+    <div style="font-size:11px;color:#065F46;font-weight:600;">CONTATOS</div>
+    <div style="font-size:28px;font-weight:800;color:#065F46;">—</div>
+    <div style="font-size:10px;color:#065F46;">período</div>
+  </div>
+  <div style="background:#DBEAFE;border-radius:8px;padding:16px;text-align:center;">
+    <div style="font-size:11px;color:#1E40AF;font-weight:600;">VENDAS</div>
+    <div style="font-size:28px;font-weight:800;color:#1E40AF;">—</div>
+    <div style="font-size:10px;color:#1E40AF;">pedidos fechados</div>
+  </div>
+  <div style="background:#FEF3C7;border-radius:8px;padding:16px;text-align:center;">
+    <div style="font-size:11px;color:#92400E;font-weight:600;">ORÇAMENTOS</div>
+    <div style="font-size:28px;font-weight:800;color:#92400E;">—</div>
+    <div style="font-size:10px;color:#92400E;">em pipeline</div>
+  </div>
+  <div style="background:#FEE2E2;border-radius:8px;padding:16px;text-align:center;">
+    <div style="font-size:11px;color:#991B1B;font-weight:600;">NÃO ATENDE</div>
+    <div style="font-size:28px;font-weight:800;color:#991B1B;">—</div>
+    <div style="font-size:10px;color:#991B1B;">tentativas sem resposta</div>
+  </div>
+  <div style="background:#EDE9FE;border-radius:8px;padding:16px;text-align:center;">
+    <div style="font-size:11px;color:#5B21B6;font-weight:600;">% CONVERSÃO</div>
+    <div style="font-size:28px;font-weight:800;color:#5B21B6;">—</div>
+    <div style="font-size:10px;color:#5B21B6;">vendas / contatos</div>
+  </div>
+  <div style="background:#CCFBF1;border-radius:8px;padding:16px;text-align:center;">
+    <div style="font-size:11px;color:#134E4A;font-weight:600;">MERCOS OK</div>
+    <div style="font-size:28px;font-weight:800;color:#134E4A;">—</div>
+    <div style="font-size:10px;color:#134E4A;">% atualizado</div>
+  </div>
+</div>
+
+<!-- LAYOUT VERTICAL -->
+<h3>6.7 LAYOUT VERTICAL COMPLETO</h3>
+<p>Ordem de cima pra baixo no Excel:</p>
+
+<table>
+  <tr><th>POSIÇÃO</th><th>SEÇÃO</th><th>LINHAS APROX.</th><th>O QUE MOSTRA</th></tr>
+  <tr><td class="center">1</td><td><strong>FILTROS</strong> (Vendedor + Período)</td><td class="center">3</td><td>Dropdown vendedor + datas início/fim</td></tr>
+  <tr><td class="center">2</td><td><strong>KPIs RESUMO</strong> (6 cards)</td><td class="center">5</td><td>Números-chave do período</td></tr>
+  <tr><td class="center">3</td><td><strong>DASH CONTATOS & FUNIL</strong> (6.1)</td><td class="center">12</td><td>Matriz TIPO × CONTATOS + FUNIL + RELAC + NÃO VENDA</td></tr>
+  <tr><td class="center">4</td><td><strong>DASH TIPO × RESULTADO</strong> (6.2)</td><td class="center">12</td><td>Cruzamento completo cada tipo/resultado</td></tr>
+  <tr><td class="center">5</td><td><strong>DASH MOTIVOS</strong> (6.3)</td><td class="center">14</td><td>Por que não compram — inteligência para diretoria</td></tr>
+  <tr><td class="center">6</td><td><strong>DASH FORMA DO CONTATO</strong> (6.4)</td><td class="center">6</td><td>WhatsApp vs Ligação vs ambos</td></tr>
+  <tr><td class="center">7</td><td><strong>DASH PRODUTIVIDADE</strong> (6.5)</td><td class="center">8</td><td>Comparativo entre consultores</td></tr>
+  <tr style="background:#FEF3C7;"><td class="center" colspan="2"><strong>TOTAL VERTICAL</strong></td><td class="center"><strong>~60 linhas</strong></td><td>Cabe numa tela com scroll mínimo</td></tr>
+</table>
+
+<div class="info">
+  <strong>💡 Futuro (próxima fase):</strong> Abaixo desses 7 blocos, adicionaremos:<br>
+  • <strong>DASH SINALEIRO</strong> (aba separada) — penetração por rede, visão 🟢🟡🔴🟣<br>
+  • <strong>DASH REDES</strong> — performance por rede de franquia<br>
+  • <strong>DASH PRODUTO / OPORTUNIDADES</strong> (inspirado no CRM FOOD) — matriz produto × status por cliente
+</div>
+
+<!-- ================================================================ -->
+<!-- RESUMO FINAL -->
+<!-- ================================================================ -->
+<h2><span class="section-num">7</span> RESUMO — Estrutura Completa JARVIS CRM</h2>
+
+<table>
+  <tr>
+    <th>ABA</th>
+    <th>NOME</th>
+    <th>COLUNAS</th>
+    <th>LINHAS EST.</th>
+    <th>FUNÇÃO</th>
+    <th>STATUS</th>
+  </tr>
+  <tr style="background:#D1FAE5;">
+    <td class="center"><strong>1</strong></td>
+    <td><strong>CARTEIRA</strong></td>
+    <td class="center">81</td>
+    <td class="center">~6.500</td>
+    <td>Fonte única da verdade (Blueprint v2)</td>
+    <td><span class="badge badge-green">✅ ESPECIFICADO</span></td>
+  </tr>
+  <tr style="background:#D1FAE5;">
+    <td class="center"><strong>2</strong></td>
+    <td><strong>LOG</strong></td>
+    <td class="center">20</td>
+    <td class="center">~5.000-15.000/ano</td>
+    <td>Histórico oficial de interações</td>
+    <td><span class="badge badge-green">✅ ESPECIFICADO</span></td>
+  </tr>
+  <tr style="background:#D1FAE5;">
+    <td class="center"><strong>3</strong></td>
+    <td><strong>AGENDA</strong></td>
+    <td class="center">24</td>
+    <td class="center">~15-40/dia</td>
+    <td>View diária exportada para consultores</td>
+    <td><span class="badge badge-green">✅ ESPECIFICADO</span></td>
+  </tr>
+  <tr style="background:#D1FAE5;">
+    <td class="center"><strong>4</strong></td>
+    <td><strong>DRAFT 1</strong></td>
+    <td class="center">~13</td>
+    <td class="center">~2.500</td>
+    <td>Entrada diária do Mercos → atualiza CARTEIRA</td>
+    <td><span class="badge badge-blue">📐 Blueprint v2</span></td>
+  </tr>
+  <tr style="background:#D1FAE5;">
+    <td class="center"><strong>5</strong></td>
+    <td><strong>DRAFT 2</strong></td>
+    <td class="center">27</td>
+    <td class="center">Acumula</td>
+    <td>Quarentena de atendimentos → valida → LOG</td>
+    <td><span class="badge badge-green">✅ ESPECIFICADO</span></td>
+  </tr>
+  <tr style="background:#D1FAE5;">
+    <td class="center"><strong>6</strong></td>
+    <td><strong>REGRAS</strong></td>
+    <td class="center">—</td>
+    <td class="center">~30</td>
+    <td>Tabelas de validação e cálculos</td>
+    <td><span class="badge badge-green">✅ ESPECIFICADO</span></td>
+  </tr>
+  <tr style="background:#D1FAE5;">
+    <td class="center"><strong>7</strong></td>
+    <td><strong>DASH</strong></td>
+    <td class="center">~16 max</td>
+    <td class="center">~60</td>
+    <td>7 dashboards verticais empilhados</td>
+    <td><span class="badge badge-green">✅ ESPECIFICADO</span></td>
+  </tr>
+  <tr>
+    <td class="center"><strong>8</strong></td>
+    <td><strong>DASH SINALEIRO</strong></td>
+    <td class="center">TBD</td>
+    <td class="center">TBD</td>
+    <td>Penetração por rede — fase seguinte</td>
+    <td><span class="badge badge-purple">⏳ PRÓXIMA FASE</span></td>
+  </tr>
+</table>
+
+<!-- DECISÕES -->
+<h3>Decisões arquiteturais registradas nesta sessão</h3>
+
+<div class="card">
+  <table>
+    <tr><th style="width:40px;">#</th><th style="width:300px;">DECISÃO</th><th>JUSTIFICATIVA</th></tr>
+    <tr><td class="center">1</td><td><strong>DRAFT 2 (não LOG direto)</strong></td><td>Consultor nunca toca o LOG. Zona de quarentena evita erros que quebram fórmulas.</td></tr>
+    <tr><td class="center">2</td><td><strong>LOG = 20 colunas (não 28)</strong></td><td>Dados do cliente já estão na CARTEIRA. LOG registra só O QUE ACONTECEU.</td></tr>
+    <tr><td class="center">3</td><td><strong>AGENDA = arquivo separado</strong></td><td>1 .xlsx por consultor por dia. Enviado por WhatsApp, devolvido preenchido.</td></tr>
+    <tr><td class="center">4</td><td><strong>12 RESULTADOS (não 9)</strong></td><td>Adicionados NÃO ATENDE, NÃO RESPONDE, RECUSOU LIGAÇÃO da Rotina Diária.</td></tr>
+    <tr><td class="center">5</td><td><strong>10 MOTIVOS padronizados</strong></td><td>Inteligência para diretoria. "PRODUTO NÃO VENDEU" é o dado mais crítico para fábrica.</td></tr>
+    <tr><td class="center">6</td><td><strong>DASH vertical (não horizontal)</strong></td><td>CEO prefere rolar pra baixo. Horizontal fixo mantém contexto.</td></tr>
+    <tr><td class="center">7</td><td><strong>7 blocos de DASH</strong></td><td>Junta Manu (Img1) + Rotina (Img2) + 3 novos (Motivos, Produtividade, KPIs).</td></tr>
+    <tr><td class="center">8</td><td><strong>DASH SINALEIRO = aba separada</strong></td><td>Complexidade de penetração por rede merece aba própria — próxima fase.</td></tr>
+  </table>
+</div>
+
+<!-- FONTES -->
+<h3>Fontes consolidadas</h3>
+<div class="card" style="font-size:12px;">
+  <table>
+    <tr><th>ARQUIVO</th><th>O QUE PEGAMOS</th></tr>
+    <tr><td>Acompanhamento Manu</td><td>LOG 28 cols (base), DASH Contatos & Funil (Imagem 1), DRAFT flow, REGRAS follow-up</td></tr>
+    <tr><td>Rotina Diária Helder</td><td>DASH TIPO × RESULTADO (Imagem 2), NÃO ATENDE / RECUSOU / NÃO RESPONDE, TIPO DO CONTATO 7 opções</td></tr>
+    <tr><td>CRM FOOD</td><td>Funil numerado 01-09, Base Oportunidades (produto × status — futuro), REGRAS simplificadas</td></tr>
+    <tr><td>Gestão Tempo Venda Interna</td><td>Conceito de blocos/capacidade (futuro KPI produtividade), códigos de atividade</td></tr>
+    <tr><td>Acompanhamento Pedidos (comitê)</td><td>Estrutura META × REALIZADO × JUSTIFICATIVA para bloco [+8] COMITÊ da CARTEIRA</td></tr>
+  </table>
+</div>
+
+<div style="margin-top:40px;padding:24px;background:linear-gradient(135deg, #1E40AF 0%, #7C3AED 100%);color:white;border-radius:12px;text-align:center;">
+  <h2 style="color:white;border:none;margin:0;">📋 Próximo passo: validar este Blueprint v3</h2>
+  <p style="color:rgba(255,255,255,0.8);font-size:14px;">Após aprovação, juntar com o Blueprint v2 (CARTEIRA) em um documento único e iniciar a execução com o Claude Code (6 agentes especializados).</p>
+</div>
+
+</body>
+</html>

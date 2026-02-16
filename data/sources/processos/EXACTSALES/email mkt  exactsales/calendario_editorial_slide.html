@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendário das Datas - 4 Semanas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Calibri', Arial, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .slide-container {
+            background: white;
+            width: 1400px;
+            height: 400px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4CAF50, #2E7D32);
+            color: white;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .discount-info {
+            font-size: 1em;
+            font-weight: 600;
+        }
+
+        .discount-number {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #C8E6C9;
+        }
+
+        .header-center {
+            text-align: center;
+        }
+
+        .header-center h1 {
+            font-size: 1.4em;
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+
+        .header-right {
+            text-align: right;
+            font-size: 0.8em;
+        }
+
+        .month-banner {
+            background: #B0BEC5;
+            color: black;
+            padding: 8px 20px;
+            text-align: center;
+            font-size: 0.95em;
+            font-weight: 600;
+        }
+
+        .content {
+            flex: 1;
+            padding: 15px 20px;
+        }
+
+        .section-title {
+            font-size: 1.1em;
+            color: #2E7D32;
+            font-weight: 600;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 5px;
+            text-align: center;
+        }
+
+        .weeks-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            height: calc(100% - 50px);
+        }
+
+        .week-block {
+            background: linear-gradient(135deg, #e8f5e8, #f1f8e9);
+            border: 2px solid #4CAF50;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(76, 175, 80, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .week-block:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(76, 175, 80, 0.3);
+            border-color: #2E7D32;
+        }
+
+        .week-header {
+            background: linear-gradient(135deg, #4CAF50, #2E7D32);
+            padding: 10px;
+            text-align: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .week-number {
+            font-size: 1em;
+            margin-bottom: 3px;
+            font-weight: bold;
+        }
+
+        .week-dates {
+            font-size: 0.8em;
+            opacity: 0.9;
+        }
+
+        .week-content {
+            flex: 1;
+            padding: 12px 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .date-item {
+            background: white;
+            padding: 8px;
+            border-radius: 6px;
+            text-align: center;
+            border-left: 3px solid #4CAF50;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: all 0.2s ease;
+        }
+
+        .date-item:hover {
+            background: #f8f9fa;
+            transform: translateX(3px);
+        }
+
+        .date-number {
+            font-size: 1em;
+            font-weight: bold;
+            color: #2E7D32;
+            margin-bottom: 3px;
+        }
+
+        .date-event {
+            font-size: 0.75em;
+            color: #333;
+            font-weight: 600;
+            line-height: 1.2;
+        }
+
+        .week-summary {
+            background: rgba(76, 175, 80, 0.1);
+            padding: 6px;
+            border-radius: 4px;
+            text-align: center;
+            margin-top: 5px;
+            font-size: 0.7em;
+            color: #1B5E20;
+            font-weight: 500;
+        }
+
+        .footer {
+            background: linear-gradient(135deg, #2E7D32, #1B5E20);
+            color: white;
+            padding: 8px 20px;
+            text-align: center;
+            font-size: 0.8em;
+        }
+
+        @media (max-width: 1450px) {
+            .slide-container {
+                width: 95vw;
+                height: auto;
+                min-height: 350px;
+            }
+            
+            .weeks-grid {
+                grid-template-columns: repeat(2, 1fr);
+                height: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="header">
+            <div class="header-left">
+                <div class="discount-info">
+                    Desconto Progressivo: <span class="discount-number">ATÉ 25%</span>
+                </div>
+            </div>
+            <div class="header-center">
+                <h1>CALENDÁRIO COMERCIAL - AGOSTO</h1>
+                <div>Produtos Certos • Momentos Certos • Resultados Certos</div>
+            </div>
+            <div class="header-right">
+                <div><strong>Condições Especiais:</strong></div>
+                <div>Prazos Estendidos por Perfil</div>
+                <div>Volume Progressivo</div>
+                <div>Produtos Selecionados</div>
+            </div>
+        </div>
+        
+        <div class="month-banner">
+            AGOSTO - INVERNO COM SABOR (CHOCOLATES, SOULPRO, VICCIO) + VOLTA ÀS AULAS DISNEY
+        </div>
+        
+        <div class="content">
+            <div class="section-title">CALENDÁRIO DAS DATAS COMERCIAIS</div>
+            
+            <div class="weeks-grid">
+                <!-- SEMANA 1 -->
+                <div class="week-block">
+                    <div class="week-header">
+                        <div class="week-number">SEMANA 1</div>
+                        <div class="week-dates">01 a 07 de Agosto</div>
+                    </div>
+                    <div class="week-content">
+                        <div class="date-item">
+                            <div class="date-number">01/08</div>
+                            <div class="date-event">DIA DO CEREALISTA</div>
+                        </div>
+                        
+                        <div class="date-item">
+                            <div class="date-number">05/08</div>
+                            <div class="date-event">DIA NACIONAL DA SAÚDE</div>
+                        </div>
+                        
+                        <div class="week-summary">
+                            2 Datas Comerciais Estratégicas
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SEMANA 2 -->
+                <div class="week-block">
+                    <div class="week-header">
+                        <div class="week-number">SEMANA 2</div>
+                        <div class="week-dates">08 a 14 de Agosto</div>
+                    </div>
+                    <div class="week-content">
+                        <div class="date-item">
+                            <div class="date-number">10/08</div>
+                            <div class="date-event">DIA DOS PAIS</div>
+                        </div>
+                        
+                        <div class="week-summary">
+                            1 Data Comercial Principal
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SEMANA 3 -->
+                <div class="week-block">
+                    <div class="week-header">
+                        <div class="week-number">SEMANA 3</div>
+                        <div class="week-dates">15 a 21 de Agosto</div>
+                    </div>
+                    <div class="week-content">
+                        <div class="date-item">
+                            <div class="date-number">15/08</div>
+                            <div class="date-event">DIA DA GESTANTE</div>
+                        </div>
+                        
+                        <div class="week-summary">
+                            1 Data Comercial Especializada
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SEMANA 4 -->
+                <div class="week-block">
+                    <div class="week-header">
+                        <div class="week-number">SEMANA 4</div>
+                        <div class="week-dates">22 a 31 de Agosto</div>
+                    </div>
+                    <div class="week-content">
+                        <div class="date-item">
+                            <div class="date-number">31/08</div>
+                            <div class="date-event">DIA DO NUTRICIONISTA</div>
+                        </div>
+                        
+                        <div class="week-summary">
+                            Fechamento do Mês Estratégico
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <strong>CALENDÁRIO AGOSTO 2025:</strong> 5 Datas Comerciais Distribuídas em 4 Semanas Estratégicas
+        </div>
+    </div>
+</body>
+</html>

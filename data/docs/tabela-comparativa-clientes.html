@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comparativo de Clientes</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        .column {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .column h2 {
+            margin-top: 0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .vendas-only {
+            background-color: #dc3545;
+            color: white;
+        }
+        .ecommerce-only {
+            background-color: #ffc107;
+            color: #333;
+        }
+        .category {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            border-left: 4px solid #007bff;
+        }
+        .category h3 {
+            margin-top: 0;
+            color: #007bff;
+        }
+        .client-list {
+            list-style: none;
+            padding: 0;
+        }
+        .client-list li {
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .stats {
+            background-color: #e3f2fd;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            text-align: center;
+        }
+        .insight {
+            background-color: #fff3cd;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-style: italic;
+        }
+        .number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Comparativo: Clientes E-commerce vs Vendas</h1>
+        
+        <div class="grid">
+            <div class="column">
+                <h2 class="vendas-only">📞 Apenas VENDAS (165 clientes)</h2>
+                <div class="stats">
+                    <div class="number">62%</div>
+                    <div>do faturamento total</div>
+                    <div>R$ 351.507,49</div>
+                </div>
+                
+                <div class="category">
+                    <h3>👤 Pessoa Física (com CPF)</h3>
+                    <ul class="client-list">
+                        <li>53.879.794 PETTER VIEIRA DE LIMA</li>
+                        <li>61.420.008 NEMUEL KESLEY</li>
+                        <li>48.522.990 GLEICE KELLY</li>
+                        <li>51.599.613 GENESIO PAIXAO</li>
+                    </ul>
+                    <div class="insight">💡 Compram direto com vendedor</div>
+                </div>
+                
+                <div class="category">
+                    <h3>🏪 Negócios Tradicionais</h3>
+                    <ul class="client-list">
+                        <li>ARMARINHO DOS GRÃOS</li>
+                        <li>Pro Abelha Comercio</li>
+                        <li>QUINOA NATURAL ALIMENTOS</li>
+                        <li>BRASIL FIT GOURMET</li>
+                    </ul>
+                    <div class="insight">💡 Preferem canais tradicionais</div>
+                </div>
+                
+                <div class="category">
+                    <h3>🤝 Clientes Especiais</h3>
+                    <ul class="client-list">
+                        <li>KUWADA COMPANIA LTDA</li>
+                        <li>BATEZINI PRODUTOS NATURAIS</li>
+                        <li>BARBARA DE ASSIS LUCIO</li>
+                    </ul>
+                    <div class="insight">💡 Podem ter condições comerciais especiais</div>
+                </div>
+            </div>
+            
+            <div class="column">
+                <h2 class="ecommerce-only">💻 Apenas E-COMMERCE (106 clientes)</h2>
+                <div class="stats">
+                    <div class="number">0%</div>
+                    <div>de conversão</div>
+                    <div>Prospects quentes</div>
+                </div>
+                
+                <div class="category">
+                    <h3>💪 Nutrição/Fitness (30+ lojas!)</h3>
+                    <ul class="client-list">
+                        <li>S&P NUTRICAO VIDA E SAUDE</li>
+                        <li>PRO FIT SUPLEMENTOS</li>
+                        <li>AR NUTRICAO LTDA</li>
+                        <li>PACHECO FIT NUTRICAO</li>
+                        <li>FIT SJB COMERCIO</li>
+                        <li>L & M NUTRICAO</li>
+                    </ul>
+                    <div class="insight">⚠️ Alto interesse mas não convertem!</div>
+                </div>
+                
+                <div class="category">
+                    <h3>🏢 Grandes Empresas</h3>
+                    <ul class="client-list">
+                        <li>BESCO INDUSTRIAL ALIMENTOS</li>
+                        <li>SUPERMERCADO CASTILHO</li>
+                        <li>COMERCIAL SIQUEIRA</li>
+                        <li>ARMAZEM GIRASSOL</li>
+                    </ul>
+                    <div class="insight">💡 Processos de compra complexos</div>
+                </div>
+                
+                <div class="category">
+                    <h3>🔄 Possíveis Duplicatas</h3>
+                    <ul class="client-list">
+                        <li>ROCHA NUTRICAO (2x)</li>
+                        <li>DS NUTRICAO (2x)</li>
+                        <li>MS NUTRICAO (3x)</li>
+                        <li>ESMERALDA CONVENIENCIAS (6x)</li>
+                    </ul>
+                    <div class="insight">💡 Filiais ou cadastros duplicados</div>
+                </div>
+            </div>
+        </div>
+        
+        <div style="margin-top: 30px; padding: 20px; background: white; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+            <h2 style="color: #28a745;">✅ Oportunidades Identificadas</h2>
+            <ol>
+                <li><strong>Migração Digital:</strong> 165 clientes offline = R$ 351k em vendas para digitalizar</li>
+                <li><strong>Conversão Nutrição:</strong> 30+ lojas do segmento já navegam mas não compram</li>
+                <li><strong>Limpeza de Base:</strong> Unificar cadastros duplicados</li>
+                <li><strong>Follow-up Direcionado:</strong> 106 prospects já demonstraram interesse</li>
+            </ol>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JARVIS CRM — Análise Bases SAP + Proposta Layout BASE</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f5f6fa;
+  --surface: #ffffff;
+  --surface2: #eef1f6;
+  --border: #d4dae5;
+  --accent: #0d7a5f;
+  --accent-light: #e6f5f0;
+  --sap: #1565c0;
+  --sap-light: #e3f0ff;
+  --sap-border: rgba(21,101,192,0.25);
+  --mercos: #e65100;
+  --mercos-light: #fff3e0;
+  --mercos-border: rgba(230,81,0,0.25);
+  --fixed: #2e7d32;
+  --fixed-light: #e8f5e9;
+  --fixed-border: rgba(46,125,50,0.25);
+  --meta: #6a1b9a;
+  --meta-light: #f3e5f5;
+  --text: #1a2332;
+  --text-dim: #5c6b7f;
+  --red: #c62828;
+  --green: #00864a;
+  --yellow: #e6a700;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; line-height: 1.65; }
+
+.hero {
+  padding: 50px 40px 35px;
+  background: linear-gradient(135deg, var(--sap-light) 0%, #ffffff 40%, var(--accent-light) 100%);
+  border-bottom: 2px solid var(--border);
+}
+.hero h1 { font-family: 'JetBrains Mono', monospace; font-size: 1.8rem; color: var(--sap); letter-spacing: -1px; margin-bottom: 6px; }
+.hero .sub { font-size: 1rem; color: var(--text-dim); max-width: 700px; }
+.hero .tag { display: inline-block; margin-top: 10px; padding: 3px 12px; background: var(--sap-light); border: 1px solid var(--sap-border); border-radius: 16px; font-size: 0.75rem; color: var(--sap); font-family: 'JetBrains Mono', monospace; }
+
+.container { max-width: 1200px; margin: 0 auto; padding: 35px 20px; }
+.section { margin-bottom: 45px; }
+.stitle { font-family: 'JetBrains Mono', monospace; font-size: 1.15rem; color: var(--accent); margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+.stitle .n { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; background: var(--accent-light); border-radius: 6px; font-size: 0.8rem; border: 1px solid rgba(13,122,95,0.25); }
+
+/* Stats grid */
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 30px; }
+.stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 18px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+.stat-card .val { font-family: 'JetBrains Mono', monospace; font-size: 1.8rem; font-weight: 700; }
+.stat-card .val.sap { color: var(--sap); }
+.stat-card .val.green { color: var(--green); }
+.stat-card .val.meta { color: var(--meta); }
+.stat-card .lbl { font-size: 0.78rem; color: var(--text-dim); margin-top: 4px; }
+
+/* File cards */
+.file-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.file-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+.file-header { padding: 14px 18px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+.file-header.sap { background: var(--sap-light); }
+.file-header.meta { background: var(--meta-light); }
+.file-header .fname { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; font-weight: 600; color: var(--text); }
+.file-body { padding: 14px 18px; font-size: 0.85rem; color: var(--text-dim); }
+.file-body .metric { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid rgba(0,0,0,0.04); }
+.file-body .metric:last-child { border-bottom: none; }
+.file-body .metric .k { color: var(--text-dim); }
+.file-body .metric .v { font-family: 'JetBrains Mono', monospace; font-weight: 600; color: var(--text); }
+
+/* Column tables */
+.col-tbl { width: 100%; border-collapse: collapse; font-size: 0.82rem; margin: 12px 0; }
+.col-tbl th { background: var(--surface2); padding: 8px 12px; text-align: left; font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-dim); border-bottom: 2px solid var(--border); }
+.col-tbl td { padding: 6px 12px; border-bottom: 1px solid rgba(0,0,0,0.05); }
+.col-tbl tr:hover td { background: rgba(13,122,95,0.03); }
+.col-tbl .cid { font-family: 'JetBrains Mono', monospace; font-weight: 600; font-size: 0.75rem; }
+.col-tbl .cid.sap { color: var(--sap); }
+.col-tbl .cid.fixed { color: var(--fixed); }
+.col-tbl .cid.mercos { color: var(--mercos); }
+.col-tbl .cid.meta { color: var(--meta); }
+.col-tbl .cname { color: var(--text); font-weight: 500; }
+
+.group-hdr td { font-family: 'JetBrains Mono', monospace; font-weight: 600; font-size: 0.8rem; padding-top: 14px !important; border-bottom: 1px solid rgba(0,0,0,0.1); }
+.group-hdr.sap td { background: var(--sap-light); color: var(--sap); }
+.group-hdr.fixed td { background: var(--fixed-light); color: var(--fixed); }
+.group-hdr.mercos td { background: var(--mercos-light); color: var(--mercos); }
+.group-hdr.meta td { background: var(--meta-light); color: var(--meta); }
+
+.badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.6rem; font-family: 'JetBrains Mono', monospace; text-transform: uppercase; letter-spacing: 1px; }
+.badge-sap { background: var(--sap-light); color: var(--sap); border: 1px solid var(--sap-border); }
+.badge-fixed { background: var(--fixed-light); color: var(--fixed); border: 1px solid var(--fixed-border); }
+.badge-mercos { background: var(--mercos-light); color: var(--mercos); border: 1px solid var(--mercos-border); }
+.badge-meta { background: var(--meta-light); color: var(--meta); border: 1px solid rgba(106,27,154,0.25); }
+
+/* Venn diagram */
+.venn { display: flex; align-items: center; justify-content: center; gap: 0; margin: 20px 0; padding: 30px 0; }
+.venn-circle {
+  width: 200px; height: 200px;
+  border-radius: 50%;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  font-family: 'JetBrains Mono', monospace;
+  position: relative;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.venn-left { background: var(--sap-light); border: 2px solid var(--sap); margin-right: -20px; z-index: 1; }
+.venn-right { background: #fce4ec; border: 2px solid var(--red); margin-left: -20px; z-index: 1; }
+.venn-total {
+  position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
+  background: var(--accent); color: #fff;
+  padding: 6px 20px; border-radius: 20px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8rem; font-weight: 700;
+  white-space: nowrap;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+.venn-circle .big { font-size: 1.6rem; font-weight: 700; }
+.venn-circle .sm { font-size: 0.7rem; color: var(--text-dim); text-align: center; line-height: 1.3; }
+.venn-left .big { color: var(--sap); }
+.venn-right .big { color: var(--red); }
+.venn-separator {
+  width: 40px; height: 40px; background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 0.8rem; color: var(--text-dim);
+  z-index: 2;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Group demo */
+.group-demo { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin: 16px 0; box-shadow: 0 2px 6px rgba(0,0,0,0.04); }
+.group-toolbar { background: var(--surface2); padding: 10px 16px; border-bottom: 1px solid var(--border); display: flex; gap: 10px; align-items: center; font-size: 0.75rem; }
+.group-btn { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 20px; border-radius: 3px; font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 0.7rem; cursor: pointer; border: 1px solid var(--border); }
+.group-btn.sap { background: var(--sap-light); color: var(--sap); border-color: var(--sap-border); }
+.group-btn.mercos { background: var(--mercos-light); color: var(--mercos); border-color: var(--mercos-border); }
+.group-btn.meta { background: var(--meta-light); color: var(--meta); border-color: rgba(106,27,154,0.25); }
+.group-lbl { color: var(--text-dim); font-family: 'JetBrains Mono', monospace; }
+
+.excel-sim { font-size: 0.75rem; }
+.excel-sim table { width: 100%; border-collapse: collapse; }
+.excel-sim th, .excel-sim td { padding: 5px 8px; border: 1px solid var(--border); white-space: nowrap; }
+.excel-sim th { background: var(--surface2); font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--text-dim); }
+.excel-sim .col-fixed { background: var(--fixed-light); }
+.excel-sim .col-sap { background: var(--sap-light); }
+.excel-sim .col-mercos { background: var(--mercos-light); }
+.excel-sim .col-meta { background: var(--meta-light); }
+.excel-sim .group-marker { text-align: center; font-weight: 700; cursor: pointer; }
+.excel-sim .group-marker.sap { color: var(--sap); background: var(--sap-light); }
+.excel-sim .group-marker.mercos { color: var(--mercos); background: var(--mercos-light); }
+.excel-sim .group-marker.meta { color: var(--meta); background: var(--meta-light); }
+
+.note { padding: 14px 18px; border-radius: 0 8px 8px 0; margin: 14px 0; font-size: 0.88rem; }
+.note.info { background: var(--sap-light); border-left: 3px solid var(--sap); }
+.note.success { background: var(--accent-light); border-left: 3px solid var(--accent); }
+.note.warn { background: #fff8e1; border-left: 3px solid var(--yellow); }
+.note strong.sap { color: var(--sap); }
+.note strong.green { color: var(--accent); }
+.note strong.warn { color: var(--yellow); }
+
+/* Network list */
+.net-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 12px 0; }
+.net-item { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; font-size: 0.8rem; }
+.net-item .net-name { font-family: 'JetBrains Mono', monospace; font-weight: 600; color: var(--meta); font-size: 0.75rem; }
+.net-item .net-count { color: var(--text-dim); font-size: 0.72rem; }
+
+/* Steps */
+.steps { display: flex; flex-direction: column; gap: 3px; }
+.step { display: flex; align-items: center; gap: 14px; padding: 12px 18px; background: var(--surface); border-radius: 10px; border: 1px solid var(--border); box-shadow: 0 1px 2px rgba(0,0,0,0.03); }
+.step:hover { border-color: var(--accent); }
+.step-n { width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; background: var(--accent-light); border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; font-weight: 700; color: var(--accent); flex-shrink: 0; }
+.step-txt { flex: 1; }
+.step-txt strong { font-size: 0.88rem; }
+.step-txt .det { font-size: 0.78rem; color: var(--text-dim); }
+.step-arrow { text-align: center; color: var(--accent); opacity: 0.4; }
+
+@media (max-width: 768px) { .stats { grid-template-columns: 1fr 1fr; } .file-grid { grid-template-columns: 1fr; } .net-grid { grid-template-columns: 1fr 1fr; } }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>📊 ANÁLISE BASES SAP — Mapeamento Completo</h1>
+  <p class="sub">Estrutura dos 4 arquivos SAP + proposta de layout unificado para aba BASE do JARVIS CRM CENTRAL</p>
+  <span class="tag">Análise — 06/Fev/2026</span>
+</div>
+
+<div class="container">
+
+<!-- NÚMEROS CHAVE -->
+<div class="section">
+  <div class="stitle"><span class="n">1</span> NÚMEROS CHAVE</div>
+  <div class="stats">
+    <div class="stat-card"><div class="val sap">661</div><div class="lbl">CNPJs COM VENDA<br>(carteira ativa)</div></div>
+    <div class="stat-card"><div class="val" style="color:var(--red)">1.040</div><div class="lbl">CNPJs SEM ATENDIMENTO<br>(inativos/prospects)</div></div>
+    <div class="stat-card"><div class="val green">1.701</div><div class="lbl">UNIVERSO TOTAL<br>(zero overlap)</div></div>
+    <div class="stat-card"><div class="val meta">20</div><div class="lbl">GRUPOS CHAVE<br>(redes/franquias)</div></div>
+  </div>
+  <div style="position:relative; display:flex; justify-content:center;">
+    <div class="venn">
+      <div class="venn-circle venn-left">
+        <div class="big">661</div>
+        <div class="sm">COM VENDA<br>66 colunas</div>
+      </div>
+      <div class="venn-separator">0</div>
+      <div class="venn-circle venn-right">
+        <div class="big">1.040</div>
+        <div class="sm">SEM ATEND.<br>73 colunas</div>
+      </div>
+    </div>
+    <div class="venn-total">TOTAL: 1.701 CNPJs únicos — ZERO duplicatas entre as bases</div>
+  </div>
+  <div class="note info">
+    <strong class="sap">Descoberta importante:</strong> As duas bases SAP são 100% complementares. COM_VENDA = clientes com histórico de vendas. SEM_ATENDIMENTO = clientes cadastrados mas sem interação. Juntas formam o universo completo de 1.701 CNPJs do SAP.
+  </div>
+</div>
+
+<!-- RAIO-X DOS 4 ARQUIVOS -->
+<div class="section">
+  <div class="stitle"><span class="n">2</span> RAIO-X DOS 4 ARQUIVOS SAP</div>
+  <div class="file-grid">
+    <div class="file-card">
+      <div class="file-header sap"><span>📋</span><span class="fname">BASE SAP — CARTEIRA CLIENTE INTERNO COM VENDA</span></div>
+      <div class="file-body">
+        <div class="metric"><span class="k">Linhas reais</span><span class="v">661</span></div>
+        <div class="metric"><span class="k">CNPJs únicos</span><span class="v">661</span></div>
+        <div class="metric"><span class="k">Colunas</span><span class="v">66</span></div>
+        <div class="metric"><span class="k">UFs cobertas</span><span class="v">24 estados</span></div>
+        <div class="metric"><span class="k">Col exclusiva</span><span class="v" style="color:var(--green)">Venda (col 66)</span></div>
+        <div class="metric"><span class="k">Aba</span><span class="v">Planilha1</span></div>
+      </div>
+    </div>
+    <div class="file-card">
+      <div class="file-header sap"><span>📋</span><span class="fname">BASE SAP — CLIENTES SEM ATENDIMENTO</span></div>
+      <div class="file-body">
+        <div class="metric"><span class="k">Linhas reais</span><span class="v">1.097</span></div>
+        <div class="metric"><span class="k">CNPJs únicos</span><span class="v">1.040</span></div>
+        <div class="metric"><span class="k">Colunas</span><span class="v">73</span></div>
+        <div class="metric"><span class="k">UFs cobertas</span><span class="v">26 estados</span></div>
+        <div class="metric"><span class="k">Cols exclusivas</span><span class="v" style="color:var(--mercos)">7 extras (ver abaixo)</span></div>
+        <div class="metric"><span class="k">Aba</span><span class="v">Sem atendimento</span></div>
+      </div>
+    </div>
+    <div class="file-card">
+      <div class="file-header meta"><span>📊</span><span class="fname">BASE SAP — VENDA MÊS A MÊS 2025</span></div>
+      <div class="file-body">
+        <div class="metric"><span class="k">Clientes únicos</span><span class="v">493</span></div>
+        <div class="metric"><span class="k">Abas</span><span class="v">12 (Jan a Dez)</span></div>
+        <div class="metric"><span class="k">Colunas por aba</span><span class="v">5 (Cod+Nome, Qtd, Vendas, Dev, Fat)</span></div>
+        <div class="metric"><span class="k">Maior mês</span><span class="v">Out (120 clientes)</span></div>
+        <div class="metric"><span class="k">Menor mês</span><span class="v">Fev (28 clientes)</span></div>
+        <div class="metric"><span class="k">Formato cod</span><span class="v">COD_SAP - NOME CLIENTE</span></div>
+      </div>
+    </div>
+    <div class="file-card">
+      <div class="file-header meta"><span>🎯</span><span class="fname">BASE SAP — META E PROJEÇÃO 2026</span></div>
+      <div class="file-body">
+        <div class="metric"><span class="k">Abas</span><span class="v">6 (Carteira, Hist.FAT, Leads, Posit., Fat., Balizador)</span></div>
+        <div class="metric"><span class="k">Grupos Chave</span><span class="v">20 redes</span></div>
+        <div class="metric"><span class="k">Histórico FAT</span><span class="v">1.520 rows (Jan/24 a Dez/25)</span></div>
+        <div class="metric"><span class="k">Faturamento Proj.</span><span class="v">1.520 rows (meta 2026)</span></div>
+        <div class="metric"><span class="k">Meta anual 2026</span><span class="v" style="color:var(--meta)">R$ 4.747.200</span></div>
+        <div class="metric"><span class="k">Grupos produto</span><span class="v">Biscoito, Chocolates, Disney, Doces...</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- COMPARAÇÃO DE COLUNAS -->
+<div class="section">
+  <div class="stitle"><span class="n">3</span> COMPARAÇÃO: 59 COLUNAS IGUAIS + EXTRAS</div>
+  <p style="color:var(--text-dim); margin-bottom:12px;">As duas bases SAP compartilham 59 colunas idênticas. Cada uma tem colunas exclusivas:</p>
+  <table class="col-tbl">
+    <tr><th>COLUNA</th><th>COM VENDA</th><th>SEM ATENDIMENTO</th><th>NOTA</th></tr>
+    <tr><td class="cname">Colunas 1-59 (cadastrais, equipe, região...)</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="font-size:0.8rem;color:var(--text-dim)">Idênticas em ambas</td></tr>
+    <tr class="group-hdr sap"><td colspan="4">🔵 EXCLUSIVAS — COM VENDA</td></tr>
+    <tr><td class="cname">Venda (col 66)</td><td style="text-align:center">✅</td><td style="text-align:center">—</td><td style="font-size:0.8rem;color:var(--text-dim)">Valor total de vendas</td></tr>
+    <tr class="group-hdr" style="background:#fce4ec"><td colspan="4" style="color:var(--red)">🔴 EXCLUSIVAS — SEM ATENDIMENTO</td></tr>
+    <tr><td class="cname">08 Contrato Cliente + Nome</td><td style="text-align:center">—</td><td style="text-align:center">✅</td><td style="font-size:0.8rem;color:var(--text-dim)">Tipo de contrato</td></tr>
+    <tr><td class="cname">09 Ranking Cliente + Nome</td><td style="text-align:center">—</td><td style="text-align:center">✅</td><td style="font-size:0.8rem;color:var(--text-dim)">Classificação ranking</td></tr>
+    <tr><td class="cname">10 Nome da Loja (×2)</td><td style="text-align:center">—</td><td style="text-align:center">✅</td><td style="font-size:0.8rem;color:var(--text-dim)">Nome fantasia da loja</td></tr>
+    <tr><td class="cname">Promotor Cliente + Nome</td><td style="text-align:center">—</td><td style="text-align:center">✅</td><td style="font-size:0.8rem;color:var(--text-dim)">Promotor alocado</td></tr>
+  </table>
+</div>
+
+<!-- 20 GRUPOS CHAVE -->
+<div class="section">
+  <div class="stitle"><span class="n">4</span> 20 GRUPOS CHAVE (REDES/FRANQUIAS)</div>
+  <p style="color:var(--text-dim); margin-bottom:12px;">Do arquivo META E PROJEÇÃO 2026 — estrutura de todas as redes internas:</p>
+  <div class="net-grid">
+    <div class="net-item"><div class="net-name">BIO MUNDO</div></div>
+    <div class="net-item"><div class="net-name">CIA DA SAUDE</div></div>
+    <div class="net-item"><div class="net-name">DIVINA TERRA</div></div>
+    <div class="net-item"><div class="net-name">FITLAND</div></div>
+    <div class="net-item"><div class="net-name">MUNDO VERDE</div></div>
+    <div class="net-item"><div class="net-name">VIDA LEVE</div></div>
+    <div class="net-item"><div class="net-name">TUDO EM GRAOS / VGA</div></div>
+    <div class="net-item"><div class="net-name">ARMAZEM FIT STORE</div></div>
+    <div class="net-item"><div class="net-name">ESMERALDA</div></div>
+    <div class="net-item"><div class="net-name">FEDERZONI</div></div>
+    <div class="net-item"><div class="net-name">JARDIM DAS ERVAS</div></div>
+    <div class="net-item"><div class="net-name">LIGEIRINHO</div></div>
+    <div class="net-item"><div class="net-name">MAIS NATURAL</div></div>
+    <div class="net-item"><div class="net-name">MERCOCENTRO</div></div>
+    <div class="net-item"><div class="net-name">MIX VALI</div></div>
+    <div class="net-item"><div class="net-name">NATURVIDA</div></div>
+    <div class="net-item"><div class="net-name">NOVA GERACAO</div></div>
+    <div class="net-item"><div class="net-name">PROSAUDE</div></div>
+    <div class="net-item"><div class="net-name">TRIP</div></div>
+    <div class="net-item"><div class="net-name">SEM GRUPO</div></div>
+  </div>
+</div>
+
+<!-- PROPOSTA LAYOUT BASE -->
+<div class="section">
+  <div class="stitle"><span class="n">5</span> PROPOSTA: LAYOUT DA ABA BASE (com grupos [+])</div>
+  <p style="color:var(--text-dim); margin-bottom:16px;">
+    1 linha por CNPJ. Colunas organizadas em <strong style="color:var(--fixed)">FIXAS</strong> (sempre visíveis) + 
+    <strong style="color:var(--sap)">GRUPO SAP [+]</strong> (expansível) + 
+    <strong style="color:var(--mercos)">GRUPO MERCOS [+]</strong> (expansível) +
+    <strong style="color:var(--meta)">GRUPO META [+]</strong> (expansível).
+  </p>
+
+  <!-- Excel sim with group buttons -->
+  <div class="group-demo">
+    <div class="group-toolbar">
+      <span class="group-lbl">GRUPOS:</span>
+      <span class="group-btn" style="background:var(--surface); width:auto; padding:0 8px;">1</span>
+      <span class="group-btn" style="background:var(--surface); width:auto; padding:0 8px;">2</span>
+      <span class="group-lbl">|</span>
+      <span class="group-btn sap">+</span><span class="group-lbl">SAP (20 cols)</span>
+      <span class="group-btn mercos">+</span><span class="group-lbl">MERCOS (aguardando)</span>
+      <span class="group-btn meta">+</span><span class="group-lbl">META (6 cols)</span>
+    </div>
+    <div class="excel-sim">
+      <table>
+        <tr>
+          <th colspan="10" class="col-fixed" style="text-align:center;">🟢 FIXAS (sempre visíveis)</th>
+          <th class="group-marker sap" title="Expandir SAP">⊞ SAP</th>
+          <th class="group-marker mercos" title="Expandir MERCOS">⊞ MERCOS</th>
+          <th class="group-marker meta" title="Expandir META">⊞ META</th>
+        </tr>
+        <tr>
+          <th style="background:var(--fixed-light)">A</th>
+          <th style="background:var(--fixed-light)">B</th>
+          <th style="background:var(--fixed-light)">C</th>
+          <th style="background:var(--fixed-light)">D</th>
+          <th style="background:var(--fixed-light)">E</th>
+          <th style="background:var(--fixed-light)">F</th>
+          <th style="background:var(--fixed-light)">G</th>
+          <th style="background:var(--fixed-light)">H</th>
+          <th style="background:var(--fixed-light)">I</th>
+          <th style="background:var(--fixed-light)">J</th>
+          <th style="background:var(--sap-light); font-size:0.55rem">K→AD</th>
+          <th style="background:var(--mercos-light); font-size:0.55rem">AE→AQ</th>
+          <th style="background:var(--meta-light); font-size:0.55rem">AR→AW</th>
+        </tr>
+        <tr>
+          <th style="background:var(--fixed-light); font-size:0.6rem">CNPJ</th>
+          <th style="background:var(--fixed-light); font-size:0.6rem">NOME</th>
+          <th style="background:var(--fixed-light); font-size:0.6rem">UF</th>
+          <th style="background:var(--fixed-light); font-size:0.6rem">CIDADE</th>
+          <th style="background:var(--fixed-light); font-size:0.6rem">VENDEDOR</th>
+          <th style="background:var(--fixed-light); font-size:0.6rem">SITUAÇÃO</th>
+          <th style="background:var(--fixed-light); font-size:0.6rem">ABC</th>
+          <th style="background:var(--fixed-light); font-size:0.6rem">REDE</th>
+          <th style="background:var(--fixed-light); font-size:0.6rem">ÚLT.VENDA</th>
+          <th style="background:var(--fixed-light); font-size:0.6rem">ORIGEM</th>
+          <th style="background:var(--sap-light); font-size:0.6rem">20 cols →</th>
+          <th style="background:var(--mercos-light); font-size:0.6rem">13 cols →</th>
+          <th style="background:var(--meta-light); font-size:0.6rem">6 cols →</th>
+        </tr>
+        <tr>
+          <td style="font-family:'JetBrains Mono',monospace; font-size:0.7rem">24.583.557/0001-22</td>
+          <td>SHOPPER COM. ALIM.</td>
+          <td>SP</td>
+          <td>OSASCO</td>
+          <td>LARISSA</td>
+          <td style="color:var(--green); font-weight:600">ATIVO</td>
+          <td style="font-weight:600">A</td>
+          <td>—</td>
+          <td style="font-size:0.7rem">Jan/26</td>
+          <td><span class="badge badge-sap">SAP</span></td>
+          <td style="color:var(--sap); font-size:0.7rem; text-align:center">oculto [+]</td>
+          <td style="color:var(--mercos); font-size:0.7rem; text-align:center">oculto [+]</td>
+          <td style="color:var(--meta); font-size:0.7rem; text-align:center">oculto [+]</td>
+        </tr>
+        <tr>
+          <td style="font-family:'JetBrains Mono',monospace; font-size:0.7rem">23.395.636/0001-85</td>
+          <td>BIOMUNDO BELEM</td>
+          <td>PA</td>
+          <td>BELEM</td>
+          <td>DAIANE</td>
+          <td style="color:var(--green); font-weight:600">ATIVO</td>
+          <td style="font-weight:600">B</td>
+          <td style="color:var(--meta)">BIO MUNDO</td>
+          <td style="font-size:0.7rem">Dez/25</td>
+          <td><span class="badge badge-sap">SAP</span></td>
+          <td style="color:var(--sap); font-size:0.7rem; text-align:center">oculto [+]</td>
+          <td style="color:var(--mercos); font-size:0.7rem; text-align:center">oculto [+]</td>
+          <td style="color:var(--meta); font-size:0.7rem; text-align:center">oculto [+]</td>
+        </tr>
+        <tr>
+          <td style="font-family:'JetBrains Mono',monospace; font-size:0.7rem">34.352.653/0001-51</td>
+          <td>BIO MUNDO BH SHOP.</td>
+          <td>MG</td>
+          <td>BELO HORIZONTE</td>
+          <td>DAIANE</td>
+          <td style="color:var(--red); font-weight:600">INAT.ANT</td>
+          <td>—</td>
+          <td style="color:var(--meta)">BIO MUNDO</td>
+          <td>—</td>
+          <td><span class="badge" style="background:#fce4ec; color:var(--red); border:1px solid rgba(198,40,40,0.25)">SEM AT</span></td>
+          <td style="color:var(--sap); font-size:0.7rem; text-align:center">oculto [+]</td>
+          <td style="color:var(--mercos); font-size:0.7rem; text-align:center">oculto [+]</td>
+          <td style="color:var(--meta); font-size:0.7rem; text-align:center">oculto [+]</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- DETALHAMENTO DOS GRUPOS -->
+<div class="section">
+  <div class="stitle"><span class="n">6</span> DETALHAMENTO DE CADA GRUPO DE COLUNAS</div>
+
+  <table class="col-tbl">
+    <tr><th>COL</th><th>NOME</th><th>ORIGEM</th><th>NOTA</th></tr>
+
+    <tr class="group-hdr fixed"><td colspan="4">🟢 FIXAS — Sempre Visíveis (A-J)</td></tr>
+    <tr><td class="cid fixed">A</td><td class="cname">CNPJ</td><td><span class="badge badge-sap">SAP</span></td><td style="font-size:0.78rem;color:var(--text-dim)">Chave primária. Formato 14 dígitos</td></tr>
+    <tr><td class="cid fixed">B</td><td class="cname">NOME FANTASIA</td><td><span class="badge badge-sap">SAP</span></td><td style="font-size:0.78rem;color:var(--text-dim)">Nome Cliente (col 10 SAP)</td></tr>
+    <tr><td class="cid fixed">C</td><td class="cname">UF</td><td><span class="badge badge-sap">SAP</span></td><td style="font-size:0.78rem;color:var(--text-dim)">Unidade Federação</td></tr>
+    <tr><td class="cid fixed">D</td><td class="cname">CIDADE</td><td><span class="badge badge-sap">SAP</span></td><td style="font-size:0.78rem;color:var(--text-dim)">Cidade</td></tr>
+    <tr><td class="cid fixed">E</td><td class="cname">VENDEDOR</td><td><span class="badge badge-sap">SAP</span> + regra</td><td style="font-size:0.78rem;color:var(--text-dim)">Derivado da região/equipe SAP. MANU, LARISSA, JULIO, DAIANE</td></tr>
+    <tr><td class="cid fixed">F</td><td class="cname">SITUAÇÃO</td><td>Calculada</td><td style="font-size:0.78rem;color:var(--text-dim)">ATIVO / INAT.REC / INAT.ANT. Baseada em última venda</td></tr>
+    <tr><td class="cid fixed">G</td><td class="cname">CURVA ABC</td><td><span class="badge badge-meta">META</span></td><td style="font-size:0.78rem;color:var(--text-dim)">Classificação de faturamento</td></tr>
+    <tr><td class="cid fixed">H</td><td class="cname">REDE / GRUPO CHAVE</td><td><span class="badge badge-sap">SAP</span></td><td style="font-size:0.78rem;color:var(--text-dim)">06 Nome Grupo Chave (BIO MUNDO, CIA DA SAUDE...)</td></tr>
+    <tr><td class="cid fixed">I</td><td class="cname">ÚLT. VENDA</td><td><span class="badge badge-meta">META</span></td><td style="font-size:0.78rem;color:var(--text-dim)">Data da última venda registrada</td></tr>
+    <tr><td class="cid fixed">J</td><td class="cname">ORIGEM</td><td>Controle</td><td style="font-size:0.78rem;color:var(--text-dim)">SAP_COM_VENDA | SAP_SEM_ATEND | MERCOS | PROSPECT</td></tr>
+
+    <tr class="group-hdr sap"><td colspan="4">🔵 GRUPO SAP [+] — Expansível (K-AD = 20 colunas)</td></tr>
+    <tr><td class="cid sap">K</td><td class="cname">COD_SAP</td><td><span class="badge badge-sap">SAP</span></td><td style="font-size:0.78rem;color:var(--text-dim)">Código do Cliente SAP</td></tr>
+    <tr><td class="cid sap">L</td><td class="cname">STATUS PARCEIRO</td><td><span class="badge badge-sap">SAP</span></td><td style="font-size:0.78rem;color:var(--text-dim)">@08@ = ativo</td></tr>
+    <tr><td class="cid sap">M</td><td class="cname">ENDEREÇO</td><td><span class="badge badge-sap">SAP</span></td><td style="font-size:0.78rem;color:var(--text-dim)">Endereço completo</td></tr>
+    <tr><td class="cid sap">N</td><td class="cname">BAIRRO</td><td><span class="badge badge-sap">SAP</span></td><td style="font-size:0.78rem;color:var(--text-dim)"></td></tr>
+    <tr><td class="cid sap">O</td><td class="cname">CEP</td><td><span class="badge badge-sap">SAP</span></td><td style="font-size:0.78rem;color:var(--text-dim)">Código Postal</td></tr>
+    <tr><td class="cid sap">P</td><td class="cname">TELEFONE</td><td><span class="badge badge-sap">SAP</span></td><td style="font-size:0.78rem;color:var(--text-dim)"></td></tr>
+    <tr><td class="cid sap">Q</td><td class="cname">COND. PAGAMENTO</td><td><span class="badge badge-sap">SAP</span></td><td style="font-size:0.78rem;color:var(--text-dim)">Código + Descrição (ex: P044 = 21/28/35)</td></tr>
+    <tr><td class="cid sap">R</td><td class="cname">LISTA PREÇOS</td><td><span class="badge badge-sap">SAP</span></td><td style="font-size:0.78rem;color:var(--text-dim)">Tabela + Descrição</td></tr>
+    <tr><td class="cid sap">S</td><td class="cname">GRUPO CLIENTE</td><td><span class="badge badge-sap">SAP</span></td><td style="font-size:0.78rem;color:var(--text-dim)">Código + Descrição (VI - CANAL VERDE)</td></tr>
+    <tr><td class="cid sap">T</td><td class="cname">INCOTERMS</td><td><span class="badge badge-sap">SAP</span></td><td style="font-size:0.78rem;color:var(--text-dim)">CIF/FOB</td></tr>
+    <tr><td class="cid sap">U</td><td class="cname">BLOQUEIOS</td><td><span class="badge badge-sap">SAP</span></td><td style="font-size:0.78rem;color:var(--text-dim)">Área Vendas + Todas Áreas + Central (3 flags)</td></tr>
+    <tr><td class="cid sap">V</td><td class="cname">DESCONTOS</td><td><span class="badge badge-sap">SAP</span></td><td style="font-size:0.78rem;color:var(--text-dim)">Comercial + Financeiro + NF (3 campos)</td></tr>
+    <tr><td class="cid sap">W</td><td class="cname">ZP GERENTE NACIONAL</td><td><span class="badge badge-sap">SAP</span></td><td style="font-size:0.78rem;color:var(--text-dim)">DAIANE STAVICKI</td></tr>
+    <tr><td class="cid sap">X</td><td class="cname">ZR REPRESENTANTE</td><td><span class="badge badge-sap">SAP</span></td><td style="font-size:0.78rem;color:var(--text-dim)">Código + Nome</td></tr>
+    <tr><td class="cid sap">Y</td><td class="cname">CANAL</td><td><span class="badge badge-sap">SAP</span></td><td style="font-size:0.78rem;color:var(--text-dim)">01 Canal + 02 Tipo</td></tr>
+    <tr><td class="cid sap">Z</td><td class="cname">MACRORREGIÃO</td><td><span class="badge badge-sap">SAP</span></td><td style="font-size:0.78rem;color:var(--text-dim)">03 + 04 (Macro + Micro)</td></tr>
+    <tr><td class="cid sap">AA</td><td class="cname">MODELO ENTREGA</td><td><span class="badge badge-sap">SAP</span></td><td style="font-size:0.78rem;color:var(--text-dim)">05 Modelo Entrega</td></tr>
+    <tr><td class="cid sap">AB</td><td class="cname">STATUS CLIENTE SAP</td><td><span class="badge badge-sap">SAP</span></td><td style="font-size:0.78rem;color:var(--text-dim)">07 Status + Nome</td></tr>
+    <tr><td class="cid sap">AC</td><td class="cname">CONTRATO</td><td><span class="badge badge-sap">SAP</span></td><td style="font-size:0.78rem;color:var(--text-dim)">08 Contrato (só SEM_ATEND)</td></tr>
+    <tr><td class="cid sap">AD</td><td class="cname">RANKING</td><td><span class="badge badge-sap">SAP</span></td><td style="font-size:0.78rem;color:var(--text-dim)">09 Ranking (só SEM_ATEND)</td></tr>
+
+    <tr class="group-hdr mercos"><td colspan="4">🟠 GRUPO MERCOS [+] — Expansível (AE-AQ = 13 colunas) — aguardando dados</td></tr>
+    <tr><td class="cid mercos">AE</td><td class="cname">COD_MERCOS</td><td><span class="badge badge-mercos">MERCOS</span></td><td style="font-size:0.78rem;color:var(--text-dim)">ID Mercos</td></tr>
+    <tr><td class="cid mercos">AF</td><td class="cname">EMAIL</td><td><span class="badge badge-mercos">MERCOS</span></td><td style="font-size:0.78rem;color:var(--text-dim)">E-mail do cliente</td></tr>
+    <tr><td class="cid mercos">AG</td><td class="cname">TELEFONE MERCOS</td><td><span class="badge badge-mercos">MERCOS</span></td><td style="font-size:0.78rem;color:var(--text-dim)">Telefone cadastrado no Mercos</td></tr>
+    <tr><td class="cid mercos">AH</td><td class="cname">ECOMMERCE ATIVO</td><td><span class="badge badge-mercos">MERCOS</span></td><td style="font-size:0.78rem;color:var(--text-dim)">Se acessa o e-commerce</td></tr>
+    <tr><td class="cid mercos">AI-AQ</td><td class="cname">... mais 9 colunas</td><td><span class="badge badge-mercos">MERCOS</span></td><td style="font-size:0.78rem;color:var(--text-dim)">Definir quando carteira Mercos chegar</td></tr>
+
+    <tr class="group-hdr meta"><td colspan="4">🟣 GRUPO META [+] — Expansível (AR-AW = 6 colunas)</td></tr>
+    <tr><td class="cid meta">AR</td><td class="cname">VENDA TOTAL 2025</td><td><span class="badge badge-meta">META</span></td><td style="font-size:0.78rem;color:var(--text-dim)">Soma do VENDA_MES_A_MES</td></tr>
+    <tr><td class="cid meta">AS</td><td class="cname">MÉDIA MENSAL</td><td><span class="badge badge-meta">META</span></td><td style="font-size:0.78rem;color:var(--text-dim)">Total / meses ativos</td></tr>
+    <tr><td class="cid meta">AT</td><td class="cname">TICKET MÉDIO</td><td><span class="badge badge-meta">META</span></td><td style="font-size:0.78rem;color:var(--text-dim)">Do arquivo META Positivação</td></tr>
+    <tr><td class="cid meta">AU</td><td class="cname">MESES COMPRA 2025</td><td><span class="badge badge-meta">META</span></td><td style="font-size:0.78rem;color:var(--text-dim)">Quantos meses comprou em 2025</td></tr>
+    <tr><td class="cid meta">AV</td><td class="cname">META 2026</td><td><span class="badge badge-meta">META</span></td><td style="font-size:0.78rem;color:var(--text-dim)">Projeção do Faturamento 2026</td></tr>
+    <tr><td class="cid meta">AW</td><td class="cname">% ATING. META</td><td><span class="badge badge-meta">META</span></td><td style="font-size:0.78rem;color:var(--text-dim)">Realizado / Meta × 100</td></tr>
+  </table>
+
+  <div class="note success">
+    <strong class="green">Total: 49 colunas</strong> — 10 fixas + 20 SAP [+] + 13 MERCOS [+] + 6 META [+]. No dia a dia o consultor vê apenas as 10 fixas. Expande SAP quando precisa de dados cadastrais, MERCOS para contato, META para análise de vendas.
+  </div>
+</div>
+
+<!-- PRÓXIMOS PASSOS -->
+<div class="section">
+  <div class="stitle"><span class="n">7</span> PRÓXIMOS PASSOS</div>
+  <div class="steps">
+    <div class="step"><div class="step-n">1</div><div class="step-txt"><strong>Você valida este layout</strong><div class="det">Confirma colunas fixas + grupos. Ajusta o que precisar.</div></div></div>
+    <div class="step-arrow">↓</div>
+    <div class="step"><div class="step-n">2</div><div class="step-txt"><strong>Manda a carteira Mercos</strong><div class="det">Para eu mapear as colunas do grupo MERCOS e cruzar com SAP via CNPJ.</div></div></div>
+    <div class="step-arrow">↓</div>
+    <div class="step"><div class="step-n">3</div><div class="step-txt"><strong>Construo a aba BASE real</strong><div class="det">Merge dos 1.701 CNPJs SAP + Mercos. Agrupamentos [+] configurados. 1 linha por CNPJ.</div></div></div>
+    <div class="step-arrow">↓</div>
+    <div class="step"><div class="step-n">4</div><div class="step-txt"><strong>Populamos mês a mês</strong><div class="det">VENDA_MES_A_MES 2025 vira grupo META com totais calculados por CNPJ.</div></div></div>
+    <div class="step-arrow">↓</div>
+    <div class="step"><div class="step-n">5</div><div class="step-txt"><strong>Aba BASE alimenta tudo</strong><div class="det">LOG, AGENDA, DASH — todos referenciam a mesma BASE unificada.</div></div></div>
+  </div>
+</div>
+
+</div>
+
+<div style="padding: 25px 40px; background: var(--surface); border-top: 2px solid var(--border); text-align: center; color: var(--text-dim); font-size: 0.78rem;">
+  JARVIS CRM — VITAO Alimentos — Análise Bases SAP v1.0 — Fev 2026
+</div>
+</body>
+</html>

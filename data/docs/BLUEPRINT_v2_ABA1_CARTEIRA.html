@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JARVIS CRM — Blueprint v2 — Aba 1: Fonte Única da Verdade</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f5f6f8;
+  --surface: #ffffff;
+  --surface2: #eceef3;
+  --surface3: #f8f9fb;
+  --border: #d0d5df;
+  --border-lt: #e4e8f0;
+  --accent: #0a6847;
+  --accent-lt: #dff0e8;
+  --accent-dk: #074d34;
+  --sap: #1158a8;
+  --sap-lt: #e6f0fc;
+  --sap-bg: rgba(17,88,168,0.05);
+  --mercos: #bf4d00;
+  --mercos-lt: #fff2e8;
+  --mercos-bg: rgba(191,77,0,0.05);
+  --meta: #6d1b9e;
+  --meta-lt: #f2e8fa;
+  --meta-bg: rgba(109,27,158,0.05);
+  --log: #00695c;
+  --log-lt: #e0f2f1;
+  --log-bg: rgba(0,105,92,0.05);
+  --jornada: #b8860b;
+  --jornada-lt: #fef8e0;
+  --jornada-bg: rgba(184,134,11,0.05);
+  --ecom: #c62828;
+  --ecom-lt: #fce8e8;
+  --ecom-bg: rgba(198,40,40,0.05);
+  --oper: #37474f;
+  --oper-lt: #eceff1;
+  --oper-bg: rgba(55,71,79,0.05);
+  --comite: #4527a0;
+  --comite-lt: #ede7f6;
+  --comite-bg: rgba(69,39,160,0.05);
+  --fix: #1b5e20;
+  --fix-lt: #e8f5e9;
+  --text: #1a2434;
+  --text2: #4a5568;
+  --text3: #8896a7;
+  --red: #c62828;
+  --green: #2e7d32;
+  --yellow: #f9a825;
+  --verde: #00b050;
+  --amarelo: #ffc000;
+  --vermelho: #ff0000;
+  --roxo: #7030a0;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif; font-size:15px; line-height:1.7; }
+
+.hero {
+  padding:50px 50px 35px;
+  background: linear-gradient(120deg, #e6f0fc 0%, #fff 30%, #dff0e8 60%, #f2e8fa 100%);
+  border-bottom:2px solid var(--border);
+  position:relative;
+}
+.hero::after {
+  content:''; position:absolute; bottom:0; left:0; right:0; height:3px;
+  background: linear-gradient(90deg, var(--fix), var(--sap), var(--mercos), var(--jornada), var(--ecom), var(--meta), var(--comite));
+  opacity:0.5;
+}
+.hero h1 { font-family:'JetBrains Mono',monospace; font-size:1.6rem; letter-spacing:-0.5px; }
+.hero h1 span { color:var(--accent); }
+.hero .sub { color:var(--text2); font-size:0.95rem; margin-top:6px; max-width:850px; }
+.hero .badges { margin-top:14px; display:flex; gap:7px; flex-wrap:wrap; }
+.badge { display:inline-block; padding:3px 13px; border-radius:18px; font-family:'JetBrains Mono',monospace; font-size:0.65rem; font-weight:600; letter-spacing:0.4px; }
+.b-fix { background:var(--fix-lt); color:var(--fix); border:1px solid rgba(27,94,32,0.2); }
+.b-sap { background:var(--sap-lt); color:var(--sap); border:1px solid rgba(17,88,168,0.2); }
+.b-mercos { background:var(--mercos-lt); color:var(--mercos); border:1px solid rgba(191,77,0,0.2); }
+.b-jornada { background:var(--jornada-lt); color:var(--jornada); border:1px solid rgba(184,134,11,0.2); }
+.b-ecom { background:var(--ecom-lt); color:var(--ecom); border:1px solid rgba(198,40,40,0.2); }
+.b-meta { background:var(--meta-lt); color:var(--meta); border:1px solid rgba(109,27,158,0.2); }
+.b-comite { background:var(--comite-lt); color:var(--comite); border:1px solid rgba(69,39,160,0.2); }
+.b-oper { background:var(--oper-lt); color:var(--oper); border:1px solid rgba(55,71,79,0.2); }
+.b-log { background:var(--log-lt); color:var(--log); border:1px solid rgba(0,105,92,0.2); }
+
+.toc {
+  position:sticky; top:0; z-index:100; background:var(--surface); border-bottom:1px solid var(--border-lt);
+  padding:9px 25px; display:flex; gap:5px; flex-wrap:wrap; box-shadow:0 2px 8px rgba(0,0,0,0.04);
+}
+.toc a {
+  padding:4px 12px; border-radius:5px; font-family:'JetBrains Mono',monospace; font-size:0.65rem; font-weight:500;
+  color:var(--text2); text-decoration:none; background:var(--surface3); border:1px solid var(--border-lt); transition:all 0.15s;
+}
+.toc a:hover { background:var(--accent-lt); color:var(--accent); }
+
+.container { max-width:1300px; margin:0 auto; padding:30px 25px; }
+.section { margin-bottom:45px; scroll-margin-top:55px; }
+
+.sh { display:flex; align-items:center; gap:11px; margin-bottom:16px; padding-bottom:9px; border-bottom:2px solid var(--border-lt); }
+.sh-n { width:30px; height:30px; display:flex; align-items:center; justify-content:center; border-radius:7px; font-family:'JetBrains Mono',monospace; font-size:0.8rem; font-weight:700; flex-shrink:0; }
+.sh h2 { font-family:'JetBrains Mono',monospace; font-size:1.1rem; font-weight:600; letter-spacing:-0.3px; }
+
+table.dt { width:100%; border-collapse:collapse; font-size:0.8rem; margin:10px 0; background:var(--surface); border-radius:9px; overflow:hidden; border:1px solid var(--border-lt); }
+table.dt th { background:var(--surface2); padding:7px 10px; text-align:left; font-family:'JetBrains Mono',monospace; font-size:0.65rem; text-transform:uppercase; letter-spacing:0.7px; color:var(--text3); border-bottom:1px solid var(--border); }
+table.dt td { padding:5px 10px; border-bottom:1px solid var(--border-lt); vertical-align:top; }
+table.dt tr:last-child td { border-bottom:none; }
+.mono { font-family:'JetBrains Mono',monospace; font-size:0.75rem; }
+
+.grp td { font-family:'JetBrains Mono',monospace; font-weight:700; font-size:0.8rem; padding-top:12px !important; letter-spacing:0.3px; }
+.g-fix td { background:var(--fix-lt); color:var(--fix); border-bottom:1px solid rgba(27,94,32,0.15); }
+.g-id td { background:var(--sap-bg); color:var(--sap); border-bottom:1px solid rgba(17,88,168,0.15); }
+.g-vida td { background:var(--mercos-bg); color:var(--mercos); border-bottom:1px solid rgba(191,77,0,0.15); }
+.g-time td { background:var(--log-bg); color:var(--log); border-bottom:1px solid rgba(0,105,92,0.15); }
+.g-jorn td { background:var(--jornada-bg); color:var(--jornada); border-bottom:1px solid rgba(184,134,11,0.15); }
+.g-ecom td { background:var(--ecom-bg); color:var(--ecom); border-bottom:1px solid rgba(198,40,40,0.15); }
+.g-sap td { background:var(--sap-bg); color:var(--sap); border-bottom:1px solid rgba(17,88,168,0.15); }
+.g-oper td { background:var(--oper-bg); color:var(--oper); border-bottom:1px solid rgba(55,71,79,0.15); }
+.g-comite td { background:var(--comite-bg); color:var(--comite); border-bottom:1px solid rgba(69,39,160,0.15); }
+
+.note { padding:13px 16px; border-radius:0 9px 9px 0; margin:12px 0; font-size:0.85rem; line-height:1.6; }
+.note.info { background:var(--sap-lt); border-left:3px solid var(--sap); }
+.note.ok { background:var(--accent-lt); border-left:3px solid var(--accent); }
+.note.warn { background:var(--jornada-lt); border-left:3px solid var(--jornada); }
+.note.err { background:var(--ecom-lt); border-left:3px solid var(--ecom); }
+.note code { font-family:'JetBrains Mono',monospace; font-size:0.78rem; padding:1px 5px; border-radius:3px; background:rgba(0,0,0,0.05); }
+
+.stats { display:grid; grid-template-columns:repeat(5,1fr); gap:10px; margin:14px 0; }
+.stat { background:var(--surface); border:1px solid var(--border-lt); border-radius:9px; padding:14px; text-align:center; box-shadow:0 1px 3px rgba(0,0,0,0.03); }
+.stat .v { font-family:'JetBrains Mono',monospace; font-size:1.6rem; font-weight:700; line-height:1.1; }
+.stat .l { font-size:0.7rem; color:var(--text3); margin-top:4px; line-height:1.3; }
+
+.g2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:12px 0; }
+.g3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; margin:12px 0; }
+.g4 { display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:10px; margin:12px 0; }
+
+.card { background:var(--surface); border:1px solid var(--border-lt); border-radius:9px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.03); }
+.card-h { padding:10px 14px; border-bottom:1px solid var(--border-lt); font-family:'JetBrains Mono',monospace; font-size:0.75rem; font-weight:600; }
+.card-b { padding:12px 14px; font-size:0.8rem; }
+.card-b .row { display:flex; justify-content:space-between; padding:3px 0; border-bottom:1px solid rgba(0,0,0,0.03); }
+.card-b .row:last-child { border-bottom:none; }
+.card-b .row .k { color:var(--text2); }
+.card-b .row .v { font-family:'JetBrains Mono',monospace; font-weight:600; }
+
+.preview {
+  background:var(--surface); border:2px solid var(--accent); border-radius:10px; overflow-x:auto; margin:16px 0;
+  box-shadow:0 4px 12px rgba(10,104,71,0.08);
+}
+.preview-h { padding:12px 16px; background:var(--accent-lt); border-bottom:2px solid rgba(10,104,71,0.15); font-family:'JetBrains Mono',monospace; font-size:0.78rem; font-weight:700; color:var(--accent); }
+.preview table { width:100%; border-collapse:collapse; font-size:0.7rem; font-family:'JetBrains Mono',monospace; white-space:nowrap; }
+.preview th { padding:6px 8px; background:var(--surface2); text-align:center; font-size:0.6rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text3); border:1px solid var(--border-lt); }
+.preview td { padding:5px 8px; text-align:center; border:1px solid var(--border-lt); font-size:0.68rem; }
+.preview .fix { background:var(--fix-lt); font-weight:600; }
+.preview .grp { background:var(--surface3); color:var(--text3); font-style:italic; }
+
+.flow { display:flex; flex-direction:column; gap:3px; margin:12px 0; }
+.flow-step { display:flex; align-items:flex-start; gap:12px; padding:12px 16px; background:var(--surface); border:1px solid var(--border-lt); border-radius:9px; }
+.flow-n { width:26px; height:26px; display:flex; align-items:center; justify-content:center; border-radius:6px; font-family:'JetBrains Mono',monospace; font-size:0.75rem; font-weight:700; flex-shrink:0; }
+.flow-txt strong { font-size:0.88rem; }
+.flow-txt .sub { font-size:0.76rem; color:var(--text2); margin-top:2px; }
+.flow-arrow { text-align:center; color:var(--accent); opacity:0.3; font-size:0.7rem; }
+
+.sinal { display:inline-block; width:14px; height:14px; border-radius:50%; margin-right:4px; vertical-align:middle; }
+.s-verde { background:var(--verde); }
+.s-amarelo { background:var(--amarelo); }
+.s-vermelho { background:var(--vermelho); }
+.s-roxo { background:var(--roxo); }
+
+.footer { padding:20px 40px; background:var(--surface); border-top:2px solid var(--border); text-align:center; color:var(--text3); font-size:0.68rem; font-family:'JetBrains Mono',monospace; }
+
+@media (max-width:900px) { .stats { grid-template-columns:repeat(3,1fr); } .g2,.g3,.g4 { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+
+<!-- ==================== HERO ==================== -->
+<div class="hero">
+  <h1>📋 JARVIS CRM — <span>Blueprint v2</span></h1>
+  <p class="sub">Especificação definitiva da ABA 1: CARTEIRA DE CLIENTES — Fonte Única da Verdade. 81 colunas em 8 grupos expansíveis [+]. Documento-contrato para execução no Claude Code.</p>
+  <div class="badges">
+    <span class="badge b-fix">10 VISÍVEIS FIXAS</span>
+    <span class="badge b-sap">8 GRUPOS [+]</span>
+    <span class="badge b-mercos">81 COLUNAS TOTAL</span>
+    <span class="badge b-log">18 VISÍVEIS TUDO FECHADO</span>
+    <span class="badge b-comite">COMITÊ QUARTA-FEIRA</span>
+    <span class="badge b-jornada">FASE + TENTATIVA</span>
+    <span class="badge b-ecom">SINALEIRO 🟢🟡🔴🟣</span>
+    <span class="badge b-oper">07/FEV/2026 — v2.0</span>
+  </div>
+</div>
+
+<!-- ==================== NAV ==================== -->
+<div class="toc">
+  <a href="#s0">0. Mecânica</a>
+  <a href="#s1">1. Visíveis</a>
+  <a href="#s2">2. Identidade</a>
+  <a href="#s3">3. Vida Comercial</a>
+  <a href="#s4">4. Timeline</a>
+  <a href="#s5">5. Jornada</a>
+  <a href="#s6">6. Ecommerce</a>
+  <a href="#s7">7. SAP</a>
+  <a href="#s8">8. Operacional</a>
+  <a href="#s9">9. Comitê</a>
+  <a href="#s10">10. Regras</a>
+  <a href="#s11">11. Preview</a>
+  <a href="#s12">12. Fontes</a>
+  <a href="#s13">13. Anomalias</a>
+  <a href="#s14">14. Agentes</a>
+  <a href="#s15">15. Próximas Abas</a>
+</div>
+
+<div class="container">
+
+<!-- ==================== S0: MECÂNICA ==================== -->
+<div class="section" id="s0">
+  <div class="sh"><span class="sh-n" style="background:var(--fix-lt);color:var(--fix)">0</span><h2>COMO FUNCIONA — MECÂNICA NO EXCEL</h2></div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="card-h" style="background:var(--fix-lt);color:var(--fix)">📐 ESTRUTURA DE AGRUPAMENTO</div>
+      <div class="card-b">
+        <p>Excel → Dados → Agrupar. Cria botões [+][-] na régua horizontal acima das colunas. Cada grupo pode ser expandido ou colapsado independentemente.</p>
+        <br>
+        <p><strong>Regra do Excel:</strong> ao colapsar um grupo, a <strong>primeira coluna do grupo</strong> sempre fica visível. Nunca some. Isso permite que com todos os 8 grupos fechados, tenhamos 10 fixas + 8 colunas-resumo = 18 colunas visíveis.</p>
+        <br>
+        <p><strong>Congelamento:</strong> As 10 colunas fixas (A-J) ficam congeladas via Exibir → Congelar Painéis. Ao rolar horizontalmente para ver grupos expandidos, as fixas permanecem visíveis à esquerda.</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-h" style="background:var(--accent-lt);color:var(--accent)">🎯 PRINCÍPIO DE DECISÃO</div>
+      <div class="card-b">
+        <p><strong>Tudo fechado (18 cols):</strong> Visão gerencial — basta pra decidir prioridades, montar agenda, reunião de quarta.</p>
+        <br>
+        <p><strong>1 grupo aberto:</strong> Investigação rápida — "por que esse cliente tá vermelho?" → abre [+2] Vida Comercial.</p>
+        <br>
+        <p><strong>2+ grupos abertos:</strong> Análise profunda — preparar reunião, resolver caso específico, entender jornada do cliente.</p>
+        <br>
+        <p><strong>Filtros:</strong> Funcionam sempre, independente de quais grupos estão abertos. Filtra por CONSULTOR, REDE, SITUAÇÃO, SINALEIRO, FASE, etc.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="note ok">
+    <strong>Chave primária:</strong> CNPJ (14 dígitos sem formatação). 1 linha = 1 CNPJ. Toda informação sobre um cliente está na mesma linha. Universo estimado: ~1.700 clientes (SAP) + ~5.500 prospects = ~7.200 linhas. CNPJ é <code>UNIQUE NOT NULL</code>.
+  </div>
+</div>
+
+<!-- ==================== S1: VISÍVEIS ==================== -->
+<div class="section" id="s1">
+  <div class="sh"><span class="sh-n" style="background:var(--fix-lt);color:var(--fix)">1</span><h2>COLUNAS SEMPRE VISÍVEIS — A até J (10 colunas)</h2></div>
+
+  <div class="note info">
+    <strong>Pergunta que responde:</strong> Sem abrir NENHUM detalhe, o que eu preciso saber pra tomar qualquer decisão sobre esse cliente?
+  </div>
+
+  <table class="dt">
+    <tr><th>COL</th><th>NOME</th><th>TIPO</th><th>EXEMPLO</th><th>FONTE / REGRA DE CÁLCULO</th></tr>
+    <tr>
+      <td class="mono" style="color:var(--fix);font-weight:700">A</td>
+      <td><strong>NOME FANTASIA</strong></td>
+      <td class="mono">TEXT(100)</td>
+      <td class="mono">DIVINA TERRA CURITIBA</td>
+      <td>Prioridade: Carteira Mercos col 4 → SAP col Nome_Cliente. UPPER. Sem acentos.</td>
+    </tr>
+    <tr>
+      <td class="mono" style="color:var(--fix);font-weight:700">B</td>
+      <td><strong>REDE / REGIONAL</strong></td>
+      <td class="mono">TEXT(30)</td>
+      <td class="mono">DIVINA TERRA</td>
+      <td>Se tem rede → nome da rede (DIVINA TERRA, CIA DA SAUDE, etc). Se NÃO tem rede → região (SUL, SUDESTE, NORDESTE, NORTE, CENTRO-OESTE). Nunca fica vazio. Fonte: Carteira col 9 (REDE) + Mercos GRUPO_CHAVE. Se vazio, calcular pelo UF.</td>
+    </tr>
+    <tr>
+      <td class="mono" style="color:var(--fix);font-weight:700">C</td>
+      <td><strong>UF</strong></td>
+      <td class="mono">TEXT(2)</td>
+      <td class="mono">PR</td>
+      <td>Carteira col 5. UPPER. Validar: 27 UFs válidas.</td>
+    </tr>
+    <tr>
+      <td class="mono" style="color:var(--fix);font-weight:700">D</td>
+      <td><strong>CONSULTOR</strong></td>
+      <td class="mono">TEXT(20)</td>
+      <td class="mono">DAIANE</td>
+      <td>Regra automática:<br>• Se REDE ∈ {CIA DA SAUDE, FIT LAND} → <strong>JULIO</strong><br>• Se REDE ∈ {outras redes} → <strong>DAIANE</strong><br>• Se UF ∈ {SC, PR, RS} e sem rede → <strong>MANU</strong><br>• Todos os outros → <strong>LARISSA</strong><br>Fonte inicial: Carteira col 10, depois validar pela regra.</td>
+    </tr>
+    <tr>
+      <td class="mono" style="color:var(--fix);font-weight:700">E</td>
+      <td><strong>SITUAÇÃO</strong></td>
+      <td class="mono">TEXT(15)</td>
+      <td class="mono">ATIVO</td>
+      <td>Calculada por DIAS SEM COMPRA (col F) + regra REGRAS:<br>• ≤ 50 dias → <strong>ATIVO</strong> (cor #00B050)<br>• 51-60 dias → <strong>EM RISCO</strong> (cor #FFC000)<br>• 61-90 dias → <strong>INAT.REC</strong> (cor #FF6600)<br>• > 90 dias → <strong>INAT.ANT</strong> (cor #FF0000)<br>• Nunca comprou mas tem cadastro → <strong>NOVO</strong><br>• Sem cadastro SAP/venda → <strong>PROSPECT</strong><br>• Lead manual Daiane → <strong>LEAD</strong></td>
+    </tr>
+    <tr>
+      <td class="mono" style="color:var(--fix);font-weight:700">F</td>
+      <td><strong>DIAS SEM COMPRA</strong></td>
+      <td class="mono">INT</td>
+      <td class="mono">12</td>
+      <td>Carteira col 12. Atualizado via DRAFT (HOJE - DATA_ÚLTIMO_PEDIDO). Prospects/Leads = vazio ou "—".</td>
+    </tr>
+    <tr>
+      <td class="mono" style="color:var(--fix);font-weight:700">G</td>
+      <td><strong>🚦 SINALEIRO</strong></td>
+      <td class="mono">EMOJI</td>
+      <td>🟢</td>
+      <td>Calculado automaticamente:<br>• <span class="sinal s-verde"></span> <strong>VERDE:</strong> DIAS_SEM_COMPRA ≤ CICLO_MÉDIO<br>• <span class="sinal s-amarelo"></span> <strong>AMARELO:</strong> CICLO_MÉDIO &lt; DIAS ≤ CICLO_MÉDIO + 30<br>• <span class="sinal s-vermelho"></span> <strong>VERMELHO:</strong> DIAS &gt; CICLO_MÉDIO + 30<br>• <span class="sinal s-roxo"></span> <strong>ROXO:</strong> Nunca comprou (prospect/lead)<br>Sem ciclo médio: usar 45 dias como padrão.</td>
+    </tr>
+    <tr>
+      <td class="mono" style="color:var(--fix);font-weight:700">H</td>
+      <td><strong>TIPO CLIENTE</strong></td>
+      <td class="mono">TEXT(20)</td>
+      <td class="mono">EM DESENVOLVIMENTO</td>
+      <td>Estágio de maturidade/vida. Valores existentes nos dados:<br>• <strong>NOVO</strong> (283 na carteira) — 1ª compra feita<br>• <strong>EM DESENVOLVIMENTO</strong> (136) — 2-3 compras<br>• <strong>RECORRENTE</strong> (60) — 4+ compras, comprando há 3+ meses<br>• <strong>FIDELIZADO</strong> (9) — 6+ compras, positivado 6+ meses<br>• <strong>PROSPECT</strong> — nunca comprou, em prospecção<br>• <strong>LEAD</strong> — cadastro manual, sem ativação</td>
+    </tr>
+    <tr>
+      <td class="mono" style="color:var(--fix);font-weight:700">I</td>
+      <td><strong>FASE</strong></td>
+      <td class="mono">TEXT(15)</td>
+      <td class="mono">CS</td>
+      <td>Fase atual do ciclo de atendimento. Calculada automaticamente:<br>• ATIVO com 0-10 dias → <strong>PÓS-VENDA</strong><br>• ATIVO com 10-25 dias → <strong>CS</strong> (verificar PDV)<br>• ATIVO perto do ciclo (-7d) → <strong>RECOMPRA</strong> (momento ouro)<br>• INAT.REC → <strong>SALVAMENTO</strong><br>• INAT.ANT → <strong>RECUPERAÇÃO</strong><br>• PROSPECT/LEAD → <strong>PROSPECÇÃO</strong><br>• Após T4 sem resposta → <strong>NUTRIÇÃO</strong><br>• Qualquer fase com resposta → <strong>EM ATENDIMENTO</strong><br>• Com orçamento aberto → <strong>ORÇAMENTO</strong></td>
+    </tr>
+    <tr>
+      <td class="mono" style="color:var(--fix);font-weight:700">J</td>
+      <td><strong>TENTATIVA</strong></td>
+      <td class="mono">TEXT(5)</td>
+      <td class="mono">T1</td>
+      <td>Contagem de tentativas de contato na fase atual sem resposta positiva:<br>• <strong>T1:</strong> WhatsApp (apresentação/abordagem)<br>• <strong>T2:</strong> Ligação (+1 dia útil)<br>• <strong>T3:</strong> WhatsApp (mudar abordagem, +2 dias)<br>• <strong>T4:</strong> Ligação final (+2 dias)<br>• Sem resposta após T4 → FASE muda pra NUTRIÇÃO<br>• Quando responde em qualquer T → zera, vai pra EM ATENDIMENTO T1<br>Fonte: contagem de registros sequenciais no LOG sem resultado positivo.</td>
+    </tr>
+  </table>
+</div>
+
+<!-- ==================== S2: IDENTIDADE ==================== -->
+<div class="section" id="s2">
+  <div class="sh"><span class="sh-n" style="background:var(--sap-lt);color:var(--sap)">[+1]</span><h2>IDENTIDADE — Cols K a Q (7 colunas)</h2></div>
+
+  <div class="note info">Coluna visível quando fechado: <strong>K = CNPJ</strong> — a chave de tudo.</div>
+
+  <table class="dt">
+    <tr><th>COL</th><th>NOME</th><th>TIPO</th><th>FONTE</th><th>REGRA</th></tr>
+    <tr><td class="mono" style="color:var(--sap);font-weight:700">K</td><td><strong>CNPJ</strong></td><td class="mono">TEXT(14)</td><td>Mercos/SAP</td><td>14 dígitos sem formatação. UNIQUE NOT NULL. Chave primária universal.</td></tr>
+    <tr><td class="mono" style="color:var(--sap)">L</td><td>RAZÃO SOCIAL</td><td class="mono">TEXT(150)</td><td>Carteira col 3</td><td>UPPER. Razão social completa.</td></tr>
+    <tr><td class="mono" style="color:var(--sap)">M</td><td>CIDADE</td><td class="mono">TEXT(50)</td><td>Carteira col 6 → SAP</td><td>UPPER.</td></tr>
+    <tr><td class="mono" style="color:var(--sap)">N</td><td>EMAIL</td><td class="mono">TEXT(100)</td><td>Carteira col 8</td><td>Lowercase. 100% preenchido na Carteira.</td></tr>
+    <tr><td class="mono" style="color:var(--sap)">O</td><td>TELEFONE</td><td class="mono">TEXT(15)</td><td>Carteira col 7</td><td>Formato: 55+DDD+número. 100% preenchido.</td></tr>
+    <tr><td class="mono" style="color:var(--sap)">P</td><td>COD_FONTE</td><td class="mono">TEXT(15)</td><td>Calculada</td><td>Origem do registro: SAP_ATIVO | SAP_INATIVO | MERCOS | PROSPECT | REDE_ONLY | LEAD_MANUAL. Define confiabilidade do dado.</td></tr>
+    <tr><td class="mono" style="color:var(--sap)">Q</td><td>DATA CADASTRO</td><td class="mono">DATE</td><td>Carteira col 16</td><td>Data de entrada no Mercos. DD/MM/YYYY.</td></tr>
+  </table>
+</div>
+
+<!-- ==================== S3: VIDA COMERCIAL ==================== -->
+<div class="section" id="s3">
+  <div class="sh"><span class="sh-n" style="background:var(--mercos-lt);color:var(--mercos)">[+2]</span><h2>VIDA COMERCIAL — Cols R a Z (9 colunas)</h2></div>
+
+  <div class="note info">Coluna visível quando fechado: <strong>R = CICLO MÉDIO</strong> — o número que governa o "momento ouro" de recompra.</div>
+
+  <table class="dt">
+    <tr><th>COL</th><th>NOME</th><th>TIPO</th><th>FONTE</th><th>REGRA</th></tr>
+    <tr><td class="mono" style="color:var(--mercos);font-weight:700">R</td><td><strong>CICLO MÉDIO</strong></td><td class="mono">NUM</td><td>Carteira col 13</td><td>Dias entre compras. 43.4% preenchido. Sem dado = usar 45 como padrão. Governa o cálculo do SINALEIRO e da FASE.</td></tr>
+    <tr><td class="mono" style="color:var(--mercos)">S</td><td>DATA ÚLTIMO PEDIDO</td><td class="mono">DATE</td><td>Carteira col 14</td><td>DD/MM/YYYY. Atualizado via DRAFT.</td></tr>
+    <tr><td class="mono" style="color:var(--mercos)">T</td><td>VALOR ÚLTIMO PEDIDO</td><td class="mono">MONEY</td><td>Carteira col 15</td><td>R$ do pedido mais recente.</td></tr>
+    <tr><td class="mono" style="color:var(--mercos)">U</td><td>VENDEDOR ÚLTIMO PEDIDO</td><td class="mono">TEXT(30)</td><td>Carteira col 17</td><td>Quem fechou o último pedido (pode diferir do CONSULTOR atual).</td></tr>
+    <tr><td class="mono" style="color:var(--mercos)">V</td><td>Nº DE COMPRAS</td><td class="mono">INT</td><td>Carteira col 18</td><td>Total de pedidos no período.</td></tr>
+    <tr><td class="mono" style="color:var(--mercos)">W</td><td>CURVA ABC</td><td class="mono">TEXT(1)</td><td>Carteira col 38</td><td>A | B | C. Determina peso no score de prioridade.</td></tr>
+    <tr><td class="mono" style="color:var(--mercos)">X</td><td>TICKET MÉDIO</td><td class="mono">MONEY</td><td>Calculada</td><td>= VALOR_TOTAL_PERÍODO / Nº_COMPRAS. Se Nº_COMPRAS = 0, vazio.</td></tr>
+    <tr><td class="mono" style="color:var(--mercos)">Y</td><td>MESES POSITIVADO</td><td class="mono">INT</td><td>Carteira col 20</td><td>Quantidade de meses com pelo menos 1 compra.</td></tr>
+    <tr><td class="mono" style="color:var(--mercos)">Z</td><td>MÉDIA MENSAL</td><td class="mono">MONEY</td><td>Calculada</td><td>= VALOR_TOTAL_PERÍODO / MESES_POSITIVADO. Se 0 meses, vazio.</td></tr>
+  </table>
+</div>
+
+<!-- ==================== S4: TIMELINE ==================== -->
+<div class="section" id="s4">
+  <div class="sh"><span class="sh-n" style="background:var(--log-lt);color:var(--log)">[+3]</span><h2>TIMELINE MENSAL — Cols AA a AM (13 colunas)</h2></div>
+
+  <div class="note info">Coluna visível quando fechado: <strong>AA = TOTAL PERÍODO (R$)</strong> — quanto o cliente comprou no total.</div>
+
+  <table class="dt">
+    <tr><th>COL</th><th>NOME</th><th>TIPO</th><th>FONTE</th><th>REGRA</th></tr>
+    <tr><td class="mono" style="color:var(--log);font-weight:700">AA</td><td><strong>TOTAL PERÍODO</strong></td><td class="mono">MONEY</td><td>Carteira col 33</td><td>Soma de todos os meses. Atualizado via DRAFT.</td></tr>
+    <tr><td class="mono" style="color:var(--log)">AB</td><td>MAR/25</td><td class="mono">MONEY</td><td>Carteira col 22</td><td>Valor vendido em março/2025. Vazio = não comprou.</td></tr>
+    <tr><td class="mono" style="color:var(--log)">AC</td><td>ABR/25</td><td class="mono">MONEY</td><td>Carteira col 23</td><td></td></tr>
+    <tr><td class="mono" style="color:var(--log)">AD</td><td>MAI/25</td><td class="mono">MONEY</td><td>Carteira col 24</td><td></td></tr>
+    <tr><td class="mono" style="color:var(--log)">AE</td><td>JUN/25</td><td class="mono">MONEY</td><td>Carteira col 25</td><td></td></tr>
+    <tr><td class="mono" style="color:var(--log)">AF</td><td>JUL/25</td><td class="mono">MONEY</td><td>Carteira col 26</td><td></td></tr>
+    <tr><td class="mono" style="color:var(--log)">AG</td><td>AGO/25</td><td class="mono">MONEY</td><td>Carteira col 27</td><td></td></tr>
+    <tr><td class="mono" style="color:var(--log)">AH</td><td>SET/25</td><td class="mono">MONEY</td><td>Carteira col 28</td><td></td></tr>
+    <tr><td class="mono" style="color:var(--log)">AI</td><td>OUT/25</td><td class="mono">MONEY</td><td>Carteira col 29</td><td></td></tr>
+    <tr><td class="mono" style="color:var(--log)">AJ</td><td>NOV/25</td><td class="mono">MONEY</td><td>Carteira col 30</td><td></td></tr>
+    <tr><td class="mono" style="color:var(--log)">AK</td><td>DEZ/25</td><td class="mono">MONEY</td><td>Carteira col 31</td><td></td></tr>
+    <tr><td class="mono" style="color:var(--log)">AL</td><td>JAN/26</td><td class="mono">MONEY</td><td>Carteira col 32</td><td></td></tr>
+    <tr><td class="mono" style="color:var(--log)">AM</td><td>MESES LISTA</td><td class="mono">TEXT</td><td>Carteira col 21</td><td>Lista textual: "JAN/26, OUT/25, SET/25". Visão rápida dos meses ativos.</td></tr>
+  </table>
+
+  <div class="note warn">
+    <strong>Evolução mensal:</strong> Quando FEV/26 fechar, adiciona-se col AN = FEV/26. Quando MAR/26 fechar, col AO = MAR/26. Colunas crescem à direita do grupo. O TOTAL PERÍODO (col AA) se atualiza automaticamente somando todos os meses.
+  </div>
+</div>
+
+<!-- ==================== S5: JORNADA ==================== -->
+<div class="section" id="s5">
+  <div class="sh"><span class="sh-n" style="background:var(--jornada-lt);color:var(--jornada)">[+4]</span><h2>JORNADA DO CLIENTE — Cols AN a AS (6 colunas)</h2></div>
+
+  <div class="note warn">Coluna visível quando fechado: <strong>AN = DIAS ATÉ CONVERSÃO</strong> — quanto tempo levou da prospecção até a 1ª venda. Inteligência estratégica pura.</div>
+
+  <div class="note info">
+    <strong>⚠ BLOCO NOVO — não existe nos dados atuais.</strong> Será minerado do LOG (11.758 registros) pelo Agente 4 (JORNADA). Campos que não puderem ser extraídos ficam vazios e são populados conforme novos atendimentos geram dados.
+  </div>
+
+  <table class="dt">
+    <tr><th>COL</th><th>NOME</th><th>TIPO</th><th>COMO POPULAR</th></tr>
+    <tr><td class="mono" style="color:var(--jornada);font-weight:700">AN</td><td><strong>DIAS ATÉ CONVERSÃO</strong></td><td class="mono">INT</td><td>= DATA_1ª_VENDA - DATA_1º_CONTATO. Null se nunca converteu. O número-chave que mostra eficiência de conversão.</td></tr>
+    <tr><td class="mono" style="color:var(--jornada)">AO</td><td>DATA 1º CONTATO</td><td class="mono">DATE</td><td>MIN(DATA) no LOG onde CNPJ = cliente. Primeira interação registrada.</td></tr>
+    <tr><td class="mono" style="color:var(--jornada)">AP</td><td>DATA 1º ORÇAMENTO</td><td class="mono">DATE</td><td>MIN(DATA) no LOG onde RESULTADO = "ORÇAMENTO" para este CNPJ.</td></tr>
+    <tr><td class="mono" style="color:var(--jornada)">AQ</td><td>DATA 1ª VENDA</td><td class="mono">DATE</td><td>MIN(DATA) no LOG onde RESULTADO = "VENDA" para este CNPJ.</td></tr>
+    <tr><td class="mono" style="color:var(--jornada)">AR</td><td>TOTAL TENTATIVAS ATÉ VENDA</td><td class="mono">INT</td><td>COUNT registros no LOG entre DATA_1º_CONTATO e DATA_1ª_VENDA.</td></tr>
+    <tr><td class="mono" style="color:var(--jornada)">AS</td><td>DATA ÚLTIMA RECOMPRA</td><td class="mono">DATE</td><td>MAX(DATA) no LOG onde RESULTADO = "VENDA" e DATA > DATA_1ª_VENDA.</td></tr>
+  </table>
+</div>
+
+<!-- ==================== S6: ECOMMERCE ==================== -->
+<div class="section" id="s6">
+  <div class="sh"><span class="sh-n" style="background:var(--ecom-lt);color:var(--ecom)">[+5]</span><h2>ECOMMERCE — Cols AT a AX (5 colunas)</h2></div>
+
+  <div class="note info">Coluna visível quando fechado: <strong>AT = ACESSO B2B</strong> — Sim ou Não. Resume se o cliente usa o portal.</div>
+
+  <table class="dt">
+    <tr><th>COL</th><th>NOME</th><th>TIPO</th><th>FONTE</th><th>REGRA</th></tr>
+    <tr><td class="mono" style="color:var(--ecom);font-weight:700">AT</td><td><strong>ACESSO B2B</strong></td><td class="mono">TEXT(3)</td><td>Mercos ACESSO_B2B</td><td>SIM | NÃO. Se tem acesso ativo ao portal B2B.</td></tr>
+    <tr><td class="mono" style="color:var(--ecom)">AU</td><td>ACESSOS PORTAL</td><td class="mono">INT</td><td>Carteira col 34</td><td>Nº de acessos ao ecommerce. 51% preenchido.</td></tr>
+    <tr><td class="mono" style="color:var(--ecom)">AV</td><td>ITENS CARRINHO</td><td class="mono">INT</td><td>Carteira col 35</td><td>Itens abandonados no carrinho. Oportunidade de venda.</td></tr>
+    <tr><td class="mono" style="color:var(--ecom)">AW</td><td>VALOR PORTAL B2B</td><td class="mono">MONEY</td><td>Carteira col 36</td><td>R$ total de pedidos via portal.</td></tr>
+    <tr><td class="mono" style="color:var(--ecom)">AX</td><td>OPORTUNIDADE ECOM</td><td class="mono">TEXT(15)</td><td>Carteira col 40</td><td>CONVERTIDO (84) | 🔥 QUENTE (2) | vazio. Flag de oportunidade.</td></tr>
+  </table>
+</div>
+
+<!-- ==================== S7: SAP ==================== -->
+<div class="section" id="s7">
+  <div class="sh"><span class="sh-n" style="background:var(--sap-lt);color:var(--sap)">[+6]</span><h2>SAP — Cols AY a BI (11 colunas)</h2></div>
+
+  <div class="note info">Coluna visível quando fechado: <strong>AY = COD_SAP</strong> — a chave de vínculo com o sistema financeiro.</div>
+
+  <table class="dt">
+    <tr><th>COL</th><th>NOME</th><th>TIPO</th><th>FONTE</th></tr>
+    <tr><td class="mono" style="color:var(--sap);font-weight:700">AY</td><td><strong>COD_SAP</strong></td><td class="mono">TEXT(10)</td><td>SAP col 2 / Carteira col 1. Pode ter divergências (28 detectadas).</td></tr>
+    <tr><td class="mono" style="color:var(--sap)">AZ</td><td>STATUS PARCEIRO</td><td class="mono">TEXT(5)</td><td>SAP Status_Parceiros. @08@ = ativo.</td></tr>
+    <tr><td class="mono" style="color:var(--sap)">BA</td><td>ENDEREÇO</td><td class="mono">TEXT(150)</td><td>SAP Endereço + Bairro concatenados.</td></tr>
+    <tr><td class="mono" style="color:var(--sap)">BB</td><td>CEP</td><td class="mono">TEXT(9)</td><td>SAP Código_Postal. Formato XXXXX-XXX.</td></tr>
+    <tr><td class="mono" style="color:var(--sap)">BC</td><td>CONDIÇÃO PAGAMENTO</td><td class="mono">TEXT(30)</td><td>SAP Cond.Pagto. Ex: "P044 — 21/28/35".</td></tr>
+    <tr><td class="mono" style="color:var(--sap)">BD</td><td>LISTA PREÇOS</td><td class="mono">TEXT(30)</td><td>SAP Lista_Preços.</td></tr>
+    <tr><td class="mono" style="color:var(--sap)">BE</td><td>GRUPO CLIENTE</td><td class="mono">TEXT(30)</td><td>SAP Grupo_Cliente.</td></tr>
+    <tr><td class="mono" style="color:var(--sap)">BF</td><td>BLOQUEIO VENDAS</td><td class="mono">BOOL</td><td>SAP Bloqueio_Área_Vendas. X = bloqueado.</td></tr>
+    <tr><td class="mono" style="color:var(--sap)">BG</td><td>BLOQUEIO GERAL</td><td class="mono">BOOL</td><td>SAP Bloqueio_Todas_Áreas.</td></tr>
+    <tr><td class="mono" style="color:var(--sap)">BH</td><td>DESC. COMERCIAL</td><td class="mono">NUM(%)</td><td>SAP Desconto_Comercial.</td></tr>
+    <tr><td class="mono" style="color:var(--sap)">BI</td><td>MACRORREGIÃO</td><td class="mono">TEXT(30)</td><td>SAP 03_Nome_Macro. "SUL" / "NACIONAL".</td></tr>
+  </table>
+</div>
+
+<!-- ==================== S8: OPERACIONAL ==================== -->
+<div class="section" id="s8">
+  <div class="sh"><span class="sh-n" style="background:var(--oper-lt);color:var(--oper)">[+7]</span><h2>OPERACIONAL — Cols BJ a BR (9 colunas)</h2></div>
+
+  <div class="note info">Coluna visível quando fechado: <strong>BJ = PRÓX. FOLLOW-UP</strong> — quando é o próximo contato agendado. Governa a agenda diária.</div>
+
+  <table class="dt">
+    <tr><th>COL</th><th>NOME</th><th>TIPO</th><th>FONTE / REGRA</th></tr>
+    <tr><td class="mono" style="color:var(--oper);font-weight:700">BJ</td><td><strong>PRÓX. FOLLOW-UP</strong></td><td class="mono">DATE</td><td>Calculada: DATA_ÚLTIMO_ATENDIMENTO + dias do RESULTADO (VENDA=+45d, ORÇAMENTO=+1d, EM ATEND=+2d, FU7=+7d, FU15=+15d). Se ultrapassou a data, fica VERMELHO = atrasado.</td></tr>
+    <tr><td class="mono" style="color:var(--oper)">BK</td><td>BLOCO</td><td class="mono">TEXT(10)</td><td>Carteira col 41. MANHÃ | TARDE. Define sprint do consultor.</td></tr>
+    <tr><td class="mono" style="color:var(--oper)">BL</td><td>ESTÁGIO FUNIL</td><td class="mono">TEXT(20)</td><td>Carteira col 42. CS/RECOMPRA | ATENÇÃO/SALVAR | PERDA/NUTRIÇÃO | ABERTURA/ATIVAÇÃO.</td></tr>
+    <tr><td class="mono" style="color:var(--oper)">BM</td><td>AÇÃO DETALHADA</td><td class="mono">TEXT(50)</td><td>Carteira col 43. Ação específica: "LIGAÇÃO - OFERECER REPOSIÇÃO", "1º CONTATO - APRESENTAR VITAO".</td></tr>
+    <tr><td class="mono" style="color:var(--oper)">BN</td><td>DATA ÚLT. ATENDIMENTO</td><td class="mono">DATE</td><td>Do LOG: MAX(DATA) para este CNPJ. Atualizado via DRAFT de atendimentos.</td></tr>
+    <tr><td class="mono" style="color:var(--oper)">BO</td><td>ÚLTIMO RESULTADO</td><td class="mono">TEXT(25)</td><td>Do LOG: último RESULTADO registrado. EM ATENDIMENTO | ORÇAMENTO | VENDA | etc.</td></tr>
+    <tr><td class="mono" style="color:var(--oper)">BP</td><td>MOTIVO</td><td class="mono">TEXT(30)</td><td>5-10 opções padronizadas (a definir na construção do LOG). Ex: AINDA TEM ESTOQUE | PREÇO ALTO | PREFERIU CONCORRENTE | SEM RESPOSTA | LOJA FECHADA.</td></tr>
+    <tr><td class="mono" style="color:var(--oper)">BQ</td><td>PRIORIDADE</td><td class="mono">INT(1-100)</td><td>Score automático calculado:<br>• Curva A = +30pts, B = +15pts, C = +5pts<br>• Sinaleiro 🔴 = +40pts, 🟡 = +25pts, 🟢 = +10pts, 🟣 = +5pts<br>• Fase RECOMPRA/SALVAMENTO = +25pts, CS = +20pts, PROSPECÇÃO = +10pts, NUTRIÇÃO = +5pts<br>Score máximo = 95. Ordena do maior pro menor = agenda priorizada.</td></tr>
+    <tr><td class="mono" style="color:var(--oper)">BR</td><td>OBSERVAÇÃO</td><td class="mono">TEXT(500)</td><td>Texto livre. Notas do gestor.</td></tr>
+  </table>
+</div>
+
+<!-- ==================== S9: COMITÊ ==================== -->
+<div class="section" id="s9">
+  <div class="sh"><span class="sh-n" style="background:var(--comite-lt);color:var(--comite)">[+8]</span><h2>COMITÊ — Cols BS a CC (11 colunas)</h2></div>
+
+  <div class="note info">Coluna visível quando fechado: <strong>BS = % ATING. MÊS</strong> — o número que a liderança quer ver na quarta-feira. Tudo mais é detalhe.</div>
+
+  <div class="note warn">
+    <strong>Baseado no arquivo:</strong> "Acompanhamento Entrada de Pedidos". Estrutura: META × REALIZADO em 3 níveis (Mês, Trimestre, YTD) + pedidos por semana + justificativa. Tudo auto-calculado exceto justificativa.
+  </div>
+
+  <table class="dt">
+    <tr><th>COL</th><th>NOME</th><th>TIPO</th><th>FONTE / REGRA</th></tr>
+    <tr><td class="mono" style="color:var(--comite);font-weight:700">BS</td><td><strong>% ATING. MÊS</strong></td><td class="mono">NUM(%)</td><td>= REALIZADO_MÊS / META_MÊS × 100. Auto-calculado. Formatação condicional: ≥80% verde, 50-79% amarelo, &lt;50% vermelho.</td></tr>
+    <tr><td class="mono" style="color:var(--comite)">BT</td><td>META MÊS (R$)</td><td class="mono">MONEY</td><td>Do arquivo META por grupo chave/cliente. Puxa via XLOOKUP por CNPJ ou GRUPO_CHAVE.</td></tr>
+    <tr><td class="mono" style="color:var(--comite)">BU</td><td>REALIZADO MÊS (R$)</td><td class="mono">MONEY</td><td>Soma dos pedidos do mês atual. Atualizado via DRAFT diário (relatório Mercos).</td></tr>
+    <tr><td class="mono" style="color:var(--comite)">BV</td><td>% ATING. TRI</td><td class="mono">NUM(%)</td><td>= REALIZADO_TRI / META_TRI × 100.</td></tr>
+    <tr><td class="mono" style="color:var(--comite)">BW</td><td>META TRI (R$)</td><td class="mono">MONEY</td><td>Soma metas dos 3 meses do trimestre atual.</td></tr>
+    <tr><td class="mono" style="color:var(--comite)">BX</td><td>REALIZADO TRI (R$)</td><td class="mono">MONEY</td><td>Soma realizado dos 3 meses do trimestre.</td></tr>
+    <tr><td class="mono" style="color:var(--comite)">BY</td><td>% ATING. YTD</td><td class="mono">NUM(%)</td><td>= REALIZADO_YTD / META_YTD × 100.</td></tr>
+    <tr><td class="mono" style="color:var(--comite)">BZ</td><td>META YTD (R$)</td><td class="mono">MONEY</td><td>Soma metas de jan até mês atual.</td></tr>
+    <tr><td class="mono" style="color:var(--comite)">CA</td><td>REALIZADO YTD (R$)</td><td class="mono">MONEY</td><td>Soma realizado de jan até mês atual.</td></tr>
+    <tr><td class="mono" style="color:var(--comite)">CB</td><td>DATA ÚLTIMO PEDIDO</td><td class="mono">DATE</td><td>Referência cruzada: puxa de col S (VIDA COMERCIAL).</td></tr>
+    <tr><td class="mono" style="color:var(--comite)">CC</td><td>JUSTIFICATIVA SEMANAL</td><td class="mono">TEXT(200)</td><td>Preenchido por Leandro antes da quarta. "Cliente em follow-up, pedido previsto S3." Único campo manual deste grupo.</td></tr>
+  </table>
+</div>
+
+<!-- ==================== S10: REGRAS ==================== -->
+<div class="section" id="s10">
+  <div class="sh"><span class="sh-n" style="background:var(--accent-lt);color:var(--accent)">10</span><h2>REGRAS DE NEGÓCIO — CÁLCULOS AUTOMÁTICOS</h2></div>
+
+  <div class="g3">
+    <div class="card">
+      <div class="card-h" style="background:var(--fix-lt);color:var(--fix)">🚦 SINALEIRO (col G)</div>
+      <div class="card-b">
+        <div class="row"><span class="k"><span class="sinal s-verde"></span> VERDE</span><span class="v">DIAS ≤ CICLO</span></div>
+        <div class="row"><span class="k"><span class="sinal s-amarelo"></span> AMARELO</span><span class="v">CICLO &lt; DIAS ≤ CICLO+30</span></div>
+        <div class="row"><span class="k"><span class="sinal s-vermelho"></span> VERMELHO</span><span class="v">DIAS &gt; CICLO+30</span></div>
+        <div class="row"><span class="k"><span class="sinal s-roxo"></span> ROXO</span><span class="v">Nunca comprou</span></div>
+        <div class="row"><span class="k">Padrão sem ciclo</span><span class="v">45 dias</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-h" style="background:var(--fix-lt);color:var(--fix)">📊 SITUAÇÃO (col E)</div>
+      <div class="card-b">
+        <div class="row"><span class="k">≤ 50 dias</span><span class="v" style="color:var(--verde)">ATIVO</span></div>
+        <div class="row"><span class="k">51-60 dias</span><span class="v" style="color:var(--amarelo)">EM RISCO</span></div>
+        <div class="row"><span class="k">61-90 dias</span><span class="v" style="color:#ff6600">INAT.REC</span></div>
+        <div class="row"><span class="k">&gt; 90 dias</span><span class="v" style="color:var(--vermelho)">INAT.ANT</span></div>
+        <div class="row"><span class="k">Sem compra, cadastrado</span><span class="v">NOVO</span></div>
+        <div class="row"><span class="k">Sem cadastro</span><span class="v">PROSPECT</span></div>
+        <div class="row"><span class="k">Manual Daiane</span><span class="v">LEAD</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-h" style="background:var(--fix-lt);color:var(--fix)">🔄 FASE (col I)</div>
+      <div class="card-b">
+        <div class="row"><span class="k">ATIVO 0-10d</span><span class="v">PÓS-VENDA</span></div>
+        <div class="row"><span class="k">ATIVO 10-25d</span><span class="v">CS</span></div>
+        <div class="row"><span class="k">ATIVO perto ciclo</span><span class="v">RECOMPRA</span></div>
+        <div class="row"><span class="k">INAT.REC</span><span class="v">SALVAMENTO</span></div>
+        <div class="row"><span class="k">INAT.ANT</span><span class="v">RECUPERAÇÃO</span></div>
+        <div class="row"><span class="k">PROSPECT/LEAD</span><span class="v">PROSPECÇÃO</span></div>
+        <div class="row"><span class="k">Após T4 s/ resp</span><span class="v">NUTRIÇÃO</span></div>
+        <div class="row"><span class="k">Respondeu</span><span class="v">EM ATENDIMENTO</span></div>
+        <div class="row"><span class="k">Orçamento aberto</span><span class="v">ORÇAMENTO</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="g2" style="margin-top:12px">
+    <div class="card">
+      <div class="card-h" style="background:var(--fix-lt);color:var(--fix)">📞 CADÊNCIA DE TENTATIVAS (col J)</div>
+      <div class="card-b">
+        <div class="row"><span class="k">T1</span><span class="v">WhatsApp — apresentação/abordagem</span></div>
+        <div class="row"><span class="k">T2 (+1 dia útil)</span><span class="v">Ligação</span></div>
+        <div class="row"><span class="k">T3 (+2 dias)</span><span class="v">WhatsApp — mudar abordagem</span></div>
+        <div class="row"><span class="k">T4 (+2 dias)</span><span class="v">Ligação final</span></div>
+        <div class="row"><span class="k">Sem resposta T4</span><span class="v" style="color:var(--vermelho)">→ FASE = NUTRIÇÃO (ciclo 15d)</span></div>
+        <div class="row"><span class="k">Responde em T(n)</span><span class="v" style="color:var(--verde)">→ Zera, EM ATENDIMENTO T1</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-h" style="background:var(--fix-lt);color:var(--fix)">⭐ PRIORIDADE (col BQ) — Score 1-100</div>
+      <div class="card-b">
+        <div class="row"><span class="k">Curva A</span><span class="v">+30 pts</span></div>
+        <div class="row"><span class="k">Curva B</span><span class="v">+15 pts</span></div>
+        <div class="row"><span class="k">Curva C</span><span class="v">+5 pts</span></div>
+        <div class="row"><span class="k">🔴 Vermelho</span><span class="v">+40 pts</span></div>
+        <div class="row"><span class="k">🟡 Amarelo</span><span class="v">+25 pts</span></div>
+        <div class="row"><span class="k">🟢 Verde</span><span class="v">+10 pts</span></div>
+        <div class="row"><span class="k">RECOMPRA/SALVAMENTO</span><span class="v">+25 pts</span></div>
+        <div class="row"><span class="k">CS</span><span class="v">+20 pts</span></div>
+        <div class="row"><span class="k">Max possível</span><span class="v" style="color:var(--accent)">95 pts (A + 🔴 + SALVAMENTO)</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== S11: PREVIEW ==================== -->
+<div class="section" id="s11">
+  <div class="sh"><span class="sh-n" style="background:var(--accent-lt);color:var(--accent)">11</span><h2>PREVIEW — COMO FICA COM TUDO FECHADO (18 colunas)</h2></div>
+
+  <div class="preview">
+    <div class="preview-h">📊 CARTEIRA DE CLIENTES — TUDO FECHADO — 18 COLUNAS VISÍVEIS</div>
+    <table>
+      <tr>
+        <th colspan="10" style="background:var(--fix-lt);color:var(--fix)">SEMPRE VISÍVEIS (A-J)</th>
+        <th style="background:var(--sap-lt);color:var(--sap)">[+1]</th>
+        <th style="background:var(--mercos-lt);color:var(--mercos)">[+2]</th>
+        <th style="background:var(--log-lt);color:var(--log)">[+3]</th>
+        <th style="background:var(--jornada-lt);color:var(--jornada)">[+4]</th>
+        <th style="background:var(--ecom-lt);color:var(--ecom)">[+5]</th>
+        <th style="background:var(--sap-lt);color:var(--sap)">[+6]</th>
+        <th style="background:var(--oper-lt);color:var(--oper)">[+7]</th>
+        <th style="background:var(--comite-lt);color:var(--comite)">[+8]</th>
+      </tr>
+      <tr>
+        <th class="fix">NOME</th><th class="fix">REDE</th><th class="fix">UF</th><th class="fix">CONS.</th><th class="fix">SIT.</th><th class="fix">DIAS</th><th class="fix">🚦</th><th class="fix">TIPO</th><th class="fix">FASE</th><th class="fix">T</th>
+        <th class="grp">CNPJ</th><th class="grp">CICLO</th><th class="grp">TOTAL</th><th class="grp">CONV.</th><th class="grp">B2B</th><th class="grp">SAP</th><th class="grp">F-UP</th><th class="grp">%MÊS</th>
+      </tr>
+      <tr>
+        <td class="fix">DIV.TERRA CWB</td><td class="fix">DIVINA TERRA</td><td class="fix">PR</td><td class="fix">DAIANE</td><td class="fix" style="color:var(--verde)">ATIVO</td><td class="fix">12</td><td>🟢</td><td class="fix">DESENV</td><td class="fix">CS</td><td class="fix">T1</td>
+        <td class="grp">32828171000108</td><td class="grp">—</td><td class="grp">767</td><td class="grp">—</td><td class="grp">Não</td><td class="grp">1000105451</td><td class="grp">05/02</td><td class="grp">82%</td>
+      </tr>
+      <tr>
+        <td class="fix">ALICE GRAOS</td><td class="fix">TUDO EM GRAOS</td><td class="fix">RS</td><td class="fix">MANU</td><td class="fix" style="color:#ff6600">EM RISCO</td><td class="fix">53</td><td>🟡</td><td class="fix">RECOR</td><td class="fix">RECOMPRA</td><td class="fix">T1</td>
+        <td class="grp">41626544000140</td><td class="grp">31</td><td class="grp">9.808</td><td class="grp">15d</td><td class="grp">Sim</td><td class="grp">1000105678</td><td class="grp">07/02</td><td class="grp">45%</td>
+      </tr>
+      <tr>
+        <td class="fix">BIO SC</td><td class="fix">BIOMUNDO</td><td class="fix">SC</td><td class="fix">DAIANE</td><td class="fix" style="color:var(--vermelho)">INAT.ANT</td><td class="fix">99</td><td>🔴</td><td class="fix">RECOR</td><td class="fix">RECUPER</td><td class="fix">T2</td>
+        <td class="grp">46945954000178</td><td class="grp">60</td><td class="grp">6.829</td><td class="grp">8d</td><td class="grp">Não</td><td class="grp">1000101541</td><td class="grp">ATRASADO</td><td class="grp">0%</td>
+      </tr>
+      <tr>
+        <td class="fix">AFS ALDEIA</td><td class="fix">ARMAZEM FIT</td><td class="fix">SP</td><td class="fix">DAIANE</td><td class="fix" style="color:var(--roxo)">PROSPECT</td><td class="fix">—</td><td>🟣</td><td class="fix">PROSP</td><td class="fix">PROSPECÇÃO</td><td class="fix">T1</td>
+        <td class="grp">39915172000120</td><td class="grp">—</td><td class="grp">—</td><td class="grp">—</td><td class="grp">Não</td><td class="grp">—</td><td class="grp">10/02</td><td class="grp">—</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="note ok">
+    <strong>4 clientes, 4 histórias diferentes, tudo visível em 1 tela.</strong> O primeiro tá verde e saudável (CS T1). O segundo tá amarelo e perto da recompra — momento ouro. O terceiro tá vermelho com follow-up atrasado — prioridade urgente. O quarto é prospect novo — prospecção T1. O score de PRIORIDADE (col BQ, dentro do [+7]) ordenaria: BIO SC (95pts) → ALICE GRAOS (70pts) → DIVINA TERRA (35pts) → AFS ALDEIA (15pts).
+  </div>
+</div>
+
+<!-- ==================== S12: FONTES ==================== -->
+<div class="section" id="s12">
+  <div class="sh"><span class="sh-n" style="background:var(--sap-lt);color:var(--sap)">12</span><h2>MAPA DE FONTES — DE ONDE VEM CADA DADO</h2></div>
+
+  <div class="stats" style="grid-template-columns:repeat(4,1fr)">
+    <div class="stat"><div class="v" style="color:var(--sap)">661</div><div class="l">SAP COM VENDA</div></div>
+    <div class="stat"><div class="v" style="color:var(--red)">1.040</div><div class="l">SAP SEM ATEND.</div></div>
+    <div class="stat"><div class="v" style="color:var(--mercos)">488</div><div class="l">CARTEIRA MERCOS</div></div>
+    <div class="stat"><div class="v" style="color:var(--log)">5.826</div><div class="l">BASE MERCOS (6K)</div></div>
+  </div>
+  <div class="stats" style="grid-template-columns:repeat(4,1fr)">
+    <div class="stat"><div class="v" style="color:var(--meta)">899</div><div class="l">REDES/FRANQUIAS</div></div>
+    <div class="stat"><div class="v" style="color:var(--jornada)">11.758</div><div class="l">LOG INTERAÇÕES</div></div>
+    <div class="stat"><div class="v" style="color:var(--comite)">493</div><div class="l">VENDA MÊS A MÊS</div></div>
+    <div class="stat"><div class="v" style="color:var(--accent)">19.379</div><div class="l">UNIVERSO TOTAL</div></div>
+  </div>
+
+  <table class="dt">
+    <tr><th>ARQUIVO</th><th>POPULA QUAIS COLUNAS</th><th>PRIORIDADE</th></tr>
+    <tr><td>CARTEIRA_CLIENTES_JAN2026.xlsx</td><td class="mono">A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,Q,R,S,T,U,V,W,X,Y,Z,AA-AM,AT-AX,BK,BL,BM</td><td><span class="badge b-fix">MÁXIMA — Fonte primária</span></td></tr>
+    <tr><td>SAP_CARTEIRA_COM_VENDA.xlsx</td><td class="mono">AY-BI, K(complemento), M(complemento)</td><td><span class="badge b-sap">ALTA — Cadastral oficial</span></td></tr>
+    <tr><td>SAP_SEM_ATENDIMENTO.xlsx</td><td class="mono">AY-BI (clientes inativos SAP), P(COD_FONTE)</td><td><span class="badge b-sap">ALTA</span></td></tr>
+    <tr><td>BASE_MERCOS_ATIVOS (6k)</td><td class="mono">Prospects: A,B,C,D,H,N,O,AT,P(COD_FONTE)</td><td><span class="badge b-mercos">MÉDIA — Expande universo</span></td></tr>
+    <tr><td>REDES_FRANQUIAS_AUDITADO.xlsx</td><td class="mono">B(REDE), dados específicos por rede</td><td><span class="badge b-meta">MÉDIA — Enriquecimento</span></td></tr>
+    <tr><td>LOG (11.758 registros)</td><td class="mono">AN-AS(JORNADA), BN,BO(OPERACIONAL), J(TENTATIVA)</td><td><span class="badge b-log">ALTA — Mineração histórica</span></td></tr>
+    <tr><td>META_PROJECAO_2026.xlsx</td><td class="mono">BT,BW,BZ (metas)</td><td><span class="badge b-comite">ALTA — Comitê</span></td></tr>
+    <tr><td>VENDA_MES_A_MES_2025.xlsx</td><td class="mono">AB-AL (timeline mensal por SAP)</td><td><span class="badge b-log">COMPLEMENTAR</span></td></tr>
+  </table>
+</div>
+
+<!-- ==================== S13: ANOMALIAS ==================== -->
+<div class="section" id="s13">
+  <div class="sh"><span class="sh-n" style="background:var(--ecom-lt);color:var(--ecom)">13</span><h2>ANOMALIAS DETECTADAS — RESOLVER ANTES DE CONSTRUIR</h2></div>
+
+  <table class="dt">
+    <tr><th>#</th><th>SEV.</th><th>ANOMALIA</th><th>QTD</th><th>IMPACTO NA ABA 1</th><th>CORREÇÃO</th></tr>
+    <tr><td class="mono">A1</td><td><span class="badge b-ecom">ALTA</span></td><td>COD_SAP diverge entre Carteira e SAP</td><td class="mono">28</td><td>Joins do [+6] SAP quebram</td><td>Usar COD_SAP da Carteira Mercos como master</td></tr>
+    <tr><td class="mono">A2</td><td><span class="badge b-ecom">ALTA</span></td><td>Clientes Carteira sem match SAP</td><td class="mono">20</td><td>[+6] SAP fica vazio pra esses</td><td>Marcar COD_FONTE = "MERCOS_ONLY"</td></tr>
+    <tr><td class="mono">A3</td><td><span class="badge b-jornada">MÉDIA</span></td><td>COD_SAP ausente na Carteira</td><td class="mono">36</td><td>Sem vínculo SAP</td><td>XLOOKUP por CNPJ na base SAP 6.658</td></tr>
+    <tr><td class="mono">A4</td><td><span class="badge b-jornada">MÉDIA</span></td><td>CNPJs duplicados SAP SEM ATEND</td><td class="mono">57</td><td>Linhas duplicadas na ABA 1</td><td>Deduplicar mantendo registro mais recente</td></tr>
+    <tr><td class="mono">A5</td><td><span class="badge b-jornada">MÉDIA</span></td><td>Mercos sem CNPJ</td><td class="mono">219</td><td>Impossível cruzar</td><td>Excluir — sem CNPJ não entra na ABA 1</td></tr>
+    <tr><td class="mono">A6</td><td><span class="badge b-ecom">ALTA</span></td><td>TIPO_CONTATO no LOG com notas livres</td><td class="mono">~30</td><td>JORNADA ([+4]) calcula errado</td><td>Normalizar pra 6 categorias da REGRAS</td></tr>
+    <tr><td class="mono">A7</td><td><span class="badge b-jornada">MÉDIA</span></td><td>RESULTADO no LOG fora do padrão</td><td class="mono">~36</td><td>FASE e TENTATIVA calculam errado</td><td>PERCA→PERDA, padronizar</td></tr>
+    <tr><td class="mono">A8</td><td><span class="badge b-sap">BAIXA</span></td><td>LOG CNPJs órfãos (sem base)</td><td class="mono">453</td><td>Interações sem cliente na ABA 1</td><td>Reconciliar por nome fantasia</td></tr>
+    <tr><td class="mono">A9</td><td><span class="badge b-ecom">ALTA</span></td><td>84% das redes sem COD_SAP</td><td class="mono">754</td><td>[+6] SAP vazio pra redes</td><td>XLOOKUP por CNPJ. Se não achar: COD_FONTE="REDE_ONLY"</td></tr>
+    <tr><td class="mono">A10</td><td><span class="badge b-jornada">MÉDIA</span></td><td>77% da Carteira com "SEM REDE"</td><td class="mono">376</td><td>Col B (REDE/REGIONAL) vazia</td><td>Cruzar CNPJ com GRUPO_CHAVE Mercos. Sem rede = mostrar REGIONAL.</td></tr>
+  </table>
+</div>
+
+<!-- ==================== S14: AGENTES ==================== -->
+<div class="section" id="s14">
+  <div class="sh"><span class="sh-n" style="background:var(--accent-lt);color:var(--accent)">14</span><h2>PLANO DE EXECUÇÃO — CLAUDE CODE (6 AGENTES)</h2></div>
+
+  <div class="flow">
+    <div class="flow-step">
+      <div class="flow-n" style="background:var(--sap-lt);color:var(--sap)">1</div>
+      <div class="flow-txt">
+        <strong>AGENTE EXTRACTOR</strong>
+        <div class="sub">Lê 8 arquivos Excel. Normaliza CNPJs (14 dígitos), telefones (55+DDD+num), emails (lowercase), textos (UPPER). Gera JSONs intermediários padronizados.</div>
+      </div>
+    </div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-step">
+      <div class="flow-n" style="background:var(--mercos-lt);color:var(--mercos)">2</div>
+      <div class="flow-txt">
+        <strong>AGENTE DEDUP</strong>
+        <div class="sub">Resolve 28 COD_SAP divergentes. Elimina 57 duplicatas. Exclui 219 sem CNPJ. Reconcilia 453 órfãos do LOG. Gera master list de CNPJs com flags de presença por fonte.</div>
+      </div>
+    </div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-step">
+      <div class="flow-n" style="background:var(--accent-lt);color:var(--accent)">3</div>
+      <div class="flow-txt">
+        <strong>AGENTE BUILDER</strong>
+        <div class="sub">Monta a ABA 1 com 81 colunas. 1 linha por CNPJ. Popula blocos [+1] a [+6] com dados das fontes. Calcula campos automáticos: SITUAÇÃO, SINALEIRO, FASE, TIPO_CLIENTE, TICKET_MÉDIO, MÉDIA_MENSAL, PRIORIDADE. Aplica agrupamento Excel e congelamento de painéis.</div>
+      </div>
+    </div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-step">
+      <div class="flow-n" style="background:var(--jornada-lt);color:var(--jornada)">4</div>
+      <div class="flow-txt">
+        <strong>AGENTE JORNADA</strong>
+        <div class="sub">Minera LOG (11.758 registros) pra extrair por CNPJ: data 1º contato, data 1º orçamento, data 1ª venda, dias até conversão, total tentativas, data última recompra. Popula [+4] JORNADA + TENTATIVA (col J). Normaliza TIPO_CONTATO e RESULTADO do LOG.</div>
+      </div>
+    </div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-step">
+      <div class="flow-n" style="background:var(--comite-lt);color:var(--comite)">5</div>
+      <div class="flow-txt">
+        <strong>AGENTE COMITÊ</strong>
+        <div class="sub">Puxa metas do arquivo META_PROJEÇÃO_2026 por grupo chave. Calcula realizado via TIMELINE ([+3]). Monta [+8] COMITÊ com %, META, REALIZADO em 3 níveis (MÊS, TRI, YTD).</div>
+      </div>
+    </div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-step">
+      <div class="flow-n" style="background:var(--ecom-lt);color:var(--ecom)">6</div>
+      <div class="flow-txt">
+        <strong>AGENTE VALIDATOR</strong>
+        <div class="sub">Verifica: todo CNPJ é único? Campos NOT NULL estão preenchidos? SINALEIRO bate com DIAS_SEM_COMPRA? FASE bate com SITUAÇÃO? PRIORIDADE calculada corretamente? Gera relatório de qualidade com % de completude por coluna. Zero tolerance para dados fabricados.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== S15: PRÓXIMAS ABAS ==================== -->
+<div class="section" id="s15">
+  <div class="sh"><span class="sh-n" style="background:var(--log-lt);color:var(--log)">15</span><h2>PRÓXIMAS ABAS — ROADMAP (a definir)</h2></div>
+
+  <div class="g4">
+    <div class="card">
+      <div class="card-h" style="background:var(--log-lt);color:var(--log)">ABA 2 — AGENDA DIÁRIA</div>
+      <div class="card-b">
+        <p>Agenda de atendimento por consultor. Puxa da ABA 1 (CARTEIRA) os clientes prioritários do dia baseado em FASE, TENTATIVA, PRÓX. FOLLOW-UP. Campos de resultado com dropdown pra preenchimento rápido.</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-h" style="background:var(--comite-lt);color:var(--comite)">ABA 3 — DASHBOARDS</div>
+      <div class="card-b">
+        <p>Painéis visuais alimentados pela ABA 1 e LOG. KPIs: positivação, meta vs realizado, funil de conversão, sinaleiro geral, produtividade por consultor.</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-h" style="background:var(--mercos-lt);color:var(--mercos)">ABA DRAFT 1 — MERCOS</div>
+      <div class="card-b">
+        <p>Zona de entrada diária. Leandro extrai relatório do Mercos, cola aqui. Fórmulas puxam atualizações pra CARTEIRA (novos pedidos, mudanças de status, novos cadastros).</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-h" style="background:var(--oper-lt);color:var(--oper)">ABA DRAFT 2 — ATENDIMENTOS</div>
+      <div class="card-b">
+        <p>Consultores mandam planilha de atendimento diário. Leandro cola aqui. Alimenta o LOG oficial, que atualiza FASE, TENTATIVA, PRÓX. FOLLOW-UP automaticamente na CARTEIRA.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="note ok" style="margin-top:16px">
+    <strong>Status:</strong> ABA 1 (CARTEIRA) especificada em detalhe — pronta pro Claude Code. ABAs 2, 3, DRAFT 1 e DRAFT 2 serão especificadas na próxima fase de planejamento, com a mesma profundidade de análise.
+  </div>
+</div>
+
+</div>
+
+<!-- ==================== RESUMO FINAL ==================== -->
+<div style="padding:30px 50px; background:var(--surface); border-top:2px solid var(--border);">
+  <table class="dt" style="max-width:700px; margin:0 auto;">
+    <tr><th>RESUMO ESTRUTURAL — ABA 1: CARTEIRA DE CLIENTES</th><th>QTD</th></tr>
+    <tr><td>Colunas sempre visíveis (congeladas)</td><td class="mono" style="font-weight:700">A-J = 10</td></tr>
+    <tr><td>[+1] IDENTIDADE</td><td class="mono">K-Q = 7</td></tr>
+    <tr><td>[+2] VIDA COMERCIAL</td><td class="mono">R-Z = 9</td></tr>
+    <tr><td>[+3] TIMELINE MENSAL</td><td class="mono">AA-AM = 13</td></tr>
+    <tr><td>[+4] JORNADA</td><td class="mono">AN-AS = 6</td></tr>
+    <tr><td>[+5] ECOMMERCE</td><td class="mono">AT-AX = 5</td></tr>
+    <tr><td>[+6] SAP</td><td class="mono">AY-BI = 11</td></tr>
+    <tr><td>[+7] OPERACIONAL</td><td class="mono">BJ-BR = 9</td></tr>
+    <tr><td>[+8] COMITÊ</td><td class="mono">BS-CC = 11</td></tr>
+    <tr style="background:var(--accent-lt);font-weight:700"><td>TOTAL</td><td class="mono" style="font-size:1rem; color:var(--accent)">81 COLUNAS</td></tr>
+    <tr style="font-weight:700"><td>Visíveis com tudo fechado</td><td class="mono" style="font-size:1rem; color:var(--accent)">18 COLUNAS</td></tr>
+  </table>
+</div>
+
+<div class="footer">
+  JARVIS CRM — VITAO Alimentos — Blueprint v2.0 — ABA 1: FONTE ÚNICA DA VERDADE<br>
+  81 colunas | 8 grupos [+] | 18 visíveis | 10 regras automáticas | 6 agentes Claude Code<br>
+  07 Fev 2026 — Leandro Garcia × Claude Opus
+</div>
+
+</body>
+</html>

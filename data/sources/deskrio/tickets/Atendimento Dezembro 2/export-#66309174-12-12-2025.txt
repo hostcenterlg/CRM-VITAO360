@@ -1,0 +1,283 @@
+Ticket: 66309174 [17/11/2025 08:54:26] Eu: Oii tudo bem ?
+
+Ticket: 66309174 [17/11/2025 08:54:38] Eu: CLIENTE:   51.156.959 ELAINE CRISTINA KOERICH - ME - 51156959000151	 
+
+
+Gostaria de saber a previsão de saida desse cliente
+
+Ticket: 66309174 [17/11/2025 08:54:55] Eu: Consegue me enviar por favor ?
+
+Ticket: 66309174 [17/11/2025 09:20:59] Emerson Silva  Vitao: oi boom dia
+
+Ticket: 66309174 [17/11/2025 09:21:05] Emerson Silva  Vitao: tudo bem e com vc ?
+
+Ticket: 66309174 [17/11/2025 09:21:57] Emerson Silva  Vitao: não achei nada sobre esse cliente
+
+Ticket: 66309174 [17/11/2025 09:22:04] Emerson Silva  Vitao: tem o numero da nota ?
+
+Ticket: 66309174 [17/11/2025 09:24:34] Eu: Então não foi faturado ainda
+
+Ticket: 66309174 [17/11/2025 09:25:05] Eu: Eu preciso mandar o material de trade, e a sabrina falou que a logistica tem a previsão de saida
+
+Ticket: 66309174 [17/11/2025 09:25:21] Eu: 
+
+Ticket: 66309174 [17/11/2025 09:29:21] Emerson Silva  Vitao: qual cidade é esse cliente ?
+
+Ticket: 66309174 [17/11/2025 09:29:57] Eu: OTACILIO COSTA - Santa Catarina
+
+Ticket: 66309174 [17/11/2025 09:49:47] Emerson Silva  Vitao: nao localizei esse tmb
+
+Ticket: 66309174 [17/11/2025 09:50:01] Emerson Silva  Vitao: talvez nao tenha faturado
+
+Ticket: 66309174 [17/11/2025 09:50:06] Emerson Silva  Vitao: ou foi pelo ecomerce
+
+Ticket: 66309174 [17/11/2025 09:52:24] Eu: Todos os pedidos da venda interna vai pelo e-commerce
+
+Ticket: 66309174 [17/11/2025 09:52:34] Eu: Seria com outra pessoa então ?
+
+Ticket: 66309174 [17/11/2025 09:53:57] Emerson Silva  Vitao: depende do valor de nota
+
+Ticket: 66309174 [17/11/2025 09:54:06] Emerson Silva  Vitao: ecomerce sim
+
+Ticket: 66309174 [17/11/2025 09:54:18] Emerson Silva  Vitao: BEGIN:VCARD
+VERSION:3.0
+N:- Vitao;E-commerce;;;
+FN:E-commerce - Vitao
+TEL;type=CELL;waid=554197645052:+55 41 9764-5052
+END:VCARD
+
+Ticket: 66309174 [24/11/2025 16:48:44] Eu: *Manu  - Vitao*:
+nf : 404930
+
+Ticket: 66309174 [24/11/2025 16:48:55] Eu: *Manu  - Vitao*:
+Oii
+
+Ticket: 66309174 [24/11/2025 16:49:08] Eu: *Manu  - Vitao*:
+No follow de sexta estava aguardando embarque
+
+Ticket: 66309174 [24/11/2025 16:49:28] Eu: *Manu  - Vitao*:
+Sabe me dizer se já saiu daqui, essa cliente comprou no dia 11, e foi faturado só no dia 19
+
+Ticket: 66309174 [24/11/2025 16:50:29] Eu: *Manu  - Vitao*:
+Ela ta me atormentando aqui kkkkk
+
+Ticket: 66309174 [25/11/2025 07:31:03] Emerson Silva  Vitao: oi Boom dia
+
+Ticket: 66309174 [25/11/2025 07:31:03] Eu: 👋 Seja muito bem-vindo ao nosso canal de atendimento para lojistas!
+É um prazer receber você aqui.
+
+Sabemos que você está participando das palestras e queremos que aproveite ao máximo essa imersão.
+
+✅ Pode mandar sua dúvida ou pedido normalmente.
+✉️ Nós vamos responder após o horário das palestras ou ao final do evento, com toda a atenção que você merece, sem atrapalhar o conteúdo ao vivo.
+
+Obrigado pela compreensão e por fazer parte da nossa comunidade de lojistas. 💚
+
+Ticket: 66309174 [25/11/2025 07:31:05] Emerson Silva  Vitao: tudo bem ?
+
+Ticket: 66309174 [25/11/2025 07:31:05] Eu: 👋 Seja muito bem-vindo ao nosso canal de atendimento para lojistas!
+É um prazer receber você aqui.
+
+Sabemos que você está participando das palestras e queremos que aproveite ao máximo essa imersão.
+
+✅ Pode mandar sua dúvida ou pedido normalmente.
+✉️ Nós vamos responder após o horário das palestras ou ao final do evento, com toda a atenção que você merece, sem atrapalhar o conteúdo ao vivo.
+
+Obrigado pela compreensão e por fazer parte da nossa comunidade de lojistas. 💚
+
+Ticket: 66309174 [25/11/2025 07:31:35] Emerson Silva  Vitao: prev de entrega esta para o dia 02/12
+
+Ticket: 66309174 [25/11/2025 07:31:36] Eu: 👋 Seja muito bem-vindo ao nosso canal de atendimento para lojistas!
+É um prazer receber você aqui.
+
+Sabemos que você está participando das palestras e queremos que aproveite ao máximo essa imersão.
+
+✅ Pode mandar sua dúvida ou pedido normalmente.
+✉️ Nós vamos responder após o horário das palestras ou ao final do evento, com toda a atenção que você merece, sem atrapalhar o conteúdo ao vivo.
+
+Obrigado pela compreensão e por fazer parte da nossa comunidade de lojistas. 💚
+
+Ticket: 66309174 [25/11/2025 07:31:42] Emerson Silva  Vitao: embarcou sexta dia 21
+
+Ticket: 66309174 [25/11/2025 07:31:44] Eu: 👋 Seja muito bem-vindo ao nosso canal de atendimento para lojistas!
+É um prazer receber você aqui.
+
+Sabemos que você está participando das palestras e queremos que aproveite ao máximo essa imersão.
+
+✅ Pode mandar sua dúvida ou pedido normalmente.
+✉️ Nós vamos responder após o horário das palestras ou ao final do evento, com toda a atenção que você merece, sem atrapalhar o conteúdo ao vivo.
+
+Obrigado pela compreensão e por fazer parte da nossa comunidade de lojistas. 💚
+
+Ticket: 66309174 [25/11/2025 08:04:33] Eu: *Manu  - Vitao*:
+Beleza então, qual o prazo dessa transportadora?
+
+Ticket: 66309174 [25/11/2025 09:15:55] Eu: *Manu  - Vitao*:
+Bom dia tudo bem ?
+
+Ticket: 66309174 [25/11/2025 09:16:06] Eu: *Manu  - Vitao*:
+NF 405004
+
+EMPORIUM MERCATO NOSTRO LTDA
+
+Ticket: 66309174 [25/11/2025 09:16:16] Eu: *Manu  - Vitao*:
+Essa aqui acha que conseguimos entregar antes de quinta ?
+
+Ticket: 66309174 [25/11/2025 09:17:52] Emerson Silva  Vitao: 8 dias uteis
+
+Ticket: 66309174 [25/11/2025 09:18:42] Emerson Silva  Vitao: olha antes de quinta não sei, mais finaliza essa semana
+
+Ticket: 66309174 [25/11/2025 09:18:43] Eu: *Manu  - Vitao*:
+Cliente vai viajar, e não vai ter ninguém... Esse pedido tinha sido digitado no dia 12 porem deu erro e teve que digitar de novo no dia 19
+
+Ticket: 66309174 [25/11/2025 09:18:49] Eu: *Manu  - Vitao*:
+E ela ta surtando aqui kkkkkk
+
+Ticket: 66309174 [25/11/2025 09:19:07] Eu: *Manu  - Vitao*:
+Já era para estar lá se fosse pelo dia que digitou primeiro
+
+Ticket: 66309174 [25/11/2025 09:19:37] Emerson Silva  Vitao: o de SC ?
+
+Ticket: 66309174 [25/11/2025 09:19:57] Eu: *Manu  - Vitao*:
+Essa aqui
+
+Ticket: 66309174 [25/11/2025 09:20:03] Eu: *Manu  - Vitao*:
+Desculpa não marquei a mensagem kkkkk
+
+Ticket: 66309174 [25/11/2025 09:21:05] Emerson Silva  Vitao: talvez entregue antes  nota chegou em ribeirão preto hoje
+
+Ticket: 66309174 [25/11/2025 09:25:17] Eu: *Manu  - Vitao*:
+Deuuuuss ajudeee
+
+Ticket: 66309174 [25/11/2025 09:26:19] Eu: *Manu  - Vitao*:
+Vou avisar ela que talvez chegue antes
+
+Ticket: 66309174 [25/11/2025 09:26:28] Eu: *Manu  - Vitao*:
+Mas que a principio segunda
+
+Ticket: 66309174 [25/11/2025 09:31:49] Emerson Silva  Vitao: nao, entrega essa semana ainda kkk
+
+Ticket: 66309174 [25/11/2025 09:34:43] Eu: *Manu  - Vitao*:
+Prefiro trbalhar com a margem de erro kkkkkk
+
+Ticket: 66309174 [25/11/2025 09:34:49] Eu: *Manu  - Vitao*:
+Cliente não da para prometer muito kkk
+
+Ticket: 66309174 [25/11/2025 09:35:29] Eu: 
+
+Ticket: 66309174 [25/11/2025 09:41:42] Emerson Silva  Vitao: foi pela mosca
+
+Ticket: 66309174 [25/11/2025 09:41:56] Emerson Silva  Vitao: deixa eu confirmar o endereço aqui
+
+Ticket: 66309174 [25/11/2025 09:42:10] Eu: *Manu  - Vitao*:
+ta, que dai eu passo para ela!
+
+Ticket: 66309174 [25/11/2025 11:33:56] Emerson Silva  Vitao: oii
+
+Ticket: 66309174 [25/11/2025 11:34:12] Emerson Silva  Vitao: confirmei com a transportadora, ele conseguem entregar ate quinta
+
+Ticket: 66309174 [25/11/2025 11:34:34] Emerson Silva  Vitao: cliente vai querer retirar la?
+
+Ticket: 66309174 [25/11/2025 11:38:30] Eu: *Manu  - Vitao*:
+acho que ela vai querer buscar, çpor que na quinta ela só fica até as 14:00 em casa
+
+Ticket: 66309174 [25/11/2025 11:39:01] Eu: *Manu  - Vitao*:
+Que depois ela vai viajar
+
+Ticket: 66309174 [25/11/2025 11:39:25] Eu: *Manu  - Vitao*:
+Pode me passar o endereço que ela vai buscar, por favor
+
+Ticket: 66309174 [25/11/2025 11:40:02] Eu: *Manu  - Vitao*:
+e o horario que dia que já esta liberado para ela buscar tambem
+
+Ticket: 66309174 [25/11/2025 11:49:58] Emerson Silva  Vitao: estou vendo aqui ja
+
+Ticket: 66309174 [25/11/2025 11:51:16] Emerson Silva  Vitao: preciso dos dados de quem ira retirar a mercadoria
+
+Ticket: 66309174 [25/11/2025 11:51:32] Emerson Silva  Vitao: NOME COMPLETO:
+CPF OU RG:
+PLACA VEICULO:
+
+Ticket: 66309174 [25/11/2025 11:55:25] Eu: *Manu  - Vitao*:
+Vou solicitar para ela
+
+Ticket: 66309174 [25/11/2025 13:25:54] Eu: *Manu  - Vitao*:
+NOME COMPLETO:Paulo Cesar perusuni Vaz Pereira 
+
+CPF 01858931800
+
+PLACA VEICULO: FWL6C68
+
+Ticket: 66309174 [25/11/2025 13:45:11] Eu: *Manu  - Vitao*:
+Ai consegue me passar o endereço certinho que ela ta me atazanando aqui kkkkkkkkk
+
+Ticket: 66309174 [25/11/2025 14:31:26] Emerson Silva  Vitao: me manda seu e-mail e o e-mail dela por favor
+
+Ticket: 66309174 [25/11/2025 14:33:07] Eu: *Manu  - Vitao*:
+atendimento02@vitao.com.br
+
+Ticket: 66309174 [25/11/2025 14:33:23] Eu: *Manu  - Vitao*:
+LCSP575@HOTMAIL.COM
+
+Ticket: 66309174 [25/11/2025 14:33:37] Eu: *Manu  - Vitao*:
+paulo.pereira@minhaquitandinha.com.br
+
+Ticket: 66309174 [25/11/2025 14:33:46] Eu: *Manu  - Vitao*:
+Eles tem esse dois se puderem mandar nos dois
+
+Ticket: 66309174 [25/11/2025 14:34:22] Emerson Silva  Vitao: O endereço é Rua Uruguai numero 2003, Parque Industrial Quito Junqueira.
+
+Ticket: 66309174 [25/11/2025 14:41:37] Emerson Silva  Vitao: mandei la coloquei todos em copia
+
+Ticket: 66309174 [25/11/2025 14:55:15] Emerson Silva  Vitao: já deram o ok
+
+Ticket: 66309174 [25/11/2025 15:18:07] Eu: *Manu  - Vitao*:
+Ok então
+
+Ticket: 66309174 [25/11/2025 15:18:11] Eu: *Manu  - Vitao*:
+Ela busca amanha
+
+Ticket: 66309174 [10/12/2025 09:17:52] Emerson Silva  Vitao: Olá, Como você está? Nossa equipe de atendimento já vai atender você, fica tranquilo. Enquanto isso, que tal aproveitar para colocar as informações que você precisa?
+
+Ticket: 66309174 [10/12/2025 09:17:52] Eu: *Manu  - Vitao*:
+Bom dia Emerson, tudo bem ??
+
+Ticket: 66309174 [10/12/2025 09:18:12] Eu: *Manu  - Vitao*:
+413159
+
+Consegue fazr o rastreio desse para mim ?
+
+Ticket: 66309174 [10/12/2025 10:17:25] Emerson Silva  Vitao: oi booom dia!!
+
+Ticket: 66309174 [10/12/2025 10:17:57] Emerson Silva  Vitao: essa nota foi pela Jad log
+
+Ticket: 66309174 [10/12/2025 10:18:03] Emerson Silva  Vitao: é com o ecomerce
+
+Ticket: 66309174 [10/12/2025 10:20:19] Eu: *Manu  - Vitao*:
+Então, mas eu tenho o site da Jad aqui e não encontrou essa NF por la
+
+Ticket: 66309174 [10/12/2025 10:20:29] Eu: *Manu  - Vitao*:
+
+
+Ticket: 66309174 [10/12/2025 10:20:47] Eu: *Manu  - Vitao*:
+Creio que deve ter ido por outra transportadora
+
+Ticket: 66309174 [10/12/2025 10:32:47] Emerson Silva  Vitao: ue
+
+Ticket: 66309174 [10/12/2025 10:34:32] Emerson Silva  Vitao: 
+
+Ticket: 66309174 [10/12/2025 10:34:55] Emerson Silva  Vitao: ta estranho pq não esta com a Malka tmb que é a transportadora que faz SC
+
+Ticket: 66309174 [10/12/2025 10:39:59] Eu: Socorro kkkkkkk
+
+Ticket: 66309174 [10/12/2025 10:40:12] Eu: Não está com a melck ?
+
+Ticket: 66309174 [10/12/2025 10:43:55] Emerson Silva  Vitao: 
+
+Ticket: 66309174 [10/12/2025 10:44:19] Emerson Silva  Vitao: 
+
+Ticket: 66309174 [10/12/2025 10:44:27] Emerson Silva  Vitao: nem um dos dois
+
+Ticket: 66309174 [10/12/2025 10:46:11] Eu: *Manu  - Vitao*:
+Meu deus do ceu, aonde ta essa carga
+

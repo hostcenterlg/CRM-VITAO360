@@ -1,0 +1,3401 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conversor Ultimate v2.0.3 - Sistema Profissional de Conversão</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.98);
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #5a67d8;
+            margin-bottom: 1rem;
+            font-size: 2.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .version-badge {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            font-size: 0.8rem;
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #e2e8f0;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 1rem 2rem;
+            background: none;
+            border: none;
+            color: #718096;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+            position: relative;
+        }
+
+        .tab:hover {
+            color: #5a67d8;
+        }
+
+        .tab.active {
+            color: #5a67d8;
+            border-bottom-color: #5a67d8;
+        }
+
+        .tab-panel {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Upload Area */
+        .upload-area {
+            border: 3px dashed #5a67d8;
+            border-radius: 15px;
+            padding: 3rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            background: #f7fafc;
+            cursor: pointer;
+            position: relative;
+            margin-bottom: 2rem;
+        }
+
+        .upload-area:hover {
+            border-color: #4c51bf;
+            background: #edf2f7;
+            transform: translateY(-2px);
+        }
+
+        .upload-area.dragover {
+            border-color: #48bb78;
+            background: #c6f6d5;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        /* Filtros */
+        .filters-section {
+            background: #f7fafc;
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .filter-label {
+            font-weight: 600;
+            color: #4a5568;
+            font-size: 0.9rem;
+        }
+
+        select, input[type="text"], input[type="number"], input[type="date"] {
+            padding: 0.75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            background: white;
+            transition: all 0.2s;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: #5a67d8;
+            box-shadow: 0 0 0 3px rgba(90, 103, 216, 0.1);
+        }
+
+        /* File List com Preview */
+        .file-manager {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+            margin: 2rem 0;
+            height: 400px;
+        }
+
+        .file-list-container {
+            background: #f7fafc;
+            border-radius: 15px;
+            padding: 1.5rem;
+            overflow-y: auto;
+        }
+
+        .file-item {
+            padding: 1rem;
+            border-radius: 8px;
+            background: white;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .file-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .file-item.selected {
+            background: #e6fffa;
+            border: 2px solid #38b2ac;
+        }
+
+        .file-checkbox {
+            width: 20px;
+            height: 20px;
+            accent-color: #5a67d8;
+        }
+
+        .file-icon {
+            font-size: 1.5rem;
+        }
+
+        .file-info {
+            flex: 1;
+        }
+
+        .file-name {
+            font-weight: 600;
+            color: #2d3748;
+            font-size: 0.95rem;
+        }
+
+        .file-size {
+            font-size: 0.8rem;
+            color: #718096;
+        }
+
+        .file-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .file-status.pending { background: #e2e8f0; color: #718096; }
+        .file-status.processing { background: #fef3c7; color: #92400e; }
+        .file-status.success { background: #d1fae5; color: #065f46; }
+        .file-status.error { background: #fee2e2; color: #991b1b; }
+
+        /* Preview Area */
+        .preview-container {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .preview-title {
+            font-weight: 700;
+            color: #2d3748;
+            font-size: 1.1rem;
+        }
+
+        .preview-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .preview-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        .preview-table th {
+            background: #f7fafc;
+            padding: 0.75rem;
+            text-align: left;
+            font-weight: 600;
+            color: #4a5568;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .preview-table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .preview-table tr:hover {
+            background: #f7fafc;
+        }
+
+        /* Estatísticas */
+        .stats-dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-icon.blue { background: #ebf8ff; color: #3182ce; }
+        .stat-icon.green { background: #f0fff4; color: #38a169; }
+        .stat-icon.yellow { background: #fffff0; color: #d69e2e; }
+        .stat-icon.red { background: #fff5f5; color: #e53e3e; }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2d3748;
+        }
+
+        .stat-label {
+            color: #718096;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Progress Section */
+        .progress-section {
+            background: #f7fafc;
+            padding: 2rem;
+            border-radius: 15px;
+            margin: 2rem 0;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: #e2e8f0;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #48bb78 0%, #38a169 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        /* Configurações */
+        .config-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .config-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        .config-group {
+            padding: 1.5rem;
+            background: #f7fafc;
+            border-radius: 10px;
+        }
+
+        .config-title {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Botões */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #5a67d8 0%, #4c51bf 100%);
+            color: white;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: white;
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        /* Charts Container */
+        .charts-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .chart-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            min-height: 300px;
+            position: relative;
+        }
+
+        .chart-card canvas {
+            max-height: 250px;
+        }
+
+        .chart-title {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 1rem;
+        }
+
+        /* Live Log */
+        .live-log {
+            background: #1a202c;
+            color: #68d391;
+            padding: 1.5rem;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            height: 200px;
+            overflow-y: auto;
+            margin-top: 1rem;
+        }
+
+        .log-entry {
+            margin-bottom: 0.5rem;
+            opacity: 0;
+            animation: fadeInLog 0.3s ease forwards;
+        }
+
+        @keyframes fadeInLog {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .log-time {
+            color: #4a5568;
+            margin-right: 1rem;
+        }
+
+        .log-success { color: #68d391; }
+        .log-error { color: #fc8181; }
+        .log-warning { color: #f6e05e; }
+        .log-info { color: #63b3ed; }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            animation: modalIn 0.3s ease;
+        }
+
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2d3748;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #718096;
+            cursor: pointer;
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #5a67d8;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Messages */
+        .error-message {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            display: none;
+        }
+
+        .success-message {
+            background: #d1fae5;
+            color: #065f46;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>
+            🚀 Conversor Ultimate
+            <span class="version-badge">v2.0.3 FINAL</span>
+        </h1>
+        
+        <div id="systemAlert" style="display: none; background: #fef3c7; padding: 1rem; border-radius: 10px; margin-bottom: 1rem; text-align: center; color: #92400e;">
+            <strong>⚠️ Aviso:</strong> <span id="alertMessage">Alguns recursos visuais podem estar limitados, mas o conversor está 100% funcional!</span>
+        </div>
+        
+        <div id="errorMessage" class="error-message"></div>
+        <div id="successMessage" class="success-message"></div>
+        
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('upload')">📤 Upload</button>
+            <button class="tab" onclick="switchTab('preview')">👁️ Preview</button>
+            <button class="tab" onclick="switchTab('stats')">📊 Estatísticas</button>
+            <button class="tab" onclick="switchTab('config')">⚙️ Configurações</button>
+            <button class="tab" onclick="switchTab('export')">💾 Exportar</button>
+        </div>
+
+        <!-- Tab: Upload -->
+        <div id="upload-tab" class="tab-panel active">
+            <div class="upload-area" id="uploadArea">
+                <input type="file" id="fileInput" class="file-input" multiple 
+                       accept=".doc,.docx,.txt,.csv,.rtf,.odt">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">📁</div>
+                <div style="font-size: 1.3rem; font-weight: 600; margin-bottom: 0.5rem;">
+                    Arraste seus arquivos aqui
+                </div>
+                <div style="color: #718096;">
+                    Suporta: .doc, .docx, .txt, .csv, .rtf, .odt (até 500 arquivos)
+                </div>
+                <div style="margin-top: 0.5rem; font-size: 0.85rem; color: #48bb78;">
+                    ✅ 100% Gratuito | ✅ Processamento Local | ✅ Seus Dados Seguros
+                </div>
+                <div style="margin-top: 1rem;">
+                    <button class="btn btn-primary" onclick="document.getElementById('fileInput').click()">
+                        Selecionar Arquivos
+                    </button>
+                </div>
+            </div>
+
+            <!-- Filtros -->
+            <div class="filters-section">
+                <h3 style="margin-bottom: 1rem;">🔍 Filtros de Processamento</h3>
+                <div class="filters-grid">
+                    <div class="filter-group">
+                        <label class="filter-label">Tipo de Arquivo</label>
+                        <select id="filterType">
+                            <option value="all">Todos</option>
+                            <option value=".doc">.doc</option>
+                            <option value=".docx">.docx</option>
+                            <option value=".txt">.txt</option>
+                            <option value=".csv">.csv</option>
+                            <option value=".rtf">.rtf</option>
+                            <option value=".odt">.odt</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Tamanho do Arquivo</label>
+                        <select id="filterSize">
+                            <option value="all">Todos</option>
+                            <option value="small">< 100 KB</option>
+                            <option value="medium">100 KB - 1 MB</option>
+                            <option value="large">> 1 MB</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Data de Modificação</label>
+                        <select id="filterDate">
+                            <option value="all">Todas</option>
+                            <option value="today">Hoje</option>
+                            <option value="week">Última Semana</option>
+                            <option value="month">Último Mês</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Nome Contém</label>
+                        <input type="text" id="filterName" placeholder="Buscar por nome...">
+                    </div>
+                </div>
+                <div style="margin-top: 1rem; text-align: right;">
+                    <button class="btn btn-secondary" onclick="applyFilters()">
+                        Aplicar Filtros
+                    </button>
+                    <button class="btn btn-secondary" onclick="clearFilters()">
+                        Limpar
+                    </button>
+                </div>
+            </div>
+
+            <!-- File Manager -->
+            <div class="file-manager" id="fileManager" style="display: none;">
+                <div class="file-list-container">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+                        <h4>Arquivos Carregados</h4>
+                        <label style="cursor: pointer;">
+                            <input type="checkbox" id="selectAll" onchange="toggleSelectAll()">
+                            Selecionar Todos
+                        </label>
+                    </div>
+                    <div id="fileList"></div>
+                </div>
+                <div class="preview-container">
+                    <div class="preview-header">
+                        <h4 class="preview-title">Preview do Arquivo</h4>
+                        <div class="preview-actions">
+                            <button class="btn btn-secondary" onclick="editPreview()">
+                                ✏️ Editar
+                            </button>
+                            <button class="btn btn-secondary" onclick="deleteFromPreview()">
+                                🗑️ Excluir
+                            </button>
+                        </div>
+                    </div>
+                    <div id="previewContent">
+                        <p style="color: #718096; text-align: center; padding: 2rem;">
+                            Selecione um arquivo para visualizar
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ações -->
+            <div class="btn-group" style="margin-top: 2rem; justify-content: center;">
+                <button class="btn btn-success" onclick="startProcessing()" id="processBtn" disabled>
+                    ▶️ Iniciar Processamento
+                </button>
+                <button class="btn btn-warning" onclick="pauseProcessing()" id="pauseBtn" disabled>
+                    ⏸️ Pausar
+                </button>
+                <button class="btn btn-secondary" onclick="resetAll()">
+                    🔄 Limpar Tudo
+                </button>
+            </div>
+        </div>
+
+        <!-- Tab: Preview -->
+        <div id="preview-tab" class="tab-panel">
+            <h3>📋 Preview dos Dados Convertidos</h3>
+            
+            <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem;">
+                <input type="text" id="searchPreview" placeholder="Buscar nos dados..." 
+                       style="flex: 1;" onkeyup="searchInPreview()">
+                <select id="sortBy" onchange="sortPreviewData()">
+                    <option value="">Ordenar por...</option>
+                    <option value="arquivo">Arquivo</option>
+                    <option value="linha">Linha</option>
+                    <option value="conteudo">Conteúdo</option>
+                    <option value="tamanho">Tamanho</option>
+                </select>
+            </div>
+
+            <div style="background: white; border-radius: 10px; padding: 1rem; overflow-x: auto;">
+                <table class="preview-table" id="dataPreviewTable">
+                    <thead>
+                        <tr>
+                            <th>Arquivo</th>
+                            <th>Linha</th>
+                            <th>Conteúdo</th>
+                            <th>Caracteres</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dataPreviewBody">
+                        <tr>
+                            <td colspan="5" style="text-align: center; padding: 2rem; color: #718096;">
+                                Nenhum dado processado ainda
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div style="margin-top: 1rem; text-align: center;">
+                <button class="btn btn-secondary" onclick="loadMorePreview()" id="loadMoreBtn" style="display: none;">
+                    Carregar Mais
+                </button>
+            </div>
+        </div>
+
+        <!-- Tab: Estatísticas -->
+        <div id="stats-tab" class="tab-panel">
+            <h3>📊 Dashboard de Estatísticas</h3>
+            
+            <div class="stats-dashboard">
+                <div class="stat-card">
+                    <div class="stat-icon blue">📁</div>
+                    <div class="stat-value" id="statTotalFiles">0</div>
+                    <div class="stat-label">Total de Arquivos</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon green">✅</div>
+                    <div class="stat-value" id="statSuccess">0</div>
+                    <div class="stat-label">Processados com Sucesso</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon yellow">⚠️</div>
+                    <div class="stat-value" id="statErrors">0</div>
+                    <div class="stat-label">Erros Encontrados</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon blue">📝</div>
+                    <div class="stat-value" id="statLines">0</div>
+                    <div class="stat-label">Total de Linhas</div>
+                </div>
+            </div>
+
+            <div class="charts-container">
+                <div class="chart-card">
+                    <h4 class="chart-title">Distribuição por Tipo de Arquivo</h4>
+                    <div style="position: relative; height: 250px;">
+                        <canvas id="fileTypeChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-card">
+                    <h4 class="chart-title">Taxa de Processamento</h4>
+                    <div style="position: relative; height: 250px;">
+                        <canvas id="processingChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="progress-section">
+                <div class="progress-header">
+                    <h4>Progresso em Tempo Real</h4>
+                    <span id="progressText">0%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill">0%</div>
+                </div>
+                
+                <h4 style="margin-top: 1.5rem; margin-bottom: 0.5rem;">📋 Log de Atividades</h4>
+                <div class="live-log" id="liveLog">
+                    <div class="log-entry">
+                        <span class="log-time">00:00:00</span>
+                        <span class="log-info">Sistema iniciado e pronto para uso</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: Configurações -->
+        <div id="config-tab" class="tab-panel">
+            <div class="config-section">
+                <h3>⚙️ Configurações Avançadas</h3>
+                
+                <div class="config-grid">
+                    <div class="config-group">
+                        <h4 class="config-title">📝 Codificação de Texto</h4>
+                        <div style="margin-bottom: 1rem;">
+                            <label class="filter-label">Codificação de Entrada</label>
+                            <select id="inputEncoding">
+                                <option value="UTF-8">UTF-8 (Padrão)</option>
+                                <option value="ISO-8859-1">ISO-8859-1 (Latin-1)</option>
+                                <option value="Windows-1252">Windows-1252</option>
+                                <option value="UTF-16">UTF-16</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="filter-label">Codificação de Saída</label>
+                            <select id="outputEncoding">
+                                <option value="UTF-8">UTF-8 (Padrão)</option>
+                                <option value="ISO-8859-1">ISO-8859-1 (Latin-1)</option>
+                                <option value="Windows-1252">Windows-1252</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="config-group">
+                        <h4 class="config-title">🔧 Opções de Processamento</h4>
+                        <div style="display: flex; flex-direction: column; gap: 1rem;">
+                            <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                <input type="checkbox" id="removeDuplicates" checked>
+                                Remover linhas duplicadas
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                <input type="checkbox" id="trimWhitespace" checked>
+                                Remover espaços extras
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                <input type="checkbox" id="preserveFormatting">
+                                Preservar formatação original
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                <input type="checkbox" id="extractTables" checked>
+                                Extrair tabelas automaticamente
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="config-group">
+                        <h4 class="config-title">📊 Formato CSV/Excel</h4>
+                        <div style="margin-bottom: 1rem;">
+                            <label class="filter-label">Separador CSV</label>
+                            <select id="csvSeparator">
+                                <option value=",">Vírgula (,)</option>
+                                <option value=";">Ponto e vírgula (;)</option>
+                                <option value="\t">Tab</option>
+                                <option value="|">Pipe (|)</option>
+                            </select>
+                        </div>
+                        <div style="margin-bottom: 1rem;">
+                            <label class="filter-label">Delimitador de Texto</label>
+                            <select id="textDelimiter">
+                                <option value='"'>Aspas Duplas (")</option>
+                                <option value="'">Aspas Simples (')</option>
+                                <option value="">Nenhum</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                <input type="checkbox" id="includeHeaders" checked>
+                                Incluir cabeçalhos
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="config-group">
+                        <h4 class="config-title">🚀 Performance</h4>
+                        <div style="margin-bottom: 1rem;">
+                            <label class="filter-label">Tamanho do Lote</label>
+                            <input type="number" id="batchSize" value="10" min="1" max="50">
+                        </div>
+                        <div style="margin-bottom: 1rem;">
+                            <label class="filter-label">Delay entre Lotes (ms)</label>
+                            <input type="number" id="batchDelay" value="100" min="0" max="1000">
+                        </div>
+                        <div>
+                            <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                <input type="checkbox" id="useWebWorkers">
+                                Usar Web Workers (experimental)
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 2rem; text-align: center;">
+                    <button class="btn btn-primary" onclick="saveConfig()">
+                        💾 Salvar Configurações
+                    </button>
+                    <button class="btn btn-secondary" onclick="resetConfig()">
+                        🔄 Restaurar Padrões
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: Exportar -->
+        <div id="export-tab" class="tab-panel">
+            <h3>💾 Opções de Exportação</h3>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+                <div class="config-group">
+                    <h4 class="config-title">📊 Excel (.xlsx)</h4>
+                    <p style="color: #718096; margin-bottom: 1rem;">
+                        Ideal para análises e tabelas dinâmicas
+                    </p>
+                    <div style="margin-bottom: 1rem;">
+                        <label style="display: flex; align-items: center; gap: 0.5rem;">
+                            <input type="checkbox" id="excelMultiSheet" checked>
+                            Criar múltiplas abas
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 0.5rem;">
+                            <input type="checkbox" id="excelFormatting" checked>
+                            Aplicar formatação
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 0.5rem;">
+                            <input type="checkbox" id="excelFilters" checked>
+                            Adicionar filtros automáticos
+                        </label>
+                    </div>
+                    <button class="btn btn-success" onclick="exportExcel()">
+                        📊 Baixar Excel
+                    </button>
+                    <button class="btn btn-primary" onclick="exportExcelTabelaMestra()" style="margin-top: 0.5rem;">
+                        📊 Baixar Tabela Mestra P&D
+                    </button>
+                </div>
+
+                <div class="config-group">
+                    <h4 class="config-title">📝 Word (.docx)</h4>
+                    <p style="color: #718096; margin-bottom: 1rem;">
+                        Perfeito para relatórios e documentação
+                    </p>
+                    <div style="margin-bottom: 1rem;">
+                        <label style="display: flex; align-items: center; gap: 0.5rem;">
+                            <input type="checkbox" id="wordToc" checked>
+                            Incluir índice
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 0.5rem;">
+                            <input type="checkbox" id="wordStyles" checked>
+                            Aplicar estilos
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 0.5rem;">
+                            <input type="checkbox" id="wordPageNumbers" checked>
+                            Adicionar numeração de páginas
+                        </label>
+                    </div>
+                    <button class="btn btn-primary" onclick="exportWord()">
+                        📝 Baixar Word
+                    </button>
+                </div>
+
+                <div class="config-group">
+                    <h4 class="config-title">📄 PDF</h4>
+                    <p style="color: #718096; margin-bottom: 1rem;">
+                        Formato universal para compartilhamento
+                    </p>
+                    <div style="margin-bottom: 1rem;">
+                        <label style="display: flex; align-items: center; gap: 0.5rem;">
+                            <input type="checkbox" id="pdfCompress">
+                            Comprimir PDF
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 0.5rem;">
+                            <input type="checkbox" id="pdfProtect">
+                            Proteger com senha
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 0.5rem;">
+                            <input type="checkbox" id="pdfWatermark">
+                            Adicionar marca d'água
+                        </label>
+                    </div>
+                    <button class="btn btn-warning" onclick="exportPDF()">
+                        📄 Baixar PDF
+                    </button>
+                </div>
+
+                <div class="config-group">
+                    <h4 class="config-title">📃 Outros Formatos</h4>
+                    <p style="color: #718096; margin-bottom: 1rem;">
+                        Formatos adicionais disponíveis
+                    </p>
+                    <div class="btn-group" style="flex-direction: column;">
+                        <button class="btn btn-secondary" onclick="exportTXT()">
+                            📃 Texto (.txt)
+                        </button>
+                        <button class="btn btn-secondary" onclick="exportCSV()">
+                            📋 CSV
+                        </button>
+                        <button class="btn btn-secondary" onclick="exportJSON()">
+                            🔧 JSON
+                        </button>
+                        <button class="btn btn-secondary" onclick="exportXML()">
+                            📰 XML
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="config-group" style="margin-top: 2rem;">
+                <h4 class="config-title">🎯 Exportação Customizada</h4>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                    <div>
+                        <label class="filter-label">Filtrar por arquivo</label>
+                        <select id="exportFileFilter" multiple style="height: 100px;">
+                            <option value="all" selected>Todos os arquivos</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="filter-label">Intervalo de linhas</label>
+                        <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
+                            <input type="number" id="exportFrom" placeholder="De" min="1">
+                            <input type="number" id="exportTo" placeholder="Até" min="1">
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="exportCustom()">
+                    🎯 Exportar Seleção
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Edição -->
+    <div class="modal" id="editModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">✏️ Editar Conteúdo</h3>
+                <button class="modal-close" onclick="closeModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <textarea id="editContent" style="width: 100%; height: 300px; padding: 1rem; border: 1px solid #e2e8f0; border-radius: 8px; font-family: monospace;"></textarea>
+                <div style="margin-top: 1rem; text-align: right;">
+                    <button class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
+                    <button class="btn btn-primary" onclick="saveEdit()">Salvar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== CONVERSOR ULTIMATE v2.0.3 - VERSÃO FINAL =====
+        
+        // Compatibilidade do console
+        if (typeof console === 'undefined') {
+            window.console = { log: function() {}, error: function() {}, warn: function() {} };
+        }
+        if (!console.clear) {
+            console.clear = function() { console.log('Console clear não suportado neste ambiente'); };
+        }
+        
+        // Estado Global
+        let allFiles = [];
+        let processedData = [];
+        let currentPreviewIndex = 0;
+        let isProcessing = false;
+        let isPaused = false;
+        let charts = {};
+        let currentFilePreview = null;
+        let elements = {};
+
+        // ===== FUNÇÕES PRINCIPAIS =====
+
+        // Função switchTab - CORRIGIDA
+        function switchTab(tabName) {
+            console.log(`Mudando para aba: ${tabName}`);
+            
+            // Esconder todas as tabs
+            document.querySelectorAll('.tab-panel').forEach(panel => {
+                panel.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Mostrar tab selecionada
+            const tabPanel = document.getElementById(`${tabName}-tab`);
+            if (tabPanel) {
+                tabPanel.classList.add('active');
+            }
+            
+            // Marcar o botão da tab como ativo
+            const tabButtons = document.querySelectorAll('.tab');
+            const tabIndex = ['upload', 'preview', 'stats', 'config', 'export'].indexOf(tabName);
+            if (tabIndex >= 0 && tabButtons[tabIndex]) {
+                tabButtons[tabIndex].classList.add('active');
+            }
+
+            // Atualizar dados quando mudar para aba de preview
+            if (tabName === 'preview') {
+                updatePreviewTable();
+            }
+        }
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('%c🚀 Conversor Ultimate v2.0.3 - VERSÃO FINAL', 'font-size: 20px; color: #5a67d8; font-weight: bold;');
+            console.log('%c✅ Sistema completo com exportação Tabela Mestra P&D', 'font-size: 12px; color: #48bb78;');
+            console.log('─'.repeat(50));
+            
+            initializeElements();
+            initializeEventListeners();
+            
+            // Tentar inicializar gráficos
+            setTimeout(() => {
+                try {
+                    if (typeof Chart !== 'undefined') {
+                        initializeCharts();
+                    } else {
+                        console.warn('Chart.js não disponível');
+                        disableCharts();
+                    }
+                } catch (error) {
+                    console.error('Erro ao inicializar gráficos:', error);
+                    disableCharts();
+                }
+            }, 1000);
+            
+            loadConfig();
+            addLogEntry('Sistema iniciado e pronto para uso', 'info');
+            
+            // Verificar se as bibliotecas essenciais foram carregadas
+            setTimeout(() => {
+                const status = {
+                    mammoth: typeof mammoth !== 'undefined',
+                    xlsx: typeof XLSX !== 'undefined',
+                    jspdf: typeof window.jspdf !== 'undefined',
+                    chart: typeof Chart !== 'undefined'
+                };
+                
+                console.log('📊 Status das bibliotecas:');
+                console.log(`   • Mammoth (DOCX): ${status.mammoth ? '✅' : '❌'}`);
+                console.log(`   • XLSX (Excel): ${status.xlsx ? '✅' : '❌'}`);
+                console.log(`   • jsPDF (PDF): ${status.jspdf ? '✅' : '❌'}`);
+                console.log(`   • Chart.js: ${status.chart ? '✅' : '❌'}`);
+                
+                if (!status.mammoth || !status.xlsx) {
+                    showWarning('Algumas bibliotecas não carregaram. Recarregue a página se necessário.');
+                }
+            }, 2000);
+        });
+
+        function initializeElements() {
+            elements = {
+                uploadArea: document.getElementById('uploadArea'),
+                fileInput: document.getElementById('fileInput'),
+                fileList: document.getElementById('fileList'),
+                fileManager: document.getElementById('fileManager'),
+                processBtn: document.getElementById('processBtn'),
+                pauseBtn: document.getElementById('pauseBtn'),
+                progressFill: document.getElementById('progressFill'),
+                liveLog: document.getElementById('liveLog'),
+                dataPreviewBody: document.getElementById('dataPreviewBody'),
+                previewContent: document.getElementById('previewContent')
+            };
+        }
+
+        function initializeEventListeners() {
+            if (elements.uploadArea && elements.fileInput) {
+                elements.uploadArea.addEventListener('click', (e) => {
+                    if (e.target.tagName !== 'BUTTON') {
+                        elements.fileInput.click();
+                    }
+                });
+                
+                elements.uploadArea.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    elements.uploadArea.classList.add('dragover');
+                });
+
+                elements.uploadArea.addEventListener('dragleave', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    elements.uploadArea.classList.remove('dragover');
+                });
+
+                elements.uploadArea.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    elements.uploadArea.classList.remove('dragover');
+                    handleFiles(e.dataTransfer.files);
+                });
+            }
+
+            if (elements.fileInput) {
+                elements.fileInput.addEventListener('change', (e) => {
+                    handleFiles(e.target.files);
+                });
+            }
+        }
+
+        function initializeCharts() {
+            try {
+                // Gráfico de tipos de arquivo
+                const ctx1 = document.getElementById('fileTypeChart');
+                if (ctx1) {
+                    charts.fileType = new Chart(ctx1.getContext('2d'), {
+                        type: 'doughnut',
+                        data: {
+                            labels: [],
+                            datasets: [{
+                                data: [],
+                                backgroundColor: [
+                                    '#5a67d8', '#48bb78', '#ed8936', 
+                                    '#e53e3e', '#38b2ac', '#805ad5'
+                                ]
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    position: 'bottom'
+                                }
+                            }
+                        }
+                    });
+                }
+
+                // Gráfico de processamento
+                const ctx2 = document.getElementById('processingChart');
+                if (ctx2) {
+                    charts.processing = new Chart(ctx2.getContext('2d'), {
+                        type: 'line',
+                        data: {
+                            labels: [],
+                            datasets: [{
+                                label: 'Arquivos/seg',
+                                data: [],
+                                borderColor: '#5a67d8',
+                                backgroundColor: 'rgba(90, 103, 216, 0.1)',
+                                tension: 0.1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error('Erro ao criar gráficos:', error);
+                disableCharts();
+            }
+        }
+
+        function disableCharts() {
+            const chartsContainer = document.querySelector('.charts-container');
+            if (chartsContainer) {
+                chartsContainer.innerHTML = `
+                    <div style="text-align: center; padding: 3rem; color: #718096; background: #f7fafc; border-radius: 15px; grid-column: 1 / -1;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">📊</div>
+                        <p style="font-size: 1.1rem; font-weight: 600;">Gráficos temporariamente indisponíveis</p>
+                        <p style="font-size: 0.9rem; margin-top: 0.5rem;">O conversor continua funcionando normalmente</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Manipulação de Arquivos
+        function handleFiles(files) {
+            try {
+                const fileArray = Array.from(files);
+                const maxFiles = 500;
+                
+                if (allFiles.length + fileArray.length > maxFiles) {
+                    showError(`Limite máximo de ${maxFiles} arquivos.`);
+                    return;
+                }
+
+                const validExtensions = ['.doc', '.docx', '.txt', '.csv', '.rtf', '.odt'];
+                const invalidFiles = fileArray.filter(file => {
+                    const ext = '.' + file.name.split('.').pop().toLowerCase();
+                    return !validExtensions.includes(ext);
+                });
+
+                if (invalidFiles.length > 0) {
+                    showError(`Arquivos não suportados: ${invalidFiles.map(f => f.name).join(', ')}`);
+                    return;
+                }
+
+                addLogEntry(`${fileArray.length} arquivo(s) carregado(s)`, 'info');
+                
+                fileArray.forEach(file => {
+                    const fileObj = {
+                        file: file,
+                        id: Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+                        name: file.name,
+                        size: file.size,
+                        type: file.name.split('.').pop().toLowerCase(),
+                        lastModified: new Date(file.lastModified),
+                        selected: true,
+                        status: 'pending',
+                        content: null,
+                        preview: null
+                    };
+                    allFiles.push(fileObj);
+                });
+
+                updateFileList();
+                elements.fileManager.style.display = 'grid';
+                elements.processBtn.disabled = false;
+                updateStats();
+                
+            } catch (error) {
+                console.error('Erro ao processar arquivos:', error);
+                showError('Erro ao carregar arquivos: ' + error.message);
+            }
+        }
+
+        function updateFileList() {
+            if (!elements.fileList) return;
+            
+            elements.fileList.innerHTML = '';
+            const filteredFiles = filterFiles();
+            
+            filteredFiles.forEach(fileObj => {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item' + (fileObj.selected ? ' selected' : '');
+                fileItem.innerHTML = `
+                    <input type="checkbox" class="file-checkbox" 
+                           ${fileObj.selected ? 'checked' : ''} 
+                           onchange="toggleFileSelection('${fileObj.id}')">
+                    <div class="file-icon">${getFileIcon(fileObj.type)}</div>
+                    <div class="file-info">
+                        <div class="file-name">${escapeHtml(fileObj.name)}</div>
+                        <div class="file-size">${formatFileSize(fileObj.size)}</div>
+                    </div>
+                    <div class="file-status ${fileObj.status}">
+                        ${getStatusText(fileObj.status)}
+                    </div>
+                `;
+                
+                fileItem.addEventListener('click', (e) => {
+                    if (!e.target.classList.contains('file-checkbox')) {
+                        showFilePreview(fileObj);
+                    }
+                });
+                
+                elements.fileList.appendChild(fileItem);
+            });
+        }
+
+        function filterFiles() {
+            let filtered = [...allFiles];
+            
+            const typeFilter = document.getElementById('filterType')?.value;
+            if (typeFilter && typeFilter !== 'all') {
+                filtered = filtered.filter(f => `.${f.type}` === typeFilter);
+            }
+            
+            const sizeFilter = document.getElementById('filterSize')?.value;
+            if (sizeFilter && sizeFilter !== 'all') {
+                filtered = filtered.filter(f => {
+                    if (sizeFilter === 'small') return f.size < 100 * 1024;
+                    if (sizeFilter === 'medium') return f.size >= 100 * 1024 && f.size < 1024 * 1024;
+                    if (sizeFilter === 'large') return f.size >= 1024 * 1024;
+                });
+            }
+            
+            const nameFilter = document.getElementById('filterName')?.value.toLowerCase();
+            if (nameFilter) {
+                filtered = filtered.filter(f => f.name.toLowerCase().includes(nameFilter));
+            }
+            
+            return filtered;
+        }
+
+        function getFileIcon(type) {
+            const icons = {
+                'doc': '📄', 'docx': '📄',
+                'txt': '📃', 'csv': '📊',
+                'rtf': '📝', 'odt': '📑'
+            };
+            return icons[type] || '📁';
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 B';
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+            return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+        }
+
+        function getStatusText(status) {
+            const texts = {
+                'pending': 'Pendente',
+                'processing': 'Processando...',
+                'success': 'Concluído',
+                'error': 'Erro'
+            };
+            return texts[status] || status;
+        }
+
+        // Preview de Arquivo
+        async function showFilePreview(fileObj) {
+            currentFilePreview = fileObj;
+            
+            if (!fileObj.preview && fileObj.status === 'pending') {
+                try {
+                    fileObj.preview = await readFilePreview(fileObj.file);
+                } catch (error) {
+                    fileObj.preview = `[Erro ao gerar preview: ${error.message}]`;
+                }
+            }
+            
+            if (elements.previewContent) {
+                elements.previewContent.innerHTML = `
+                    <div style="margin-bottom: 1rem;">
+                        <strong>Arquivo:</strong> ${escapeHtml(fileObj.name)}<br>
+                        <strong>Tamanho:</strong> ${formatFileSize(fileObj.size)}<br>
+                        <strong>Tipo:</strong> ${fileObj.type.toUpperCase()}<br>
+                        <strong>Modificado:</strong> ${fileObj.lastModified.toLocaleString('pt-BR')}
+                    </div>
+                    <div style="background: #f7fafc; padding: 1rem; border-radius: 8px; 
+                                max-height: 300px; overflow-y: auto; font-family: monospace; 
+                                font-size: 0.85rem; white-space: pre-wrap;">
+                        ${escapeHtml(fileObj.preview || 'Processando preview...')}
+                    </div>
+                `;
+            }
+        }
+
+        async function readFilePreview(file, maxChars = 1000) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        const content = e.target.result;
+                        resolve(content.substring(0, maxChars) + (content.length > maxChars ? '...' : ''));
+                    } catch (error) {
+                        reject(error);
+                    }
+                };
+                reader.onerror = () => reject(new Error('Erro ao ler arquivo'));
+                reader.readAsText(file.slice(0, maxChars * 2));
+            });
+        }
+
+        // Processamento
+        async function startProcessing() {
+            if (isProcessing && !isPaused) return;
+            
+            const selectedFiles = allFiles.filter(f => f.selected);
+            if (selectedFiles.length === 0) {
+                showError('Nenhum arquivo selecionado para processar!');
+                return;
+            }
+            
+            if (isPaused) {
+                isProcessing = true;
+                isPaused = false;
+                elements.processBtn.disabled = true;
+                elements.pauseBtn.disabled = false;
+                addLogEntry('Processamento retomado', 'info');
+                return;
+            }
+            
+            isProcessing = true;
+            isPaused = false;
+            processedData = [];
+            
+            elements.processBtn.disabled = true;
+            elements.pauseBtn.disabled = false;
+            
+            addLogEntry(`Iniciando processamento de ${selectedFiles.length} arquivo(s)`, 'info');
+            
+            const batchSize = parseInt(document.getElementById('batchSize')?.value) || 10;
+            const batchDelay = parseInt(document.getElementById('batchDelay')?.value) || 100;
+            
+            let processed = 0;
+            const startTime = Date.now();
+            
+            try {
+                for (let i = 0; i < selectedFiles.length; i += batchSize) {
+                    if (isPaused) {
+                        addLogEntry('Processamento pausado', 'warning');
+                        break;
+                    }
+                    
+                    const batch = selectedFiles.slice(i, i + batchSize);
+                    await processBatch(batch);
+                    
+                    processed += batch.length;
+                    updateProgress(processed, selectedFiles.length);
+                    updateProcessingSpeed(processed, Date.now() - startTime);
+                    
+                    if (i + batchSize < selectedFiles.length && !isPaused) {
+                        await sleep(batchDelay);
+                    }
+                }
+                
+                if (!isPaused) {
+                    finishProcessing();
+                }
+            } catch (error) {
+                console.error('Erro durante processamento:', error);
+                showError('Erro durante processamento: ' + error.message);
+                isProcessing = false;
+                elements.processBtn.disabled = false;
+                elements.pauseBtn.disabled = true;
+            }
+        }
+
+        async function processBatch(files) {
+            const promises = files.map(fileObj => processFile(fileObj));
+            await Promise.allSettled(promises);
+        }
+
+        async function processFile(fileObj) {
+            try {
+                fileObj.status = 'processing';
+                updateFileList();
+                
+                addLogEntry(`Processando: ${fileObj.name}`, 'info');
+                
+                const content = await readFileContent(fileObj.file);
+                fileObj.content = content;
+                
+                const trimWhitespace = document.getElementById('trimWhitespace')?.checked;
+                const removeDuplicates = document.getElementById('removeDuplicates')?.checked;
+                
+                let lines = content.split('\n');
+                
+                if (trimWhitespace) {
+                    lines = lines.map(line => line.trim()).filter(line => line.length > 0);
+                }
+                
+                if (removeDuplicates) {
+                    lines = [...new Set(lines)];
+                }
+                
+                lines.forEach((line, index) => {
+                    processedData.push({
+                        id: Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+                        arquivo: fileObj.name,
+                        linha_numero: index + 1,
+                        conteudo: line,
+                        total_caracteres: line.length,
+                        data_processamento: new Date().toLocaleString('pt-BR')
+                    });
+                });
+                
+                fileObj.status = 'success';
+                addLogEntry(`✓ ${fileObj.name} processado com sucesso (${lines.length} linhas)`, 'success');
+                
+            } catch (error) {
+                fileObj.status = 'error';
+                console.error(`Erro ao processar ${fileObj.name}:`, error);
+                addLogEntry(`✗ Erro ao processar ${fileObj.name}: ${error.message}`, 'error');
+            } finally {
+                updateFileList();
+                updateStats();
+            }
+        }
+
+        async function readFileContent(file) {
+            const fileName = file.name.toLowerCase();
+            
+            if (fileName.endsWith('.txt') || fileName.endsWith('.csv')) {
+                return await readTextFile(file);
+            } else if (fileName.endsWith('.docx')) {
+                return await readDocxFile(file);
+            } else if (fileName.endsWith('.doc')) {
+                return await readDocFile(file);
+            } else if (fileName.endsWith('.rtf')) {
+                return await readRtfFile(file);
+            } else if (fileName.endsWith('.odt')) {
+                return await readOdtFile(file);
+            }
+            
+            throw new Error('Formato não suportado');
+        }
+
+        function readTextFile(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                const encoding = document.getElementById('inputEncoding')?.value || 'UTF-8';
+                reader.onload = (e) => resolve(e.target.result || '');
+                reader.onerror = () => reject(new Error('Erro ao ler arquivo'));
+                reader.readAsText(file, encoding);
+            });
+        }
+
+        async function readDocxFile(file) {
+            if (typeof mammoth === 'undefined') {
+                throw new Error('Biblioteca Mammoth não carregada');
+            }
+            
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = async (e) => {
+                    try {
+                        const arrayBuffer = e.target.result;
+                        const result = await mammoth.extractRawText({ arrayBuffer });
+                        resolve(result.value || '');
+                    } catch (error) {
+                        reject(error);
+                    }
+                };
+                reader.onerror = () => reject(new Error('Erro ao ler arquivo'));
+                reader.readAsArrayBuffer(file);
+            });
+        }
+
+        async function readDocFile(file) {
+            // Tentar com mammoth primeiro
+            try {
+                if (typeof mammoth !== 'undefined') {
+                    return await readDocxFile(file);
+                }
+            } catch (error) {
+                console.warn('Mammoth falhou para .doc:', error);
+            }
+            
+            // Para arquivos .doc, retornar mensagem informativa
+            return `[ATENÇÃO: Arquivo .doc detectado]\n\nPara melhor processamento, converta para .docx ou .txt.\n\nO sistema tentará extrair informações básicas do nome do arquivo:\n- Nome: ${file.name}\n- Tamanho: ${formatFileSize(file.size)}\n\n[Conteúdo não disponível - formato .doc antigo]`;
+        }
+
+        async function readRtfFile(file) {
+            const text = await readTextFile(file);
+            
+            // Remover comandos RTF básicos
+            const cleanText = text
+                .replace(/\\par\s?/g, '\n')
+                .replace(/\\tab\s?/g, '\t')
+                .replace(/\\'[0-9a-f]{2}/g, '')
+                .replace(/\\[a-z]+\d*\s?/g, '')
+                .replace(/[{}]/g, '')
+                .trim();
+            
+            return cleanText || text;
+        }
+
+        async function readOdtFile(file) {
+            return '[Arquivo ODT detectado. Por favor, exporte como .txt ou .docx]';
+        }
+
+        function updateProgress(current, total) {
+            const percentage = Math.round((current / total) * 100);
+            
+            if (elements.progressFill) {
+                elements.progressFill.style.width = percentage + '%';
+                elements.progressFill.textContent = percentage + '%';
+            }
+            
+            const progressText = document.getElementById('progressText');
+            if (progressText) {
+                progressText.textContent = `${percentage}% - ${current} de ${total} arquivos`;
+            }
+        }
+
+        function updateProcessingSpeed(processed, elapsedTime) {
+            const speed = processed / (elapsedTime / 1000);
+            
+            if (charts.processing) {
+                try {
+                    const chart = charts.processing;
+                    chart.data.labels.push(new Date().toLocaleTimeString('pt-BR'));
+                    chart.data.datasets[0].data.push(speed.toFixed(2));
+                    
+                    if (chart.data.labels.length > 20) {
+                        chart.data.labels.shift();
+                        chart.data.datasets[0].data.shift();
+                    }
+                    
+                    chart.update('none');
+                } catch (error) {
+                    console.warn('Erro ao atualizar gráfico:', error);
+                }
+            }
+        }
+
+        function finishProcessing() {
+            isProcessing = false;
+            elements.processBtn.disabled = false;
+            elements.pauseBtn.disabled = true;
+            
+            addLogEntry(`Processamento concluído! ${processedData.length} linhas extraídas`, 'success');
+            
+            updateStats();
+            updatePreviewTable();
+            updateFileTypeChart();
+            
+            setTimeout(() => {
+                switchTab('preview');
+            }, 500);
+            
+            if (processedData.length > 0) {
+                showSuccess(`✅ Processamento concluído! ${processedData.length} linhas extraídas.`);
+            }
+        }
+
+        // Funções de UI
+        function updateStats() {
+            const total = allFiles.length;
+            const success = allFiles.filter(f => f.status === 'success').length;
+            const errors = allFiles.filter(f => f.status === 'error').length;
+            
+            const statElements = {
+                statTotalFiles: document.getElementById('statTotalFiles'),
+                statSuccess: document.getElementById('statSuccess'),
+                statErrors: document.getElementById('statErrors'),
+                statLines: document.getElementById('statLines')
+            };
+            
+            if (statElements.statTotalFiles) statElements.statTotalFiles.textContent = total;
+            if (statElements.statSuccess) statElements.statSuccess.textContent = success;
+            if (statElements.statErrors) statElements.statErrors.textContent = errors;
+            if (statElements.statLines) statElements.statLines.textContent = processedData.length;
+        }
+
+        function updateFileTypeChart() {
+            if (!charts.fileType) return;
+            
+            try {
+                const typeCounts = {};
+                allFiles.forEach(file => {
+                    const type = file.type.toUpperCase();
+                    typeCounts[type] = (typeCounts[type] || 0) + 1;
+                });
+                
+                charts.fileType.data.labels = Object.keys(typeCounts);
+                charts.fileType.data.datasets[0].data = Object.values(typeCounts);
+                charts.fileType.update();
+            } catch (error) {
+                console.warn('Erro ao atualizar gráfico:', error);
+            }
+        }
+
+        function updatePreviewTable() {
+            const tbody = elements.dataPreviewBody;
+            if (!tbody) return;
+            
+            tbody.innerHTML = '';
+            
+            if (processedData.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" style="text-align: center; padding: 2rem; color: #718096;">
+                            Nenhum dado processado ainda
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            const itemsPerPage = 50;
+            const dataToShow = processedData.slice(0, currentPreviewIndex + itemsPerPage);
+            
+            dataToShow.forEach((item, index) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${escapeHtml(item.arquivo)}</td>
+                    <td>${item.linha_numero}</td>
+                    <td style="max-width: 400px; overflow: hidden; text-overflow: ellipsis;">
+                        ${escapeHtml(item.conteudo.substring(0, 100))}${item.conteudo.length > 100 ? '...' : ''}
+                    </td>
+                    <td>${item.total_caracteres}</td>
+                    <td>
+                        <button class="btn btn-secondary" style="padding: 0.25rem 0.5rem;" 
+                                onclick="editLine(${index})">✏️</button>
+                        <button class="btn btn-secondary" style="padding: 0.25rem 0.5rem;" 
+                                onclick="deleteLine(${index})">🗑️</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+            
+            const loadMoreBtn = document.getElementById('loadMoreBtn');
+            if (loadMoreBtn) {
+                loadMoreBtn.style.display = dataToShow.length < processedData.length ? 'inline-block' : 'none';
+            }
+        }
+
+        function loadMorePreview() {
+            currentPreviewIndex += 50;
+            updatePreviewTable();
+        }
+
+        function addLogEntry(message, type = 'info') {
+            if (!elements.liveLog) return;
+            
+            const time = new Date().toLocaleTimeString('pt-BR');
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            entry.innerHTML = `
+                <span class="log-time">${time}</span>
+                <span class="log-${type}">${escapeHtml(message)}</span>
+            `;
+            
+            elements.liveLog.appendChild(entry);
+            elements.liveLog.scrollTop = elements.liveLog.scrollHeight;
+            
+            while (elements.liveLog.children.length > 100) {
+                elements.liveLog.removeChild(elements.liveLog.firstChild);
+            }
+        }
+
+        // Funções de Ação
+        function pauseProcessing() {
+            if (!isProcessing || isPaused) return;
+            
+            isPaused = true;
+            elements.pauseBtn.disabled = true;
+            elements.processBtn.disabled = false;
+            elements.processBtn.textContent = '▶️ Continuar';
+            addLogEntry('Processamento pausado', 'warning');
+        }
+
+        function toggleSelectAll() {
+            const selectAll = document.getElementById('selectAll');
+            if (!selectAll) return;
+            
+            const isChecked = selectAll.checked;
+            allFiles.forEach(file => file.selected = isChecked);
+            updateFileList();
+        }
+
+        function toggleFileSelection(fileId) {
+            const file = allFiles.find(f => f.id === fileId);
+            if (file) {
+                file.selected = !file.selected;
+                updateFileList();
+            }
+        }
+
+        function applyFilters() {
+            updateFileList();
+            addLogEntry('Filtros aplicados', 'info');
+        }
+
+        function clearFilters() {
+            const filters = ['filterType', 'filterSize', 'filterDate', 'filterName'];
+            filters.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.value = element.tagName === 'SELECT' ? 'all' : '';
+                }
+            });
+            updateFileList();
+            addLogEntry('Filtros limpos', 'info');
+        }
+
+        function editLine(index) {
+            if (!processedData[index]) return;
+            
+            const item = processedData[index];
+            const editContent = document.getElementById('editContent');
+            const editModal = document.getElementById('editModal');
+            
+            if (editContent && editModal) {
+                editContent.value = item.conteudo;
+                editContent.dataset.index = index;
+                editModal.classList.add('active');
+                editContent.focus();
+            }
+        }
+
+        function saveEdit() {
+            const editContent = document.getElementById('editContent');
+            if (!editContent) return;
+            
+            const index = parseInt(editContent.dataset.index);
+            const newContent = editContent.value;
+            
+            if (!isNaN(index) && processedData[index]) {
+                processedData[index].conteudo = newContent;
+                processedData[index].total_caracteres = newContent.length;
+                updatePreviewTable();
+                updateStats();
+                addLogEntry(`Linha editada`, 'info');
+                showSuccess('Conteúdo atualizado!');
+            }
+            
+            closeModal();
+        }
+
+        function deleteLine(index) {
+            if (!processedData[index]) return;
+            
+            if (confirm('Tem certeza que deseja excluir esta linha?')) {
+                processedData.splice(index, 1);
+                updatePreviewTable();
+                updateStats();
+                addLogEntry('Linha excluída', 'warning');
+            }
+        }
+
+        function editPreview() {
+            if (!currentFilePreview) {
+                showWarning('Selecione um arquivo primeiro');
+                return;
+            }
+            showWarning('Função em desenvolvimento');
+        }
+
+        function deleteFromPreview() {
+            if (!currentFilePreview) {
+                showWarning('Selecione um arquivo primeiro');
+                return;
+            }
+            
+            if (confirm(`Excluir ${currentFilePreview.name}?`)) {
+                const index = allFiles.findIndex(f => f.id === currentFilePreview.id);
+                if (index > -1) {
+                    allFiles.splice(index, 1);
+                    processedData = processedData.filter(item => item.arquivo !== currentFilePreview.name);
+                    
+                    currentFilePreview = null;
+                    if (elements.previewContent) {
+                        elements.previewContent.innerHTML = '<p style="color: #718096; text-align: center; padding: 2rem;">Selecione um arquivo para visualizar</p>';
+                    }
+                    
+                    updateFileList();
+                    updateStats();
+                    updatePreviewTable();
+                    
+                    if (allFiles.length === 0) {
+                        elements.fileManager.style.display = 'none';
+                        elements.processBtn.disabled = true;
+                    }
+                    
+                    showSuccess('Arquivo excluído!');
+                }
+            }
+        }
+
+        function closeModal() {
+            const editModal = document.getElementById('editModal');
+            if (editModal) {
+                editModal.classList.remove('active');
+            }
+        }
+
+        function resetAll() {
+            if (allFiles.length === 0 && processedData.length === 0) {
+                showWarning('Não há nada para limpar');
+                return;
+            }
+            
+            if (confirm('Limpar todos os arquivos e dados?')) {
+                allFiles = [];
+                processedData = [];
+                currentPreviewIndex = 0;
+                currentFilePreview = null;
+                isProcessing = false;
+                isPaused = false;
+                
+                if (elements.fileManager) elements.fileManager.style.display = 'none';
+                if (elements.processBtn) {
+                    elements.processBtn.disabled = true;
+                    elements.processBtn.textContent = '▶️ Iniciar Processamento';
+                }
+                if (elements.pauseBtn) elements.pauseBtn.disabled = true;
+                if (elements.progressFill) {
+                    elements.progressFill.style.width = '0%';
+                    elements.progressFill.textContent = '0%';
+                }
+                if (elements.fileInput) elements.fileInput.value = '';
+                
+                updateStats();
+                updateFileList();
+                updatePreviewTable();
+                updateFileTypeChart();
+                clearFilters();
+                
+                switchTab('upload');
+                
+                addLogEntry('Sistema resetado', 'warning');
+                showSuccess('Todos os dados foram limpos!');
+            }
+        }
+
+        // Funções de Configuração
+        function saveConfig() {
+            const config = {};
+            const configIds = [
+                'inputEncoding', 'outputEncoding', 'removeDuplicates', 
+                'trimWhitespace', 'preserveFormatting', 'extractTables',
+                'csvSeparator', 'textDelimiter', 'includeHeaders',
+                'batchSize', 'batchDelay', 'useWebWorkers'
+            ];
+            
+            configIds.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    config[id] = element.type === 'checkbox' ? element.checked : element.value;
+                }
+            });
+            
+            try {
+                localStorage.setItem('converterConfig', JSON.stringify(config));
+                addLogEntry('Configurações salvas', 'success');
+                showSuccess('Configurações salvas!');
+            } catch (error) {
+                console.error('Erro ao salvar:', error);
+                showError('Erro ao salvar configurações');
+            }
+        }
+
+        function loadConfig() {
+            try {
+                const saved = localStorage.getItem('converterConfig');
+                if (saved) {
+                    const config = JSON.parse(saved);
+                    
+                    Object.keys(config).forEach(key => {
+                        const element = document.getElementById(key);
+                        if (element) {
+                            if (element.type === 'checkbox') {
+                                element.checked = config[key];
+                            } else {
+                                element.value = config[key];
+                            }
+                        }
+                    });
+                    
+                    addLogEntry('Configurações carregadas', 'info');
+                }
+            } catch (error) {
+                console.error('Erro ao carregar configurações:', error);
+            }
+        }
+
+        function resetConfig() {
+            if (confirm('Restaurar configurações padrão?')) {
+                try {
+                    localStorage.removeItem('converterConfig');
+                    location.reload();
+                } catch (error) {
+                    console.error('Erro ao resetar:', error);
+                    showError('Erro ao restaurar configurações');
+                }
+            }
+        }
+
+        // Funções de Exportação
+        function exportExcel() {
+            if (processedData.length === 0) {
+                showError('Nenhum dado para exportar!');
+                return;
+            }
+            
+            if (typeof XLSX === 'undefined') {
+                showError('Biblioteca XLSX não carregada');
+                return;
+            }
+            
+            try {
+                const wb = XLSX.utils.book_new();
+                
+                const exportData = processedData.map(item => ({
+                    'Arquivo': item.arquivo,
+                    'Linha': item.linha_numero,
+                    'Conteúdo': item.conteudo,
+                    'Caracteres': item.total_caracteres,
+                    'Data': item.data_processamento
+                }));
+                
+                const ws = XLSX.utils.json_to_sheet(exportData);
+                
+                if (document.getElementById('excelFormatting')?.checked) {
+                    ws['!cols'] = [
+                        { wch: 30 }, { wch: 10 }, { wch: 80 }, { wch: 15 }, { wch: 20 }
+                    ];
+                }
+                
+                XLSX.utils.book_append_sheet(wb, ws, 'Dados');
+                
+                const fileName = `conversao_${new Date().toISOString().slice(0, 10)}.xlsx`;
+                XLSX.writeFile(wb, fileName);
+                
+                addLogEntry(`Excel exportado: ${fileName}`, 'success');
+                showSuccess('Excel exportado!');
+                
+            } catch (error) {
+                console.error('Erro ao exportar Excel:', error);
+                showError('Erro ao exportar Excel: ' + error.message);
+            }
+        }
+
+        function exportWord() {
+            if (processedData.length === 0) {
+                showError('Nenhum dado para exportar!');
+                return;
+            }
+            
+            try {
+                let html = `
+                    <html xmlns:o='urn:schemas-microsoft-com:office:office' 
+                          xmlns:w='urn:schemas-microsoft-com:office:word'>
+                    <head>
+                        <meta charset='utf-8'>
+                        <style>
+                            body { font-family: Arial, sans-serif; }
+                            table { border-collapse: collapse; width: 100%; }
+                            th, td { border: 1px solid #ddd; padding: 8px; }
+                            th { background-color: #4CAF50; color: white; }
+                        </style>
+                    </head>
+                    <body>
+                        <h1>Dados Convertidos</h1>
+                        <p>Total: ${processedData.length} registros</p>
+                        <table>
+                            <tr>
+                                <th>Arquivo</th>
+                                <th>Linha</th>
+                                <th>Conteúdo</th>
+                                <th>Caracteres</th>
+                            </tr>
+                `;
+                
+                const maxLines = Math.min(processedData.length, 1000);
+                for (let i = 0; i < maxLines; i++) {
+                    const item = processedData[i];
+                    html += `
+                        <tr>
+                            <td>${escapeHtml(item.arquivo)}</td>
+                            <td>${item.linha_numero}</td>
+                            <td>${escapeHtml(item.conteudo)}</td>
+                            <td>${item.total_caracteres}</td>
+                        </tr>
+                    `;
+                }
+                
+                html += '</table></body></html>';
+                
+                const blob = new Blob(['\ufeff', html], { type: 'application/msword' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = `conversao_${new Date().toISOString().slice(0, 10)}.doc`;
+                link.click();
+                
+                addLogEntry('Word exportado', 'success');
+                showSuccess('Word exportado!');
+                
+            } catch (error) {
+                console.error('Erro ao exportar Word:', error);
+                showError('Erro ao exportar Word: ' + error.message);
+            }
+        }
+
+        function exportPDF() {
+            if (processedData.length === 0) {
+                showError('Nenhum dado para exportar!');
+                return;
+            }
+            
+            try {
+                if (typeof window.jspdf === 'undefined') {
+                    throw new Error('jsPDF não disponível');
+                }
+                
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                
+                doc.setFontSize(20);
+                doc.text('Dados Convertidos', 14, 22);
+                
+                doc.setFontSize(12);
+                doc.text(`Total: ${processedData.length} registros`, 14, 35);
+                
+                const tableData = processedData.slice(0, 100).map(item => [
+                    item.arquivo.substring(0, 30),
+                    item.linha_numero.toString(),
+                    item.conteudo.substring(0, 50),
+                    item.total_caracteres.toString()
+                ]);
+                
+                doc.autoTable({
+                    head: [['Arquivo', 'Linha', 'Conteúdo', 'Caracteres']],
+                    body: tableData,
+                    startY: 45
+                });
+                
+                doc.save(`conversao_${new Date().toISOString().slice(0, 10)}.pdf`);
+                
+                addLogEntry('PDF exportado', 'success');
+                showSuccess('PDF exportado!');
+                
+            } catch (error) {
+                console.error('Erro ao exportar PDF:', error);
+                showError('Erro ao exportar PDF: ' + error.message);
+            }
+        }
+
+        function exportTXT() {
+            if (processedData.length === 0) {
+                showError('Nenhum dado para exportar!');
+                return;
+            }
+            
+            try {
+                let content = 'DADOS CONVERTIDOS\n';
+                content += '=================\n\n';
+                content += `Total: ${processedData.length} registros\n\n`;
+                
+                const grouped = {};
+                processedData.forEach(item => {
+                    if (!grouped[item.arquivo]) grouped[item.arquivo] = [];
+                    grouped[item.arquivo].push(item);
+                });
+                
+                Object.entries(grouped).forEach(([arquivo, items]) => {
+                    content += `\n--- ${arquivo} ---\n`;
+                    items.forEach(item => {
+                        content += `[${item.linha_numero}] ${item.conteudo}\n`;
+                    });
+                });
+                
+                const blob = new Blob(['\ufeff' + content], { type: 'text/plain;charset=utf-8' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = `conversao_${new Date().toISOString().slice(0, 10)}.txt`;
+                link.click();
+                
+                addLogEntry('TXT exportado', 'success');
+                showSuccess('TXT exportado!');
+                
+            } catch (error) {
+                console.error('Erro ao exportar TXT:', error);
+                showError('Erro ao exportar TXT: ' + error.message);
+            }
+        }
+
+        function exportCSV() {
+            if (processedData.length === 0) {
+                showError('Nenhum dado para exportar!');
+                return;
+            }
+            
+            try {
+                const separator = document.getElementById('csvSeparator')?.value || ',';
+                const delimiter = document.getElementById('textDelimiter')?.value || '"';
+                const includeHeaders = document.getElementById('includeHeaders')?.checked !== false;
+                
+                let csv = '\ufeff';
+                
+                if (includeHeaders) {
+                    const headers = ['arquivo', 'linha_numero', 'conteudo', 'total_caracteres', 'data_processamento'];
+                    csv += headers.map(h => delimiter + h + delimiter).join(separator) + '\n';
+                }
+                
+                processedData.forEach(item => {
+                    const row = [
+                        item.arquivo || '',
+                        item.linha_numero || '',
+                        (item.conteudo || '').replace(new RegExp(delimiter, 'g'), delimiter + delimiter),
+                        item.total_caracteres || '',
+                        item.data_processamento || ''
+                    ];
+                    csv += row.map(v => delimiter + v + delimiter).join(separator) + '\n';
+                });
+                
+                const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = `conversao_${new Date().toISOString().slice(0, 10)}.csv`;
+                link.click();
+                
+                addLogEntry('CSV exportado', 'success');
+                showSuccess('CSV exportado!');
+                
+            } catch (error) {
+                console.error('Erro ao exportar CSV:', error);
+                showError('Erro ao exportar CSV: ' + error.message);
+            }
+        }
+
+        function exportJSON() {
+            if (processedData.length === 0) {
+                showError('Nenhum dado para exportar!');
+                return;
+            }
+            
+            try {
+                const data = {
+                    metadata: {
+                        version: '2.0.3',
+                        exportDate: new Date().toISOString(),
+                        totalFiles: allFiles.length,
+                        totalRecords: processedData.length
+                    },
+                    files: allFiles.map(f => ({
+                        name: f.name,
+                        size: f.size,
+                        type: f.type,
+                        status: f.status
+                    })),
+                    data: processedData
+                };
+                
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = `conversao_${new Date().toISOString().slice(0, 10)}.json`;
+                link.click();
+                
+                addLogEntry('JSON exportado', 'success');
+                showSuccess('JSON exportado!');
+                
+            } catch (error) {
+                console.error('Erro ao exportar JSON:', error);
+                showError('Erro ao exportar JSON: ' + error.message);
+            }
+        }
+
+        function exportXML() {
+            if (processedData.length === 0) {
+                showError('Nenhum dado para exportar!');
+                return;
+            }
+            
+            try {
+                let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
+                xml += '<conversion>\n';
+                xml += '  <metadata>\n';
+                xml += `    <date>${new Date().toISOString()}</date>\n`;
+                xml += `    <totalRecords>${processedData.length}</totalRecords>\n`;
+                xml += '  </metadata>\n';
+                xml += '  <records>\n';
+                
+                processedData.forEach(item => {
+                    xml += '    <record>\n';
+                    xml += `      <file>${escapeXml(item.arquivo)}</file>\n`;
+                    xml += `      <line>${item.linha_numero}</line>\n`;
+                    xml += `      <content>${escapeXml(item.conteudo)}</content>\n`;
+                    xml += `      <characters>${item.total_caracteres}</characters>\n`;
+                    xml += '    </record>\n';
+                });
+                
+                xml += '  </records>\n';
+                xml += '</conversion>';
+                
+                const blob = new Blob([xml], { type: 'application/xml' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = `conversao_${new Date().toISOString().slice(0, 10)}.xml`;
+                link.click();
+                
+                addLogEntry('XML exportado', 'success');
+                showSuccess('XML exportado!');
+                
+            } catch (error) {
+                console.error('Erro ao exportar XML:', error);
+                showError('Erro ao exportar XML: ' + error.message);
+            }
+        }
+
+        function exportCustom() {
+            if (processedData.length === 0) {
+                showError('Nenhum dado para exportar!');
+                return;
+            }
+            
+            showWarning('Exportação customizada em desenvolvimento');
+        }
+
+        // Função para criar estrutura padrão da Tabela Mestra
+        window.criarEstruturaTabelaMestra = function() {
+            return {
+                CODIGO_PRODUTO_3000: '',
+                CODIGO_ET: '',
+                REVISAO_ET: '',
+                NOME_PRODUTO_COMPLETO: '',
+                NOME_SIMPLIFICADO: '',
+                MARCA: '',
+                LINHA: '',
+                CATEGORIA: '',
+                SUBCATEGORIA: '',
+                PORCAO_G: '',
+                MEDIDA_CASEIRA: '',
+                VALOR_ENERGETICO_KCAL: '',
+                VALOR_ENERGETICO_KJ: '',
+                CARBOIDRATOS_G: '',
+                ACUCARES_TOTAIS_G: '',
+                ACUCARES_ADICIONADOS_G: '',
+                POLIALCOOIS_G: '',
+                PROTEINAS_G: '',
+                GORDURAS_TOTAIS_G: '',
+                GORDURAS_SATURADAS_G: '',
+                GORDURAS_TRANS_G: '',
+                FIBRA_ALIMENTAR_G: '',
+                SODIO_MG: '',
+                FERRO_MG: '',
+                ZINCO_MG: '',
+                VITAMINA_A_MCG: '',
+                VITAMINA_C_MG: '',
+                VITAMINA_D_MCG: '',
+                VITAMINA_B1_MG: '',
+                VITAMINA_B6_MG: '',
+                VITAMINA_B12_MCG: '',
+                ACIDO_FOLICO_MCG: '',
+                INGREDIENTES_COMPLETO: '',
+                CONTEM_GLUTEN: 'FALSE',
+                CONTEM_LACTOSE: 'FALSE',
+                CONTEM_OVO: 'FALSE',
+                CONTEM_SOJA: 'FALSE',
+                OUTROS_ALERGENICOS_CONTEM: '',
+                PODE_CONTER_ALERGENICOS: '',
+                PESO_LIQUIDO_G: '',
+                UNIDADES_POR_EMBALAGEM: '',
+                CODIGO_BARRAS_EAN13: '',
+                CODIGO_BARRAS_DUN14: '',
+                VALIDADE_DIAS: '',
+                CONDICOES_ARMAZENAMENTO: '',
+                UMIDADE_MAXIMA_PERC: '',
+                SALMONELLA_25G: '',
+                OUTROS_MICRO: '',
+                ASPECTO: '',
+                COR: '',
+                SABOR: '',
+                ODOR: '',
+                TEXTURA: '',
+                SEM_GLUTEN: '',
+                SEM_LACTOSE: 'FALSE',
+                VEGANO: 'FALSE',
+                ZERO_ACUCAR: 'FALSE',
+                INTEGRAL: 'FALSE',
+                FONTE_FIBRAS: 'FALSE',
+                FONTE_PROTEINAS: 'FALSE',
+                RICO_VITAMINAS: 'FALSE',
+                SEM_CONSERVANTES: 'FALSE',
+                SEM_CORANTES: 'FALSE',
+                DATA_ULTIMA_REVISAO: new Date().toLocaleDateString('pt-BR'),
+                RESPONSAVEL_TECNICO: ''
+            };
+        };
+
+        // Função para exportar no formato Tabela Mestra oficial
+        window.exportExcelTabelaMestra = function() {
+            if (processedData.length === 0) {
+                showError('Nenhum dado para exportar!');
+                return;
+            }
+            
+            if (typeof XLSX === 'undefined') {
+                showError('Biblioteca XLSX não carregada');
+                return;
+            }
+            
+            try {
+                addLogEntry('Processando dados para formato Tabela Mestra...', 'info');
+                
+                // Processar os dados para o formato Tabela Mestra
+                const tabelaMestra = processarParaTabelaMestra(processedData);
+                
+                // Criar workbook
+                const wb = XLSX.utils.book_new();
+                
+                // Definir cabeçalhos na ordem correta
+                const headers = [
+                    'CODIGO_PRODUTO_3000', 'CODIGO_ET', 'REVISAO_ET', 'NOME_PRODUTO_COMPLETO',
+                    'NOME_SIMPLIFICADO', 'MARCA', 'LINHA', 'CATEGORIA', 'SUBCATEGORIA',
+                    'PORCAO_G', 'MEDIDA_CASEIRA', 'VALOR_ENERGETICO_KCAL', 'VALOR_ENERGETICO_KJ',
+                    'CARBOIDRATOS_G', 'ACUCARES_TOTAIS_G', 'ACUCARES_ADICIONADOS_G', 'POLIALCOOIS_G',
+                    'PROTEINAS_G', 'GORDURAS_TOTAIS_G', 'GORDURAS_SATURADAS_G', 'GORDURAS_TRANS_G',
+                    'FIBRA_ALIMENTAR_G', 'SODIO_MG', 'FERRO_MG', 'ZINCO_MG', 'VITAMINA_A_MCG',
+                    'VITAMINA_C_MG', 'VITAMINA_D_MCG', 'VITAMINA_B1_MG', 'VITAMINA_B6_MG',
+                    'VITAMINA_B12_MCG', 'ACIDO_FOLICO_MCG', 'INGREDIENTES_COMPLETO',
+                    'CONTEM_GLUTEN', 'CONTEM_LACTOSE', 'CONTEM_OVO', 'CONTEM_SOJA',
+                    'OUTROS_ALERGENICOS_CONTEM', 'PODE_CONTER_ALERGENICOS', 'PESO_LIQUIDO_G',
+                    'UNIDADES_POR_EMBALAGEM', 'CODIGO_BARRAS_EAN13', 'CODIGO_BARRAS_DUN14',
+                    'VALIDADE_DIAS', 'CONDICOES_ARMAZENAMENTO', 'UMIDADE_MAXIMA_PERC',
+                    'SALMONELLA_25G', 'OUTROS_MICRO', 'ASPECTO', 'COR', 'SABOR', 'ODOR',
+                    'TEXTURA', 'SEM_GLUTEN', 'SEM_LACTOSE', 'VEGANO', 'ZERO_ACUCAR',
+                    'INTEGRAL', 'FONTE_FIBRAS', 'FONTE_PROTEINAS', 'RICO_VITAMINAS',
+                    'SEM_CONSERVANTES', 'SEM_CORANTES', 'DATA_ULTIMA_REVISAO', 'RESPONSAVEL_TECNICO'
+                ];
+                
+                // Preparar dados para exportação
+                const exportData = tabelaMestra.map(produto => {
+                    const row = {};
+                    headers.forEach(header => {
+                        row[header] = produto[header] || '';
+                    });
+                    return row;
+                });
+                
+                // Adicionar dados de exemplo se não houver dados
+                if (exportData.length === 0) {
+                    exportData.push(criarEstruturaTabelaMestra());
+                }
+                
+                // Criar worksheet
+                const ws = XLSX.utils.json_to_sheet(exportData, { header: headers });
+                
+                // Aplicar formatação
+                ws['!cols'] = headers.map(h => ({ wch: 20 }));
+                
+                // Adicionar worksheet ao workbook
+                XLSX.utils.book_append_sheet(wb, ws, 'Tabela Mestra');
+                
+                // Gerar nome do arquivo
+                const fileName = `tabela_mestra_produtos_${new Date().toISOString().slice(0, 10)}.xlsx`;
+                
+                // Baixar arquivo
+                XLSX.writeFile(wb, fileName);
+                
+                addLogEntry(`✅ Tabela Mestra exportada: ${fileName}`, 'success');
+                showSuccess(`Tabela Mestra exportada com ${tabelaMestra.length} produto(s)!`);
+                
+            } catch (error) {
+                console.error('Erro ao exportar Tabela Mestra:', error);
+                showError('Erro ao exportar Tabela Mestra: ' + error.message);
+            }
+        };
+
+        // Função para processar dados dos documentos para o formato Tabela Mestra
+        window.processarParaTabelaMestra = function(dadosProcessados) {
+            const tabelaMestra = [];
+            
+            // Agrupar dados por arquivo
+            const arquivosAgrupados = {};
+            dadosProcessados.forEach(item => {
+                if (!arquivosAgrupados[item.arquivo]) {
+                    arquivosAgrupados[item.arquivo] = [];
+                }
+                arquivosAgrupados[item.arquivo].push(item);
+            });
+            
+            // Processar cada arquivo
+            Object.entries(arquivosAgrupados).forEach(([nomeArquivo, linhas]) => {
+                const produto = criarEstruturaTabelaMestra();
+                
+                // Extrair código ET do nome do arquivo
+                const matchET = nomeArquivo.match(/ET-P&D-(\d+[A-Z]R?\d*)/);
+                if (matchET) {
+                    produto.CODIGO_ET = matchET[0];
+                    // Extrair revisão se presente
+                    const matchRevisao = nomeArquivo.match(/rev(\d+)|R(\d+)/i);
+                    if (matchRevisao) {
+                        produto.REVISAO_ET = matchRevisao[1] || matchRevisao[2];
+                    }
+                }
+                
+                // Extrair código SAP
+                const matchSAP = nomeArquivo.match(/\b(3000\d{5})\b/);
+                if (matchSAP) {
+                    produto.CODIGO_PRODUTO_3000 = matchSAP[1];
+                }
+                
+                // Verificar se é um arquivo não suportado
+                if (linhas.length === 1 && linhas[0].conteudo.includes('[ATENÇÃO: Arquivo .doc detectado]')) {
+                    // Extrair informações apenas do nome do arquivo
+                    console.log(`⚠️ Arquivo .doc não suportado: ${nomeArquivo}`);
+                    console.log('   Extraindo informações do nome do arquivo...');
+                    
+                    // Manter as extrações do nome do arquivo
+                    if (!produto.NOME_PRODUTO_COMPLETO && nomeArquivo) {
+                        // Tentar extrair nome do produto do nome do arquivo
+                        const nomeTemp = nomeArquivo
+                            .replace(/^ET-P&D-\d+[A-Z]R?\d*\s*/, '')
+                            .replace(/\s*-\s*\d+.*$/, '')
+                            .replace(/\.docx?$/i, '')
+                            .replace(/^DIZERES DE ROTULAGEM\s*/i, '')
+                            .trim();
+                        
+                        produto.NOME_PRODUTO_COMPLETO = nomeTemp;
+                        produto.NOME_SIMPLIFICADO = nomeTemp;
+                    }
+                    
+                    // Adicionar nota sobre conversão necessária
+                    produto.INGREDIENTES_COMPLETO = '[Arquivo .doc - necessário converter para .docx ou .txt para extrair dados]';
+                    
+                } else {
+                    // Processar normalmente se houver conteúdo
+                    const textoCompleto = linhas.map(l => l.conteudo).join('\n');
+                    const textoLower = textoCompleto.toLowerCase();
+                const textoCompleto = linhas.map(l => l.conteudo).join('\n');
+                const textoLower = textoCompleto.toLowerCase();
+                
+                // Extrair nome do produto
+                linhas.forEach((linha, index) => {
+                    const conteudo = linha.conteudo.trim();
+                    const conteudoLower = conteudo.toLowerCase();
+                    
+                    // Nome do produto (geralmente após PRODUTO ou no início)
+                    if (conteudoLower === 'produto' && index < linhas.length - 1) {
+                        produto.NOME_PRODUTO_COMPLETO = linhas[index + 1].conteudo.trim();
+                    } else if (index === 0 && !conteudoLower.includes('et-') && conteudo.length > 10) {
+                        produto.NOME_PRODUTO_COMPLETO = conteudo;
+                    }
+                    
+                    // Marca
+                    if (conteudoLower.includes('marca:')) {
+                        const marca = conteudo.split(':')[1]?.trim();
+                        if (marca) produto.MARCA = marca;
+                    } else if (conteudoLower.includes('vitao')) {
+                        produto.MARCA = 'Vitao';
+                    } else if (conteudoLower.includes('superbom')) {
+                        produto.MARCA = 'Superbom';
+                    }
+                    
+                    // Categoria e Linha
+                    if (conteudoLower.includes('categoria:')) {
+                        produto.CATEGORIA = conteudo.split(':')[1]?.trim();
+                    }
+                    if (conteudoLower.includes('linha:')) {
+                        produto.LINHA = conteudo.split(':')[1]?.trim();
+                    }
+                });
+                
+                // Extrair informações nutricionais com regex mais flexível
+                const extractNutritionalValue = (pattern) => {
+                    const regex = new RegExp(pattern + '\\s*:?\\s*([0-9]+[,.]?[0-9]*)\\s*(g|mg|kcal|kj)?', 'i');
+                    const match = textoCompleto.match(regex);
+                    if (match) {
+                        return match[1].replace(',', '.');
+                    }
+                    return '';
+                };
+                
+                // Porção
+                const porcaoMatch = textoCompleto.match(/porção\s*:?\s*([0-9]+[,.]?[0-9]*)\s*(g|ml)/i);
+                if (porcaoMatch) {
+                    produto.PORCAO_G = porcaoMatch[1].replace(',', '.');
+                }
+                
+                // Medida caseira
+                const medidaMatch = textoCompleto.match(/\(([^)]+(?:unidade|pacote|xícara|colher|fatia|porção)[^)]*)\)/i);
+                if (medidaMatch) {
+                    produto.MEDIDA_CASEIRA = medidaMatch[1].trim();
+                }
+                
+                // Valores nutricionais
+                produto.VALOR_ENERGETICO_KCAL = extractNutritionalValue('valor\\s*energ[ée]tico|energia');
+                produto.CARBOIDRATOS_G = extractNutritionalValue('carboidratos?');
+                produto.PROTEINAS_G = extractNutritionalValue('prote[íi]nas?');
+                produto.GORDURAS_TOTAIS_G = extractNutritionalValue('gorduras?\\s*totais?');
+                produto.GORDURAS_SATURADAS_G = extractNutritionalValue('gorduras?\\s*saturadas?');
+                produto.GORDURAS_TRANS_G = extractNutritionalValue('gorduras?\\s*trans');
+                produto.FIBRA_ALIMENTAR_G = extractNutritionalValue('fibra\\s*alimentar');
+                produto.SODIO_MG = extractNutritionalValue('s[óo]dio');
+                produto.ACUCARES_TOTAIS_G = extractNutritionalValue('a[çc][úu]cares?\\s*totais?');
+                produto.ACUCARES_ADICIONADOS_G = extractNutritionalValue('a[çc][úu]cares?\\s*adicionados?');
+                
+                // Calcular kJ se tiver kcal
+                if (produto.VALOR_ENERGETICO_KCAL) {
+                    const kcal = parseFloat(produto.VALOR_ENERGETICO_KCAL);
+                    produto.VALOR_ENERGETICO_KJ = Math.round(kcal * 4.184).toString();
+                }
+                
+                // Ingredientes
+                const ingredientesMatch = textoCompleto.match(/ingredientes?\s*:?\s*([^\n]+(?:\n(?!\s*[A-Z][A-Z]).*)*)/i);
+                if (ingredientesMatch) {
+                    produto.INGREDIENTES_COMPLETO = ingredientesMatch[1].trim()
+                        .replace(/\n/g, ' ')
+                        .replace(/\s+/g, ' ')
+                        .trim();
+                }
+                
+                // Alérgicos - busca mais ampla
+                const alergenicosSection = textoCompleto.match(/al[ée]rg[êe]nicos?\s*:?\s*([^\n]+(?:\n(?!\s*[A-Z][A-Z]).*)*)/i);
+                if (alergenicosSection) {
+                    const alergenicos = alergenicosSection[1].toUpperCase();
+                    
+                    // Contém
+                    produto.CONTEM_GLUTEN = (alergenicos.includes('GLÚTEN') || alergenicos.includes('GLUTEN') || 
+                                            textoLower.includes('contém glúten')) ? 'TRUE' : 'FALSE';
+                    produto.CONTEM_SOJA = alergenicos.includes('SOJA') ? 'TRUE' : 'FALSE';
+                    produto.CONTEM_LACTOSE = (alergenicos.includes('LEITE') || alergenicos.includes('LACTOSE') ||
+                                             alergenicos.includes('LÁCTEO')) ? 'TRUE' : 'FALSE';
+                    produto.CONTEM_OVO = (alergenicos.includes('OVO') || alergenicos.includes('OVOS')) ? 'TRUE' : 'FALSE';
+                    
+                    // Outros alérgicos
+                    const outrosAlergenicos = [];
+                    if (alergenicos.includes('AMENDOIM')) outrosAlergenicos.push('Amendoim');
+                    if (alergenicos.includes('CASTANHA')) outrosAlergenicos.push('Castanhas');
+                    if (alergenicos.includes('NOZES')) outrosAlergenicos.push('Nozes');
+                    if (alergenicos.includes('AVELÃ')) outrosAlergenicos.push('Avelã');
+                    if (alergenicos.includes('AMÊNDOA')) outrosAlergenicos.push('Amêndoa');
+                    
+                    if (outrosAlergenicos.length > 0) {
+                        produto.OUTROS_ALERGENICOS_CONTEM = outrosAlergenicos.join(', ');
+                    }
+                    
+                    // Pode conter
+                    const podeConterMatch = alergenicos.match(/PODE CONTER[:\s]*([^.]+)/);
+                    if (podeConterMatch) {
+                        produto.PODE_CONTER_ALERGENICOS = podeConterMatch[1].trim();
+                    }
+                }
+                
+                // Verificar "não contém glúten"
+                if (textoLower.includes('não contém glúten')) {
+                    produto.CONTEM_GLUTEN = 'FALSE';
+                    produto.SEM_GLUTEN = 'SIM';
+                }
+                
+                // Claims
+                if (textoLower.includes('zero açúcar') || textoLower.includes('0% açúcar')) {
+                    produto.ZERO_ACUCAR = 'TRUE';
+                }
+                if (textoLower.includes('vegano')) {
+                    produto.VEGANO = 'TRUE';
+                }
+                if (textoLower.includes('integral')) {
+                    produto.INTEGRAL = 'TRUE';
+                }
+                if (textoLower.includes('fonte de fibras')) {
+                    produto.FONTE_FIBRAS = 'TRUE';
+                }
+                if (textoLower.includes('fonte de proteínas')) {
+                    produto.FONTE_PROTEINAS = 'TRUE';
+                }
+                if (textoLower.includes('sem lactose') || textoLower.includes('zero lactose')) {
+                    produto.SEM_LACTOSE = 'TRUE';
+                    produto.CONTEM_LACTOSE = 'FALSE';
+                }
+                if (textoLower.includes('sem conservantes')) {
+                    produto.SEM_CONSERVANTES = 'TRUE';
+                }
+                if (textoLower.includes('sem corantes')) {
+                    produto.SEM_CORANTES = 'TRUE';
+                }
+                
+                // Peso
+                const pesoMatch = textoCompleto.match(/peso\s*l[íi]quido\s*:?\s*([0-9]+)\s*(g|kg)/i) ||
+                                 textoCompleto.match(/conte[úu]do\s*:?\s*([0-9]+)\s*(g|kg)/i) ||
+                                 textoCompleto.match(/([0-9]+)\s*(g|kg)/i);
+                if (pesoMatch) {
+                    let peso = parseInt(pesoMatch[1]);
+                    if (pesoMatch[2].toLowerCase() === 'kg') {
+                        peso = peso * 1000;
+                    }
+                    produto.PESO_LIQUIDO_G = peso.toString();
+                }
+                
+                // Validade
+                const validadeMatch = textoCompleto.match(/validade\s*:?\s*([0-9]+)\s*(dias?|meses?|m[êe]s)/i);
+                if (validadeMatch) {
+                    let dias = parseInt(validadeMatch[1]);
+                    if (validadeMatch[2].toLowerCase().includes('mes') || validadeMatch[2].toLowerCase().includes('mês')) {
+                        dias = dias * 30;
+                    }
+                    produto.VALIDADE_DIAS = dias.toString();
+                }
+                
+                // Código de barras
+                const eanMatch = textoCompleto.match(/ean\s*:?\s*([0-9]{13})/i) ||
+                                textoCompleto.match(/c[óo]digo\s*de\s*barras?\s*:?\s*([0-9]{13})/i);
+                if (eanMatch) {
+                    produto.CODIGO_BARRAS_EAN13 = eanMatch[1];
+                }
+                
+                // Nome simplificado
+                if (!produto.NOME_SIMPLIFICADO && produto.NOME_PRODUTO_COMPLETO) {
+                    produto.NOME_SIMPLIFICADO = produto.NOME_PRODUTO_COMPLETO
+                        .replace(/\s*-\s*VITAO.*/i, '')
+                        .replace(/\s*-\s*SUPERBOM.*/i, '')
+                        .replace(/BISCOITO\s*/i, '')
+                        .replace(/COOKIES?\s*/i, '')
+                        .trim();
+                } else if (!produto.NOME_SIMPLIFICADO) {
+                    produto.NOME_SIMPLIFICADO = nomeArquivo
+                        .replace(/^ET-P&D-\d+[A-Z]R?\d*\s*/, '')
+                        .replace(/\s*-\s*\d+.*$/, '')
+                        .replace(/\.docx?$/i, '')
+                        .replace(/^DIZERES DE ROTULAGEM\s*/i, '')
+                        .trim();
+                }
+                
+                // Categorizar baseado no nome e conteúdo
+                const nomeCategoria = (produto.NOME_PRODUTO_COMPLETO + ' ' + produto.NOME_SIMPLIFICADO).toLowerCase();
+                if (!produto.CATEGORIA) {
+                    if (nomeCategoria.includes('cookie') || nomeCategoria.includes('biscoito')) {
+                        produto.CATEGORIA = 'Biscoitos';
+                        produto.SUBCATEGORIA = nomeCategoria.includes('integral') ? 'Integrais' : 'Cookies';
+                    } else if (nomeCategoria.includes('snack')) {
+                        produto.CATEGORIA = 'Snacks';
+                        produto.SUBCATEGORIA = 'Salgados';
+                    } else if (nomeCategoria.includes('drageado')) {
+                        produto.CATEGORIA = 'Doces';
+                        produto.SUBCATEGORIA = 'Drageados';
+                    } else if (nomeCategoria.includes('chocolate')) {
+                        produto.CATEGORIA = 'Chocolates';
+                        produto.SUBCATEGORIA = 'Chocolates';
+                    } else if (nomeCategoria.includes('barra') || nomeCategoria.includes('bar ')) {
+                        produto.CATEGORIA = 'Barras';
+                        produto.SUBCATEGORIA = 'Barras de Cereal';
+                    }
+                }
+                
+                // Adicionar o produto processado
+                tabelaMestra.push(produto);
+                
+                // Log para debug
+                console.log(`Produto processado: ${produto.NOME_PRODUTO_COMPLETO || produto.NOME_SIMPLIFICADO}`);
+                console.log(`- Código ET: ${produto.CODIGO_ET}`);
+                console.log(`- Código SAP: ${produto.CODIGO_PRODUTO_3000}`);
+                console.log(`- Valores nutricionais encontrados: ${produto.VALOR_ENERGETICO_KCAL ? 'Sim' : 'Não'}`);
+            });
+            
+            return tabelaMestra;
+        };
+
+        // Função auxiliares
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function escapeXml(text) {
+            return text
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&apos;');
+        }
+
+        function searchInPreview() {
+            const search = document.getElementById('searchPreview')?.value.toLowerCase() || '';
+            const rows = document.querySelectorAll('#dataPreviewBody tr');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(search) ? '' : 'none';
+            });
+        }
+
+        function sortPreviewData() {
+            const sortBy = document.getElementById('sortBy')?.value;
+            if (!sortBy) return;
+            
+            processedData.sort((a, b) => {
+                switch(sortBy) {
+                    case 'arquivo':
+                        return a.arquivo.localeCompare(b.arquivo);
+                    case 'linha':
+                        return a.linha_numero - b.linha_numero;
+                    case 'conteudo':
+                        return a.conteudo.localeCompare(b.conteudo);
+                    case 'tamanho':
+                        return a.total_caracteres - b.total_caracteres;
+                    default:
+                        return 0;
+                }
+            });
+            
+            currentPreviewIndex = 0;
+            updatePreviewTable();
+        }
+
+        // Funções de Notificação
+        function showError(message) {
+            console.error(message);
+            const errorEl = document.getElementById('errorMessage');
+            if (errorEl) {
+                errorEl.textContent = message;
+                errorEl.style.display = 'block';
+                setTimeout(() => {
+                    errorEl.style.display = 'none';
+                }, 5000);
+            } else {
+                alert('❌ Erro: ' + message);
+            }
+        }
+
+        function showSuccess(message) {
+            console.log('✅', message);
+            const successEl = document.getElementById('successMessage');
+            if (successEl) {
+                successEl.textContent = message;
+                successEl.style.display = 'block';
+                setTimeout(() => {
+                    successEl.style.display = 'none';
+                }, 3000);
+            }
+        }
+
+        function showWarning(message) {
+            console.warn('⚠️', message);
+            const alertEl = document.getElementById('systemAlert');
+            const alertMessage = document.getElementById('alertMessage');
+            if (alertEl && alertMessage) {
+                alertMessage.textContent = message;
+                alertEl.style.display = 'block';
+                setTimeout(() => {
+                    alertEl.style.display = 'none';
+                }, 4000);
+            } else {
+                alert('⚠️ Aviso: ' + message);
+            }
+        }
+
+        // Função de teste
+        window.testeRapido = function() {
+            console.log('🧪 Teste rápido iniciado...');
+            
+            // Criar dados de teste mais completos
+            processedData = [
+                // Produto 1 - Cookie Integral
+                {
+                    id: Date.now() + '_p1',
+                    arquivo: 'ET-P&D-023AR15 Cookies Integrais Castanha - 300000399.doc',
+                    linha_numero: 1,
+                    conteudo: 'PRODUTO',
+                    total_caracteres: 7,
+                    data_processamento: new Date().toLocaleString('pt-BR')
+                },
+                {
+                    id: Date.now() + '_p2',
+                    arquivo: 'ET-P&D-023AR15 Cookies Integrais Castanha - 300000399.doc',
+                    linha_numero: 2,
+                    conteudo: 'COOKIES INTEGRAIS CASTANHA DE CAJU - VITAO',
+                    total_caracteres: 42,
+                    data_processamento: new Date().toLocaleString('pt-BR')
+                },
+                {
+                    id: Date.now() + '_p3',
+                    arquivo: 'ET-P&D-023AR15 Cookies Integrais Castanha - 300000399.doc',
+                    linha_numero: 3,
+                    conteudo: 'INFORMAÇÃO NUTRICIONAL',
+                    total_caracteres: 22,
+                    data_processamento: new Date().toLocaleString('pt-BR')
+                },
+                {
+                    id: Date.now() + '_p4',
+                    arquivo: 'ET-P&D-023AR15 Cookies Integrais Castanha - 300000399.doc',
+                    linha_numero: 4,
+                    conteudo: 'Porção: 30g (1 pacote)',
+                    total_caracteres: 22,
+                    data_processamento: new Date().toLocaleString('pt-BR')
+                },
+                {
+                    id: Date.now() + '_p5',
+                    arquivo: 'ET-P&D-023AR15 Cookies Integrais Castanha - 300000399.doc',
+                    linha_numero: 5,
+                    conteudo: 'Valor energético: 132 kcal',
+                    total_caracteres: 27,
+                    data_processamento: new Date().toLocaleString('pt-BR')
+                },
+                {
+                    id: Date.now() + '_p6',
+                    arquivo: 'ET-P&D-023AR15 Cookies Integrais Castanha - 300000399.doc',
+                    linha_numero: 6,
+                    conteudo: 'Carboidratos: 18g',
+                    total_caracteres: 17,
+                    data_processamento: new Date().toLocaleString('pt-BR')
+                },
+                {
+                    id: Date.now() + '_p7',
+                    arquivo: 'ET-P&D-023AR15 Cookies Integrais Castanha - 300000399.doc',
+                    linha_numero: 7,
+                    conteudo: 'Proteínas: 2,8g',
+                    total_caracteres: 15,
+                    data_processamento: new Date().toLocaleString('pt-BR')
+                },
+                {
+                    id: Date.now() + '_p8',
+                    arquivo: 'ET-P&D-023AR15 Cookies Integrais Castanha - 300000399.doc',
+                    linha_numero: 8,
+                    conteudo: 'Gorduras totais: 5,9g',
+                    total_caracteres: 21,
+                    data_processamento: new Date().toLocaleString('pt-BR')
+                },
+                {
+                    id: Date.now() + '_p9',
+                    arquivo: 'ET-P&D-023AR15 Cookies Integrais Castanha - 300000399.doc',
+                    linha_numero: 9,
+                    conteudo: 'Gorduras saturadas: 1,5g',
+                    total_caracteres: 24,
+                    data_processamento: new Date().toLocaleString('pt-BR')
+                },
+                {
+                    id: Date.now() + '_p10',
+                    arquivo: 'ET-P&D-023AR15 Cookies Integrais Castanha - 300000399.doc',
+                    linha_numero: 10,
+                    conteudo: 'Fibra alimentar: 3,2g',
+                    total_caracteres: 21,
+                    data_processamento: new Date().toLocaleString('pt-BR')
+                },
+                {
+                    id: Date.now() + '_p11',
+                    arquivo: 'ET-P&D-023AR15 Cookies Integrais Castanha - 300000399.doc',
+                    linha_numero: 11,
+                    conteudo: 'Sódio: 98mg',
+                    total_caracteres: 11,
+                    data_processamento: new Date().toLocaleString('pt-BR')
+                },
+                {
+                    id: Date.now() + '_p12',
+                    arquivo: 'ET-P&D-023AR15 Cookies Integrais Castanha - 300000399.doc',
+                    linha_numero: 12,
+                    conteudo: 'INGREDIENTES:',
+                    total_caracteres: 13,
+                    data_processamento: new Date().toLocaleString('pt-BR')
+                },
+                {
+                    id: Date.now() + '_p13',
+                    arquivo: 'ET-P&D-023AR15 Cookies Integrais Castanha - 300000399.doc',
+                    linha_numero: 13,
+                    conteudo: 'Farinha de trigo integral, açúcar, óleo vegetal, castanha de caju, fermento químico, sal, aromatizante natural',
+                    total_caracteres: 111,
+                    data_processamento: new Date().toLocaleString('pt-BR')
+                },
+                {
+                    id: Date.now() + '_p14',
+                    arquivo: 'ET-P&D-023AR15 Cookies Integrais Castanha - 300000399.doc',
+                    linha_numero: 14,
+                    conteudo: 'ALÉRGICOS:',
+                    total_caracteres: 10,
+                    data_processamento: new Date().toLocaleString('pt-BR')
+                },
+                {
+                    id: Date.now() + '_p15',
+                    arquivo: 'ET-P&D-023AR15 Cookies Integrais Castanha - 300000399.doc',
+                    linha_numero: 15,
+                    conteudo: 'CONTÉM GLÚTEN. CONTÉM CASTANHA DE CAJU. PODE CONTER LEITE, OVO, SOJA, AMENDOIM',
+                    total_caracteres: 80,
+                    data_processamento: new Date().toLocaleString('pt-BR')
+                },
+                {
+                    id: Date.now() + '_p16',
+                    arquivo: 'ET-P&D-023AR15 Cookies Integrais Castanha - 300000399.doc',
+                    linha_numero: 16,
+                    conteudo: 'Peso líquido: 120g',
+                    total_caracteres: 18,
+                    data_processamento: new Date().toLocaleString('pt-BR')
+                },
+                {
+                    id: Date.now() + '_p17',
+                    arquivo: 'ET-P&D-023AR15 Cookies Integrais Castanha - 300000399.doc',
+                    linha_numero: 17,
+                    conteudo: 'Validade: 6 meses',
+                    total_caracteres: 17,
+                    data_processamento: new Date().toLocaleString('pt-BR')
+                },
+                {
+                    id: Date.now() + '_p18',
+                    arquivo: 'ET-P&D-023AR15 Cookies Integrais Castanha - 300000399.doc',
+                    linha_numero: 18,
+                    conteudo: 'EAN: 7898911234567',
+                    total_caracteres: 18,
+                    data_processamento: new Date().toLocaleString('pt-BR')
+                },
+                
+                // Produto 2 - Drageado
+                {
+                    id: Date.now() + '_p19',
+                    arquivo: 'DIZERES DE ROTULAGEM DRAGEADO BANANA PASSA COM CHOC MEIO AMARGO rev01.docx',
+                    linha_numero: 1,
+                    conteudo: 'Drageado de banana desidratada com chocolate meio amargo',
+                    total_caracteres: 56,
+                    data_processamento: new Date().toLocaleString('pt-BR')
+                },
+                {
+                    id: Date.now() + '_p20',
+                    arquivo: 'DIZERES DE ROTULAGEM DRAGEADO BANANA PASSA COM CHOC MEIO AMARGO rev01.docx',
+                    linha_numero: 2,
+                    conteudo: 'Marca: Vitao',
+                    total_caracteres: 12,
+                    data_processamento: new Date().toLocaleString('pt-BR')
+                },
+                {
+                    id: Date.now() + '_p21',
+                    arquivo: 'DIZERES DE ROTULAGEM DRAGEADO BANANA PASSA COM CHOC MEIO AMARGO rev01.docx',
+                    linha_numero: 3,
+                    conteudo: 'Linha: Premium',
+                    total_caracteres: 14,
+                    data_processamento: new Date().toLocaleString('pt-BR')
+                },
+                {
+                    id: Date.now() + '_p22',
+                    arquivo: 'DIZERES DE ROTULAGEM DRAGEADO BANANA PASSA COM CHOC MEIO AMARGO rev01.docx',
+                    linha_numero: 4,
+                    conteudo: 'Porção: 25g',
+                    total_caracteres: 11,
+                    data_processamento: new Date().toLocaleString('pt-BR')
+                },
+                {
+                    id: Date.now() + '_p23',
+                    arquivo: 'DIZERES DE ROTULAGEM DRAGEADO BANANA PASSA COM CHOC MEIO AMARGO rev01.docx',
+                    linha_numero: 5,
+                    conteudo: 'Valor energético: 110 kcal',
+                    total_caracteres: 27,
+                    data_processamento: new Date().toLocaleString('pt-BR')
+                },
+                {
+                    id: Date.now() + '_p24',
+                    arquivo: 'DIZERES DE ROTULAGEM DRAGEADO BANANA PASSA COM CHOC MEIO AMARGO rev01.docx',
+                    linha_numero: 6,
+                    conteudo: 'INGREDIENTES: Banana desidratada, chocolate meio amargo (massa de cacau, açúcar, manteiga de cacau)',
+                    total_caracteres: 100,
+                    data_processamento: new Date().toLocaleString('pt-BR')
+                },
+                {
+                    id: Date.now() + '_p25',
+                    arquivo: 'DIZERES DE ROTULAGEM DRAGEADO BANANA PASSA COM CHOC MEIO AMARGO rev01.docx',
+                    linha_numero: 7,
+                    conteudo: 'NÃO CONTÉM GLÚTEN',
+                    total_caracteres: 18,
+                    data_processamento: new Date().toLocaleString('pt-BR')
+                },
+                {
+                    id: Date.now() + '_p26',
+                    arquivo: 'DIZERES DE ROTULAGEM DRAGEADO BANANA PASSA COM CHOC MEIO AMARGO rev01.docx',
+                    linha_numero: 8,
+                    conteudo: 'VEGANO',
+                    total_caracteres: 6,
+                    data_processamento: new Date().toLocaleString('pt-BR')
+                },
+                {
+                    id: Date.now() + '_p27',
+                    arquivo: 'DIZERES DE ROTULAGEM DRAGEADO BANANA PASSA COM CHOC MEIO AMARGO rev01.docx',
+                    linha_numero: 9,
+                    conteudo: 'Peso líquido: 80g',
+                    total_caracteres: 17,
+                    data_processamento: new Date().toLocaleString('pt-BR')
+                }
+            ];
+            
+            // Criar arquivos correspondentes
+            allFiles = [
+                {
+                    file: new File([''], 'ET-P&D-023AR15 Cookies Integrais Castanha - 300000399.doc'),
+                    id: Date.now() + '_1',
+                    name: 'ET-P&D-023AR15 Cookies Integrais Castanha - 300000399.doc',
+                    size: 5000,
+                    type: 'doc',
+                    lastModified: new Date(),
+                    selected: true,
+                    status: 'success'
+                },
+                {
+                    file: new File([''], 'DIZERES DE ROTULAGEM DRAGEADO BANANA PASSA COM CHOC MEIO AMARGO rev01.docx'),
+                    id: Date.now() + '_2',
+                    name: 'DIZERES DE ROTULAGEM DRAGEADO BANANA PASSA COM CHOC MEIO AMARGO rev01.docx',
+                    size: 3000,
+                    type: 'docx',
+                    lastModified: new Date(),
+                    selected: true,
+                    status: 'success'
+                }
+            ];
+            
+            // Atualizar interface
+            elements.fileManager.style.display = 'grid';
+            elements.processBtn.disabled = false;
+            updateFileList();
+            updatePreviewTable();
+            updateStats();
+            updateFileTypeChart();
+            
+            // Mudar para aba de preview
+            switchTab('preview');
+            
+            console.log('✅ Dados de teste criados com sucesso!');
+            console.log(`📊 ${allFiles.length} arquivos e ${processedData.length} linhas processadas`);
+            console.log('💾 Use exportExcelTabelaMestra() para exportar no formato oficial');
+            console.log('📝 Ou use as exportações padrão: exportTXT(), exportExcel(), etc.');
+            
+            // Mostrar preview da extração
+            const tabelaMestra = processarParaTabelaMestra(processedData);
+            console.log('\n📋 Preview da Tabela Mestra:');
+            tabelaMestra.forEach((produto, index) => {
+                console.log(`\nProduto ${index + 1}:`);
+                console.log(`- Nome: ${produto.NOME_PRODUTO_COMPLETO}`);
+                console.log(`- Código ET: ${produto.CODIGO_ET}`);
+                console.log(`- Código SAP: ${produto.CODIGO_PRODUTO_3000}`);
+                console.log(`- Valor Energético: ${produto.VALOR_ENERGETICO_KCAL} kcal`);
+                console.log(`- Proteínas: ${produto.PROTEINAS_G}g`);
+                console.log(`- Contém Glúten: ${produto.CONTEM_GLUTEN}`);
+                console.log(`- Vegano: ${produto.VEGANO}`);
+            });
+            
+            return { arquivos: allFiles.length, linhas: processedData.length };
+        };
+
+        // Função para verificar status do sistema
+        window.verificarStatus = function() {
+            const status = {
+                versao: 'v2.0.3 FINAL',
+                bibliotecas: {
+                    mammoth: typeof mammoth !== 'undefined',
+                    xlsx: typeof XLSX !== 'undefined',
+                    jspdf: typeof window.jspdf !== 'undefined',
+                    chart: typeof Chart !== 'undefined'
+                },
+                dados: {
+                    arquivos: allFiles.length,
+                    processados: allFiles.filter(f => f.status === 'success').length,
+                    erros: allFiles.filter(f => f.status === 'error').length,
+                    linhas: processedData.length
+                },
+                configuracoes: {
+                    removeDuplicates: document.getElementById('removeDuplicates')?.checked,
+                    trimWhitespace: document.getElementById('trimWhitespace')?.checked,
+                    batchSize: document.getElementById('batchSize')?.value,
+                    encoding: document.getElementById('inputEncoding')?.value
+                }
+            };
+            
+            console.log('📊 STATUS DO SISTEMA');
+            console.log('─'.repeat(50));
+            console.log(`Versão: ${status.versao}`);
+            console.log(`Bibliotecas: ${JSON.stringify(status.bibliotecas, null, 2)}`);
+            console.log(`Dados: ${JSON.stringify(status.dados, null, 2)}`);
+            console.log(`Configurações: ${JSON.stringify(status.configuracoes, null, 2)}`);
+            console.log('─'.repeat(50));
+            
+            return status;
+        };
+
+        // Função de teste simples de exportação
+        window.testeExportacao = function() {
+            if (processedData.length === 0) {
+                console.warn('⚠️ Nenhum dado para exportar. Execute testeRapido() primeiro!');
+                return false;
+            }
+            
+            console.log('🧪 Testando exportações...');
+            
+            try {
+                // Criar um texto simples
+                let content = 'TESTE DE EXPORTAÇÃO\n';
+                content += `Data: ${new Date().toLocaleString('pt-BR')}\n`;
+                content += `Total de registros: ${processedData.length}\n\n`;
+                processedData.forEach(item => {
+                    content += `[${item.arquivo}] ${item.conteudo}\n`;
+                });
+                
+                // Criar e baixar arquivo de teste
+                const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = 'teste_exportacao.txt';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(link.href);
+                
+                console.log('✅ Teste de exportação concluído!');
+                console.log('📁 Arquivo "teste_exportacao.txt" deve ter sido baixado');
+                return true;
+            } catch (error) {
+                console.error('❌ Erro no teste:', error);
+                return false;
+            }
+        };
+
+        // Função para debug de extração
+        window.debugExtraction = function() {
+            if (processedData.length === 0) {
+                console.warn('⚠️ Nenhum dado processado. Execute testeRapido() ou processe arquivos primeiro!');
+                return;
+            }
+            
+            console.log('🔍 DEBUG: Analisando extração de dados...');
+            console.log('─'.repeat(50));
+            
+            const tabelaMestra = processarParaTabelaMestra(processedData);
+            
+            tabelaMestra.forEach((produto, index) => {
+                console.log(`\n📦 PRODUTO ${index + 1}:`);
+                console.log('─'.repeat(30));
+                
+                // Mostrar todos os campos preenchidos
+                const camposPreenchidos = {};
+                const camposVazios = [];
+                
+                Object.entries(produto).forEach(([campo, valor]) => {
+                    if (valor && valor !== '' && valor !== 'FALSE') {
+                        camposPreenchidos[campo] = valor;
+                    } else if (valor === '') {
+                        camposVazios.push(campo);
+                    }
+                });
+                
+                console.log('✅ CAMPOS PREENCHIDOS:');
+                Object.entries(camposPreenchidos).forEach(([campo, valor]) => {
+                    console.log(`   ${campo}: ${valor}`);
+                });
+                
+                console.log('\n❌ CAMPOS VAZIOS:');
+                if (camposVazios.length > 0) {
+                    console.log(`   ${camposVazios.join(', ')}`);
+                } else {
+                    console.log('   Nenhum campo vazio!');
+                }
+                
+                // Mostrar texto original para comparação
+                const arquivoData = processedData.filter(item => item.arquivo === produto.NOME_SIMPLIFICADO + '.doc' || 
+                                                                 item.arquivo.includes(produto.CODIGO_PRODUTO_3000 || ''));
+                if (arquivoData.length > 0) {
+                    console.log('\n📄 CONTEÚDO ORIGINAL (primeiras 5 linhas):');
+                    arquivoData.slice(0, 5).forEach(linha => {
+                        console.log(`   L${linha.linha_numero}: ${linha.conteudo}`);
+                    });
+                }
+            });
+            
+            console.log('\n─'.repeat(50));
+            console.log(`Total de produtos processados: ${tabelaMestra.length}`);
+            
+            return tabelaMestra;
+        };
+
+        console.log('✅ Sistema carregado com sucesso!');
+        console.log('💡 Dica: Use testeRapido() para criar dados de teste');
+        console.log('📝 Comandos disponíveis:');
+        console.log('   • testeRapido() - Criar dados de teste');
+        console.log('   • debugExtraction() - Debug da extração de dados');
+        console.log('   • exportTXT() - Exportar como texto');
+        console.log('   • exportExcel() - Exportar como Excel');
+        console.log('   • exportExcelTabelaMestra() - Exportar formato Tabela Mestra P&D');
+        console.log('   • exportPDF() - Exportar como PDF');
+        console.log('   • exportCSV() - Exportar como CSV');
+        console.log('   • exportJSON() - Exportar como JSON');
+        console.log('   • exportXML() - Exportar como XML');
+        console.log('   • verificarStatus() - Ver status do sistema');
+        console.log('─'.repeat(50));
+    </script>
+</body>
+</html>
