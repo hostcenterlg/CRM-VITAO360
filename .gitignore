@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.env
+
+# Excel temporários
+~$*.xlsx
+~$*.xls
+*.tmp
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+
+# Node
+node_modules/
+
+# Dados grandes (não versionar binários Excel no git)
+# Descomentar se quiser excluir do git:
+# data/sources/**/*.xlsx
+# data/sources/**/*.xls
+# data/output/**/*.xlsx
+
+# NotebookLM (dados muito grandes)
+data/sources/deskrio/tickets/Notebooklm/
+
+# Zip files
+*.zip
