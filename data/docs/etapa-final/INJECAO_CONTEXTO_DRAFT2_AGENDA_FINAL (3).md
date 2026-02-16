@@ -1,0 +1,878 @@
+# INJEÇÃO DE CONTEXTO — CONSTRUÇÃO DRAFT 2 + AGENDA OFICIAIS
+## CRM VITAO360 v11 | Sessão: 16/FEV/2026
+## Autor: Leandro (AI Solutions Engineer) + Claude Opus
+
+---
+
+## OBJETIVO DESTA SESSÃO
+
+Estávamos construindo a VERSÃO OFICIAL E FINAL do DRAFT 2 e da AGENDA. Os arquivos JSX do DASH foram enviados como REFERÊNCIA DE DESTINO (mapa de quais campos o DASH vai consumir), NÃO para construir o dashboard agora. O foco é:
+
+1. Popular DRAFT 2 com dados REAIS (substituir os 439 registros fabricados)
+2. Estruturar AGENDA para alimentar o DRAFT 2
+3. Garantir que CARTEIRA FUNIL (cols 44-62) funcione via INDEX/MATCH do DRAFT 2
+
+**FLUXO:** AGENDA → DRAFT 2 → CARTEIRA FUNIL → DASH
+
+---
+
+## DIAGNÓSTICO CRÍTICO: DRAFT 2 ATUAL TEM DADOS FABRICADOS
+
+Os 439 registros atuais do DRAFT 2 são FALSOS:
+- Nomes genéricos: "GRANEL & CIA 80", "BIO FIT 69", "EMPÓRIO NATURAL 49", "CORPO E MENTE 38"
+- 441 CNPJs que NÃO batem com NENHUM CNPJ real do DRAFT 1
+- Nomes reais do DRAFT 1: "A CEREALISSIMA", "AGRANOLLA", "AMME NATURA", "BRENDHA EVELYN LOPES ERRERA ROCA"
+- Consequência: CARTEIRA FUNIL (cols 44-62) retorna VAZIO para todos os 501 clientes reais
+
+---
+
+## ARQUIVO CRM: CRM_INTELIGENTE_VITAO_360_V11__12_.xlsx
+
+### Abas: 13
+README, STATUS, DRAFT 1, DRAFT 2, DRAFT 3, PROJEÇÃO, LOG, CARTEIRA, AGENDA, RNC, DASH, REGRAS, Claude Log
+
+---
+
+## 1. ABA README (175 rows × 5 cols)
+
+### Seções:
+1. ESTRUTURA DO CRM (13 abas documentadas)
+2. DRAFT 2 — AS 31 COLUNAS (coração do CRM)
+3. NOVAS FUNCIONALIDADES
+4. REGRAS INEGOCIÁVEIS (10 regras)
+5. CONSULTORES E TERRITÓRIOS
+6. HISTÓRICO DE VERSÕES
+7. INSTRUÇÕES PARA IA (10 regras)
+8. MAPA DE DATA VALIDATIONS (DROPDOWNS)
+
+### 31 Colunas do DRAFT 2 (conforme README):
+
+| COL | NOME | TIPO | COMO PREENCHER |
+|-----|------|------|---------------|
+| 1 | DATA | Manual | dd/mm/aaaa |
+| 2 | CONSULTOR | Manual | Dropdown (4 consultores) |
+| 3 | NOME FANTASIA | Auto | XLOOKUP do DRAFT 1 por CNPJ |
+| 4 | CNPJ | Manual | 14 dígitos sem pontuação |
+| 5 | UF | Auto | XLOOKUP do DRAFT 1 por CNPJ |
+| 6 | REDE/REGIONAL | Manual | |
+| 7 | SITUAÇÃO | Auto | XLOOKUP do DRAFT 1 por CNPJ |
+| 8 | DIAS SEM COMPRA | Auto | XLOOKUP do DRAFT 1 |
+| 9 | ESTÁGIO FUNIL | Auto | Motor de Regras (SITUAÇÃO × RESULTADO) |
+| 10 | TIPO CLIENTE | Auto | Motor de Regras |
+| 11 | FASE | Auto | Motor de Regras |
+| 12 | SINALEIRO | Auto | Fórmula (dias × ciclo médio) |
+| 13 | TENTATIVA | Auto | COUNTIF por CNPJ: =IF(D{r}="","","T"&COUNTIF($D$3:D{r},D{r})) |
+| 14 | WHATSAPP | Manual | Dropdown SIM/NÃO |
+| 15 | LIGAÇÃO | Manual | Dropdown SIM/NÃO |
+| 16 | LIG. ATENDIDA | Manual | Dropdown SIM/NÃO/N/A |
+| 17 | TIPO DO CONTATO | Auto | Motor de Regras |
+| 18 | RESULTADO | Manual | Dropdown (16 resultados) |
+| 19 | MOTIVO | Manual | Dropdown (22 motivos) |
+| 20 | FOLLOW-UP | Auto | Fórmula baseada no RESULTADO |
+| 21 | AÇÃO FUTURA | Auto | Motor de Regras |
+| 22 | AÇÃO DETALHADA | Auto | Motor de Regras |
+| 23 | MERCOS ATUALIZADO | Manual | Dropdown SIM/NÃO |
+| 24 | NOTA DO DIA | Manual | Texto livre |
+| 25 | TEMPERATURA | Manual | Dropdown 🔥QUENTE/🟡MORNO/❄️FRIO/💀PERDIDO |
+| 26 | GRUPO DASH | Auto | Fórmula baseada no RESULTADO |
+| 27 | SINALEIRO META | Auto | XLOOKUP da PROJEÇÃO |
+| 28 | TIPO AÇÃO | Manual | Dropdown (6 tipos) |
+| 29 | TIPO PROBLEMA | Manual | Dropdown (8 categorias RNC) |
+| 30 | DEMANDA | Manual | Dropdown (25 atividades) |
+| 31 | TIPO ATENDIMENTO | Manual | ATIVO/RECEPTIVO |
+
+### Mapa de Data Validations (Dropdowns):
+
+| ABA | RANGE | CAMPO | SOURCE | QTD |
+|-----|-------|-------|--------|-----|
+| DRAFT 2 | R3:R5000 | RESULTADO | REGRAS!B2:B13 | 12 |
+| DRAFT 2 | Q3:Q5000 | TIPO DO CONTATO | REGRAS!B18:B24 | 7 |
+| DRAFT 2 | S3:S5000 | MOTIVO | REGRAS!B28:B37 | 10 |
+| DRAFT 2 | G3:G5000 | SITUAÇÃO | REGRAS!B41:B47 | 7 |
+| DRAFT 2 | B3:B5000 | CONSULTOR | REGRAS!A88:A91 | 4 |
+| DRAFT 2 | N3:O5000 | WHATSAPP/LIGAÇÃO | REGRAS!B95:B96 | 2 |
+| DRAFT 2 | P3:P5000 | LIG. ATENDIDA | REGRAS!B97:B99 | 3 |
+| DRAFT 2 | AB3:AB5000 | TIPO AÇÃO | REGRAS!B122:B127 | 6 |
+| DRAFT 2 | Y3:Y5000 | TEMPERATURA | REGRAS!B130:B133 | 4 |
+| DRAFT 2 | AC3:AC5000 | TIPO PROBLEMA | REGRAS!B136:B143 | 8 |
+| DRAFT 2 | AD3:AD502 | DEMANDA | REGRAS!I214:I238 | 25 |
+
+### REFERÊNCIA DE COLUNAS DRAFT 2 PARA DASH (COUNTIF):
+
+| COL DRAFT 2 | CAMPO | VALORES PERMITIDOS |
+|-------------|-------|-------------------|
+| $B | CONSULTOR | LARISSA PADILHA, MANU DITZEL, JULIO GADRET, DAIANE STAVICKI |
+| $G | SITUAÇÃO | ATIVO, INAT.REC, INAT.ANT, EM RISCO, NOVO, PROSPECT, LEAD |
+| $N | WHATSAPP | SIM / NÃO |
+| $O | LIGAÇÃO | SIM / NÃO |
+| $P | LIG. ATENDIDA | SIM / NÃO / N/A |
+| $Q | TIPO DO CONTATO | 7 valores (REGRAS!B18:B24) |
+| $R | RESULTADO | 16 valores (REGRAS!B2:B13) |
+| $S | MOTIVO | 22 valores (REGRAS!B28:B37 expandido) |
+| $W | MERCOS ATUALIZADO | SIM / NÃO |
+| $Y | TEMPERATURA | 4 valores (REGRAS!B130:B133) |
+| $AB | TIPO AÇÃO | 6 valores (REGRAS!B122:B127) |
+| $AC | TIPO PROBLEMA | 8 valores (REGRAS!B136:B143) |
+| $AD | DEMANDA | 25 valores (REGRAS!I214:I238) |
+
+### 10 Regras Inegociáveis (README):
+1. NUNCA inventar ou fabricar dados — zero tolerância
+2. CNPJ SEMPRE 14 dígitos sem pontuação, com zeros à esquerda
+3. RESULTADO usa acentos: ORÇAMENTO, NÃO ATENDE
+4. VITAO sem acento
+5. Layout CARTEIRA (46 colunas) é IMUTÁVEL
+6. Two-Base Architecture: valores financeiros (LOG) separados de logs de interação (DRAFT 2)
+7. PROSPECT nunca tem RECOMPRA, CS, PÓS-VENDA ou SALVAMENTO
+8. ATIVO nunca tem SALVAMENTO, RECUPERAÇÃO ou REATIVAÇÃO
+9. Cores APENAS na célula SITUAÇÃO, nunca linha inteira
+10. Tema SEMPRE light mode
+
+---
+
+## 2. ABA STATUS (187 rows × 7 cols)
+
+### Números Atuais:
+- 489 clientes únicos (105 ativos, 80 inat.rec, 304 inat.ant)
+- 8 redes / 923 lojas
+- 957 pedidos em 2025
+- R$ 2.156.179 faturamento 2025
+- 10.634 atendimentos 2025
+- 77.805 mensagens WhatsApp
+- 13.216 fórmulas SINALEIRO (0 erros)
+- 46 colunas CARTEIRA (imutável)
+- 4 consultores
+- R$ 5,7M projeção 2026 (+164%)
+- Nota auditoria: 7.3/10
+
+### Equipe:
+| # | CONSULTOR | TIPO | TERRITÓRIO | STATUS |
+|---|-----------|------|-----------|--------|
+| 1 | MANU DITZEL | Interno | SC/PR/RS | ⚠️ LICENÇA PREV. |
+| 2 | LARISSA PADILHA | Interno | Resto do Brasil | ✅ ATIVA |
+| 3 | JULIO GADRET | RCA Externo | Cia Saúde + Fitland | ⚠️ FORA DESKRIO |
+| 4 | DAIANE STAVICKI | Gerente + KA | Redes e Franquias | ✅ ATIVA |
+
+### Fases:
+- F0 REGRAS: ✅ CONGELADA
+- F1 CARTEIRA: ✅ OPERACIONAL
+- F2 LOG: ✅ OPERACIONAL
+- F3 DRAFT 2: ✅ OPERACIONAL (mas com dados fabricados)
+- F4 DASH: ✅ OPERACIONAL
+- F5 DASH CLIENTES: ⚠️ PARCIAL
+- F6 AGENDA: ✅ OPERACIONAL (estrutura pronta, sem dados)
+- F7 PROJEÇÃO: ✅ DOCUMENTADO
+- F8 SINALEIRO: ⚠️ PARCIAL (#REF!)
+
+### 14 Dívidas Técnicas (DT-01 a DT-14):
+- DT-01: #REF! aba regras SINALEIRO — CRÍTICA
+- DT-02: Julio fora do Deskrio — CRÍTICA
+- DT-03: Cobertura licença Manu — CRÍTICA
+- DT-04: Backup automatizado — CRÍTICA
+- DT-05: Documentação transferência — CRÍTICA
+- DT-06: CNPJ digits-only global — ALTA (parcial)
+- DT-07: Definir MEGA CRUZAMENTO — ALTA
+- DT-08: API Mercos automático — ALTA
+- DT-09: Alertas 45/60/90 dias — ALTA
+- DT-10: Git versionamento — ALTA
+- DT-11: Métrica SAÚDE na SPEC — MÉDIA
+- DT-12: Truncamento OBS 200 chars — MÉDIA
+- DT-13: Cross-training Manu↔Larissa — MÉDIA
+- DT-14: Dashboard Power BI — MÉDIA
+
+### 12 Regras Imutáveis:
+- R01: CNPJ 14 dígitos sem pontuação
+- R02: Layout CARTEIRA = 46 colunas INTOCÁVEL
+- R03: Two-Base Architecture
+- R04: Zero Hallucination
+- R05: LOG append-only
+- R06: Limite 40 atendimentos/dia
+- R07: Cores: ATIVO=#00B050, INAT.REC=#FFC000, INAT.ANT=#FF0000
+- R08: Funil: CS/RECOMPRA=#C6EFCE, ATENÇÃO/SALVAR=#FFC000, PERDA/NUTRIÇÃO=#FFC7CE
+- R09: Prospects redes: ABERTURA/ATIVAÇÃO=#BDD7EE
+- R10: Padronização: MAIÚSCULO, TEL=55+DDD+NUM, email=lowercase
+- R11: SINALEIRO: ROXO <1%, VERMELHO 1-40%, AMARELO 40-60%, VERDE >60%
+- R12: XML Surgery: nunca expandir styles.xml além 152 entries
+
+---
+
+## 3. ABA REGRAS (283 rows × 13 cols) — COMPLETA
+
+### Seção 1: RESULTADO (16 valores, rows 6-20)
+
+| # | RESULTADO | FUP DIAS | GRUPO DASH | QUANDO USAR |
+|---|-----------|----------|-----------|-------------|
+| 1 | EM ATENDIMENTO | 2 | FUNIL | Negociação ativa |
+| 2 | ORÇAMENTO | 1 | FUNIL | Proposta enviada |
+| 3 | CADASTRO | 2 | FUNIL | Cliente novo em cadastro |
+| 4 | VENDA / PEDIDO | 4 | FUNIL | Pedido fechado |
+| 5 | PÓS-VENDA | 30 | RELAC. | Pós-venda feito |
+| 6 | CS (SUCESSO DO CLIENTE) | 30 | RELAC. | CS feito |
+| 7 | NUTRIÇÃO | 7 | NUTRIÇÃO | Cliente não engaja |
+| RE | RELACIONAMENTO | 7 | RELAC. | Rapport pós-venda |
+| 8 | FOLLOW UP 7 | 7 | RELAC. | Retomar 1 semana |
+| 9 | FOLLOW UP 15 | 15 | RELAC. | Retomar 2 semanas |
+| 10 | SUPORTE | 0 | RELAC. | Problema outra área |
+| 11 | NÃO ATENDE | 1 | NÃO VENDA | Ligou sem resposta |
+| 12 | NÃO RESPONDE | 1 | NÃO VENDA | WhatsApp sem resposta |
+| 13 | RECUSOU LIGAÇÃO | 2 | NÃO VENDA | Rejeitou chamada |
+| 14 | PERDA / FECHOU LOJA | 0 | NÃO VENDA | Cliente perdido |
+
+### Seção 2: TIPO DO CONTATO (7 valores, rows 24-30)
+
+1. PROSPECÇÃO — Primeiro contato com prospect/lead
+2. NEGOCIAÇÃO — Cliente demonstrou interesse
+3. FOLLOW UP — Retomada agendada
+4. ATEND. CLIENTES ATIVOS — Manutenção ativos (recompra)
+5. ATEND. CLIENTES INATIVOS — Reativação inativos
+6. PÓS-VENDA / RELACIONAMENTO — Contato pós-venda
+7. PERDA / NUTRIÇÃO — Cliente perdido ou em nutrição
+
+### Seção 3: MOTIVO (22 valores, rows 34-55)
+
+1. AINDA TEM ESTOQUE
+2. PRODUTO NÃO VENDEU / SEM GIRO
+3. LOJA ANEXO/PROXIMO - SM
+4. SÓ QUER COMPRAR GRANEL
+5. PROBLEMA LOGÍSTICO / ENTREGA
+6. PROBLEMA FINANCEIRO / CRÉDITO
+7. PROPRIETARIO / INDISPONÍVEL
+8. FECHANDO / FECHOU LOJA
+9. SEM INTERESSE NO MOMENTO
+10. PRIMEIRO CONTATO / SEM RESPOSTA
+11. SEGUNDA VIA DE BOLETO
+12. SEGUNDA VIA DA NFE
+13. XML
+14. STATUS PEDIDO
+15. ATRASO ENTREGA
+16. PROBLEMA COM PEDIDOS
+17. SOLICITAÇÃO MATERIAL MKT
+18. DEVOLUÇÃO
+19. LINK PGTO 1ª TENTATIVA
+20. LINK PGTO 2ª TENTATIVA
+21. LINK PGTO 3ª TENTATIVA
+22. NÃO SE APLICA
+
+### Seção 4: SITUAÇÃO (7 valores, rows 58-65)
+
+| DIAS | SITUAÇÃO | COR |
+|------|----------|-----|
+| ≤ 50 | ATIVO | #00B050 |
+| 51-60 | EM RISCO | #FFC000 |
+| 61-90 | INAT.REC | #FFC000 |
+| > 90 | INAT.ANT | #FF0000 |
+| Nunca + cadastro | NOVO | #0070C0 |
+| Nunca comprou | PROSPECT | #7B2FF2 |
+| Manual (Daiane) | LEAD | #7B2FF2 |
+
+### Seção 5: FASE (9 valores, rows 69-77)
+
+1. PÓS-VENDA
+2. CS
+3. RECOMPRA
+4. SALVAMENTO
+5. RECUPERAÇÃO
+6. PROSPECÇÃO
+7. (vazio)
+8. (vazio)
+9. ORÇAMENTO
+
+### Seção 6: TIPO CLIENTE (rows 81-86)
+
+1. NOVO — 1ª compra
+2. EM DESENVOLVIMENTO — 2-3 compras
+3-4. (vazios)
+5. PROSPECT — Nunca comprou
+6. LEAD — Manual Daiane
+
+### Seção 7: CONSULTOR (rows 90-94)
+
+1. MANU DITZEL — SC/PR/RS
+2. LARISSA PADILHA — Resto do Brasil
+3. JULIO GADRET — Cia Saúde + Fitland
+4. DAIANE STADLER — Redes Franquia + Operacional
+5. HELDER BRUNKOW — (SUPERVISOR — não registra atendimentos)
+
+**NOTA:** Na REGRAS aparece "DAIANE STADLER" mas no DRAFT 2 e README é "DAIANE STAVICKI". Verificar.
+
+### Seção 8: TENTATIVA (rows 98-103)
+
+T1 → WhatsApp (Dia 0)
+T2 → (vazio)
+T3 → (vazio)
+T4 → Ligação final (+2 dias)
+NUTRIÇÃO → Email+WhatsApp (Ciclo 15d)
+RESET → Qualquer (Quando responde)
+
+### Seção 9: SINALEIRO (rows 107-110)
+
+🟢 Dias ≤ Ciclo Médio
+🟡 Dias ≤ Ciclo+30
+🔴 Dias > Ciclo+30
+🟣 Nunca comprou
+
+### Seção 10: LISTAS SIMPLES (rows 114-130)
+
+- SIM_NAO: SIM, NÃO
+- SIM_NAO_NA: SIM, NÃO, N/A
+- TIPO_ATEND: ATIVO, RECEPTIVO
+- CURVA_ABC: A, B, C
+- GRUPO_DASH: FUNIL, RELAC., NÃO VENDA
+- TEMPERATURA: 🔥QUENTE, 🟡MORNO, ❄️FRIO, 💀PERDIDO
+
+### Seção 11: TIPO AÇÃO (6 valores, rows 134-139)
+
+1. VENDA — RESULTADO = VENDA/PEDIDO
+2. PRÉ-VENDA — Demais resultados (default)
+3. PÓS-VENDA — RESULTADO = PÓS-VENDA/CS/RELACIONAMENTO
+4. RESOLUÇÃO DE PROBLEMA — RESULTADO = SUPORTE
+5. PROSPECÇÃO — SITUAÇÃO = PROSPECT
+6. ADMINISTRATIVO — RESULTADO = PERDA/FECHOU LOJA
+
+### Seção 12: TIPO PROBLEMA RNC (8 valores, rows 143-150)
+
+1. ATRASO ENTREGA (TRANSPORTADORA)
+2. PRODUTO AVARIADO (FÁBRICA/TRANSPORTE)
+3. ERRO SEPARAÇÃO (EXPEDIÇÃO)
+4. ERRO NOTA FISCAL (FATURAMENTO)
+5. DIVERGÊNCIA PREÇO (FATURAMENTO)
+6. COBRANÇA INDEVIDA (FINANCEIRO)
+7. RUPTURA ESTOQUE (FÁBRICA/PCP)
+8. PROBLEMA SISTEMA (TI)
+
+### Seção 13: AÇÃO FUTURA (22 valores, rows 154-175)
+
+1. CONFIRMAR ORÇAMENTO ENVIADO
+2. ENVIAR ORÇAMENTO / CATÁLOGO
+3. CONFIRMAR CADASTRO NO SISTEMA
+4. FAZER PÓS-VENDA
+5. FAZER CS (SUCESSO DO CLIENTE)
+6. 2ª TENTATIVA VIA LIGAÇÃO
+7. 2ª TENTATIVA VIA WHATSAPP
+8. REGISTRAR ATENDIMENTO NO MERCOS
+9. FECHAR NEGOCIAÇÃO EM ANDAMENTO
+10. ENVIAR EMAIL
+11. CONTATO VIA INSTAGRAM / LINKEDIN
+12. LIGAR NA LOJA
+13. RAPPORT COM EQUIPE DA LOJA
+14. COBRAR RETORNO DO CLIENTE
+15. REENVIAR PROPOSTA
+16. AGENDAR VISITA
+17. NUTRIR / NOVO CONTATO
+18. CONFIRMAR FATURAMENTO E EXPEDIÇÃO
+19. VERIFICAR SELL OUT E CRIAR INTENÇÃO RECOMPRA
+20. NUTRIR ENVIANDO CAMPANHAS, PROMOÇÕES E NOVIDADES
+21. RESOLVER PROBLEMA INTERNO E ENVIAR SOLUÇÃO
+22. RAPPORT COM CLIENTE APÓS A VENDA ATÉ RECOMPRAR
+
+### Seção 14: TAREFA/DEMANDA (25+1 valores, rows 176-200)
+
+1. PROSPECÇÃO - BASE GRANEL
+2. PROSPECÇÃO - PESQUISA GOOGLE
+3. RESPONDER LEADS COM DÚVIDAS
+4. CONTATO LEADS DO SITE
+5. ATENDIMENTO ATIVOS/INATIVOS
+6. MONTAR ORÇAMENTO SUGESTÃO (CURVA ABC)
+7. RESPOSTAS GRUPO ALINHAMENTO
+8. LIGAÇÕES DA BASE
+9. LIGAÇÕES PROSPECT
+10. FAZER RASTREIOS
+11. COBRANÇA DE TÍTULOS
+12. DIGITAÇÃO DE PEDIDOS
+13. SOLICITAÇÃO DE NF (SEM SAP)
+14. ENVIO DE AMOSTRAS
+15. ATUALIZAÇÃO CADASTRAL MERCOS
+16. SUPORTE PCV - DÚVIDAS PEDIDOS
+17. AJUSTE DE BOLETOS
+18. SUPORTE PRODUTO (LAUDOS/TABELAS)
+19. SOLICITAR LINK CARTÃO CRÉDITO
+20. SOLICITAR VALORES PIX
+21. REGISTRAR ATENDIMENTO NO MERCOS
+22. ACOMPANHAR DEVOLUÇÕES
+23. PREENCHER FOLLOW-UP
+24. ENVIAR ANÁLISE DE CRÉDITO
+25. (vazio no original)
+26. CONFIRMAR FATURAMENTO E EXPEDIÇÃO
+
+### Seção 15: SINALEIRO META (rows 203-207)
+
+🟢, 🟡, 🔴, ⚫ (0% = Nenhuma venda)
+
+### Seção 16: SCORE RANKING (6 fatores, rows 211-216)
+
+| # | FATOR | PESO | FONTE | PONTUAÇÃO |
+|---|-------|------|-------|-----------|
+| 1 | URGÊNCIA TEMPORAL | 30% | DIAS SEM COMPRA ÷ CICLO | <0.7=0, 0.7-1.0=30, >1.5=90 |
+| 2 | VALOR DO CLIENTE | 25% | CURVA ABC + TIPO CLIENTE | A+FID=100, B+REC=50, C=20 |
+| 3 | FOLLOW-UP VENCIDO | 20% | PRÓX. FOLLOW-UP vs HOJE | HOJE=100, 1-3d=80, 7+d=40 |
+| 4 | SINAL DE COMPRA | 15% | ECOM + TEMPERATURA | 🔥+CARRINHO=100, 🟡=40, ❄️=0 |
+| 5 | TENTATIVA | 5% | T1/T2/T3/T4 | T4=100, T3=50, T1/T2=10 |
+| 6 | SITUAÇÃO | 5% | SITUAÇÃO MERCOS | EM RISCO=80, ATIVO=40, INAT=20 |
+
+### Seção 17: MOTOR DE REGRAS (63 combinações, rows 221-283)
+
+Header row 220: SITUAÇÃO | RESULTADO | ESTÁGIO FUNIL | FASE | TIPO CONTATO | AÇÃO FUTURA | TEMPERATURA
+
+**TABELA COMPLETA — 63 COMBINAÇÕES (dados exatos da planilha rows 221-283):**
+
+**Formato: SITUAÇÃO + RESULTADO → ESTÁGIO FUNIL | FASE | TIPO CONTATO | AÇÃO FUTURA | TEMPERATURA**
+
+**ATIVO (R221-R232, 12 linhas):**
+
+| ROW | RESULTADO | ESTÁGIO FUNIL | FASE | TIPO CONTATO | AÇÃO FUTURA | TEMP |
+|-----|-----------|--------------|------|-------------|------------|------|
+| 221 | EM ATENDIMENTO | EM ATENDIMENTO | EM ATENDIMENTO | ATEND. CLIENTES ATIVOS | FECHAR NEGOCIAÇÃO EM ANDAMENTO | 🟡 MORNO |
+| 222 | ORÇAMENTO | ORÇAMENTO | ORÇAMENTO | NEGOCIAÇÃO | RECOMPRA | 🔥 QUENTE |
+| 223 | 🔥QUENTE | EM ATENDIMENTO | EM ATENDIMENTO | ATEND. CLIENTES ATIVOS | FECHAR NEGOCIAÇÃO EM ANDAMENTO | 🟡 MORNO |
+| 224 | 🟡MORNO | PÓS-VENDA | PÓS-VENDA | PÓS-VENDA / RELACIONAMENTO | FAZER CS (SUCESSO DO CLIENTE) | 🔥 QUENTE |
+| 225 | ❄️FRIO | CS / RECOMPRA | CS | PÓS-VENDA / RELACIONAMENTO | VERIFICAR SELL OUT E CRIAR INTENÇÃO RECOMPRA | 🟡 MORNO |
+| 226 | 💀PERDIDO | CS / RECOMPRA | CS / RECOMPRA | FOLLOW UP | COBRAR RETORNO DO CLIENTE | 🟡 MORNO |
+| 227 | FOLLOW UP 15 | CS / RECOMPRA | CS / RECOMPRA | FOLLOW UP | COBRAR RETORNO DO CLIENTE | 🟡 MORNO |
+| 228 | SUPORTE | RELACIONAMENTO | RELACIONAMENTO | PÓS-VENDA / RELACIONAMENTO | RECOMPRA | 🟡 MORNO |
+| 229 | ATRASO ENTREGA (TRANSPORTADORA) | ATRASO ENTREGA (TRANSPORTADORA) | RECOMPRA | ATEND. CLIENTES ATIVOS | RESOLVER PROBLEMA INTERNO E ENVIAR SOLUÇÃO | ❄️ FRIO |
+| 230 | PRODUTO AVARIADO (FÁBRICA/TRANSPORTE) | PRODUTO AVARIADO (FÁBRICA/TRANSPORTE) | RECOMPRA | ATEND. CLIENTES ATIVOS | RESOLVER PROBLEMA INTERNO E ENVIAR SOLUÇÃO | ❄️ FRIO |
+| 231 | ERRO SEPARAÇÃO (EXPEDIÇÃO) | ERRO SEPARAÇÃO (EXPEDIÇÃO) | RECOMPRA | ATEND. CLIENTES ATIVOS | RESOLVER PROBLEMA INTERNO E ENVIAR SOLUÇÃO | ❄️ FRIO |
+| 232 | ERRO NOTA FISCAL (FATURAMENTO) | PERDA / NUTRIÇÃO | NUTRIÇÃO | PERDA / NUTRIÇÃO | NUTRIR ENVIANDO CAMPANHAS, PROMOÇÕES E NOVIDADES | 💀 PERDIDO |
+
+**EM RISCO (R233-R242, 10 linhas):**
+
+| ROW | RESULTADO | ESTÁGIO FUNIL | FASE | TIPO CONTATO | AÇÃO FUTURA | TEMP |
+|-----|-----------|--------------|------|-------------|------------|------|
+| 233 | DIVERGÊNCIA PREÇO (FATURAMENTO) | EM ATENDIMENTO | SALVAMENTO | ATEND. CLIENTES ATIVOS | RESOLVER PROBLEMA INTERNO E ENVIAR SOLUÇÃO | 🟡 MORNO |
+| 234 | COBRANÇA INDEVIDA (FINANCEIRO) | ORÇAMENTO | ORÇAMENTO | NEGOCIAÇÃO | RESOLVER PROBLEMA INTERNO E ENVIAR SOLUÇÃO | 🔥 QUENTE |
+| 235 | RUPTURA ESTOQUE (FÁBRICA/PCP) | PÓS-VENDA | PÓS-VENDA | PÓS-VENDA / RELACIONAMENTO | RESOLVER PROBLEMA INTERNO E ENVIAR SOLUÇÃO | 🔥 QUENTE |
+| 236 | PROBLEMA SISTEMA (TI) | CS / RECOMPRA | CS | PÓS-VENDA / RELACIONAMENTO | RESOLVER PROBLEMA INTERNO E ENVIAR SOLUÇÃO | 🟡 MORNO |
+| 237 | FOLLOW UP 7 | CS / RECOMPRA | CS / RECOMPRA | FOLLOW UP | COBRAR RETORNO DO CLIENTE | 🟡 MORNO |
+| 238 | FOLLOW UP 15 | CS / RECOMPRA | CS / RECOMPRA | FOLLOW UP | COBRAR RETORNO DO CLIENTE | 🟡 MORNO |
+| 239 | NÃO ATENDE | NÃO ATENDE | SALVAMENTO | ATEND. CLIENTES ATIVOS | 2ª TENTATIVA VIA LIGAÇÃO | ❄️ FRIO |
+| 240 | NÃO RESPONDE | NÃO RESPONDE | SALVAMENTO | ATEND. CLIENTES ATIVOS | 2ª TENTATIVA VIA WHATSAPP | ❄️ FRIO |
+| 241 | RECUSOU LIGAÇÃO | RECUSOU LIGAÇÃO | SALVAMENTO | ATEND. CLIENTES ATIVOS | 2ª TENTATIVA VIA WHATSAPP | ❄️ FRIO |
+| 242 | PERDA / FECHOU LOJA | PERDA / NUTRIÇÃO | NUTRIÇÃO | PERDA / NUTRIÇÃO | NENHUMA (ENCERRADO) | 💀 PERDIDO |
+
+**INAT.REC (R243-R251, 9 linhas):**
+
+| ROW | RESULTADO | ESTÁGIO FUNIL | FASE | TIPO CONTATO | AÇÃO FUTURA | TEMP |
+|-----|-----------|--------------|------|-------------|------------|------|
+| 243 | EM ATENDIMENTO | EM ATENDIMENTO | SALVAMENTO | ATEND. CLIENTES INATIVOS | FECHAR NEGOCIAÇÃO EM ANDAMENTO | 🟡 MORNO |
+| 244 | ORÇAMENTO | ORÇAMENTO | ORÇAMENTO | NEGOCIAÇÃO | CONFIRMAR ORÇAMENTO ENVIADO | 🔥 QUENTE |
+| 245 | VENDA / PEDIDO | PÓS-VENDA | PÓS-VENDA | PÓS-VENDA / RELACIONAMENTO | CONFIRMAR FATURAMENTO E EXPEDIÇÃO | 🔥 QUENTE |
+| 246 | RELACIONAMENTO | CS / RECOMPRA | SALVAMENTO | PÓS-VENDA / RELACIONAMENTO | RAPPORT COM CLIENTE APÓS A VENDA ATÉ RECOMPRAR | 🟡 MORNO |
+| 247 | FOLLOW UP 7 | CS / RECOMPRA | SALVAMENTO | FOLLOW UP | COBRAR RETORNO DO CLIENTE | 🟡 MORNO |
+| 248 | NÃO ATENDE | NÃO ATENDE | SALVAMENTO | ATEND. CLIENTES INATIVOS | 2ª TENTATIVA VIA LIGAÇÃO | ❄️ FRIO |
+| 249 | NÃO RESPONDE | NÃO RESPONDE | SALVAMENTO | ATEND. CLIENTES INATIVOS | 2ª TENTATIVA VIA WHATSAPP | ❄️ FRIO |
+| 250 | RECUSOU LIGAÇÃO | RECUSOU LIGAÇÃO | SALVAMENTO | ATEND. CLIENTES INATIVOS | 2ª TENTATIVA VIA WHATSAPP | ❄️ FRIO |
+| 251 | PERDA / FECHOU LOJA | PERDA / NUTRIÇÃO | NUTRIÇÃO | PERDA / NUTRIÇÃO | NENHUMA (ENCERRADO) | 💀 PERDIDO |
+
+**INAT.ANT (R252-R260, 9 linhas):**
+
+| ROW | RESULTADO | ESTÁGIO FUNIL | FASE | TIPO CONTATO | AÇÃO FUTURA | TEMP |
+|-----|-----------|--------------|------|-------------|------------|------|
+| 252 | EM ATENDIMENTO | EM ATENDIMENTO | RECUPERAÇÃO | ATEND. CLIENTES INATIVOS | FECHAR NEGOCIAÇÃO EM ANDAMENTO | 🟡 MORNO |
+| 253 | ORÇAMENTO | ORÇAMENTO | ORÇAMENTO | NEGOCIAÇÃO | CONFIRMAR ORÇAMENTO ENVIADO | 🔥 QUENTE |
+| 254 | VENDA / PEDIDO | PÓS-VENDA | PÓS-VENDA | PÓS-VENDA / RELACIONAMENTO | CONFIRMAR FATURAMENTO E EXPEDIÇÃO | 🔥 QUENTE |
+| 255 | RELACIONAMENTO | RELACIONAMENTO | RECUPERAÇÃO | PÓS-VENDA / RELACIONAMENTO | RAPPORT COM CLIENTE APÓS A VENDA ATÉ RECOMPRAR | 🟡 MORNO |
+| 256 | FOLLOW UP 7 | RELACIONAMENTO | RECUPERAÇÃO | FOLLOW UP | COBRAR RETORNO DO CLIENTE | 🟡 MORNO |
+| 257 | NÃO ATENDE | NÃO ATENDE | RECUPERAÇÃO | ATEND. CLIENTES INATIVOS | 2ª TENTATIVA VIA LIGAÇÃO | ❄️ FRIO |
+| 258 | NÃO RESPONDE | NÃO RESPONDE | RECUPERAÇÃO | ATEND. CLIENTES INATIVOS | 2ª TENTATIVA VIA WHATSAPP | ❄️ FRIO |
+| 259 | RECUSOU LIGAÇÃO | RECUSOU LIGAÇÃO | RECUPERAÇÃO | ATEND. CLIENTES INATIVOS | 2ª TENTATIVA VIA WHATSAPP | ❄️ FRIO |
+| 260 | PERDA / FECHOU LOJA | PERDA / NUTRIÇÃO | NUTRIÇÃO | PERDA / NUTRIÇÃO | NENHUMA (ENCERRADO) | 💀 PERDIDO |
+
+**PROSPECT (R261-R269, 9 linhas):**
+
+| ROW | RESULTADO | ESTÁGIO FUNIL | FASE | TIPO CONTATO | AÇÃO FUTURA | TEMP |
+|-----|-----------|--------------|------|-------------|------------|------|
+| 261 | EM ATENDIMENTO | PROSPECÇÃO | PROSPECÇÃO | PROSPECÇÃO | FECHAR NEGOCIAÇÃO EM ANDAMENTO | 🟡 MORNO |
+| 262 | ORÇAMENTO | ORÇAMENTO | ORÇAMENTO | NEGOCIAÇÃO | CONFIRMAR ORÇAMENTO ENVIADO | 🔥 QUENTE |
+| 263 | CADASTRO | EM ATENDIMENTO | PROSPECÇÃO | PROSPECÇÃO | CONFIRMAR CADASTRO NO SISTEMA | 🟡 MORNO |
+| 264 | VENDA / PEDIDO | PÓS-VENDA | PÓS-VENDA | PÓS-VENDA / RELACIONAMENTO | CONFIRMAR FATURAMENTO E EXPEDIÇÃO | 🔥 QUENTE |
+| 265 | RELACIONAMENTO | PROSPECÇÃO | PROSPECÇÃO | PROSPECÇÃO | RAPPORT COM CLIENTE APÓS A VENDA ATÉ RECOMPRAR | 🟡 MORNO |
+| 266 | NÃO ATENDE | NÃO ATENDE | PROSPECÇÃO | PROSPECÇÃO | 2ª TENTATIVA VIA LIGAÇÃO | ❄️ FRIO |
+| 267 | NÃO RESPONDE | NÃO RESPONDE | PROSPECÇÃO | PROSPECÇÃO | 2ª TENTATIVA VIA WHATSAPP | ❄️ FRIO |
+| 268 | RECUSOU LIGAÇÃO | RECUSOU LIGAÇÃO | PROSPECÇÃO | PROSPECÇÃO | 2ª TENTATIVA VIA WHATSAPP | ❄️ FRIO |
+| 269 | PERDA / FECHOU LOJA | PERDA / NUTRIÇÃO | NUTRIÇÃO | PERDA / NUTRIÇÃO | NENHUMA (ENCERRADO) | 💀 PERDIDO |
+
+**NOVO (R270-R276, 7 linhas):**
+
+| ROW | RESULTADO | ESTÁGIO FUNIL | FASE | TIPO CONTATO | AÇÃO FUTURA | TEMP |
+|-----|-----------|--------------|------|-------------|------------|------|
+| 270 | EM ATENDIMENTO | EM ATENDIMENTO | EM ATENDIMENTO | ATEND. CLIENTES ATIVOS | FECHAR NEGOCIAÇÃO EM ANDAMENTO | 🟡 MORNO |
+| 271 | ORÇAMENTO | ORÇAMENTO | ORÇAMENTO | NEGOCIAÇÃO | CONFIRMAR ORÇAMENTO ENVIADO | 🔥 QUENTE |
+| 272 | VENDA / PEDIDO | PÓS-VENDA | PÓS-VENDA | PÓS-VENDA / RELACIONAMENTO | CONFIRMAR FATURAMENTO E EXPEDIÇÃO | 🔥 QUENTE |
+| 273 | RELACIONAMENTO | PÓS-VENDA | PÓS-VENDA | PÓS-VENDA / RELACIONAMENTO | RAPPORT COM CLIENTE APÓS A VENDA ATÉ RECOMPRAR | 🟡 MORNO |
+| 274 | NÃO ATENDE | NÃO ATENDE | PÓS-VENDA | ATEND. CLIENTES ATIVOS | 2ª TENTATIVA VIA LIGAÇÃO | ❄️ FRIO |
+| 275 | NÃO RESPONDE | NÃO RESPONDE | PÓS-VENDA | ATEND. CLIENTES ATIVOS | 2ª TENTATIVA VIA WHATSAPP | ❄️ FRIO |
+| 276 | PERDA / FECHOU LOJA | PERDA / NUTRIÇÃO | NUTRIÇÃO | PERDA / NUTRIÇÃO | NENHUMA (ENCERRADO) | 💀 PERDIDO |
+
+**LEAD (R277-R283, 7 linhas):**
+
+| ROW | RESULTADO | ESTÁGIO FUNIL | FASE | TIPO CONTATO | AÇÃO FUTURA | TEMP |
+|-----|-----------|--------------|------|-------------|------------|------|
+| 277 | EM ATENDIMENTO | PROSPECÇÃO | PROSPECÇÃO | PROSPECÇÃO | FECHAR NEGOCIAÇÃO EM ANDAMENTO | 🟡 MORNO |
+| 278 | ORÇAMENTO | ORÇAMENTO | ORÇAMENTO | NEGOCIAÇÃO | CONFIRMAR ORÇAMENTO ENVIADO | 🔥 QUENTE |
+| 279 | CADASTRO | EM ATENDIMENTO | PROSPECÇÃO | PROSPECÇÃO | CONFIRMAR CADASTRO NO SISTEMA | 🟡 MORNO |
+| 280 | VENDA / PEDIDO | PÓS-VENDA | PÓS-VENDA | PÓS-VENDA / RELACIONAMENTO | CONFIRMAR FATURAMENTO E EXPEDIÇÃO | 🔥 QUENTE |
+| 281 | NÃO ATENDE | NÃO ATENDE | PROSPECÇÃO | PROSPECÇÃO | 2ª TENTATIVA VIA LIGAÇÃO | ❄️ FRIO |
+| 282 | NÃO RESPONDE | NÃO RESPONDE | PROSPECÇÃO | PROSPECÇÃO | 2ª TENTATIVA VIA WHATSAPP | ❄️ FRIO |
+| 283 | PERDA / FECHOU LOJA | PERDA / NUTRIÇÃO | NUTRIÇÃO | PERDA / NUTRIÇÃO | NENHUMA (ENCERRADO) | 💀 PERDIDO |
+
+**NOTA IMPORTANTE:** Rows 222-228 na planilha real contêm dados com formatos inesperados na col SITUAÇÃO (aparecem como "TEMPERATURA", "TIPO PROBLEMA" ao invés de "ATIVO"). As fórmulas INDEX/MATCH do DRAFT 2 usam lookup por SITUAÇÃO×RESULTADO e podem não pegar essas linhas corretamente. Verificar se o Motor está referenciando $A$221:$A$283 completo.
+
+---
+
+## 4. ABA AGENDA (5.000 rows × 30 cols) — VAZIA
+
+### Header na Row 4:
+
+| COL | NOME | TIPO |
+|-----|------|------|
+| 1 | 📅 DATA | Manual |
+| 2 | NOME FANTASIA | Manual |
+| 3 | CNPJ | Manual |
+| 4 | UF | Manual |
+| 5 | REDE / REGIONAL | Manual |
+| 6 | DIAS SEM COMPRA | Manual |
+| 7 | SITUAÇÃO | Manual |
+| 8 | ESTÁGIO FUNIL | Manual |
+| 9 | TIPO CLIENTE | Manual |
+| 10 | FASE | Manual |
+| 11 | 🔥 TEMPERATURA | Manual |
+| 12 | 🚦 SINALEIRO | Manual |
+| 13 | PRÓX. AÇÃO | Manual |
+| 14 | TENTATIVA | **FÓRMULA** |
+| 15 | TIPO ATENDIMENTO | Manual |
+| 16 | WHATSAPP | Manual |
+| 17 | LIGAÇÃO | Manual |
+| 18 | LIGAÇÃO ATENDIDA | Manual |
+| 19 | TIPO DO CONTATO | Manual |
+| 20 | RESULTADO | Manual |
+| 21 | MOTIVO | Manual |
+| 22 | FOLLOW-UP | **FÓRMULA** |
+| 23 | 💡 AÇÃO SUGERIDA | **FÓRMULA** |
+| 24 | AÇÃO FUTURA | Manual |
+| 25 | AÇÃO DETALHADA | Manual |
+| 26 | MERCOS ATUALIZADO | Manual |
+| 27 | NOTA DO DIA | Manual |
+| 28 | TIPO AÇÃO | **FÓRMULA** |
+| 29 | TIPO PROBLEMA | Manual |
+| 30 | TAREFA/DEMANDA | Manual |
+
+### 4 Fórmulas Automáticas da AGENDA:
+
+**col14 TENTATIVA:**
+```
+=IF(B5="","","T"&COUNTIF($B$5:B5,B5))
+```
+
+**col22 FOLLOW-UP:**
+```
+=IF(T5="","",IFERROR(TODAY()+VLOOKUP(T5,REGRAS!$B$6:$C$21,2,FALSE),""))
+```
+
+**col23 AÇÃO SUGERIDA (mega-fórmula com 15 IFs encadeados):**
+```
+=IF(T5="","",IF(T5="VENDA / PEDIDO","CONFIRMAR FATURAMENTO E EXPEDIÇÃO",IF(T5="PÓS-VENDA","FAZER CS (SUCESSO DO CLIENTE)",IF(T5="CS (SUCESSO DO CLIENTE)","VERIFICAR SELL OUT E CRIAR INTENÇÃO RECOMPRA",IF(T5="EM ATENDIMENTO","FECHAR NEGOCIAÇÃO EM ANDAMENTO",IF(T5="ORÇAMENTO","CONFIRMAR ORÇAMENTO ENVIADO",IF(T5="CADASTRO","CONFIRMAR CADASTRO NO SISTEMA",IF(T5="NUTRIÇÃO","NUTRIR ENVIANDO CAMPANHAS, PROMOÇÕES E NOVIDADES",IF(T5="RELACIONAMENTO","RAPPORT COM CLIENTE APÓS A VENDA ATÉ RECOMPRAR",IF(OR(T5="FOLLOW UP 7",T5="FOLLOW UP 15"),"COBRAR RETORNO DO CLIENTE",IF(T5="SUPORTE","RESOLVER PROBLEMA INTERNO E ENVIAR SOLUÇÃO",IF(T5="NÃO ATENDE","2ª TENTATIVA VIA LIGAÇÃO",IF(OR(T5="NÃO RESPONDE",T5="RECUSOU LIGAÇÃO"),"2ª TENTATIVA VIA WHATSAPP",IF(T5="PERDA / FECHOU LOJA","NENHUMA (ENCERRADO)",IF(T5="N/A (NÃO SE APLICA)","",""))))))))))))))
+```
+
+**col28 TIPO AÇÃO:**
+```
+=IF(T5="","",IF(T5="VENDA / PEDIDO","VENDA",IF(OR(T5="PÓS-VENDA",T5="CS (SUCESSO DO CLIENTE)",T5="RELACIONAMENTO"),"PÓS-VENDA",IF(T5="SUPORTE","RESOLUÇÃO DE PROBLEMA",IF(OR(T5="PERDA / FECHOU LOJA"),"ADMINISTRATIVO",IF(G5="PROSPECT","PROSPECÇÃO","PRÉ-VENDA"))))))
+```
+
+### Mapeamento AGENDA → DRAFT 2:
+
+| AGENDA col | DRAFT 2 col | STATUS |
+|-----------|------------|--------|
+| 1 DATA | 1 DATA | ✅ Match |
+| — | 2 CONSULTOR | ⚠️ DRAFT 2 exclusivo |
+| 2 NOME FANTASIA | 3 NOME FANTASIA | ✅ Match |
+| 3 CNPJ | 4 CNPJ | ✅ Match |
+| 4 UF | 5 UF | ✅ Match |
+| 5 REDE/REGIONAL | 6 REDE/REGIONAL | ✅ Match |
+| 7 SITUAÇÃO | 7 SITUAÇÃO | ✅ Match |
+| 6 DIAS SEM COMPRA | 8 DIAS SEM COMPRA | ✅ Match |
+| 8 ESTÁGIO FUNIL | 9 ESTÁGIO FUNIL | ✅ Match |
+| 9 TIPO CLIENTE | 10 TIPO CLIENTE | ✅ Match |
+| 10 FASE | 11 FASE | ✅ Match |
+| 12 SINALEIRO | 12 SINALEIRO | ✅ Match |
+| 14 TENTATIVA | 13 TENTATIVA | ✅ Match |
+| 16 WHATSAPP | 14 WHATSAPP | ✅ Match |
+| 17 LIGAÇÃO | 15 LIGAÇÃO | ✅ Match |
+| 18 LIG ATENDIDA | 16 LIG ATENDIDA | ✅ Match |
+| 19 TIPO DO CONTATO | 17 TIPO DO CONTATO | ✅ Match |
+| 20 RESULTADO | 18 RESULTADO | ✅ Match |
+| 21 MOTIVO | 19 MOTIVO | ✅ Match |
+| 22 FOLLOW-UP | 20 FOLLOW-UP | ✅ Match |
+| 24 AÇÃO FUTURA | 21 AÇÃO FUTURA | ✅ Match |
+| 25 AÇÃO DETALHADA | 22 AÇÃO DETALHADA | ✅ Match |
+| 26 MERCOS ATUALIZADO | 23 MERCOS ATUALIZADO | ✅ Match |
+| 27 NOTA DO DIA | 24 NOTA DO DIA | ✅ Match |
+| 11 TEMPERATURA | 25 TEMPERATURA | ✅ Match |
+| — | 26 GRUPO DASH | ⚠️ DRAFT 2 exclusivo (fórmula) |
+| — | 27 SINALEIRO META | ⚠️ DRAFT 2 exclusivo |
+| 28 TIPO AÇÃO | 28 TIPO AÇÃO | ✅ Match |
+| 29 TIPO PROBLEMA | 29 TIPO PROBLEMA | ✅ Match |
+| 30 TAREFA/DEMANDA | 30 DEMANDA | ✅ Match |
+| 15 TIPO ATENDIMENTO | 31 TIPO ATENDIMENTO | ✅ Match |
+| 13 PRÓX. AÇÃO | — | ⚠️ AGENDA exclusivo |
+| 23 AÇÃO SUGERIDA | — | ⚠️ AGENDA exclusivo |
+
+---
+
+## 5. ABA DRAFT 2 (502 rows × 31 cols) — DADOS FABRICADOS
+
+### Estrutura Atual (Row 2 = header, dados a partir Row 3):
+
+**COLUNAS MANUAIS (input do consultor):** 1,2,3,4,5,6,7,8,14,15,16,17,18,19,22,23,24,27,29,30,31
+**COLUNAS FÓRMULA (automáticas):** 9,11,12,13,20,21,25,26,28
+
+### Fórmulas Críticas do DRAFT 2:
+
+**col9 ESTÁGIO FUNIL:**
+```
+=IF(R3="","",IFERROR(INDEX(REGRAS!$C$221:$C$283,MATCH(G3&R3,REGRAS!$A$221:$A$283&REGRAS!$B$221:$B$283,0)),""))
+```
+
+**col11 FASE:**
+```
+=IF(R3="","",IFERROR(INDEX(REGRAS!$D$221:$D$283,MATCH(G3&R3,REGRAS!$A$221:$A$283&REGRAS!$B$221:$B$283,0)),""))
+```
+
+**col12 SINALEIRO:**
+```
+=IF(H3="",""IF(G3="PROSPECT","🟣",IF(G3="LEAD","🟣",IF(G3="NOVO","🟢",IF(H3<=50,"🟢",IF(H3<=90,"🟡","🔴"))))))
+```
+
+**col13 TENTATIVA:**
+```
+=IF(D3="","","T"&COUNTIF($D$3:D3,D3))
+```
+
+**col20 FOLLOW-UP:**
+```
+=IF(R3="","",IF(OR(R3="SUPORTE",R3="PERDA / FECHOU LOJA",R3="N/A (NÃO SE APLICA)"),"SEM",A3+VLOOKUP(R3,...)))
+```
+
+**col21 AÇÃO FUTURA:**
+```
+=IF(R3="","",IF(R3="VENDA / PEDIDO","CONFIRMAR FATURAMENTO E EXPEDIÇÃO",IFERROR(INDEX(REGRAS!$F$221:$F$283,...))))
+```
+
+**col25 TEMPERATURA:**
+```
+=IF(R3="","",IF(OR(R3="ORÇAMENTO",R3="VENDA / PEDIDO"),"🔥QUENTE",IF(OR(R3="EM ATENDIMENTO",R3="CADASTRO"),"🟡MORNO",...)))
+```
+
+**col26 GRUPO DASH:**
+```
+=IF(R3="","",IF(OR(R3="EM ATENDIMENTO",R3="ORÇAMENTO",R3="CADASTRO",R3="VENDA / PEDIDO"),"FUNIL",IF(...)))
+```
+
+**col28 TIPO AÇÃO:**
+```
+=IF(R3="","",IF(R3="VENDA / PEDIDO","VENDA",IF(R3="SUPORTE","RESOLUÇÃO DE PROBLEMA",IF(R3="RELACIONAMENTO",...))))
+```
+
+### Distribuição Atual (439 rows, dados FABRICADOS):
+
+**CONSULTORES:** MANU DITZEL: 133, LARISSA PADILHA: 111, DAIANE STAVICKI: 111, JULIO GADRET: 86
+**RESULTADOS:** RELACIONAMENTO: 58, ORÇAMENTO: 53, VENDA / PEDIDO: 48, EM ATENDIMENTO: 47, FOLLOW UP 7: 43, NÃO ATENDE: 42, SUPORTE: 41, NÃO RESPONDE: 35, FOLLOW UP 15: 26, CADASTRO: 18, RECUSOU LIGAÇÃO: 16, PERDA / FECHOU LOJA: 14
+**SITUAÇÕES:** ATIVO: 152, INAT.ANT: 82, EM RISCO: 66, NOVO: 55, INAT.REC: 52, PROSPECT: 34
+
+---
+
+## 6. ABA CARTEIRA — FUNIL (cols 44-62)
+
+### Estrutura: 8.305 rows × 263 cols
+
+**Blocos CARTEIRA (Row 1-2-3):**
+
+| COLS | BLOCO (Row 2) | CAMPOS (Row 3) |
+|------|-------------|---------------|
+| 1 | ANCORA | NOME FANTASIA |
+| 2-8 | IDENTIDADE | CNPJ, RAZÃO SOCIAL, UF, CIDADE, EMAIL, TELEFONE, DATA CADASTRO |
+| 9-11 | REDE | REDE/REGIONAL, TIPO CLIENTE, ÚLT REGISTRO MERCOS |
+| 12-13 | EQUIPE | CONSULTOR, VENDEDOR ÚLTIMO PEDIDO |
+| 14-15 | STATUS | SITUAÇÃO, PRIORIDADE |
+| 16-19 | COMPRA | DIAS SEM COMPRA, DATA ÚLTIMO PEDIDO, VALOR ÚLTIMO PEDIDO, CICLO MÉDIO |
+| 20-24 | ECOMMERCE | ACESSO B2B, ACESSOS PORTAL, ITENS CARRINHO, VALOR B2B, OPORTUNIDADE |
+| 25-36 | VENDAS | TOTAL PERÍODO + 11 meses (MAR/25→JAN/26) |
+| 37 | ANCORA | TIPO CLIENTE |
+| 38-43 | RECORRÊNCIA | Nº COMPRAS, CURVA ABC, MESES POSITIVADO, MÉDIA MENSAL, TICKET MÉDIO, MESES LISTA |
+| **44** | **ANCORA** | **ESTÁGIO FUNIL** |
+| **45-49** | **PIPELINE** | **PRÓX FOLLOWUP, DATA ÚLT.ATEND, AÇÃO FUTURA, ÚLTIMO RESULTADO, MOTIVO** |
+| **50-51** | **PERFIL** | **TIPO CLIENTE, TENTATIVA** |
+| **52-53** | **MATURIDADE** | **FASE, ÚLTIMA RECOMPRA** |
+| **54-58** | **CONVERSÃO** | **TEMPERATURA, DIAS ATÉ CONVERSÃO, DATA 1º CONTATO, DATA 1º ORÇAMENTO, DATA 1ª VENDA** |
+| **59** | **CONVERSÃO** | **TOTAL TENTATIVAS** |
+| **60-61** | **AÇÃO** | **PRÓX AÇÃO, AÇÃO DETALHADA** |
+| **62** | **SINAL** | **🚦 SINALEIRO** |
+| 63-77 | SAP | CÓDIGO CLIENTE, CNPJ, RAZÃO SOCIAL, CADASTRO, ATENDIMENTO, etc. |
+| 78-263 | ACOMPANHAMENTO | META/REAL/%/JUSTIFICATIVAS por mês (12 meses × ~15 cols) |
+
+### Fórmulas FUNIL (todas puxam do DRAFT 2 via INDEX/MATCH):
+
+**col44 ESTÁGIO FUNIL:**
+```
+=IFERROR(INDEX('DRAFT 2'!$I:$I,MATCH(1,INDEX(('DRAFT 2'!$D:$D=$B4)*('DRAFT 2'!$A:$A=MAX(IF('DRAFT 2'!$D:$D=$B4,'DRAFT 2'!$A:$A))),0))),"")
+```
+
+**col45 PRÓX FOLLOWUP:**
+```
+=IFERROR(INDEX('DRAFT 2'!$T:$T,MATCH(1,INDEX(('DRAFT 2'!$D:$D=$B4)*('DRAFT 2'!$A:$A=MAX(...))))))
+```
+
+**col46 DATA ÚLT.ATENDIMENTO:**
+```
+=IFERROR(MAX(IF('DRAFT 2'!$D:$D=$B4,'DRAFT 2'!$A:$A)),"")
+```
+
+**col47 AÇÃO FUTURA:**
+```
+=IFERROR(INDEX('DRAFT 2'!$U:$U,MATCH(1,INDEX(('DRAFT 2'!$D:$D=$B4)*('DRAFT 2'!$A:$A=MAX(...))))))
+```
+
+**col48 ÚLTIMO RESULTADO:**
+```
+=IFERROR(INDEX('DRAFT 2'!$R:$R,MATCH(...)))
+```
+
+**col62 SINALEIRO:**
+```
+=IF(P4="","",IF(OR(N4="PROSPECT",N4="LEAD"),"🟣",IF(N4="NOVO","🟢",_xlfn.LET(...))))
+```
+
+**PROBLEMA:** Todas essas fórmulas fazem MATCH por CNPJ ($B4 da CARTEIRA vs $D:$D do DRAFT 2). Como os CNPJs do DRAFT 2 são fabricados, NENHUMA retorna dados para clientes reais.
+
+---
+
+## 7. DASH JSX — REFERÊNCIA DE DESTINO (não construir agora)
+
+### 2 arquivos únicos (4 dash são cópias idênticas):
+
+**dash_html_vitao360.jsx (425 linhas):**
+Layout DASH com 14 blocos propostos (9 originais + 5 novos). Constantes definidas no topo:
+
+```javascript
+const TC = ["PROSPECÇÃO","NEGOCIAÇÃO","FOLLOW UP","ATEND. CLIENTES ATIVOS","ATEND. CLIENTES INATIVOS","PÓS-VENDA / RELACIONAMENTO","PERDA / NUTRIÇÃO"]; // 7 TIPO CONTATO
+const RES = ["ORÇAM","CADAST","RELAC","ATEND","SUPORTE","VENDA","Ñ ATEND","RECUS","Ñ RESP","PERDA","FUP 7","FUP 15"]; // 12 RESULTADO (abreviados)
+const CAN = ["WPP","LIGOU","ATENDIDA","Ñ ATEND"]; // 4 CANAIS
+const FUN = ["EM ATEND","ORÇAM","CADAST","VENDA","FUP","SUPORTE","Ñ VENDA","PERDA"]; // 8 FUNIL
+const MOT = ["AINDA TEM ESTOQUE","PRODUTO NÃO VENDEU / SEM GIRO","LOJA ANEXO / PRÓXIMO SM","SÓ QUER COMPRAR GRANEL","PROBLEMA LOGÍSTICO / ENTREGA","PROBLEMA FINANCEIRO / CRÉDITO","PROPRIETÁRIO INDISPONÍVEL","FECHANDO / FECHOU LOJA","SEM INTERESSE NO MOMENTO","PRIMEIRO CONTATO / SEM RESPOSTA"]; // 10 MOTIVOS
+const CON = ["LARISSA PADILHA","MANU DITZEL","JULIO GADRET","DAIANE STAVICKI"]; // 4 CONSULTORES
+const TAC = ["VENDA","PRÉ-VENDA","PÓS-VENDA","RESOLUÇÃO DE PROBLEMA","PROSPECÇÃO","ADMINISTRATIVO"]; // 6 TIPO AÇÃO
+const RNC = ["ATRASO ENTREGA (TRANSPORTADORA)","PRODUTO AVARIADO (FÁBRICA/TRANSPORTE)","ERRO SEPARAÇÃO (EXPEDIÇÃO)","ERRO NOTA FISCAL (FATURAMENTO)","DIVERGÊNCIA PREÇO (FATURAMENTO)","COBRANÇA INDEVIDA (FINANCEIRO)","RUPTURA ESTOQUE (FÁBRICA/PCP)"]; // 7 RNC
+const DEM = ["PROSPECÇÃO - BASE GRANEL","PROSPECÇÃO - PESQUISA GOOGLE",...]; // 25 DEMANDAS
+```
+
+14 blocos propostos:
+1. KPIs GLOBAIS (ATENDIMENTOS × DEMANDAS × CONVERSÃO + ratio)
+2. MATRIZ TIPO CONTATO × RESULTADO (7×12)
+3. CANAIS + FUNIL DE VENDA
+4. MOTIVOS DE NÃO COMPRA (10 categorias)
+5. PERFORMANCE POR CONSULTOR (4)
+6. TEMPERATURA (4 níveis)
+7. TIPO AÇÃO × CONSULTOR (6×4)
+8. RNC POR ÁREA (7 categorias)
+9. DEMANDA (25 atividades)
+10. 🆕 SAÚDE DA BASE (ATIVO/INAT.REC/INAT.ANT + contagens + %)
+11. 🆕 TAXA DE RECOMPRA (1/2-3/4-6/7+ compras)
+12. 🆕 SINALEIRO PENETRAÇÃO REDES (8 redes, 923 lojas)
+13. 🆕 ALERTAS INATIVIDADE (45/60/90 dias triggers)
+14. 🆕 CURVA ABC RESUMO (A/B/C)
+
+**raio_x_crm_vitao360_v11.jsx (736 linhas):**
+Diagnóstico das 12 abas com health scores, issues, opções A vs B de reorganização.
+
+---
+
+## 8. DRAFT 1 ATUALIZADO (DRAFT1_ATUALIZADO_FEV2026__1_.xlsx)
+
+### Dados Reais: 501 clientes × 45 colunas
+
+**Headers (row 3):**
+
+| COL | NOME |
+|-----|------|
+| 1 | NOME FANTASIA |
+| 2 | CNPJ |
+| 3 | RAZÃO SOCIAL |
+| 4 | UF |
+| 5 | CIDADE |
+| 6 | EMAIL |
+| 7 | TELEFONE |
+| 8 | DATA CADASTRO |
+| 9 | REDE / REGIONAL |
+| 10 | CONSULTOR |
+| 11 | VENDEDOR ÚLTIMO PEDIDO |
+| 12 | DIAS SEM COMPRA |
+| 13 | DATA ÚLTIMO PEDIDO |
+| 14 | VALOR ÚLTIMO PEDIDO |
+| 15 | ACESSOS SEMANA |
+| 16 | ACESSO B2B |
+| 17 | ACESSOS PORTAL |
+| 18 | ITENS CARRINHO |
+| 19 | VALOR B2B |
+| 20 | OPORTUNIDADE |
+| 21-32 | MAR/25 → FEV/26 (vendas mensais) |
+| 33 | CICLO MÉDIO |
+| 34 | Nº COMPRAS |
+| 35 | CURVA ABC |
+| 36 | MESES POSITIVADO |
+| 37 | TICKET MÉDIO |
+| 38 | ÚLT. REGISTRO MERCOS |
+| 39 | DATA ÚLT. ATENDIMENTO MERCOS |
+| 40 | TIPO ATENDIMENTO MERCOS |
+| 41 | OBS ATENDIMENTO MERCOS |
+| 42 | TIPO CLIENTE |
+| 43 | MÉDIA MENSAL |
+| 44 | AUDIT TELEFONE |
+| 45 | FONTE ATUALIZAÇÃO |
+
+### Distribuição de Vendedores (col 11, formato Mercos original):
+- Manu Ditzel: 144
+- Larissa Padilha: 147
+- Central - Daiane: 73
+- Julio Gadret: 72 + 16 = 88
+- Helder Brunkow: 44
+- Lorrany: 4
+- Leandro Garcia: 1
+
+**NOTA:** Normalização necessária: "Central - Daiane" → "DAIANE STAVICKI", "Julio  Gadret" (2 espaços) → "JULIO GADRET", "Helder Brunkow" → atribuir a outro consultor
+
+---
+
+## 9. INCONSISTÊNCIAS IDENTIFICADAS
+
+1. **DAIANE:** REGRAS diz "DAIANE STADLER", README/DRAFT 2 diz "DAIANE STAVICKI", DRAFT 1 real diz "Central - Daiane"
+2. **DRAFT 2 dados fabricados** — 441 CNPJs que não existem no sistema real
+3. **AGENDA vazia** — 5.000 rows com fórmulas mas sem dados
+4. **CARTEIRA FUNIL cega** — formulas INDEX/MATCH retornam vazio por CNPJs não batendo
+5. **MOTIVOS expandidos** — README referencia 10 motivos, REGRAS tem 22
+6. **RESULTADO:** README referencia 12, REGRAS tem 16 (inclui NUTRIÇÃO, CS, PÓS-VENDA, RELACIONAMENTO)
+
+---
+
+## 10. PRÓXIMOS PASSOS (O QUE FAZER NA PRÓXIMA CONVERSA)
+
+1. **Popular DRAFT 2 com dados REAIS** a partir dos atendimentos Mercos (arquivo Relatorio_de_Atendimentos_Mercos_2025.xlsx)
+2. **Popular AGENDA** com a estrutura de tarefas por consultor baseada nos dados reais
+3. **Garantir CNPJ match** entre DRAFT 1, DRAFT 2 e CARTEIRA
+4. **Validar que CARTEIRA FUNIL** (cols 44-62) retorna dados corretos após população
+5. **NÃO construir DASH** — os JSX são apenas referência de destino
+
+---
+
+## ARQUIVOS NO PROJETO
+
+### Fonte de dados principal:
+- CRM_INTELIGENTE_VITAO_360_V11__12_.xlsx (CRM completo, 13 abas)
+- DRAFT1_ATUALIZADO_FEV2026__1_.xlsx (DRAFT 1 com 501 clientes reais)
+- Relatorio_de_Atendimentos_Mercos_2025.xlsx (atendimentos para popular DRAFT 2)
+
+### Referência DASH (NÃO CONSTRUIR AGORA):
+- dash_html_vitao360.jsx (layout 14 blocos)
+- raio_x_crm_vitao360_v11.jsx (diagnóstico 12 abas)
+
+---
+
+*Documento gerado: 16/FEV/2026 — Sessão de análise DRAFT 2 + AGENDA*
+*Para usar: Cole este documento inteiro como contexto na próxima conversa*

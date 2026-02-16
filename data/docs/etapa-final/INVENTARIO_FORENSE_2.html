@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>INVENTÁRIO FORENSE — Dados Reais para DRAFT 2</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=DM+Sans:wght@400;500;600;700&display=swap');
+  
+  :root {
+    --bg: #f8f7f4;
+    --card: #ffffff;
+    --border: #e2e0db;
+    --text: #1a1a1a;
+    --muted: #6b7280;
+    --green: #00B050;
+    --yellow: #FFC000;
+    --red: #FF0000;
+    --blue: #1F4E79;
+    --purple: #7B2FF2;
+    --accent: #0ea5e9;
+  }
+  
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); padding: 24px; max-width: 1100px; margin: 0 auto; }
+  
+  .header { background: var(--blue); color: white; padding: 28px 32px; border-radius: 12px; margin-bottom: 24px; }
+  .header h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; }
+  .header .sub { font-size: 13px; opacity: 0.8; margin-top: 6px; }
+  
+  .alert { background: #fef3cd; border-left: 4px solid var(--yellow); padding: 14px 18px; border-radius: 0 8px 8px 0; margin-bottom: 20px; font-size: 13px; }
+  .alert.red { background: #fee; border-color: var(--red); }
+  .alert.green { background: #e8f5e9; border-color: var(--green); }
+  .alert strong { display: block; margin-bottom: 4px; }
+  
+  .section { margin-bottom: 28px; }
+  .section-title { font-size: 16px; font-weight: 700; color: var(--blue); margin-bottom: 12px; padding-bottom: 6px; border-bottom: 2px solid var(--blue); display: flex; align-items: center; gap: 8px; }
+  
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+  @media (max-width: 768px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+  
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 18px; }
+  .card h3 { font-size: 14px; font-weight: 600; margin-bottom: 10px; color: var(--blue); }
+  .card .big { font-family: 'JetBrains Mono', monospace; font-size: 28px; font-weight: 700; }
+  .card .label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+  .card .sub-stat { font-size: 12px; color: var(--muted); margin-top: 4px; }
+  
+  table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  th { background: var(--blue); color: white; padding: 8px 10px; text-align: left; font-weight: 600; }
+  td { padding: 7px 10px; border-bottom: 1px solid var(--border); }
+  tr:hover td { background: #f0f7ff; }
+  .mono { font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+  
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+  .tag.green { background: #dcfce7; color: #166534; }
+  .tag.yellow { background: #fef9c3; color: #854d0e; }
+  .tag.red { background: #fee2e2; color: #991b1b; }
+  .tag.blue { background: #dbeafe; color: #1e40af; }
+  .tag.purple { background: #f3e8ff; color: #6b21a8; }
+  
+  .bar-container { display: flex; align-items: center; gap: 8px; margin: 4px 0; }
+  .bar-label { font-size: 11px; width: 140px; text-align: right; color: var(--muted); }
+  .bar { height: 18px; border-radius: 3px; background: var(--accent); min-width: 2px; transition: width 0.3s; }
+  .bar-val { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text); }
+  
+  .flow { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 12px 0; }
+  .flow-step { background: var(--blue); color: white; padding: 6px 14px; border-radius: 6px; font-size: 12px; font-weight: 600; }
+  .flow-arrow { color: var(--muted); font-size: 18px; }
+  
+  .mapping-row { display: grid; grid-template-columns: 200px 30px 200px; gap: 4px; align-items: center; padding: 4px 0; border-bottom: 1px solid #f0f0f0; font-size: 12px; }
+  .mapping-row .arrow { text-align: center; color: var(--accent); font-weight: bold; }
+  
+  .decision { background: #fffbeb; border: 2px dashed var(--yellow); border-radius: 10px; padding: 18px; margin-top: 16px; }
+  .decision h3 { color: #92400e; }
+  
+  .num-highlight { color: var(--blue); font-weight: 700; font-family: 'JetBrains Mono', monospace; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>INVENTÁRIO FORENSE — Dados Reais Disponíveis</h1>
+  <div class="sub">CRM VITAO360 v11 | Missão: Popular DRAFT 2 com dados REAIS | 16/FEV/2026</div>
+</div>
+
+<div class="alert red">
+  <strong>DIAGNÓSTICO: DRAFT 2 atual = 441 registros FABRICADOS</strong>
+  Nomes genéricos ("NATUR LIFE 32", "EMPÓRIO BIO 76"), CNPJs que não existem no DRAFT 1. Nenhuma fórmula automática funciona porque os CNPJs não cruzam. Precisamos substituir por dados REAIS extraídos das fontes abaixo.
+</div>
+
+<!-- ═══ VISÃO GERAL ═══ -->
+<div class="section">
+  <div class="section-title">📊 VISÃO GERAL — O QUE TEMOS DE REAL</div>
+  <div class="grid-3">
+    <div class="card" style="text-align:center;">
+      <div class="label">MERCOS ATENDIMENTOS</div>
+      <div class="big" style="color:var(--blue);">1.581</div>
+      <div class="sub-stat">925 CNPJs únicos | Jan-Dez/2025</div>
+    </div>
+    <div class="card" style="text-align:center;">
+      <div class="label">DESKRIO WHATSAPP</div>
+      <div class="big" style="color:var(--purple);">4.885</div>
+      <div class="sub-stat">1.352 CNPJs (72% identificados) | Mar/25-Jan/26</div>
+    </div>
+    <div class="card" style="text-align:center;">
+      <div class="label">VENDAS (PEDIDOS)</div>
+      <div class="big" style="color:var(--green);">973</div>
+      <div class="sub-stat">401 clientes únicos | Mar/25-Jan/26</div>
+    </div>
+  </div>
+  <div class="grid-3" style="margin-top:12px;">
+    <div class="card" style="text-align:center;">
+      <div class="label">MERCOS JAN/2026</div>
+      <div class="big" style="color:var(--accent);">363</div>
+      <div class="sub-stat">Atendimentos registrados</div>
+    </div>
+    <div class="card" style="text-align:center;">
+      <div class="label">POSITIVAÇÃO</div>
+      <div class="big" style="color:var(--yellow);">877</div>
+      <div class="sub-stat">479 CNPJs | 12 meses</div>
+    </div>
+    <div class="card" style="text-align:center;">
+      <div class="label">DRAFT 1 (BASE MESTRA)</div>
+      <div class="big" style="color:var(--text);">471</div>
+      <div class="sub-stat">Clientes reais com CNPJ</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ CRUZAMENTO CRÍTICO ═══ -->
+<div class="section">
+  <div class="section-title">🔗 CRUZAMENTO CNPJ — Quem tem dado REAL?</div>
+  <div class="card">
+    <table>
+      <thead>
+        <tr>
+          <th>CATEGORIA</th>
+          <th>CLIENTES</th>
+          <th>% DO DRAFT 1</th>
+          <th>STATUS</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Em AMBOS (Mercos + Deskrio)</strong></td>
+          <td class="mono">224</td>
+          <td class="mono">48%</td>
+          <td><span class="tag green">DADOS RICOS</span></td>
+        </tr>
+        <tr>
+          <td>Só no Mercos (sem Deskrio)</td>
+          <td class="mono">64</td>
+          <td class="mono">14%</td>
+          <td><span class="tag blue">PARCIAL</span></td>
+        </tr>
+        <tr>
+          <td>Só no Deskrio (sem Mercos)</td>
+          <td class="mono">74</td>
+          <td class="mono">16%</td>
+          <td><span class="tag blue">PARCIAL</span></td>
+        </tr>
+        <tr style="background:#e8f5e9;">
+          <td><strong>Total com PELO MENOS 1 registro</strong></td>
+          <td class="mono"><strong>362</strong></td>
+          <td class="mono"><strong>77%</strong></td>
+          <td><span class="tag green">RASTREÁVEL</span></td>
+        </tr>
+        <tr style="background:#fee2e2;">
+          <td><strong>SEM nenhum registro de atendimento</strong></td>
+          <td class="mono"><strong>109</strong></td>
+          <td class="mono"><strong>23%</strong></td>
+          <td><span class="tag red">GAP</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <div style="margin-top:12px; font-size:12px; color:var(--muted);">
+      <strong>Volume de interações rastreáveis:</strong> 643 Mercos + 1.174 Deskrio = <span class="num-highlight">1.817 interações</span> para clientes do DRAFT 1
+    </div>
+  </div>
+</div>
+
+<!-- ═══ FONTE 1: MERCOS ═══ -->
+<div class="section">
+  <div class="section-title">📋 FONTE 1: Relatório Atendimentos Mercos 2025</div>
+  <div class="grid-2">
+    <div class="card">
+      <h3>Campos Disponíveis</h3>
+      <table>
+        <tr><td>Data Início</td><td><span class="tag green">100%</span></td><td>→ DATA</td></tr>
+        <tr><td>Nome Fantasia</td><td><span class="tag green">100%</span></td><td>→ NOME FANTASIA</td></tr>
+        <tr><td>CNPJ/CPF</td><td><span class="tag green">100%</span></td><td>→ CNPJ</td></tr>
+        <tr><td>Estado</td><td><span class="tag green">100%</span></td><td>→ UF</td></tr>
+        <tr><td>Vendedor</td><td><span class="tag green">100%</span></td><td>→ CONSULTOR</td></tr>
+        <tr><td>Tipo</td><td><span class="tag green">100%</span></td><td>→ WHATSAPP/LIGAÇÃO</td></tr>
+        <tr><td>Resultado</td><td><span class="tag yellow">68%</span></td><td>→ RESULTADO (normalizar)</td></tr>
+        <tr><td>Descrição</td><td><span class="tag green">98%</span></td><td>→ NOTA DO DIA</td></tr>
+        <tr><td>Motivo</td><td><span class="tag red">2%</span></td><td>→ MOTIVO</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h3>Distribuição por Mês</h3>
+      <div class="bar-container"><div class="bar-label">Jan/25</div><div class="bar" style="width:1px;"></div><div class="bar-val">2</div></div>
+      <div class="bar-container"><div class="bar-label">Mar/25</div><div class="bar" style="width:18px;background:var(--accent);"></div><div class="bar-val">35</div></div>
+      <div class="bar-container"><div class="bar-label">Abr/25</div><div class="bar" style="width:55px;background:var(--accent);"></div><div class="bar-val">110</div></div>
+      <div class="bar-container"><div class="bar-label">Mai/25</div><div class="bar" style="width:80px;background:var(--accent);"></div><div class="bar-val">160</div></div>
+      <div class="bar-container"><div class="bar-label">Jun/25</div><div class="bar" style="width:90px;background:var(--accent);"></div><div class="bar-val">179</div></div>
+      <div class="bar-container"><div class="bar-label">Jul/25</div><div class="bar" style="width:152px;background:var(--blue);"></div><div class="bar-val">304 (pico)</div></div>
+      <div class="bar-container"><div class="bar-label">Ago/25</div><div class="bar" style="width:77px;background:var(--accent);"></div><div class="bar-val">154</div></div>
+      <div class="bar-container"><div class="bar-label">Set/25</div><div class="bar" style="width:89px;background:var(--accent);"></div><div class="bar-val">178</div></div>
+      <div class="bar-container"><div class="bar-label">Out/25</div><div class="bar" style="width:93px;background:var(--accent);"></div><div class="bar-val">185</div></div>
+      <div class="bar-container"><div class="bar-label">Nov/25</div><div class="bar" style="width:71px;background:var(--accent);"></div><div class="bar-val">141</div></div>
+      <div class="bar-container"><div class="bar-label">Dez/25</div><div class="bar" style="width:67px;background:var(--accent);"></div><div class="bar-val">133</div></div>
+      <h3 style="margin-top:12px;">Por Vendedor</h3>
+      <div class="bar-container"><div class="bar-label">Larissa Padilha</div><div class="bar" style="width:160px;background:#0ea5e9;"></div><div class="bar-val">799</div></div>
+      <div class="bar-container"><div class="bar-label">Manu Ditzel</div><div class="bar" style="width:62px;background:#38bdf8;"></div><div class="bar-val">307</div></div>
+      <div class="bar-container"><div class="bar-label">Central - Daiane</div><div class="bar" style="width:56px;background:#7dd3fc;"></div><div class="bar-val">280</div></div>
+      <div class="bar-container"><div class="bar-label">Helder Brunkow</div><div class="bar" style="width:35px;background:#bae6fd;"></div><div class="bar-val">175</div></div>
+    </div>
+  </div>
+  <div class="card" style="margin-top:12px;">
+    <h3>Tipo de Contato (Mercos)</h3>
+    <div class="grid-3">
+      <div style="text-align:center;"><div class="big" style="color:var(--green);font-size:22px;">1.323</div><div class="label">WhatsApp (84%)</div></div>
+      <div style="text-align:center;"><div class="big" style="color:var(--blue);font-size:22px;">179</div><div class="label">Ligação (11%)</div></div>
+      <div style="text-align:center;"><div class="big" style="color:var(--muted);font-size:22px;">79</div><div class="label">Outros/Email/Visita (5%)</div></div>
+    </div>
+    <h3 style="margin-top:16px;">Resultado Mercos → Normalização para DRAFT 2</h3>
+    <table>
+      <thead><tr><th>RESULTADO MERCOS (original)</th><th>QTD</th><th>→ RESULTADO DRAFT 2</th></tr></thead>
+      <tbody>
+        <tr><td>Pré Venda / Apresentação</td><td class="mono">538</td><td><span class="tag blue">EM ATENDIMENTO</span></td></tr>
+        <tr><td>Relacionamento / nutrição</td><td class="mono">169</td><td><span class="tag blue">RELACIONAMENTO</span></td></tr>
+        <tr><td>Pós Venda / Sucesso do Cliente</td><td class="mono">123</td><td><span class="tag blue">PÓS-VENDA / CS</span></td></tr>
+        <tr><td>Cadastro</td><td class="mono">119</td><td><span class="tag blue">CADASTRO</span></td></tr>
+        <tr><td>Status Pedido / informação</td><td class="mono">53</td><td><span class="tag blue">SUPORTE</span></td></tr>
+        <tr><td>Suporte / Problema</td><td class="mono">15</td><td><span class="tag blue">SUPORTE</span></td></tr>
+        <tr><td>Recompra / Positivação</td><td class="mono">12</td><td><span class="tag blue">RELACIONAMENTO</span></td></tr>
+        <tr><td>Follow-up / Tentativa 2</td><td class="mono">11</td><td><span class="tag blue">FOLLOW UP 7</span></td></tr>
+        <tr><td>1º Whatsapp / Sem Resposta</td><td class="mono">11</td><td><span class="tag blue">NÃO RESPONDE</span></td></tr>
+        <tr><td>Não responde / Ignora</td><td class="mono">10</td><td><span class="tag blue">NÃO RESPONDE</span></td></tr>
+        <tr><td style="color:var(--red);">(vazio — sem resultado)</td><td class="mono" style="color:var(--red);">506</td><td><span class="tag yellow">INFERIR da Descrição</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══ FONTE 2: DESKRIO ═══ -->
+<div class="section">
+  <div class="section-title">💬 FONTE 2: Deskrio WhatsApp Tickets</div>
+  <div class="grid-2">
+    <div class="card">
+      <h3>Campos Disponíveis</h3>
+      <table>
+        <tr><td>Criado em</td><td><span class="tag green">100%</span></td><td>→ DATA</td></tr>
+        <tr><td>Nome do contato</td><td><span class="tag green">100%</span></td><td>→ cruzar com DRAFT 1</td></tr>
+        <tr><td>Número do cliente</td><td><span class="tag green">100%</span></td><td>→ TEL (auxiliar)</td></tr>
+        <tr><td>Atendente</td><td><span class="tag yellow">76%</span></td><td>→ CONSULTOR</td></tr>
+        <tr><td>CNPJ</td><td><span class="tag yellow">72%</span></td><td>→ CNPJ</td></tr>
+        <tr><td>Origem</td><td><span class="tag green">100%</span></td><td>→ TIPO ATENDIMENTO</td></tr>
+        <tr><td>Status</td><td><span class="tag green">100%</span></td><td>→ auxiliar</td></tr>
+        <tr><td>Setor</td><td><span class="tag green">100%</span></td><td>→ filtrar Interno Vitao</td></tr>
+        <tr><td>Observação</td><td><span class="tag red">baixo</span></td><td>→ NOTA DO DIA</td></tr>
+      </table>
+      <div style="margin-top:12px; font-size:12px; color:var(--muted);">
+        <strong>Limitação:</strong> Deskrio NÃO tem campo RESULTADO. Seria sempre "EM ATENDIMENTO" ou inferido pelo Status (Fechado vs Aberto).
+      </div>
+    </div>
+    <div class="card">
+      <h3>Distribuição por Mês</h3>
+      <div class="bar-container"><div class="bar-label">Mar/25</div><div class="bar" style="width:68px;background:var(--purple);"></div><div class="bar-val">547</div></div>
+      <div class="bar-container"><div class="bar-label">Abr/25</div><div class="bar" style="width:6px;background:var(--purple);"></div><div class="bar-val">48</div></div>
+      <div class="bar-container"><div class="bar-label">Mai/25</div><div class="bar" style="width:96px;background:var(--purple);"></div><div class="bar-val">780</div></div>
+      <div class="bar-container"><div class="bar-label">Jun/25</div><div class="bar" style="width:75px;background:var(--purple);"></div><div class="bar-val">610</div></div>
+      <div class="bar-container"><div class="bar-label">Jul/25</div><div class="bar" style="width:100px;background:#7B2FF2;"></div><div class="bar-val">809 (pico)</div></div>
+      <div class="bar-container"><div class="bar-label">Ago/25</div><div class="bar" style="width:38px;background:var(--purple);"></div><div class="bar-val">304</div></div>
+      <div class="bar-container"><div class="bar-label">Set/25</div><div class="bar" style="width:1px;background:var(--purple);"></div><div class="bar-val">10</div></div>
+      <div class="bar-container"><div class="bar-label">Out/25</div><div class="bar" style="width:45px;background:var(--purple);"></div><div class="bar-val">363</div></div>
+      <div class="bar-container"><div class="bar-label">Nov/25</div><div class="bar" style="width:45px;background:var(--purple);"></div><div class="bar-val">365</div></div>
+      <div class="bar-container"><div class="bar-label">Dez/25</div><div class="bar" style="width:47px;background:var(--purple);"></div><div class="bar-val">382</div></div>
+      <div class="bar-container"><div class="bar-label">Jan/26</div><div class="bar" style="width:82px;background:var(--purple);"></div><div class="bar-val">667</div></div>
+      <h3 style="margin-top:12px;">Por Atendente</h3>
+      <div class="bar-container"><div class="bar-label">Larissa</div><div class="bar" style="width:160px;background:#a855f7;"></div><div class="bar-val">2.416</div></div>
+      <div class="bar-container"><div class="bar-label">Manu - Vitao</div><div class="bar" style="width:80px;background:#c084fc;"></div><div class="bar-val">1.201</div></div>
+      <div class="bar-container"><div class="bar-label">Rodrigo</div><div class="bar" style="width:62px;background:#d8b4fe;"></div><div class="bar-val">934</div></div>
+      <div class="bar-container"><div class="bar-label">Daiane Stavicki</div><div class="bar" style="width:22px;background:#e9d5ff;"></div><div class="bar-val">332</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ FONTE 3: VENDAS ═══ -->
+<div class="section">
+  <div class="section-title">💰 FONTE 3: Vendas Mensais (cada venda = 1 registro "VENDA/PEDIDO")</div>
+  <div class="card">
+    <div class="grid-2">
+      <div>
+        <h3>973 pedidos → 973 linhas DRAFT 2 com RESULTADO = "VENDA / PEDIDO"</h3>
+        <table>
+          <thead><tr><th>Mês</th><th>Pedidos</th><th>Campos</th></tr></thead>
+          <tbody>
+            <tr><td>Mar/25</td><td class="mono">17</td><td rowspan="11" style="font-size:11px;vertical-align:top;">Data Emissão, Pedido, Nome Fantasia, Razão Social, Colaborador, Rede, Valor vendido.<br><br><span style="color:var(--red);font-weight:600;">⚠️ SEM CNPJ direto</span> — precisa cruzar Nome Fantasia com DRAFT 1 para obter CNPJ.</td></tr>
+            <tr><td>Abr/25</td><td class="mono">131</td></tr>
+            <tr><td>Mai/25</td><td class="mono">78</td></tr>
+            <tr><td>Jun/25</td><td class="mono">112</td></tr>
+            <tr><td>Jul/25</td><td class="mono">84</td></tr>
+            <tr><td>Ago/25</td><td class="mono">114</td></tr>
+            <tr><td>Set/25</td><td class="mono">110</td></tr>
+            <tr><td>Out/25</td><td class="mono">123</td></tr>
+            <tr><td>Nov/25</td><td class="mono">110</td></tr>
+            <tr><td>Dez/25</td><td class="mono">60</td></tr>
+            <tr><td>Jan/26</td><td class="mono">34</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <h3>Por Colaborador</h3>
+        <div class="bar-container"><div class="bar-label">Manu Ditzel</div><div class="bar" style="width:130px;background:var(--green);"></div><div class="bar-val">331 (34%)</div></div>
+        <div class="bar-container"><div class="bar-label">Larissa Padilha</div><div class="bar" style="width:97px;background:var(--green);"></div><div class="bar-val">247 (25%)</div></div>
+        <div class="bar-container"><div class="bar-label">Helder Brunkow</div><div class="bar" style="width:70px;background:#86efac;"></div><div class="bar-val">179 (18%)</div></div>
+        <div class="bar-container"><div class="bar-label">Central - Daiane</div><div class="bar" style="width:45px;background:#86efac;"></div><div class="bar-val">114 (12%)</div></div>
+        <div class="bar-container"><div class="bar-label">Julio Gadret</div><div class="bar" style="width:35px;background:#bbf7d0;"></div><div class="bar-val">88 (9%)</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ PIPELINE PROPOSTO ═══ -->
+<div class="section">
+  <div class="section-title">🔧 PIPELINE — Como transformar tudo isso em DRAFT 2</div>
+  
+  <div class="flow">
+    <div class="flow-step">MERCOS (1.581)</div>
+    <div class="flow-arrow">+</div>
+    <div class="flow-step" style="background:var(--purple);">DESKRIO (4.885)</div>
+    <div class="flow-arrow">+</div>
+    <div class="flow-step" style="background:var(--green);">VENDAS (973)</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step" style="background:#92400e;">DEDUP + NORMALIZAR</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step" style="background:var(--red);">DRAFT 2</div>
+  </div>
+
+  <div class="card" style="margin-top:12px;">
+    <h3>ETAPA 1 — Extrair e Normalizar (zero fabricação)</h3>
+    <table>
+      <thead><tr><th>#</th><th>AÇÃO</th><th>INPUT</th><th>OUTPUT</th><th>RISCO</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>1.1</td>
+          <td>Normalizar Mercos 2025</td>
+          <td>1.581 registros</td>
+          <td>1.581 linhas formato DRAFT 2</td>
+          <td><span class="tag yellow">506 sem RESULTADO (32%)</span></td>
+        </tr>
+        <tr>
+          <td>1.2</td>
+          <td>Normalizar Mercos Jan/26</td>
+          <td>363 registros</td>
+          <td>363 linhas formato DRAFT 2</td>
+          <td><span class="tag yellow">Sem CNPJ na fonte</span></td>
+        </tr>
+        <tr>
+          <td>1.3</td>
+          <td>Normalizar Deskrio</td>
+          <td>4.885 tickets</td>
+          <td>~3.500 linhas (filtrar Interno Vitao)</td>
+          <td><span class="tag yellow">Sem RESULTADO, 28% sem CNPJ</span></td>
+        </tr>
+        <tr>
+          <td>1.4</td>
+          <td>Normalizar Vendas</td>
+          <td>973 pedidos</td>
+          <td>973 linhas RESULTADO="VENDA/PEDIDO"</td>
+          <td><span class="tag yellow">Sem CNPJ, cruzar por nome</span></td>
+        </tr>
+      </tbody>
+    </table>
+    
+    <h3 style="margin-top:16px;">ETAPA 2 — Deduplicar</h3>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:8px;">
+      Um atendimento Mercos + Deskrio no mesmo dia/cliente = 1 registro só. Priorizar Mercos (tem RESULTADO).
+    </p>
+    <table>
+      <thead><tr><th>REGRA</th><th>CRITÉRIO</th></tr></thead>
+      <tbody>
+        <tr><td>Mesmo CNPJ + mesma data (±1 dia)</td><td>Manter Mercos, descartar Deskrio duplicado</td></tr>
+        <tr><td>Deskrio sem match no Mercos</td><td>Manter como registro autônomo (WHATSAPP=SIM)</td></tr>
+        <tr><td>Venda + atendimento no mesmo dia</td><td>Manter ambos (venda é evento separado)</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="margin-top:16px;">ETAPA 3 — Enriquecer via DRAFT 1</h3>
+    <p style="font-size:12px;color:var(--muted);">Cruzar CNPJ com DRAFT 1 para puxar: REDE/REGIONAL, SITUAÇÃO, DIAS SEM COMPRA, CONSULTOR correto</p>
+    
+    <h3 style="margin-top:16px;">ETAPA 4 — Motor de Regras (9 colunas automáticas)</h3>
+    <p style="font-size:12px;color:var(--muted);">SITUAÇÃO × RESULTADO → ESTÁGIO FUNIL, FASE, TIPO CONTATO, AÇÃO FUTURA, TEMPERATURA (63 combinações da aba REGRAS)</p>
+  </div>
+</div>
+
+<!-- ═══ ESTIMATIVA FINAL ═══ -->
+<div class="section">
+  <div class="section-title">📐 ESTIMATIVA — Quantas linhas terá o DRAFT 2 final?</div>
+  <div class="card">
+    <table>
+      <thead><tr><th>FONTE</th><th>BRUTO</th><th>APÓS FILTRO</th><th>APÓS DEDUP</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Mercos 2025</td>
+          <td class="mono">1.581</td>
+          <td class="mono">~1.500 (remover duplicatas internas)</td>
+          <td class="mono" rowspan="2">~1.800</td>
+        </tr>
+        <tr>
+          <td>Mercos Jan/26</td>
+          <td class="mono">363</td>
+          <td class="mono">~350</td>
+        </tr>
+        <tr>
+          <td>Deskrio (só Interno Vitao)</td>
+          <td class="mono">4.885</td>
+          <td class="mono">~2.500 (filtrar setor, tirar sem CNPJ)</td>
+          <td class="mono">~1.200 (tirar overlap Mercos)</td>
+        </tr>
+        <tr>
+          <td>Vendas</td>
+          <td class="mono">973</td>
+          <td class="mono">~900 (cruzar CNPJ)</td>
+          <td class="mono">~900</td>
+        </tr>
+        <tr style="background:#e8f5e9;font-weight:700;">
+          <td>TOTAL ESTIMADO</td>
+          <td class="mono">7.802</td>
+          <td class="mono">~5.250</td>
+          <td class="mono" style="font-size:18px;color:var(--green);">~3.900</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══ DECISÕES PENDENTES ═══ -->
+<div class="section">
+  <div class="section-title">⚠️ DECISÕES QUE PRECISO DE VOCÊ ANTES DE EXECUTAR</div>
+  
+  <div class="decision">
+    <h3>DECISÃO 1: Os 506 registros Mercos SEM resultado</h3>
+    <p style="font-size:12px;margin-top:6px;">32% dos atendimentos Mercos não têm campo RESULTADO preenchido, mas têm DESCRIÇÃO com texto livre. Posso:</p>
+    <p style="font-size:12px;margin-top:4px;"><strong>A)</strong> Classificar pela DESCRIÇÃO (análise de texto → mapear para os 16 resultados válidos)</p>
+    <p style="font-size:12px;margin-top:4px;"><strong>B)</strong> Marcar todos como "EM ATENDIMENTO" (genérico mas seguro)</p>
+    <p style="font-size:12px;margin-top:4px;"><strong>C)</strong> Deixar vazio e você classifica manualmente depois</p>
+  </div>
+  
+  <div class="decision" style="margin-top:12px;">
+    <h3>DECISÃO 2: Os 109 clientes SEM nenhum registro</h3>
+    <p style="font-size:12px;margin-top:6px;">23% dos clientes do DRAFT 1 não aparecem nem no Mercos nem no Deskrio. Posso:</p>
+    <p style="font-size:12px;margin-top:4px;"><strong>A)</strong> Gerar registros baseados nas VENDAS (se compraram, houve atendimento pré-venda)</p>
+    <p style="font-size:12px;margin-top:4px;"><strong>B)</strong> Deixar sem registro (aparecem na CARTEIRA mas sem histórico)</p>
+    <p style="font-size:12px;margin-top:4px;"><strong>C)</strong> Gerar registro mínimo sintético (1 contato por trimestre) — flag como "inferido"</p>
+  </div>
+  
+  <div class="decision" style="margin-top:12px;">
+    <h3>DECISÃO 3: Deskrio — usar os 4.885 ou filtrar?</h3>
+    <p style="font-size:12px;margin-top:6px;">Existem 2 setores: "Interno Vitao" (2.499) e "Mais Granel" (2.261). O Mais Granel parece ser outra operação. Além disso, "Rodrigo" (934 tickets) não é consultor do CRM.</p>
+    <p style="font-size:12px;margin-top:4px;"><strong>A)</strong> Usar TUDO (4.885) — volume máximo</p>
+    <p style="font-size:12px;margin-top:4px;"><strong>B)</strong> Só "Interno Vitao" (2.499) — mais limpo</p>
+    <p style="font-size:12px;margin-top:4px;"><strong>C)</strong> Só consultores válidos: Larissa + Manu + Daiane (~3.950)</p>
+  </div>
+
+  <div class="decision" style="margin-top:12px;">
+    <h3>DECISÃO 4: Vendas sem CNPJ — como cruzar?</h3>
+    <p style="font-size:12px;margin-top:6px;">Relatórios de vendas têm Nome Fantasia e Razão Social mas NÃO têm CNPJ. Preciso cruzar por nome com DRAFT 1.</p>
+    <p style="font-size:12px;margin-top:4px;"><strong>A)</strong> Fuzzy matching automático (risco: falsos positivos)</p>
+    <p style="font-size:12px;margin-top:4px;"><strong>B)</strong> Match exato + manual para os que não bateram</p>
+    <p style="font-size:12px;margin-top:4px;"><strong>C)</strong> Usar positivação (tem CNPJ) como ponte — cruzar Nome→CNPJ pela positivação</p>
+  </div>
+</div>
+
+<div class="alert green">
+  <strong>PRÓXIMO PASSO</strong>
+  Com essas 4 decisões, eu consigo executar o pipeline inteiro mecanicamente — extrair, normalizar, cruzar, deduplicar e gerar o DRAFT 2 final no formato das 31 colunas com dados 100% rastreáveis. Zero fabricação.
+</div>
+
+</body>
+</html>
