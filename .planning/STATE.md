@@ -17,16 +17,16 @@ O objetivo FINAL de todo este trabalho NÃO é "ter uma planilha limpa". É GERA
 - Se a CARTEIRA não gerar essa inteligência de agenda diária, TODO O TRABALHO DAS 10 FASES NÃO SERVE PRA NADA
 - As regras, status, grupos de colunas do funil na CARTEIRA já foram DESENHADOS para isso — respeitar 100%
 
-**Current focus:** Phase 03 Timeline Mensal IN PROGRESS -- Plan 01 COMPLETE, Plan 02 pending
+**Current focus:** Phase 03 Timeline Mensal COMPLETE -- All plans done, TIME-01/02/03 PASS. Ready for Phase 04.
 
 ## Current Position
 
-Phase: 3 of 10 (Timeline Mensal)
-Plan: 1 of 2 in current phase -- COMPLETE
-Status: Plan 03-01 COMPLETE (DRAFT 1 populated with 537 clients + CARTEIRA expanded to 554 formula rows)
-Last activity: 2026-02-17 -- Plan 03-01 executed (DRAFT 1 population + CARTEIRA formula expansion)
+Phase: 3 of 10 (Timeline Mensal) -- COMPLETE
+Plan: 2 of 2 in current phase -- COMPLETE (phase done)
+Status: Phase 03 COMPLETE -- All validation PASS (TIME-01/02/03), zero divergence, ABC consistent
+Last activity: 2026-02-17 -- Plan 03-02 executed (validation + ABC recalc + TIME requirements)
 
-Progress: [███████░░░] 25% (plans 01-01..03, 02-01..03, 03-01 of 28 total complete)
+Progress: [████████░░] 29% (plans 01-01..03, 02-01..03, 03-01..02 of 28 total complete)
 
 ## DESCOBERTA CRITICA (16/FEV/2026)
 
@@ -58,9 +58,9 @@ As fórmulas da PROJEÇÃO **NÃO estão perdidas**:
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 7
+- Total plans completed: 8
 - Average duration: 9 min
-- Total execution time: 1.10 hours
+- Total execution time: 1.15 hours
 
 | Phase | Plan | Duration | Tasks | Files |
 |-------|------|----------|-------|-------|
@@ -71,6 +71,7 @@ As fórmulas da PROJEÇÃO **NÃO estão perdidas**:
 | 02-faturamento | 02 | 4 min | 2 | 3 |
 | 02-faturamento | 03 | 5 min | 2 | 2 |
 | 03-timeline-mensal | 01 | 25 min | 2 | 4 |
+| 03-timeline-mensal | 02 | 3 min | 1 | 3 |
 
 *Updated after each plan completion*
 
@@ -114,6 +115,9 @@ As fórmulas da PROJEÇÃO **NÃO estão perdidas**:
 - [17/02]: CARTEIRA expanded to 554 formula rows (25,484 INDEX/MATCH formulas) -- covers ALL DRAFT 1 clients
 - [17/02]: ABC distribution on merged total (13 months): A=298 (55.5%), B=220 (41.0%), C=19 (3.5%)
 - [17/02]: JAN/25 + FEV/25 hidden in totals (R$ 103,893.89) -- no column but included in ABC and derived metrics
+- [17/02]: Phase 03 validation PASS: 537/537 cross-check match, 0 ABC mismatches, 10/10 derived fields, V13 19,224 formulas intact
+- [17/02]: TIME-01 PASS (vendas preenchidas), TIME-02 PASS (SAP+Mercos merge), TIME-03 PASS (ABC recalc 100% match)
+- [17/02]: CARTEIRA row 6088 cosmetic issue -- stale pre-existing row outside data range (4-557), not a real problem
 
 ### Fase 1 Revisada
 
@@ -137,6 +141,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-17 03:56
-Stopped at: Completed 03-01-PLAN.md (DRAFT 1 population + CARTEIRA formula expansion). Plan 03-02 pending.
-Resume file: .planning/phases/03-timeline-mensal/03-01-SUMMARY.md
+Last session: 2026-02-17 04:03
+Stopped at: Completed 03-02-PLAN.md (Phase 03 validation complete, all TIME requirements PASS). Phase 03 DONE.
+Resume file: .planning/phases/03-timeline-mensal/03-02-SUMMARY.md
