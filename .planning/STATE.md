@@ -17,14 +17,14 @@ O objetivo FINAL de todo este trabalho NÃO é "ter uma planilha limpa". É GERA
 - Se a CARTEIRA não gerar essa inteligência de agenda diária, TODO O TRABALHO DAS 10 FASES NÃO SERVE PRA NADA
 - As regras, status, grupos de colunas do funil na CARTEIRA já foram DESENHADOS para isso — respeitar 100%
 
-**Current focus:** Phase 04 LOG Completo IN PROGRESS -- Plans 04-01..02 DONE, 2 remaining.
+**Current focus:** Phase 04 LOG Completo IN PROGRESS -- Plans 04-01..03 DONE, 1 remaining.
 
 ## Current Position
 
 Phase: 4 of 10 (LOG Completo)
-Plan: 2 of 4 in current phase -- 04-02 COMPLETE
-Status: Phase 04 IN PROGRESS -- CONTROLE_FUNIL (10,442) + Deskrio (4,471) ETL done, Plans 04-03..04 remaining
-Last activity: 2026-02-17 -- Plan 04-02 executed (Deskrio ETL: 4,471 tickets to LOG format)
+Plan: 3 of 4 in current phase -- 04-03 COMPLETE
+Status: Phase 04 IN PROGRESS -- CONTROLE_FUNIL (10,442) + Deskrio (4,471) + Synthetic (6,156) done, Plan 04-04 remaining
+Last activity: 2026-02-17 -- Plan 04-03 executed (Synthetic SAP-anchored: 6,156 records from 1,182 sales)
 
 Progress: [█████████░] 36% (plans 01-01..03, 02-01..03, 03-01..02, 04-01..02 of 28 total complete)
 
