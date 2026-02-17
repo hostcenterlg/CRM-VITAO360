@@ -1,0 +1,250 @@
+{
+  "phase": "07-redes-franquias",
+  "validated_at": "2026-02-17T15:29:21.348323+00:00",
+  "v13_path": "C:\\Users\\User\\OneDrive\\Documentos\\GitHub\\CRM-VITAO360\\data\\output\\CRM_VITAO360_V13_PROJECAO.xlsx",
+  "requirements": {
+    "REDE-01": {
+      "description": "REDE/GRUPO CHAVE preenchido para todos os 534 clientes",
+      "status": "PASS",
+      "details": {
+        "total_clients": 534,
+        "filled": 534,
+        "empty": 0,
+        "sem_grupo": 394,
+        "com_rede": 140,
+        "sem_grupo_decreased": true,
+        "esmeralda_count": 7,
+        "redes_distribution": {
+          "SEM GRUPO": 394,
+          "FITLAND": 44,
+          "VIDA LEVE": 26,
+          "CIA DA SAUDE": 22,
+          "DIVINA TERRA": 16,
+          "BIO MUNDO": 8,
+          "ESMERALDA": 7,
+          "MUNDO VERDE": 4,
+          "NATURVIDA": 3,
+          "TUDO EM GRAOS": 3,
+          "TRIP": 2,
+          "MERCOCENTRO": 1,
+          "MINHA QUITANDINHA": 1,
+          "MAIS NATURAL": 1,
+          "LIGEIRINHO": 1,
+          "PROSAUDE": 1
+        }
+      },
+      "notes": []
+    },
+    "REDE-02": {
+      "description": "Zero #REF! na aba REDES_FRANQUIAS_v2",
+      "status": "PASS",
+      "details": {
+        "tab_exists": true,
+        "ref_errors": 0,
+        "name_errors": 0,
+        "value_errors": 0,
+        "div_errors": 0,
+        "total_errors": 0,
+        "error_locations": []
+      },
+      "notes": []
+    },
+    "REDE-03": {
+      "description": "Sinaleiro de penetracao atualizado com dados 2025",
+      "status": "PASS",
+      "details": {
+        "total_formulas_redes_tab": 280,
+        "sumifs_count": 21,
+        "countifs_count": 42,
+        "if_count": 63,
+        "iferror_count": 64,
+        "dynamic_formulas": true,
+        "formula_checks": {
+          "col_N_sinaleiro": {
+            "found": 21,
+            "total": 21
+          },
+          "col_J_fat_real": {
+            "found": 21,
+            "total": 21
+          },
+          "col_D_ativos": {
+            "found": 21,
+            "total": 21
+          },
+          "col_O_cor": {
+            "found": 21,
+            "total": 21
+          },
+          "col_L_fat_potencial": {
+            "found": 21,
+            "total": 21
+          }
+        }
+      },
+      "notes": []
+    },
+    "REDE-04": {
+      "description": "Metas 6M por rede operacionais",
+      "status": "PASS",
+      "details": {
+        "redes_with_meta": 21,
+        "total_meta_6m": 2172000,
+        "gap_formula_exists": true,
+        "gap_formula_count": 21,
+        "cross_check": {
+          "FITLAND": {
+            "expected": 283500,
+            "actual": 283500,
+            "diff_pct": 0.0,
+            "match": true
+          },
+          "CIA DA SAUDE": {
+            "expected": 351000,
+            "actual": 351000,
+            "diff_pct": 0.0,
+            "match": true
+          },
+          "VIDA LEVE": {
+            "expected": 154500,
+            "actual": 154500,
+            "diff_pct": 0.0,
+            "match": true
+          },
+          "DIVINA TERRA": {
+            "expected": 157500,
+            "actual": 157500,
+            "diff_pct": 0.0,
+            "match": true
+          }
+        },
+        "rede_metas": {
+          "CIA DA SAUDE": 351000,
+          "FITLAND": 283500,
+          "DIVINA TERRA": 157500,
+          "VIDA LEVE": 154500,
+          "BIO MUNDO": 42000,
+          "TUDO EM GRAOS": 31500,
+          "MUNDO VERDE": 21000,
+          "NATURVIDA": 18000,
+          "ESMERALDA": 18000,
+          "ARMAZEM FIT STORE": 18000,
+          "MAIS NATURAL": 10500,
+          "JARDIM DAS ERVAS": 10500,
+          "LIGEIRINHO": 9000,
+          "TRIP": 9000,
+          "MERCOCENTRO": 9000,
+          "NOVA GERACAO": 0,
+          "MIX VALI": 0,
+          "PROSAUDE": 0,
+          "FEDERZONI": 0,
+          "MINHA QUITANDINHA": 0,
+          "SEM GRUPO": 1029000
+        }
+      },
+      "notes": []
+    }
+  },
+  "integrity": {
+    "projecao_formulas": 19224,
+    "projecao_formulas_pass": true,
+    "freeze_panes_preserved": true,
+    "freeze_panes_value": "E30",
+    "all_tabs_present": true,
+    "tabs": [
+      "PROJEÇÃO ",
+      "LOG",
+      "DASH",
+      "REDES_FRANQUIAS_v2"
+    ],
+    "missing_tabs": [],
+    "ref_table_redes": 21,
+    "ref_table_data": {
+      "4": "FITLAND",
+      "5": "VIDA LEVE",
+      "6": "CIA DA SAUDE",
+      "7": "NATURVIDA",
+      "8": "ESMERALDA",
+      "9": "DIVINA TERRA",
+      "10": "MUNDO VERDE",
+      "11": "TRIP",
+      "12": "MERCOCENTRO",
+      "13": "BIO MUNDO",
+      "14": "TUDO EM GRAOS",
+      "15": "MAIS NATURAL",
+      "16": "LIGEIRINHO",
+      "17": "MINHA QUITANDINHA",
+      "18": "PROSAUDE",
+      "19": "NOVA GERACAO",
+      "20": "MIX VALI",
+      "21": "FEDERZONI",
+      "22": "JARDIM DAS ERVAS",
+      "23": "ARMAZEM FIT STORE",
+      "24": "SEM GRUPO"
+    },
+    "vlookup_range_expanded": true,
+    "vlookup_samples": [
+      "col 6: =IFERROR(VLOOKUP(C4,$AS$4:$AT$24,2,FALSE),\"\")",
+      "col 7: =IFERROR(VLOOKUP(C4,$AS$4:$AU$24,3,FALSE),\"\")",
+      "col 8: =IFERROR(VLOOKUP(C4,$AS$4:$AV$24,4,FALSE),\"\")",
+      "col 9: =IFERROR(VLOOKUP(C4,$AS$4:$AW$24,5,FALSE),\"\")",
+      "col 10: =IFERROR(VLOOKUP(C4,$AS$4:$AX$24,6,FALSE),\"\")"
+    ],
+    "cross_check_distribution": {
+      "projecao_redes": {
+        "SEM GRUPO": 394,
+        "FITLAND": 44,
+        "VIDA LEVE": 26,
+        "CIA DA SAUDE": 22,
+        "DIVINA TERRA": 16,
+        "BIO MUNDO": 8,
+        "ESMERALDA": 7,
+        "MUNDO VERDE": 4,
+        "NATURVIDA": 3,
+        "TUDO EM GRAOS": 3,
+        "TRIP": 2,
+        "MERCOCENTRO": 1,
+        "MINHA QUITANDINHA": 1,
+        "MAIS NATURAL": 1,
+        "LIGEIRINHO": 1,
+        "PROSAUDE": 1
+      },
+      "ref_redes": [
+        "ESMERALDA",
+        "PROSAUDE",
+        "MIX VALI",
+        "TRIP",
+        "FEDERZONI",
+        "NOVA GERACAO",
+        "CIA DA SAUDE",
+        "MUNDO VERDE",
+        "NATURVIDA",
+        "MERCOCENTRO",
+        "JARDIM DAS ERVAS",
+        "LIGEIRINHO",
+        "BIO MUNDO",
+        "VIDA LEVE",
+        "MINHA QUITANDINHA",
+        "MAIS NATURAL",
+        "FITLAND",
+        "SEM GRUPO",
+        "TUDO EM GRAOS",
+        "ARMAZEM FIT STORE",
+        "DIVINA TERRA"
+      ],
+      "in_ref_not_projecao": [
+        "MIX VALI",
+        "FEDERZONI",
+        "JARDIM DAS ERVAS",
+        "NOVA GERACAO",
+        "ARMAZEM FIT STORE"
+      ],
+      "in_projecao_not_ref": [],
+      "all_projecao_in_ref": true
+    }
+  },
+  "overall": "PASS",
+  "notes": [
+    "SAP-only redes (in ref table but no clients in PROJECAO): {'MIX VALI', 'FEDERZONI', 'JARDIM DAS ERVAS', 'NOVA GERACAO', 'ARMAZEM FIT STORE'}"
+  ]
+}
