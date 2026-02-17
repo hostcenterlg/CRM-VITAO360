@@ -6,11 +6,11 @@ Rebuild definitivo do CRM VITAO360 em 10 fases, da reconstrução crítica da PR
 
 ## Phases
 
-- [ ] **Phase 1: Projeção** - Reconstruir 18.180 fórmulas dinâmicas da aba PROJEÇÃO (CRÍTICO)
-- [ ] **Phase 2: Faturamento** - Validar e consolidar dados de faturamento contra R$ 2.156.179
-- [ ] **Phase 3: Timeline Mensal** - Popular vendas mês a mês por cliente na CARTEIRA
-- [ ] **Phase 4: LOG Completo** - Integrar ~11.758 registros de CONTROLE_FUNIL + Deskrio + históricos
-- [ ] **Phase 5: Dashboard** - Redesenhar DASH com 3 blocos compactos (~45 rows)
+- [x] **Phase 1: Projeção** - Reconstruir 18.180 fórmulas dinâmicas da aba PROJEÇÃO (CRÍTICO) ✓ 2026-02-17
+- [x] **Phase 2: Faturamento** - Validar e consolidar dados de faturamento contra R$ 2.156.179 ✓ 2026-02-17
+- [x] **Phase 3: Timeline Mensal** - Popular vendas mês a mês por cliente na CARTEIRA ✓ 2026-02-17
+- [x] **Phase 4: LOG Completo** - Integrar ~11.758 registros de CONTROLE_FUNIL + Deskrio + históricos ✓ 2026-02-17
+- [x] **Phase 5: Dashboard** - Redesenhar DASH com 3 blocos compactos (~45 rows) ✓ 2026-02-17
 - [ ] **Phase 6: E-commerce** - Cruzar dados de e-commerce Mercos na CARTEIRA
 - [ ] **Phase 7: Redes e Franquias** - Preencher REDE/REGIONAL e corrigir #REF!
 - [ ] **Phase 8: Comitê e Metas** - Integrar metas 2026 SAP e visão consolidada
