@@ -1,0 +1,212 @@
+{
+  "sap_block_populated": {
+    "check": "SAP block (BK-BP) populated >= 400 rows",
+    "result": "PASS",
+    "details": "518/554 rows with SAP CODIGO"
+  },
+  "dados_cadastrais_populated": {
+    "check": "DADOS CADASTRAIS SAP (BQ-BY) populated >= 400 rows",
+    "result": "PASS",
+    "details": "518/554 rows with DESC GRUPO CLIENTE"
+  },
+  "sap_spot_check": {
+    "check": "5 CNPJs spot-checked against SAP source",
+    "result": "PASS",
+    "details": "5/5 matches",
+    "samples": [
+      {
+        "row": 4,
+        "cnpj": "59594680000161",
+        "carteira_codigo": "1000229953",
+        "sap_codigo": "1000229953",
+        "match": true
+      },
+      {
+        "row": 5,
+        "cnpj": "60088708000178",
+        "carteira_codigo": "1000159481",
+        "sap_codigo": "1000159481",
+        "match": true
+      },
+      {
+        "row": 6,
+        "cnpj": "60641605000193",
+        "carteira_codigo": "1000178691",
+        "sap_codigo": "1000178691",
+        "match": true
+      },
+      {
+        "row": 8,
+        "cnpj": "62351082000176",
+        "carteira_codigo": "1000201560",
+        "sap_codigo": "1000201560",
+        "match": true
+      },
+      {
+        "row": 9,
+        "cnpj": "63835315000179",
+        "carteira_codigo": "1000226906",
+        "sap_codigo": "1000226906",
+        "match": true
+      }
+    ]
+  },
+  "no_ref_errors_sap": {
+    "check": "No #REF! errors in SAP blocks",
+    "result": "PASS",
+    "details": "0 #REF! errors found"
+  },
+  "faturamento_span": {
+    "check": "FATURAMENTO spans BZ(78) to JC(263)",
+    "result": "PASS",
+    "details": "BZ3=VENDA, JC3=JUSTIFICATIVA MENSAL"
+  },
+  "month_15_subcols": {
+    "check": "Each month has exactly 15 sub-columns",
+    "result": "PASS",
+    "details": [
+      {
+        "month": "JAN",
+        "start_col": 81,
+        "has_15_subcols": true
+      },
+      {
+        "month": "FEV",
+        "start_col": 96,
+        "has_15_subcols": true
+      },
+      {
+        "month": "MAR",
+        "start_col": 111,
+        "has_15_subcols": true
+      },
+      {
+        "month": "ABR",
+        "start_col": 127,
+        "has_15_subcols": true
+      },
+      {
+        "month": "MAI",
+        "start_col": 142,
+        "has_15_subcols": true
+      },
+      {
+        "month": "JUN",
+        "start_col": 157,
+        "has_15_subcols": true
+      },
+      {
+        "month": "JUL",
+        "start_col": 173,
+        "has_15_subcols": true
+      },
+      {
+        "month": "AGO",
+        "start_col": 188,
+        "has_15_subcols": true
+      },
+      {
+        "month": "SET",
+        "start_col": 203,
+        "has_15_subcols": true
+      },
+      {
+        "month": "OUT",
+        "start_col": 219,
+        "has_15_subcols": true
+      },
+      {
+        "month": "NOV",
+        "start_col": 234,
+        "has_15_subcols": true
+      },
+      {
+        "month": "DEZ",
+        "start_col": 249,
+        "has_15_subcols": true
+      }
+    ]
+  },
+  "jan_meta_projecao": {
+    "check": "JAN META MES references PROJECAO col L / 12",
+    "result": "PASS",
+    "details": "=IFERROR(INDEX('PROJEÇÃO '!$L$4:$L$600,MATCH($B4,'PROJEÇÃO '!$B$4:$B$600,0))/12,0)"
+  },
+  "jan_real_draft1": {
+    "check": "JAN REALIZADO MES references DRAFT 1 col AE",
+    "result": "PASS",
+    "details": "=IFERROR(INDEX('DRAFT 1'!$AE$3:$AE$25000,MATCH($B4,'DRAFT 1'!$B$3:$B$25000,0)),0)"
+  },
+  "jan_just_s1": {
+    "check": "JAN JUST S1 uses COUNTIFS with DATE(2026,1,1) to DATE(2026,1,7)",
+    "result": "PASS",
+    "details": "=COUNTIFS('DRAFT 2'!$D$3:$D$25000,$B4,'DRAFT 2'!$A$3:$A$25000,\">=\"&DATE(2026,1,1),'DRAFT 2'!$A$3:$A$25000,\"<=\"&DATE(2026,1,7))"
+  },
+  "dez_month12": {
+    "check": "DEZ JUST S1 uses month 12 dates",
+    "result": "PASS",
+    "details": "=COUNTIFS('DRAFT 2'!$D$3:$D$25000,$B4,'DRAFT 2'!$A$3:$A$25000,\">=\"&DATE(2026,12,1),'DRAFT 2'!$A$3:$A$25000,\"<=\"&DATE(2026,12,7))"
+  },
+  "quarter_anchors": {
+    "check": "Quarter anchors (%Q1-Q4) have formulas",
+    "result": "PASS",
+    "details": {
+      "Q1": {
+        "col": "CB",
+        "formula": "=AVERAGE(CI4,CX4,DM4)",
+        "has_formula": true
+      },
+      "Q2": {
+        "col": "DV",
+        "formula": "=AVERAGE(EC4,ER4,FG4)",
+        "has_formula": true
+      },
+      "Q3": {
+        "col": "FP",
+        "formula": "=AVERAGE(FW4,GL4,HA4)",
+        "has_formula": true
+      },
+      "Q4": {
+        "col": "HJ",
+        "formula": "=AVERAGE(HQ4,IF4,IU4)",
+        "has_formula": true
+      }
+    }
+  },
+  "pct_alcancado": {
+    "check": "% ALCANCADO (CA) references current month",
+    "result": "PASS",
+    "details": "=CX4"
+  },
+  "carteira_formula_count": {
+    "check": "Total CARTEIRA formulas >= 100,000",
+    "result": "PASS",
+    "details": "130214 formulas"
+  },
+  "projecao_intact": {
+    "check": "PROJECAO 19,224 formulas intact",
+    "result": "PASS",
+    "details": "19224 formulas"
+  },
+  "file_size": {
+    "check": "File size < 25 MB",
+    "result": "PASS",
+    "details": "5.0 MB"
+  },
+  "bounded_ranges": {
+    "check": "No full-column references in FATURAMENTO",
+    "result": "PASS",
+    "details": "0 full-column references"
+  },
+  "all_263_populated": {
+    "check": "All 263 columns have data in data rows",
+    "result": "FAIL",
+    "details": "11 empty columns: ['J', 'N', 'O', 'AK', 'AQ', 'BA', 'BC', 'BD', 'BE', 'BF']"
+  },
+  "total_v13_formulas": {
+    "check": "Total V13 formulas (all tabs)",
+    "result": "INFO",
+    "details": "150364 total formulas across all tabs"
+  },
+  "overall": "FAIL"
+}
