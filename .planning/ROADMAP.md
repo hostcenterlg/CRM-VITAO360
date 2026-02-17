@@ -13,8 +13,8 @@ Rebuild definitivo do CRM VITAO360 em 10 fases, da reconstrução crítica da PR
 - [x] **Phase 5: Dashboard** - Redesenhar DASH com 3 blocos compactos (~45 rows) ✓ 2026-02-17
 - [x] **Phase 6: E-commerce** - Cruzar dados de e-commerce Mercos na CARTEIRA ✓ 2026-02-17
 - [x] **Phase 7: Redes e Franquias** - Preencher REDE/REGIONAL e corrigir #REF! ✓ 2026-02-17
-- [ ] **Phase 8: Comitê e Metas** - Integrar metas 2026 SAP e visão consolidada
-- [ ] **Phase 9: Blueprint v2** - Expandir CARTEIRA para 81 colunas com 8 grupos [+]
+- [x] **Phase 8: Comitê e Metas** - Integrar metas 2026 SAP e visão consolidada ✓ 2026-02-17
+- [x] **Phase 9: Blueprint v2** - Expandir CARTEIRA para 263 colunas com 6 super-grupos + motor inteligência + 4 AGENDA ✓ 2026-02-17
 - [ ] **Phase 10: Validação Final** - 0 erros, teste Excel real, entrega completa
 
 ## Phase Details
@@ -198,7 +198,7 @@ Phases execute em ordem: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9 → 1
 | 6. E-commerce | 2/2 | COMPLETE | 2026-02-17 |
 | 7. Redes e Franquias | 3/3 | COMPLETE | 2026-02-17 |
 | 8. Comitê e Metas | 2/2 | COMPLETE | 2026-02-17 |
-| 9. Blueprint v2 | 0/6 | Not started | - |
+| 9. Blueprint v2 | 6/6 | COMPLETE | 2026-02-17 |
 | 10. Validação Final | 0/3 | Not started | - |
 
 ---
