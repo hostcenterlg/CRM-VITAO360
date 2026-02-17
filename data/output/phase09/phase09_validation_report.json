@@ -1,0 +1,135 @@
+{
+  "check_01_tab_count": {
+    "status": "PASS",
+    "detail": "13 tabs present. Missing: none"
+  },
+  "check_02_column_count": {
+    "status": "PASS",
+    "detail": "CARTEIRA max_col=269, col 263 header: JUSTIFICATIVA MENSAL"
+  },
+  "check_03_row_count": {
+    "status": "PASS",
+    "detail": "max_row=557, data_rows=554 (expected 554)"
+  },
+  "check_04_column_grouping": {
+    "status": "PASS",
+    "detail": "210 columns with outline_level > 0 (expected >= 200)"
+  },
+  "check_05_supergroups": {
+    "status": "PASS",
+    "detail": "68 super-groups found: {1: '🟣 MERCOS', 27: 'MERCOS', 44: '🔵 FUNIL', 63: 'SAP', 66: '🚦 STATUS SAP', 68: 'STATUS SAP', 69: '⚫ DADOS CADASTRAIS SAP', 74: 'DADOS CADASTRAIS SAP', 79: '🟢 FATURAMENTO', 80: 'Q1'}"
+  },
+  "check_06_anchors": {
+    "status": "PASS",
+    "detail": "32 anchor columns detected (expected >= 6)"
+  },
+  "check_07_freeze_panes": {
+    "status": "PASS",
+    "detail": "freeze_panes=AR6 (expected AR6)"
+  },
+  "check_08_carteira_formulas": {
+    "status": "PASS",
+    "detail": "134092 CARTEIRA formulas (expected >= 100,000)"
+  },
+  "check_09_no_ref_errors": {
+    "status": "PASS",
+    "detail": "0 #REF! errors found (expected 0)"
+  },
+  "check_10_no_xlfn_let": {
+    "status": "PASS",
+    "detail": "0 _xlfn.LET formulas found (expected 0)"
+  },
+  "check_11_bounded_ranges": {
+    "status": "PASS",
+    "detail": "0 full-column refs in 40 sampled formulas (expected 0)"
+  },
+  "check_12_mercos_draft1": {
+    "status": "PASS",
+    "detail": "15 MERCOS formulas reference DRAFT 1 (expected >= 5)"
+  },
+  "check_13_funil_draft2": {
+    "status": "PASS",
+    "detail": "20 FUNIL formulas reference DRAFT 2 (expected >= 5)"
+  },
+  "check_14_faturamento_cols": {
+    "status": "PASS",
+    "detail": "FATURAMENTO span: BZ(78)-JC(263) = 186 cols (expected 186)"
+  },
+  "check_15_justificativa": {
+    "status": "PASS",
+    "detail": "9 JUSTIFICATIVA COUNTIFS+DATE formulas found (expected >= 3)"
+  },
+  "check_16_intelligence": {
+    "status": "PASS",
+    "detail": "SCORE weighted formula: True, RANK: True"
+  },
+  "check_17_projecao_formulas": {
+    "status": "PASS",
+    "detail": "PROJECAO formulas: 19224 (expected 19,224)"
+  },
+  "check_18_log_rows": {
+    "status": "PASS",
+    "detail": "LOG max_row=20832 (expected >= 20,830)"
+  },
+  "check_19_regras_motor": {
+    "status": "PASS",
+    "detail": "REGRAS motor rows: 64 (expected ~63)"
+  },
+  "check_20_draft1_rows": {
+    "status": "PASS",
+    "detail": "DRAFT 1 rows with CNPJ: 554 (expected >= 554)"
+  },
+  "check_21_draft2": {
+    "status": "PASS",
+    "detail": "DRAFT 2 headers present: True, max_row=6775"
+  },
+  "check_22_agenda_tabs": {
+    "status": "PASS",
+    "detail": "4/4 AGENDA tabs with FILTER formula"
+  },
+  "BLUE_01": {
+    "status": "PASS",
+    "detail": "263+ cols: True (269), 6+ super-groups: True (68)"
+  },
+  "BLUE_02": {
+    "status": "PASS",
+    "detail": "NOME FANTASIA visible: True, CNPJ visible: True, freeze_panes=AR6: True"
+  },
+  "BLUE_03": {
+    "status": "PASS",
+    "detail": "MERCOS INDEX/MATCH: True (15 refs), FUNIL DRAFT 2: True (20 refs)"
+  },
+  "BLUE_04": {
+    "status": "PASS",
+    "detail": "MERCOS: True, FUNIL: True, SAP: True, FATURAMENTO: True, 3-level grouping: True"
+  },
+  "stats": {
+    "total_tabs": 13,
+    "total_formulas": 154302,
+    "tab_formula_counts": {
+      "PROJEÇÃO ": 19224,
+      "LOG": 0,
+      "DASH": 304,
+      "REDES_FRANQUIAS_v2": 280,
+      "COMITE": 342,
+      "REGRAS": 0,
+      "DRAFT 1": 0,
+      "DRAFT 2": 0,
+      "CARTEIRA": 134092,
+      "AGENDA LARISSA": 15,
+      "AGENDA DAIANE": 15,
+      "AGENDA MANU": 15,
+      "AGENDA JULIO": 15
+    },
+    "carteira_formulas": 134092,
+    "projecao_formulas": 19224,
+    "carteira_rows": 554,
+    "carteira_cols": 269
+  },
+  "summary": {
+    "total_checks": 26,
+    "passed": 26,
+    "failed": 0,
+    "all_pass": true
+  }
+}
