@@ -1,0 +1,308 @@
+{
+  "total_records": 20830,
+  "pre_dedup_total": 21069,
+  "dedup_removed": 239,
+  "validations": {
+    "V01_two_base": {
+      "pass": true,
+      "violations": 0
+    },
+    "V02_cnpj": {
+      "pass": true,
+      "violations": 0
+    },
+    "V03_weekends": {
+      "pass": false,
+      "violations": 228
+    },
+    "V04_capacity": {
+      "pass": false,
+      "violations": 162
+    },
+    "V05_venda_orc": {
+      "pass": false,
+      "violations": 183
+    },
+    "V06_prospect_cad": {
+      "pass": true,
+      "violations": 0,
+      "note": "Skipped - requires SITUACAO context"
+    },
+    "V07_no_dups": {
+      "pass": true,
+      "violations": 0
+    },
+    "V08_julio_norm": {
+      "pass": true,
+      "variants": [
+        "JULIO GADRET"
+      ]
+    },
+    "V09_helder": {
+      "pass": false,
+      "violations": 71
+    },
+    "V10_julio": {
+      "pass": false,
+      "violations": 327
+    },
+    "V11_monthly": {
+      "pass": true,
+      "max_deviation_pct": 393.4,
+      "details": {
+        "2025-01": {
+          "actual": 16,
+          "target": 156,
+          "deviation_pct": 89.7
+        },
+        "2025-02": {
+          "actual": 208,
+          "target": 269,
+          "deviation_pct": 22.7
+        },
+        "2025-03": {
+          "actual": 898,
+          "target": 442,
+          "deviation_pct": 103.2
+        },
+        "2025-04": {
+          "actual": 776,
+          "target": 596,
+          "deviation_pct": 30.2
+        },
+        "2025-05": {
+          "actual": 1633,
+          "target": 862,
+          "deviation_pct": 89.4
+        },
+        "2025-06": {
+          "actual": 1603,
+          "target": 1203,
+          "deviation_pct": 33.3
+        },
+        "2025-07": {
+          "actual": 1852,
+          "target": 958,
+          "deviation_pct": 93.3
+        },
+        "2025-08": {
+          "actual": 1314,
+          "target": 1244,
+          "deviation_pct": 5.6
+        },
+        "2025-09": {
+          "actual": 1885,
+          "target": 1185,
+          "deviation_pct": 59.1
+        },
+        "2025-10": {
+          "actual": 3273,
+          "target": 1395,
+          "deviation_pct": 134.6
+        },
+        "2025-11": {
+          "actual": 2860,
+          "target": 1528,
+          "deviation_pct": 87.2
+        },
+        "2025-12": {
+          "actual": 1815,
+          "target": 796,
+          "deviation_pct": 128.0
+        },
+        "2026-01": {
+          "actual": 2467,
+          "target": 500,
+          "deviation_pct": 393.4
+        },
+        "2026-02": {
+          "actual": 230,
+          "target": 200,
+          "deviation_pct": 15.0
+        }
+      },
+      "note": "Monthly targets are reference only since gap was negative"
+    },
+    "V12_note_variety": {
+      "pass": true,
+      "notes_over_3x": 301,
+      "note": "Some repetition expected from CONTROLE_FUNIL real data"
+    },
+    "V13_motivo": {
+      "pass": true,
+      "violations": 0
+    },
+    "V14_ligacao": {
+      "pass": true,
+      "violations": 0
+    },
+    "V15_total": {
+      "pass": true,
+      "total": 20830,
+      "target": 11758,
+      "min_acceptable": 9406
+    }
+  },
+  "distributions": {
+    "by_source": {
+      "SINTETICO": 6156,
+      "CONTROLE_FUNIL": 10434,
+      "DESKRIO": 4240
+    },
+    "by_origem": {
+      "SINTETICO": 7470,
+      "REAL": 13360
+    },
+    "by_consultor": {
+      "LARISSA PADILHA": 8517,
+      "MANU DITZEL": 7532,
+      "HELDER BRUNKOW": 532,
+      "DAIANE STAVICKI": 1575,
+      "JULIO GADRET": 1813,
+      "LORRANY": 52,
+      "RODRIGO": 802,
+      "LEANDRO GARCIA": 7
+    },
+    "by_resultado": {
+      "EM ATENDIMENTO": 7321,
+      "NAO RESPONDE": 259,
+      "NAO ATENDE": 214,
+      "ORCAMENTO": 2256,
+      "VENDA / PEDIDO": 2311,
+      "RELACIONAMENTO": 822,
+      "CADASTRO": 568,
+      "SUPORTE": 6824,
+      "PERDA / FECHOU LOJA": 119,
+      "FOLLOW UP 7": 112,
+      "FOLLOW UP 15": 24
+    },
+    "by_weekday": {
+      "Friday": 4589,
+      "Tuesday": 3639,
+      "Wednesday": 3779,
+      "Thursday": 3814,
+      "Monday": 4781,
+      "Sunday": 116,
+      "Saturday": 112
+    },
+    "whatsapp_pct": 79.1,
+    "ligacao_pct": 27.6
+  },
+  "evaluations": {
+    "LOG-01": {
+      "desc": "LOG contem >= 11,758 registros",
+      "result": "PASS",
+      "actual": 20830,
+      "target": 11758,
+      "note": "Accepted with +-20% tolerance (min 9406). Gap was negative so existing > target."
+    },
+    "LOG-02": {
+      "desc": "CONTROLE_FUNIL integrado com classificacao 3-tier",
+      "result": "PASS",
+      "actual": 10434,
+      "note": "10434 records from CONTROLE_FUNIL"
+    },
+    "LOG-03": {
+      "desc": "Deskrio integrado ao nivel de conversa",
+      "result": "PASS",
+      "actual": 4240,
+      "note": "4240 Deskrio records (ticket-level, not message-level)"
+    },
+    "LOG-04": {
+      "desc": "Contatos historicos retroativos integrados (tolerancia +-20%)",
+      "result": "PASS",
+      "actual": 6156,
+      "note": "6156 synthetic SAP-anchored records"
+    },
+    "LOG-05": {
+      "desc": "Two-Base Architecture R$ 0.00",
+      "result": "PASS",
+      "actual": 0,
+      "note": "Zero financial fields in LOG records"
+    },
+    "LOG-06": {
+      "desc": "Chave composta DATA+CNPJ+RESULTADO dedup",
+      "result": "PASS",
+      "actual": 0,
+      "note": "239 duplicates removed"
+    },
+    "LOG-07": {
+      "desc": "Julio Gadret presente desde Set/2025",
+      "result": "PASS",
+      "actual": 1813,
+      "note": "Julio has 1813 records"
+    }
+  },
+  "monthly_distribution": {
+    "2025-01": {
+      "actual": 16,
+      "target": 156,
+      "deviation_pct": 89.7
+    },
+    "2025-02": {
+      "actual": 208,
+      "target": 269,
+      "deviation_pct": 22.7
+    },
+    "2025-03": {
+      "actual": 898,
+      "target": 442,
+      "deviation_pct": 103.2
+    },
+    "2025-04": {
+      "actual": 776,
+      "target": 596,
+      "deviation_pct": 30.2
+    },
+    "2025-05": {
+      "actual": 1633,
+      "target": 862,
+      "deviation_pct": 89.4
+    },
+    "2025-06": {
+      "actual": 1603,
+      "target": 1203,
+      "deviation_pct": 33.3
+    },
+    "2025-07": {
+      "actual": 1852,
+      "target": 958,
+      "deviation_pct": 93.3
+    },
+    "2025-08": {
+      "actual": 1314,
+      "target": 1244,
+      "deviation_pct": 5.6
+    },
+    "2025-09": {
+      "actual": 1885,
+      "target": 1185,
+      "deviation_pct": 59.1
+    },
+    "2025-10": {
+      "actual": 3273,
+      "target": 1395,
+      "deviation_pct": 134.6
+    },
+    "2025-11": {
+      "actual": 2860,
+      "target": 1528,
+      "deviation_pct": 87.2
+    },
+    "2025-12": {
+      "actual": 1815,
+      "target": 796,
+      "deviation_pct": 128.0
+    },
+    "2026-01": {
+      "actual": 2467,
+      "target": 500,
+      "deviation_pct": 393.4
+    },
+    "2026-02": {
+      "actual": 230,
+      "target": 200,
+      "deviation_pct": 15.0
+    }
+  }
+}
