@@ -36,20 +36,20 @@ Plans:
 - [ ] 01-03-PLAN.md — Verificacao completa de integridade (10 checks) + validacao requisitos PROJ-01..04
 
 ### Phase 2: Faturamento
-**Goal**: Processar os 12+ relatórios de vendas Mercos (com armadilhas de nomes) e consolidar faturamento mensal validado contra R$ 2.156.179 do PAINEL.
-**Depends on**: Nothing (pode rodar em paralelo com Phase 1)
+**Goal**: Extrair vendas mensais de SAP (base primaria) e Mercos (complemento), combinar com estrategia SAP-First, popular vendas na CARTEIRA V13, e validar contra PAINEL R$ 2.156.179 (±0.5%).
+**Depends on**: Phase 1 (usa V13 gerado)
 **Requirements**: FAT-01, FAT-02, FAT-03, FAT-04
 **Success Criteria** (what must be TRUE):
-  1. Todos os 12 relatórios de vendas Mercos processados com armadilhas tratadas
+  1. Todos os 12 relatórios de vendas Mercos processados com armadilhas tratadas (via ETL pre-existente 02_VENDAS_POSITIVACAO)
   2. Faturamento mensal Jan-Dez 2025 bate com PAINEL (±0.5%)
-  3. Fat.Mensal por cliente preenchido nas 12 colunas da CARTEIRA
+  3. Fat.Mensal por cliente preenchido nas colunas 26-36 da CARTEIRA (MAR/25-JAN/26)
   4. Gap de R$ 6.790 investigado e documentado
 **Plans**: 3 plans
 
 Plans:
-- [ ] 02-01: ETL dos relatórios Mercos com tratamento de armadilhas (header linha 10, nomes incorretos)
-- [ ] 02-02: Cruzamento Mercos × CARTEIRA via Motor de Matching (Nome Fantasia, sem CNPJ)
-- [ ] 02-03: Validação de faturamento contra PAINEL e investigação do gap de R$ 6.790
+- [ ] 02-01-PLAN.md — Extrair e validar vendas mensais Mercos (02_VENDAS_POSITIVACAO) e SAP (01_SAP_CONSOLIDADO) em JSONs intermediarios
+- [ ] 02-02-PLAN.md — Merge SAP-First + Mercos-Complement, fuzzy match 10 sem CNPJ, popular CARTEIRA V13 (cols 26-36)
+- [ ] 02-03-PLAN.md — Validar totais contra PAINEL R$ 2.156.179, documentar gap R$ 6.790, avaliar FAT-01..04
 
 ### Phase 3: Timeline Mensal
 **Goal**: Popular as vendas mês a mês por cliente na CARTEIRA, cruzando Mercos e SAP.
