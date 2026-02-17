@@ -101,18 +101,19 @@ Plans:
 - [ ] 05-03-PLAN.md — Validar DASH estrutura + cross-check LOG + avaliar DASH-01..05 + PROJECAO preservacao
 
 ### Phase 6: E-commerce
-**Goal**: Cruzar os 20 relatórios de e-commerce Mercos com a CARTEIRA e popular as 4 colunas de e-commerce.
-**Depends on**: Phase 2 (precisa do Motor de Matching)
+**Goal**: Processar ~17 relatorios de e-commerce Mercos (10-12 meses unicos apos dedup), cruzar com CNPJ via matching por nome, e popular 6 colunas de e-commerce no DRAFT 1 + JSON intermediario para Phase 9.
+**Depends on**: Phase 2 (Motor de Matching + sap_mercos_merged.json)
 **Requirements**: ECOM-01, ECOM-02, ECOM-03
 **Success Criteria** (what must be TRUE):
-  1. 20 relatórios de acesso ao e-commerce processados
-  2. 4 colunas de e-commerce na CARTEIRA populadas para todos os clientes
-  3. Dados cruzados por CNPJ/Nome Fantasia corretamente
+  1. 17 arquivos de e-commerce processados com dedup (10-12 meses unicos, Outubro ausente documentado)
+  2. 6 colunas de e-commerce no DRAFT 1 (cols 15-20) populadas para clientes com match
+  3. Dados cruzados por nome->CNPJ com taxa >= 80% (lookup Mercos Carteira + SAP)
+  4. JSON intermediario (ecommerce_matched.json) pronto para Phase 9 CARTEIRA expandida
 **Plans**: 2 plans
 
 Plans:
-- [ ] 06-01: ETL dos 20 relatórios de e-commerce (Acesso Ecomerce/*.xlsx)
-- [ ] 06-02: Cruzar com CARTEIRA e popular 4 colunas de e-commerce
+- [ ] 06-01-PLAN.md -- ETL dos 17 relatorios e-commerce: header detection (9/11 cols), dedup de duplicatas, month assignment, output ecommerce_raw.json
+- [ ] 06-02-PLAN.md -- Matching nome->CNPJ (4 niveis), agregacao por CNPJ, popular DRAFT 1 cols 15-20, output ecommerce_matched.json
 
 ### Phase 7: Redes e Franquias
 **Goal**: Preencher REDE/REGIONAL para todos os clientes e corrigir os erros #REF! na aba REDES_FRANQUIAS_v2.
@@ -190,7 +191,7 @@ Phases execute em ordem: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9 → 1
 | 2. Faturamento | 3/3 | COMPLETE (FAIL_WITH_NOTES) | 2026-02-17 |
 | 3. Timeline Mensal | 2/2 | COMPLETE | 2026-02-17 |
 | 4. LOG Completo | 4/4 | COMPLETE | 2026-02-17 |
-| 5. Dashboard | 0/3 | Not started | - |
+| 5. Dashboard | 3/3 | COMPLETE | 2026-02-17 |
 | 6. E-commerce | 0/2 | Not started | - |
 | 7. Redes e Franquias | 0/3 | Not started | - |
 | 8. Comitê e Metas | 0/2 | Not started | - |
