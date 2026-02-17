@@ -17,16 +17,16 @@ O objetivo FINAL de todo este trabalho NÃO é "ter uma planilha limpa". É GERA
 - Se a CARTEIRA não gerar essa inteligência de agenda diária, TODO O TRABALHO DAS 10 FASES NÃO SERVE PRA NADA
 - As regras, status, grupos de colunas do funil na CARTEIRA já foram DESENHADOS para isso — respeitar 100%
 
-**Current focus:** Phase 06 E-commerce COMPLETE -- ready for Phase 07.
+**Current focus:** Phase 07 Redes e Franquias -- Plan 01 COMPLETE, executing Plan 02.
 
 ## Current Position
 
-Phase: 6 of 10 (E-commerce) -- COMPLETE
-Plan: 2 of 2 in current phase (06-02 COMPLETE)
-Status: Phase 06 COMPLETE -- 391 CNPJs with e-commerce data, DRAFT 1 cols 15-20 populated, 64.6% match rate
-Last activity: 2026-02-17 -- Plan 06-02 executed (e-commerce match + populate)
+Phase: 7 of 10 (Redes e Franquias)
+Plan: 1 of 3 in current phase (07-01 COMPLETE)
+Status: Plan 07-01 COMPLETE -- 11 SEM GRUPO remapped, AS:AZ expanded to 20 redes + SEM GRUPO, 2,670 VLOOKUPs updated
+Last activity: 2026-02-17 -- Plan 07-01 executed (remap + expand reference table)
 
-Progress: [████████████████] 61% (plans 01-01..03, 02-01..03, 03-01..02, 04-01..04, 05-01..03, 06-01..02 of 28 total complete)
+Progress: [██████████████████] 65% (plans 01-01..03, 02-01..03, 03-01..02, 04-01..04, 05-01..03, 06-01..02, 07-01 of 31 total complete)
 
 ## DESCOBERTA CRITICA (16/FEV/2026)
 
@@ -57,9 +57,9 @@ As fórmulas da PROJEÇÃO **NÃO estão perdidas**:
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 19
-- Average duration: 12 min
-- Total execution time: 3.60 hours
+- Total plans completed: 20
+- Average duration: 14 min
+- Total execution time: 4.75 hours
 
 | Phase | Plan | Duration | Tasks | Files |
 |-------|------|----------|-------|-------|
@@ -80,6 +80,7 @@ As fórmulas da PROJEÇÃO **NÃO estão perdidas**:
 | 05-dashboard | 03 | 2 min | 1 | 1 |
 | 06-e-commerce | 01 | 8 min | 1 | 2 |
 | 06-e-commerce | 02 | 53 min | 2 | 4 |
+| 07-redes-franquias | 01 | 69 min | 1 | 2 |
 
 *Updated after each plan completion*
 
@@ -159,6 +160,12 @@ As fórmulas da PROJEÇÃO **NÃO estão perdidas**:
 - [17/02]: DRAFT 1 actual path: data/sources/drafts/ (not crm-versoes/v11-v12); CNPJ in col 2 (not col 3)
 - [17/02]: DRAFT 1 cols 15-20 populated: 294 rows with e-commerce data (ACESSOS, ACESSO B2B, PORTAL, ITENS, VALOR B2B, OPORTUNIDADE)
 - [17/02]: Phase 06 E-commerce COMPLETE -- ETL + Match + Populate all done
+- [17/02]: 20 redes (not 19): MINHA QUITANDINHA discovered as real SAP rede with 1 client
+- [17/02]: VLOOKUP F:J end row $24 (20 redes + SEM GRUPO in AS:AZ rows 4-24)
+- [17/02]: SAP has 18 redes with CNPJ assignments; MIX VALI in Leads only (0 clients in Cadastro)
+- [17/02]: FAT.REAL via sum AA:AL (col Z formula returns None with data_only=True)
+- [17/02]: MINHA QUITANDINHA has 0 lojas in SAP Leads but R$1,928 fat.real from 1 active client
+- [17/02]: 11 SEM GRUPO remapped: 7 ESMERALDA, 1 DIVINA TERRA, 1 MERCOCENTRO, 1 MINHA QUITANDINHA, 1 VIDA LEVE
 
 ### Fase 1 Revisada
 
@@ -182,7 +189,7 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-17 13:21
-Stopped at: Completed 06-02-PLAN.md (e-commerce match + populate, 391 CNPJs, 294 DRAFT 1 rows).
-Resume file: .planning/phases/06-e-commerce/06-02-SUMMARY.md
-Next step: Phase 07 planning/execution
+Last session: 2026-02-17 15:12
+Stopped at: Completed 07-01-PLAN.md (remap 11 SEM GRUPO + expand AS:AZ to 20 redes + SEM GRUPO)
+Resume file: .planning/phases/07-redes-franquias/07-01-SUMMARY.md
+Next step: Execute 07-02-PLAN.md (create REDES_FRANQUIAS_v2 tab)
