@@ -7405,6 +7405,118 @@
       0.0,
       0.0,
       0.0
+    ],
+    "41774112000187": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "63698072000174": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "63442702000145": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "03283237000115": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "51172110000171": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "15735146000152": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "32828171000108": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "61943206000140": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
     ]
   },
   "jan26_vendas": {
@@ -7469,19 +7581,99 @@
     "24713639000182": 697.77,
     "34422518000135": 666.38,
     "59594680000161": 654.0,
-    "63574330000100": 403.98
+    "63574330000100": 403.98,
+    "41774112000187": 2831.66,
+    "26198700000126": 1891.69,
+    "63698072000174": 1540.96,
+    "63442702000145": 1513.14,
+    "03283237000115": 1501.12,
+    "51172110000171": 1231.07,
+    "15735146000152": 955.61,
+    "32828171000108": 767.68,
+    "61943206000140": 689.63
   },
   "unmatched": [],
-  "fuzzy_matches": [],
+  "fuzzy_matches": [
+    {
+      "nome": "GRAO E FLOR",
+      "matched_cnpj": "41774112000187",
+      "match_type": "exact_name",
+      "match_detail": "Mercos nome_fantasia_mercos",
+      "total_vendas": 2831.66
+    },
+    {
+      "nome": "HIPER GRANEL",
+      "matched_cnpj": "26198700000126",
+      "match_type": "exact_name",
+      "match_detail": "Mercos nome_fantasia_mercos",
+      "total_vendas": 1891.69
+    },
+    {
+      "nome": "VERDE LEVE",
+      "matched_cnpj": "63698072000174",
+      "match_type": "exact_name",
+      "match_detail": "Mercos nome_fantasia_mercos",
+      "total_vendas": 1540.96
+    },
+    {
+      "nome": "ESSENCIAL VIDA E SAUDE LTDA",
+      "matched_cnpj": "63442702000145",
+      "match_type": "exact_name",
+      "match_detail": "Mercos nome_fantasia_mercos",
+      "total_vendas": 1513.14
+    },
+    {
+      "nome": "ROSANGELA DE LOURDES OLIVEIRA CASARINO LTDA",
+      "matched_cnpj": "03283237000115",
+      "match_type": "exact_name",
+      "match_detail": "Mercos nome_fantasia_mercos",
+      "total_vendas": 1501.12
+    },
+    {
+      "nome": "60.641.605 LARA DE BARROS AMANDO ALENCAR",
+      "matched_cnpj": "60641605000193",
+      "match_type": "exact_name",
+      "match_detail": "Mercos nome_fantasia_mercos",
+      "total_vendas": 1406.13
+    },
+    {
+      "nome": "BRENDHA EVELYN LOPES ERRERA ROCA",
+      "matched_cnpj": "51172110000171",
+      "match_type": "exact_name",
+      "match_detail": "Mercos nome_fantasia_mercos",
+      "total_vendas": 1231.07
+    },
+    {
+      "nome": "LA FEE CAFETERIA E RESTAURANTE LTDA",
+      "matched_cnpj": "15735146000152",
+      "match_type": "exact_name",
+      "match_detail": "Mercos nome_fantasia_mercos",
+      "total_vendas": 955.61
+    },
+    {
+      "nome": "DIVINA TERRA CURITIBA",
+      "matched_cnpj": "32828171000108",
+      "match_type": "exact_name",
+      "match_detail": "Mercos nome_fantasia_mercos",
+      "total_vendas": 767.68
+    },
+    {
+      "nome": "TAJU CROCANTES",
+      "matched_cnpj": "61943206000140",
+      "match_type": "exact_name",
+      "match_detail": "Mercos nome_fantasia_mercos",
+      "total_vendas": 689.63
+    }
+  ],
   "stats": {
     "sap_only": 76,
     "mercos_only": 40,
     "both_sap_base": 413,
     "months_filled_from_mercos": 160,
-    "total_clientes": 529,
+    "total_clientes": 537,
     "total_vendas_2025": 2493521.92,
-    "total_jan26": 101115.47,
-    "fuzzy_matched": 0,
+    "total_jan26": 114038.03,
+    "fuzzy_matched": 10,
     "unmatched": 0,
     "negatives_zeroed": 27
   },
