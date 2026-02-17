@@ -17,16 +17,16 @@ O objetivo FINAL de todo este trabalho NÃO é "ter uma planilha limpa". É GERA
 - Se a CARTEIRA não gerar essa inteligência de agenda diária, TODO O TRABALHO DAS 10 FASES NÃO SERVE PRA NADA
 - As regras, status, grupos de colunas do funil na CARTEIRA já foram DESENHADOS para isso — respeitar 100%
 
-**Current focus:** Phase 02 Faturamento COMPLETE -- Ready for Phase 03
+**Current focus:** Phase 03 Timeline Mensal IN PROGRESS -- Plan 01 COMPLETE, Plan 02 pending
 
 ## Current Position
 
-Phase: 2 of 10 (Faturamento) -- COMPLETE
-Plan: 3 of 3 in current phase -- COMPLETE
-Status: Phase 02 COMPLETE (gaps accepted by user: merged R$ 2,493k vs PAINEL R$ 2,156k is source scope mismatch, not data error)
-Last activity: 2026-02-17 -- Plan 02-03 executed (validation vs PAINEL, integrity checks, FAT-01..04 evaluation)
+Phase: 3 of 10 (Timeline Mensal)
+Plan: 1 of 2 in current phase -- COMPLETE
+Status: Plan 03-01 COMPLETE (DRAFT 1 populated with 537 clients + CARTEIRA expanded to 554 formula rows)
+Last activity: 2026-02-17 -- Plan 03-01 executed (DRAFT 1 population + CARTEIRA formula expansion)
 
-Progress: [██████░░░░] 21% (plans 01-01, 01-02, 01-03, 02-01, 02-02, 02-03 of 28 total complete)
+Progress: [███████░░░] 25% (plans 01-01..03, 02-01..03, 03-01 of 28 total complete)
 
 ## DESCOBERTA CRITICA (16/FEV/2026)
 
@@ -58,9 +58,9 @@ As fórmulas da PROJEÇÃO **NÃO estão perdidas**:
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 6
-- Average duration: 7 min
-- Total execution time: 0.68 hours
+- Total plans completed: 7
+- Average duration: 9 min
+- Total execution time: 1.10 hours
 
 | Phase | Plan | Duration | Tasks | Files |
 |-------|------|----------|-------|-------|
@@ -70,6 +70,7 @@ As fórmulas da PROJEÇÃO **NÃO estão perdidas**:
 | 02-faturamento | 01 | 18 min | 2 | 4 |
 | 02-faturamento | 02 | 4 min | 2 | 3 |
 | 02-faturamento | 03 | 5 min | 2 | 2 |
+| 03-timeline-mensal | 01 | 25 min | 2 | 4 |
 
 *Updated after each plan completion*
 
@@ -108,6 +109,11 @@ As fórmulas da PROJEÇÃO **NÃO estão perdidas**:
 - [17/02]: FAT-01/02 FAIL against merged (source scope mismatch), FAT-03 PASS (11/11 armadilhas), FAT-04 CONDITIONAL (CARTEIRA deferred)
 - [17/02]: V13 integrity confirmed: 19,224 PROJECAO formulas intact, CARTEIRA 0 data rows, Phase 2 did not modify V13
 - [17/02]: Phase 02 COMPLETE with FAIL_WITH_NOTES -- data correct, PAINEL scope mismatch needs business clarification
+- [17/02]: V12 COM_DADOS path is data/sources/crm-versoes/v11-v12/ (not data/sources/crm/ as some plans reference)
+- [17/02]: DRAFT 1 has 554 data rows (485 matched merged + 52 new SAP-only + 17 pre-existing unmatched)
+- [17/02]: CARTEIRA expanded to 554 formula rows (25,484 INDEX/MATCH formulas) -- covers ALL DRAFT 1 clients
+- [17/02]: ABC distribution on merged total (13 months): A=298 (55.5%), B=220 (41.0%), C=19 (3.5%)
+- [17/02]: JAN/25 + FEV/25 hidden in totals (R$ 103,893.89) -- no column but included in ABC and derived metrics
 
 ### Fase 1 Revisada
 
@@ -131,6 +137,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-17 02:41
-Stopped at: Completed 02-03-PLAN.md (validation vs PAINEL + integrity). Phase 02 FATURAMENTO COMPLETE. Ready for Phase 03.
-Resume file: .planning/phases/02-faturamento/02-03-SUMMARY.md
+Last session: 2026-02-17 03:56
+Stopped at: Completed 03-01-PLAN.md (DRAFT 1 population + CARTEIRA formula expansion). Plan 03-02 pending.
+Resume file: .planning/phases/03-timeline-mensal/03-01-SUMMARY.md
