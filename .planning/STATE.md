@@ -17,16 +17,16 @@ O objetivo FINAL de todo este trabalho NÃO é "ter uma planilha limpa". É GERA
 - Se a CARTEIRA não gerar essa inteligência de agenda diária, TODO O TRABALHO DAS 10 FASES NÃO SERVE PRA NADA
 - As regras, status, grupos de colunas do funil na CARTEIRA já foram DESENHADOS para isso — respeitar 100%
 
-**Current focus:** Phase 02 Faturamento -- Plan 02 COMPLETE, Plan 03 next
+**Current focus:** Phase 02 Faturamento COMPLETE -- Ready for Phase 03
 
 ## Current Position
 
-Phase: 2 of 10 (Faturamento)
-Plan: 2 of 3 in current phase -- COMPLETE
-Status: Phase 02 Plan 02 COMPLETE -- Ready for Plan 02-03 (CARTEIRA population)
-Last activity: 2026-02-17 — Plan 02-02 executed (SAP-First merge + 10/10 fuzzy match, 537 clients, R$ 2.49M)
+Phase: 2 of 10 (Faturamento) -- COMPLETE
+Plan: 3 of 3 in current phase -- COMPLETE
+Status: Phase 02 COMPLETE (FAIL_WITH_NOTES: merged R$ 2,493k vs PAINEL R$ 2,156k due to source scope, not data error)
+Last activity: 2026-02-17 -- Plan 02-03 executed (validation vs PAINEL, integrity checks, FAT-01..04 evaluation)
 
-Progress: [█████░░░░░] 18% (plans 01-01, 01-02, 01-03, 02-01, 02-02 of 28 total complete)
+Progress: [██████░░░░] 21% (plans 01-01, 01-02, 01-03, 02-01, 02-02, 02-03 of 28 total complete)
 
 ## DESCOBERTA CRITICA (16/FEV/2026)
 
@@ -58,9 +58,9 @@ As fórmulas da PROJEÇÃO **NÃO estão perdidas**:
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 5
+- Total plans completed: 6
 - Average duration: 7 min
-- Total execution time: 0.60 hours
+- Total execution time: 0.68 hours
 
 | Phase | Plan | Duration | Tasks | Files |
 |-------|------|----------|-------|-------|
@@ -69,6 +69,7 @@ As fórmulas da PROJEÇÃO **NÃO estão perdidas**:
 | 01-projecao | 03 | 4 min | 2 | 2 |
 | 02-faturamento | 01 | 18 min | 2 | 4 |
 | 02-faturamento | 02 | 4 min | 2 | 3 |
+| 02-faturamento | 03 | 5 min | 2 | 2 |
 
 *Updated after each plan completion*
 
@@ -103,6 +104,10 @@ As fórmulas da PROJEÇÃO **NÃO estão perdidas**:
 - [17/02]: All 10 sem_cnpj matched via exact name in Mercos Carteira (no partial/fuzzy needed)
 - [17/02]: 529 unique CNPJs from merge + 8 new from fuzzy = 537 total clients
 - [17/02]: CARTEIRA population DEFERRED -- V13 has only 3 data rows, needs Phase 9 client roster
+- [17/02]: PAINEL R$ 2,156,179 does not match any single source: SAP R$ 2,089k (-3.08%), Mercos R$ 1,895k, Merged R$ 2,493k (+15.65%)
+- [17/02]: FAT-01/02 FAIL against merged (source scope mismatch), FAT-03 PASS (11/11 armadilhas), FAT-04 CONDITIONAL (CARTEIRA deferred)
+- [17/02]: V13 integrity confirmed: 19,224 PROJECAO formulas intact, CARTEIRA 0 data rows, Phase 2 did not modify V13
+- [17/02]: Phase 02 COMPLETE with FAIL_WITH_NOTES -- data correct, PAINEL scope mismatch needs business clarification
 
 ### Fase 1 Revisada
 
@@ -126,6 +131,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-17 02:33
-Stopped at: Completed 02-02-PLAN.md (SAP-First merge + fuzzy match). Ready for 02-03 (CARTEIRA population).
-Resume file: .planning/phases/02-faturamento/02-02-SUMMARY.md
+Last session: 2026-02-17 02:41
+Stopped at: Completed 02-03-PLAN.md (validation vs PAINEL + integrity). Phase 02 FATURAMENTO COMPLETE. Ready for Phase 03.
+Resume file: .planning/phases/02-faturamento/02-03-SUMMARY.md
