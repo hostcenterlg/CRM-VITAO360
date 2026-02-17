@@ -17,16 +17,16 @@ O objetivo FINAL de todo este trabalho NÃO é "ter uma planilha limpa". É GERA
 - Se a CARTEIRA não gerar essa inteligência de agenda diária, TODO O TRABALHO DAS 10 FASES NÃO SERVE PRA NADA
 - As regras, status, grupos de colunas do funil na CARTEIRA já foram DESENHADOS para isso — respeitar 100%
 
-**Current focus:** Phase 09 Blueprint v2 -- Plan 02 COMPLETE, Plan 03 next (CARTEIRA Skeleton + MERCOS/FUNIL Blocks).
+**Current focus:** Phase 09 Blueprint v2 -- Plan 03 COMPLETE, Plan 04 next (SAP + FATURAMENTO Blocks).
 
 ## Current Position
 
 Phase: 9 of 10 (Blueprint v2) -- IN PROGRESS
-Plan: 2 of 6 in current phase (09-02 COMPLETE -- REGRAS + DRAFT 1 + DRAFT 2 tabs created in V13)
-Status: Plan 09-02 COMPLETE -- V13 has 8 tabs, all 46 cross-tab formula refs validated, ready for Plan 09-03
-Last activity: 2026-02-17 -- Plan 09-02 executed (Supporting Tabs creation + validation)
+Plan: 3 of 6 in current phase (09-03 COMPLETE -- CARTEIRA tab with 263 cols, MERCOS+FUNIL 27,146 formulas)
+Status: Plan 09-03 COMPLETE -- V13 has 9 tabs, CARTEIRA skeleton + MERCOS/FUNIL formulas injected, ready for Plan 09-04
+Last activity: 2026-02-17 -- Plan 09-03 executed (CARTEIRA Skeleton + MERCOS/FUNIL Blocks)
 
-Progress: [████████████████████████] 84% (plans 01-01..03, 02-01..03, 03-01..02, 04-01..04, 05-01..03, 06-01..02, 07-01..03, 08-01..02, 09-01..02 of 31 total complete)
+Progress: [█████████████████████████] 87% (plans 01-01..03, 02-01..03, 03-01..02, 04-01..04, 05-01..03, 06-01..02, 07-01..03, 08-01..02, 09-01..03 of 31 total complete)
 
 ## DESCOBERTA CRITICA (16/FEV/2026)
 
@@ -57,9 +57,9 @@ As fórmulas da PROJEÇÃO **NÃO estão perdidas**:
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 26
+- Total plans completed: 27
 - Average duration: 13 min
-- Total execution time: 5.69 hours
+- Total execution time: 5.77 hours
 
 | Phase | Plan | Duration | Tasks | Files |
 |-------|------|----------|-------|-------|
@@ -87,6 +87,7 @@ As fórmulas da PROJEÇÃO **NÃO estão perdidas**:
 | 08-comite-metas | 02 | 10 min | 2 | 5 |
 | 09-blueprint-v2 | 01 | 16 min | 2 | 6 |
 | 09-blueprint-v2 | 02 | 12 min | 2 | 4 |
+| 09-blueprint-v2 | 03 | 5 min | 2 | 4 |
 
 *Updated after each plan completion*
 
@@ -203,6 +204,11 @@ As fórmulas da PROJEÇÃO **NÃO estão perdidas**:
 - [17/02]: V13 now has 8 tabs: PROJECAO, LOG, DASH, REDES_FRANQUIAS_v2, COMITE, REGRAS, DRAFT 1, DRAFT 2
 - [17/02]: 46 cross-tab formula refs validated: 5 DRAFT 1 + 37 DRAFT 2 + 4 REGRAS -- all resolve
 - [17/02]: SCORE RANKING 6 factors = 100%: URGENCIA(30%), VALOR(25%), FOLLOWUP(20%), SINAL(15%), TENTATIVA(5%), SITUACAO(5%)
+- [17/02]: TEMPERATURA formula corrected: N&AV (SITUACAO & ULTIMO RESULTADO) not V12's N&AQ (SITUACAO & MESES LISTA) -- semantic match for REGRAS motor
+- [17/02]: SINALEIRO uses S (CICLO MEDIO) as ciclo variable, not V12's AK (TIPO CLIENTE text) -- numeric comparison requires numeric column
+- [17/02]: All V12 formula templates converted to bounded ranges via regex: $COL:$COL -> $COL$3:$COL$25000
+- [17/02]: CARTEIRA 27,146 formulas in MERCOS+FUNIL blocks, 46,370 total formulas in V13 (with PROJECAO 19,224)
+- [17/02]: V13 now has 9 tabs: PROJECAO, LOG, DASH, REDES_FRANQUIAS_v2, COMITE, REGRAS, DRAFT 1, DRAFT 2, CARTEIRA
 
 ### Fase 1 Revisada
 
@@ -227,6 +233,6 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-17
-Stopped at: Completed 09-02-PLAN.md (Supporting Tabs -- REGRAS, DRAFT 1, DRAFT 2 created in V13, all validated)
-Resume file: .planning/phases/09-blueprint-v2/09-02-SUMMARY.md
-Next step: /gsd:execute-phase 09-03 (CARTEIRA Skeleton + MERCOS/FUNIL Blocks)
+Stopped at: Completed 09-03-PLAN.md (CARTEIRA Skeleton + MERCOS/FUNIL Blocks -- 263 cols, 27,146 formulas, all validated)
+Resume file: .planning/phases/09-blueprint-v2/09-03-SUMMARY.md
+Next step: /gsd:execute-phase 09-04 (SAP + FATURAMENTO Blocks)
