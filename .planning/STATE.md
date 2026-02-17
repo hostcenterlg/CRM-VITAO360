@@ -17,16 +17,16 @@ O objetivo FINAL de todo este trabalho NÃO é "ter uma planilha limpa". É GERA
 - Se a CARTEIRA não gerar essa inteligência de agenda diária, TODO O TRABALHO DAS 10 FASES NÃO SERVE PRA NADA
 - As regras, status, grupos de colunas do funil na CARTEIRA já foram DESENHADOS para isso — respeitar 100%
 
-**Current focus:** Phase 04 LOG Completo IN PROGRESS -- Plan 04-01 DONE, 3 remaining.
+**Current focus:** Phase 04 LOG Completo IN PROGRESS -- Plans 04-01..02 DONE, 2 remaining.
 
 ## Current Position
 
 Phase: 4 of 10 (LOG Completo)
-Plan: 1 of 4 in current phase -- 04-01 COMPLETE
-Status: Phase 04 IN PROGRESS -- CONTROLE_FUNIL ETL done (10,442 records), Plans 04-02..04 remaining
-Last activity: 2026-02-17 -- Plan 04-01 executed (CONTROLE_FUNIL ETL + _helpers.py)
+Plan: 2 of 4 in current phase -- 04-02 COMPLETE
+Status: Phase 04 IN PROGRESS -- CONTROLE_FUNIL (10,442) + Deskrio (4,471) ETL done, Plans 04-03..04 remaining
+Last activity: 2026-02-17 -- Plan 04-02 executed (Deskrio ETL: 4,471 tickets to LOG format)
 
-Progress: [█████████░] 32% (plans 01-01..03, 02-01..03, 03-01..02, 04-01 of 28 total complete)
+Progress: [█████████░] 36% (plans 01-01..03, 02-01..03, 03-01..02, 04-01..02 of 28 total complete)
 
 ## DESCOBERTA CRITICA (16/FEV/2026)
 
@@ -50,17 +50,17 @@ As fórmulas da PROJEÇÃO **NÃO estão perdidas**:
 | Fonte | Registros | Status |
 |-------|-----------|--------|
 | CONTROLE_FUNIL_JAN2026 | 10.442 | **INTEGRADO (Plan 04-01)** |
-| DRAFT2_POPULADO_DADOS_REAIS | 6.775 | Disponível, não integrado |
-| Deskrio tickets (12 exports) | ~5.329 | Disponível, não integrado |
+| DRAFT2_POPULADO_DADOS_REAIS | 6.775 | Disponivel, nao integrado |
+| Deskrio tickets (07_TICKETS) | 4.471 | **INTEGRADO (Plan 04-02)** |
 | LOG no V12 | ~1 | Quase vazio |
 | **TOTAL disponível** | **~22.587** | Pendente integração |
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 9
-- Average duration: 8 min
-- Total execution time: 1.25 hours
+- Total plans completed: 10
+- Average duration: 9 min
+- Total execution time: 1.42 hours
 
 | Phase | Plan | Duration | Tasks | Files |
 |-------|------|----------|-------|-------|
@@ -73,6 +73,7 @@ As fórmulas da PROJEÇÃO **NÃO estão perdidas**:
 | 03-timeline-mensal | 01 | 25 min | 2 | 4 |
 | 03-timeline-mensal | 02 | 3 min | 1 | 3 |
 | 04-log-completo | 01 | 6 min | 2 | 4 |
+| 04-log-completo | 02 | 10 min | 1 | 2 |
 
 *Updated after each plan completion*
 
@@ -124,6 +125,11 @@ As fórmulas da PROJEÇÃO **NÃO estão perdidas**:
 - [17/02]: P8 accent stripping via bidirectional map: LOG stores sem-acento, motor_de_regras uses com-acento
 - [17/02]: 10,442 CONTROLE_FUNIL records processed (9,120 REAL + 1,322 SINTETICO), 558 alucinacoes documented
 - [17/02]: DAIANE STAVICKI canonical name (not CENTRAL - DAIANE), JULIO GADRET single spelling (1,814 records merged)
+- [17/02]: Deskrio already at ticket level (5,329 tickets not 77,805 messages) -- no aggregation needed
+- [17/02]: Deskrio CNPJ matching: 3,907 direct + 564 name-based (83.9% rate); 762 pendentes discarded (internal/transport/test)
+- [17/02]: Deskrio TIPO ACAO preserves Origem field (60.6% Ativo, 39.4% Receptivo) -- not all RECEPTIVO as initially assumed
+- [17/02]: Rodrigo (952 Deskrio tickets) kept as consultant -- Deskrio operator, not in canonical CRM team
+- [17/02]: Deskrio WHATSAPP=NAO, LIGACAO=NAO for all (own chat platform, not WhatsApp/phone)
 
 ### Fase 1 Revisada
 
@@ -147,6 +153,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-17 06:12
-Stopped at: Completed 04-01-PLAN.md (CONTROLE_FUNIL ETL: 10,442 records to 20-col LOG JSON). Phase 04 Plan 1 of 4 done.
-Resume file: .planning/phases/04-log-completo/04-01-SUMMARY.md
+Last session: 2026-02-17 06:15
+Stopped at: Completed 04-02-PLAN.md (Deskrio ETL: 4,471 tickets to LOG format). Phase 04 Plan 2 of 4 done.
+Resume file: .planning/phases/04-log-completo/04-02-SUMMARY.md
