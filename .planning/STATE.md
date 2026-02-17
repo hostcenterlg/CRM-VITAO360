@@ -23,7 +23,7 @@ O objetivo FINAL de todo este trabalho NÃO é "ter uma planilha limpa". É GERA
 
 Phase: 2 of 10 (Faturamento) -- COMPLETE
 Plan: 3 of 3 in current phase -- COMPLETE
-Status: Phase 02 COMPLETE (FAIL_WITH_NOTES: merged R$ 2,493k vs PAINEL R$ 2,156k due to source scope, not data error)
+Status: Phase 02 COMPLETE (gaps accepted by user: merged R$ 2,493k vs PAINEL R$ 2,156k is source scope mismatch, not data error)
 Last activity: 2026-02-17 -- Plan 02-03 executed (validation vs PAINEL, integrity checks, FAT-01..04 evaluation)
 
 Progress: [██████░░░░] 21% (plans 01-01, 01-02, 01-03, 02-01, 02-02, 02-03 of 28 total complete)
