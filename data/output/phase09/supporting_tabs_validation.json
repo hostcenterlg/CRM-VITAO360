@@ -1,0 +1,214 @@
+{
+  "regras": {
+    "motor_row_count": {
+      "value": 63,
+      "expected": 63,
+      "pass": true,
+      "note": "63 rows with data in cols A and G"
+    },
+    "situacao_values": {
+      "found": [
+        "ATIVO",
+        "EM RISCO",
+        "INAT.ANT",
+        "INAT.REC",
+        "LEAD",
+        "NOVO",
+        "PROSPECT"
+      ],
+      "expected": [
+        "ATIVO",
+        "EM RISCO",
+        "INAT.ANT",
+        "INAT.REC",
+        "LEAD",
+        "NOVO",
+        "PROSPECT"
+      ],
+      "all_found": [
+        "ATIVO",
+        "EM RISCO",
+        "INAT.ANT",
+        "INAT.REC",
+        "LEAD",
+        "NOVO",
+        "PROSPECT",
+        "TEMPERATURA",
+        "TIPO PROBLEMA"
+      ],
+      "pass": true,
+      "note": "7 required: 7 found, plus label rows"
+    },
+    "score_ranking": {
+      "factors_found": 6,
+      "expected": 6,
+      "weight_sum": 100.0,
+      "details": [
+        {
+          "factor": "1",
+          "weight": 30.0
+        },
+        {
+          "factor": "2",
+          "weight": 25.0
+        },
+        {
+          "factor": "3",
+          "weight": 20.0
+        },
+        {
+          "factor": "4",
+          "weight": 15.0
+        },
+        {
+          "factor": "5",
+          "weight": 5.0
+        },
+        {
+          "factor": "6",
+          "weight": 5.0
+        }
+      ],
+      "pass": true,
+      "note": "6 factors, weights sum 100.0%"
+    },
+    "spot_check_ativo_em_atendimento": {
+      "pass": true,
+      "note": "ATIVO + EM ATENDIMENTO should yield MORNO temperature"
+    }
+  },
+  "draft1": {
+    "cnpj_position": {
+      "header": "CNPJ",
+      "expected": "CNPJ",
+      "column": "B",
+      "pass": true
+    },
+    "cnpj_in_projecao": {
+      "samples": [
+        {
+          "cnpj": "59594680000161",
+          "in_projecao": true
+        },
+        {
+          "cnpj": "60088708000178",
+          "in_projecao": true
+        },
+        {
+          "cnpj": "60641605000193",
+          "in_projecao": true
+        },
+        {
+          "cnpj": "60764392000197",
+          "in_projecao": true
+        },
+        {
+          "cnpj": "62351082000176",
+          "in_projecao": true
+        }
+      ],
+      "matched": 5,
+      "total": 5,
+      "proj_cnpj_count": 534,
+      "pass": true,
+      "note": "5/5 samples found in PROJECAO (PROJECAO has 534 CNPJs)"
+    },
+    "monthly_sales": {
+      "total_cells": 6596,
+      "non_zero": 1177,
+      "pass": true,
+      "note": "1177 non-zero monthly sales cells out of 6596"
+    },
+    "ecommerce_data": {
+      "populated_cells": 1746,
+      "pass": true,
+      "note": "1746 e-commerce cells with data (cols O-T)"
+    }
+  },
+  "draft2": {
+    "cnpj_column": {
+      "header": "CNPJ",
+      "column": "D",
+      "pass": true
+    },
+    "row_count": {
+      "value": 6772,
+      "expected_min": 6000,
+      "pass": true,
+      "note": "6772 data rows with DATE in col A"
+    },
+    "date_values": {
+      "samples": [
+        {
+          "row": 4,
+          "value": "2025-01-16 14:56:00",
+          "is_datetime": true
+        },
+        {
+          "row": 5,
+          "value": "2025-01-29 15:09:00",
+          "is_datetime": true
+        },
+        {
+          "row": 6,
+          "value": "2025-03-01 09:47:24",
+          "is_datetime": true
+        }
+      ],
+      "has_dates": true,
+      "pass": true,
+      "note": "16 date values found in first 16 data rows"
+    },
+    "consultors": {
+      "found": [
+        "DAIANE STAVICKI",
+        "HELDER BRUNKOW",
+        "JULIO GADRET",
+        "LARISSA PADILHA",
+        "LEANDRO GARCIA",
+        "MANU DITZEL",
+        "RODRIGO"
+      ],
+      "known_matched": [
+        "DAIANE STAVICKI",
+        "JULIO GADRET",
+        "LARISSA PADILHA",
+        "MANU DITZEL"
+      ],
+      "pass": true,
+      "note": "4 known consultors found"
+    }
+  },
+  "cross_tab_refs": {
+    "draft1_formula_refs": {
+      "resolved": 5,
+      "failed": 0,
+      "failures": [],
+      "pass": true,
+      "note": "5 resolved, 0 failed"
+    },
+    "draft2_formula_refs": {
+      "resolved": 37,
+      "failed": 0,
+      "failures": [],
+      "pass": true,
+      "note": "37 resolved, 0 failed"
+    },
+    "regras_formula_refs": {
+      "resolved": 4,
+      "failed": 0,
+      "pass": true,
+      "note": "4 resolved, 0 failed"
+    }
+  },
+  "overall": {
+    "all_pass": true,
+    "total_checks": 15,
+    "critical_checks": {
+      "regras_motor_63": true,
+      "draft1_cnpj_col_b": true,
+      "draft2_headers_correct": true,
+      "cross_tab_refs_resolve": true
+    }
+  }
+}
