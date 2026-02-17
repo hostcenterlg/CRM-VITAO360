@@ -5,16 +5,28 @@
 See: .planning/PROJECT.md (updated 2026-02-15)
 
 **Core value:** Cruzar dados de vendas, atendimentos e prospecção em CARTEIRA unificada com visibilidade total, sem fabricar dados ou duplicar valores financeiros.
-**Current focus:** Phase 1 — Projeção (validação, não reconstrução)
+
+## REGRA PRINCIPAL DO PROJETO (INVIOLAVEL)
+
+O objetivo FINAL de todo este trabalho NÃO é "ter uma planilha limpa". É GERAR INTELIGÊNCIA COMERCIAL DIÁRIA:
+- Cada consultor recebe uma AGENDA DO DIA com 40-60 atendimentos priorizados
+- A priorização vem do CRUZAMENTO AUTOMATICO de: ciclo médio de compra, dias sem comprar, acesso ao e-commerce (acessou/montou carrinho ou não), resultado do último atendimento, fase do funil (prospecção/cadastro/negociação/ouro), tipo de cliente, temperatura, prioridade
+- Os RANKINGS e SINALEIROS nas fórmulas da CARTEIRA (RANK, IF, VLOOKUP) existem PRA ISSO
+- O gestor (Leandro) passa a agenda de manhã, consultor devolve no fim do dia com resultados
+- Resultados do dia alimentam o ciclo do dia seguinte (follow-ups, recuperações, salvamentos)
+- Se a CARTEIRA não gerar essa inteligência de agenda diária, TODO O TRABALHO DAS 10 FASES NÃO SERVE PRA NADA
+- As regras, status, grupos de colunas do funil na CARTEIRA já foram DESENHADOS para isso — respeitar 100%
+
+**Current focus:** Phase 02 Faturamento -- Plan 01 COMPLETE, Plan 02 next
 
 ## Current Position
 
-Phase: 1 of 10 (Projeção) -- COMPLETE
-Plan: 3 of 3 in current phase -- ALL DONE
-Status: Phase 01 COMPLETE -- Ready for Phase 02 (LOG)
-Last activity: 2026-02-17 — Plan 01-03 executed (verify PROJECAO V13 integrity, 10/10 checks PASS)
+Phase: 2 of 10 (Faturamento)
+Plan: 1 of 3 in current phase -- COMPLETE
+Status: Phase 02 Plan 01 COMPLETE -- Ready for Plan 02-02 (merge SAP+Mercos)
+Last activity: 2026-02-17 — Plan 02-01 executed (extract Mercos + SAP vendas, 11/11 armadilhas VALIDADO)
 
-Progress: [███░░░░░░░] 11% (plans 01-01, 01-02, 01-03 of 28 total complete)
+Progress: [████░░░░░░] 14% (plans 01-01, 01-02, 01-03, 02-01 of 28 total complete)
 
 ## DESCOBERTA CRITICA (16/FEV/2026)
 
@@ -46,15 +58,16 @@ As fórmulas da PROJEÇÃO **NÃO estão perdidas**:
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 3
-- Average duration: 5 min
-- Total execution time: 0.23 hours
+- Total plans completed: 4
+- Average duration: 8 min
+- Total execution time: 0.53 hours
 
 | Phase | Plan | Duration | Tasks | Files |
 |-------|------|----------|-------|-------|
 | 01-projecao | 01 | 4 min | 2 | 4 |
 | 01-projecao | 02 | 6 min | 1 | 2 |
 | 01-projecao | 03 | 4 min | 2 | 2 |
+| 02-faturamento | 01 | 18 min | 2 | 4 |
 
 *Updated after each plan completion*
 
@@ -81,6 +94,9 @@ As fórmulas da PROJEÇÃO **NÃO estão perdidas**:
 - [17/02]: PROJ-04 meta R$5.7M aspirational vs R$4.7M actual SAP -- documented discrepancy
 - [17/02]: 7 consultors found (not 3-4 assumed) -- "MANU DITZEL" appears as separate entry from "HEMANUELE DITZEL (MANU)"
 - [17/02]: Phase 01 PROJECAO complete -- all PROJ-01..04 requirements formally verified PASS
+- [17/02]: Sem CNPJ clients on dedicated sheet in 02_VENDAS_POSITIVACAO (not in Vendas Mes a Mes)
+- [17/02]: Independent SAP re-extraction matches Phase 1 exactly (489 CNPJs, R$ 2,089,824.23, 0% diff)
+- [17/02]: 11 Mercos armadilhas validated (FAT-03 pre-requisite satisfied)
 
 ### Fase 1 Revisada
 
@@ -104,6 +120,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-17 01:11
-Stopped at: Completed 01-03-PLAN.md (verify PROJECAO V13 integrity). Phase 01 COMPLETE. Ready for Phase 02 (LOG).
-Resume file: .planning/phases/01-projecao/01-03-SUMMARY.md
+Last session: 2026-02-17 02:25
+Stopped at: Completed 02-01-PLAN.md (extract Mercos + SAP vendas). Ready for 02-02 (merge SAP+Mercos).
+Resume file: .planning/phases/02-faturamento/02-01-SUMMARY.md
