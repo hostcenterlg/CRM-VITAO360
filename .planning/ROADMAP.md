@@ -96,9 +96,9 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 05-01: Definir layout dos 3 blocos e especificar fórmulas necessárias
-- [ ] 05-02: Construir aba DASH com fórmulas em INGLÊS (openpyxl)
-- [ ] 05-03: Validar números da DASH contra PAINEL e formatar visualmente
+- [ ] 05-01-PLAN.md — Normalizar 12 TIPO DO CONTATO do LOG para 7 valores canonicos (prerequisito para COUNTIFS)
+- [ ] 05-02-PLAN.md — Construir aba DASH com 3 blocos + KPI cards + filtros VENDEDOR/PERIODO (formulas LOG)
+- [ ] 05-03-PLAN.md — Validar DASH estrutura + cross-check LOG + avaliar DASH-01..05 + PROJECAO preservacao
 
 ### Phase 6: E-commerce
 **Goal**: Cruzar os 20 relatórios de e-commerce Mercos com a CARTEIRA e popular as 4 colunas de e-commerce.
