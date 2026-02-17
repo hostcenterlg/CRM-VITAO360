@@ -17,16 +17,16 @@ O objetivo FINAL de todo este trabalho NÃO é "ter uma planilha limpa". É GERA
 - Se a CARTEIRA não gerar essa inteligência de agenda diária, TODO O TRABALHO DAS 10 FASES NÃO SERVE PRA NADA
 - As regras, status, grupos de colunas do funil na CARTEIRA já foram DESENHADOS para isso — respeitar 100%
 
-**Current focus:** Phase 08 Comite e Metas -- Plan 01 COMPLETE, Plan 02 next.
+**Current focus:** Phase 08 Comite e Metas COMPLETE -- ready for Phase 09 Blueprint v2.
 
 ## Current Position
 
-Phase: 8 of 10 (Comite e Metas) -- IN PROGRESS
-Plan: 1 of 2 in current phase (08-01 COMPLETE -- META validation all 6 checks PASS)
-Status: Plan 08-01 COMPLETE -- META infrastructure validated, meta_validation_report.json generated, ready for 08-02
-Last activity: 2026-02-17 -- Plan 08-01 executed (META infrastructure validation)
+Phase: 8 of 10 (Comite e Metas) -- COMPLETE
+Plan: 2 of 2 in current phase (08-02 COMPLETE -- COMITE tab built, META-01..03 all PASS)
+Status: Phase 08 COMPLETE -- COMITE tab with 5 blocks (342 formulas), META-01..03 validated, V13 5 tabs
+Last activity: 2026-02-17 -- Plan 08-02 executed (COMITE builder + META validation)
 
-Progress: [█████████████████████] 74% (plans 01-01..03, 02-01..03, 03-01..02, 04-01..04, 05-01..03, 06-01..02, 07-01..03, 08-01 of 31 total complete)
+Progress: [██████████████████████] 77% (plans 01-01..03, 02-01..03, 03-01..02, 04-01..04, 05-01..03, 06-01..02, 07-01..03, 08-01..02 of 31 total complete)
 
 ## DESCOBERTA CRITICA (16/FEV/2026)
 
@@ -57,9 +57,9 @@ As fórmulas da PROJEÇÃO **NÃO estão perdidas**:
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 23
+- Total plans completed: 24
 - Average duration: 13 min
-- Total execution time: 5.05 hours
+- Total execution time: 5.22 hours
 
 | Phase | Plan | Duration | Tasks | Files |
 |-------|------|----------|-------|-------|
@@ -84,6 +84,7 @@ As fórmulas da PROJEÇÃO **NÃO estão perdidas**:
 | 07-redes-franquias | 02 | 5 min | 1 | 2 |
 | 07-redes-franquias | 03 | 3 min | 1 | 2 |
 | 08-comite-metas | 01 | 10 min | 1 | 2 |
+| 08-comite-metas | 02 | 10 min | 2 | 5 |
 
 *Updated after each plan completion*
 
@@ -182,6 +183,11 @@ As fórmulas da PROJEÇÃO **NÃO estão perdidas**:
 - [17/02]: 0 orphan clients (research estimated 41) -- all 534 have consultant in col D
 - [17/02]: 7 consultants total: LARISSA(224), HEMANUELE(170), JULIO(66), DAIANE(62), MANU DITZEL alias(10), Leandro(1), Lorrany(1)
 - [17/02]: SAP delta confirmed: R$ 31,803.04 (0.67%) from Phase 1 proportional rounding -- acceptable
+- [17/02]: COMITE tab 342 formulas, 5 blocks, RATEIO 3-way toggle (IF $I$2), VENDEDOR/PERIODO filters
+- [17/02]: Only 8 unique motivos in LOG col N (padded to 10) -- formulas count 0 for absent motivos
+- [17/02]: META MES = annual/12 approximation (avoids INDIRECT month-indexed formula complexity)
+- [17/02]: OUTROS/SEM CONSULTOR = total minus named (subtraction, not SUMPRODUCT inverse)
+- [17/02]: Phase 08 COMPLETE -- META-01..03 all PASS, COMITE built, 19,224 PROJECAO formulas intact
 
 ### Fase 1 Revisada
 
@@ -205,7 +211,7 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-17 17:42
-Stopped at: Completed 08-01-PLAN.md (META infrastructure validation -- all 6 checks PASS)
-Resume file: .planning/phases/08-comite-metas/08-01-SUMMARY.md
-Next step: Execute 08-02-PLAN.md (build COMITE tab with 5 blocks)
+Last session: 2026-02-17 17:59
+Stopped at: Completed 08-02-PLAN.md (COMITE tab built + META-01..03 validated -- Phase 08 COMPLETE)
+Resume file: .planning/phases/08-comite-metas/08-02-SUMMARY.md
+Next step: Plan Phase 09 (Blueprint v2 -- agenda diaria inteligente)
