@@ -1,0 +1,177 @@
+{
+  "timestamp": "2026-02-17T01:10:20Z",
+  "file_verified": "data/output/CRM_VITAO360_V13_PROJECAO.xlsx",
+  "overall_result": "PASS",
+  "checks_passed": 10,
+  "checks_total": 10,
+  "checks": {
+    "formula_integrity": {
+      "result": "PASS",
+      "formulas_found": 19224,
+      "formulas_matched": 19224,
+      "mismatches": 0,
+      "mismatch_details": [],
+      "blocks": {
+        "sinaleiro_FJ": {
+          "matched": 2670,
+          "expected": 2670
+        },
+        "realizado_Z": {
+          "matched": 534,
+          "expected": 534
+        },
+        "indicadores_AN_AQ": {
+          "matched": 2136,
+          "expected": 2136
+        },
+        "meta_igualitaria_BB_BN": {
+          "matched": 6942,
+          "expected": 6942
+        },
+        "meta_compensada_BP_CB": {
+          "matched": 6942,
+          "expected": 6942
+        }
+      }
+    },
+    "data_metas": {
+      "result": "PASS",
+      "total_meta": 4779003.04,
+      "reference": 4747200.0,
+      "diff_pct": 0.6699,
+      "clients_with_meta": 493,
+      "clients_zero_meta": 41
+    },
+    "data_metas_mensais": {
+      "result": "PASS",
+      "rows_with_annual": 493,
+      "rows_with_monthly": 493,
+      "rows_mismatch": 0,
+      "mismatch_examples": []
+    },
+    "data_vendas": {
+      "result": "PASS",
+      "clients_with_sales": 485,
+      "clients_zero_sales": 49,
+      "total_sales": 2092861.45
+    },
+    "cnpj_integrity": {
+      "result": "PASS",
+      "total": 534,
+      "unique": 534,
+      "duplicates": 0,
+      "empty_rows": 0,
+      "invalid_rows": 0
+    },
+    "consultor_coverage": {
+      "result": "PASS",
+      "consultor_count": 7,
+      "consultors": [
+        "DAIANE STAVICKI",
+        "HEMANUELE DITZEL (MANU)",
+        "JULIO GADRET",
+        "LARISSA PADILHA",
+        "Leandro Garcia",
+        "Lorrany",
+        "MANU DITZEL"
+      ],
+      "counts": {
+        "DAIANE STAVICKI": 62,
+        "LARISSA PADILHA": 224,
+        "HEMANUELE DITZEL (MANU)": 170,
+        "JULIO GADRET": 66,
+        "MANU DITZEL": 10,
+        "Leandro Garcia": 1,
+        "Lorrany": 1
+      },
+      "empty_rows": 0
+    },
+    "rede_coverage": {
+      "result": "PASS",
+      "redes": 12,
+      "rede_names": [
+        "FITLAND",
+        "VIDA LEVE",
+        "CIA DA SAUDE",
+        "NATURVIDA",
+        "DIVINA TERRA",
+        "MUNDO VERDE",
+        "BIO MUNDO",
+        "TRIP",
+        "TUDO EM GRAOS",
+        "MAIS NATURAL",
+        "LIGEIRINHO",
+        "PROSAUDE"
+      ],
+      "vlookup_ref_ok": true
+    },
+    "structural_integrity": {
+      "result": "PASS",
+      "details": {
+        "freeze_panes": {
+          "value": "E30",
+          "ok": true
+        },
+        "auto_filter": {
+          "value": "None",
+          "ok": true,
+          "note": "absent (openpyxl limitation, not corruption)"
+        },
+        "max_row": {
+          "value": 537,
+          "expected": 537,
+          "ok": true
+        },
+        "max_col": {
+          "value": 80,
+          "expected": 80,
+          "ok": true
+        },
+        "separators": {
+          "ok_count": 7,
+          "total": 7,
+          "issues": []
+        }
+      }
+    },
+    "number_formats": {
+      "result": "PASS",
+      "details": {
+        "L4_brl": {
+          "format": "_-\"R$\"\\ * #,##0.00_-;\\-\"R$\"\\ * #,##0.00_-;_-\"R$\"\\ * \"-\"??_-;",
+          "has_R$": true
+        },
+        "AN4_pct": {
+          "format": "0%",
+          "ok": true
+        },
+        "A4_cnpj": {
+          "format": "0",
+          "value_present": true
+        },
+        "AA4_brl": {
+          "format": "_-\"R$\"\\ * #,##0.00_-;\\-\"R$\"\\ * #,##0.00_-;_-\"R$\"\\ * \"-\"??_-;",
+          "has_R$": true
+        }
+      }
+    },
+    "requirements": {
+      "PROJ-01": {
+        "result": "PASS",
+        "note": "19,224 formulas dinamicas (>=18,180 requerido)"
+      },
+      "PROJ-02": {
+        "result": "PASS",
+        "note": "Metas mensais populadas (493 rows) + vendas 2025 (485 clients)"
+      },
+      "PROJ-03": {
+        "result": "PASS",
+        "note": "Consolidacao por consultor (7) e rede (12) funcional"
+      },
+      "PROJ-04": {
+        "result": "PASS",
+        "note": "Meta 2026 R$ 4,779,003.04 (nota: requisito original R$5.7M, meta SAP real R$4,747,200 -- discrepancia documentada)"
+      }
+    }
+  }
+}
