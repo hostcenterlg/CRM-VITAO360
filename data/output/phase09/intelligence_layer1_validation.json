@@ -1,0 +1,42 @@
+{
+  "score_count_554": {
+    "status": "PASS",
+    "detail": "554/554 rows with SCORE formula"
+  },
+  "rank_count_554": {
+    "status": "PASS",
+    "detail": "554/554 rows with RANK formula"
+  },
+  "score_weights": {
+    "status": "PASS",
+    "detail": "Formula has all 5 weight values (0.3+0.25+0.2+0.15+0.05x2)"
+  },
+  "score_column_refs": {
+    "status": "PASS",
+    "detail": "9/9 column references found in SCORE formula"
+  },
+  "prox_followup_regras": {
+    "status": "PASS",
+    "detail": "PROX FOLLOWUP references REGRAS follow-up days: True"
+  },
+  "acao_futura_regras": {
+    "status": "PASS",
+    "detail": "ACAO FUTURA references REGRAS motor: True"
+  },
+  "no_circular": {
+    "status": "PASS",
+    "detail": "No circular reference in SCORE: True"
+  },
+  "weight_sum_100": {
+    "status": "PASS",
+    "detail": "Weight sum: 1.0"
+  },
+  "projecao_intact": {
+    "status": "PASS",
+    "detail": "PROJECAO formulas: 19224 (expected 19,224)"
+  },
+  "carteira_total_formulas": {
+    "status": "PASS",
+    "detail": "CARTEIRA total formulas: 131322"
+  }
+}
