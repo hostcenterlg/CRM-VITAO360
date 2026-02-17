@@ -1,0 +1,89 @@
+{
+  "phase": "08-comite-metas",
+  "plan": "02",
+  "validated_at": "2026-02-17T17:59:40.677246+00:00",
+  "requirements": {
+    "META-01": {
+      "status": "PASS",
+      "details": "All 3 meta variants verified, COMITE references confirmed"
+    },
+    "META-02": {
+      "status": "PASS",
+      "details": "COMITE complete: 5 blocks, 342 formulas, filters + toggle"
+    },
+    "META-03": {
+      "status": "PASS",
+      "details": "Capacity validated: CARGA%, 22 dias, 8 CF rules, thresholds 35/50"
+    }
+  },
+  "checks": [
+    {
+      "name": "CHECK 1 (META-01)",
+      "status": "PASS",
+      "details": "All 3 meta variants verified, COMITE references confirmed",
+      "meta_anual_count": 493,
+      "equal_formulas": 534,
+      "dynamic_formulas": 534
+    },
+    {
+      "name": "CHECK 2 (META-02)",
+      "status": "PASS",
+      "details": "COMITE complete: 5 blocks, 342 formulas, filters + toggle",
+      "section_titles": 5,
+      "total_formulas": 342,
+      "data_validations": 2
+    },
+    {
+      "name": "CHECK 3 (META-03)",
+      "status": "PASS",
+      "details": "Capacity validated: CARGA%, 22 dias, 8 CF rules, thresholds 35/50",
+      "cf_rules": 8,
+      "has_thresholds": true
+    },
+    {
+      "name": "CHECK 4 (Integrity)",
+      "status": "PASS",
+      "details": "Integrity OK: 19224 formulas, 5 tabs, 0 #REF!",
+      "projecao_formulas": 19224,
+      "tabs": [
+        "PROJEÇÃO ",
+        "LOG",
+        "DASH",
+        "REDES_FRANQUIAS_v2",
+        "COMITE"
+      ],
+      "ref_errors": 0
+    },
+    {
+      "name": "CHECK 5 (Cross-check)",
+      "status": "PASS_WITH_NOTES",
+      "details": "Cached values may be None until opened in Excel -- expected behavior",
+      "comite_total_cached": "None",
+      "reference_total": 4779003.04
+    },
+    {
+      "name": "CHECK 6 (RATEIO toggle)",
+      "status": "PASS",
+      "details": "RATEIO toggle with 3 modes verified: PROPORCIONAL(L), IGUALITARIO(BB), COMPENSADO(BP)",
+      "has_toggle_dv": true,
+      "has_toggle_ref": true,
+      "refs": {
+        "L": true,
+        "BB": true,
+        "BP": true
+      }
+    }
+  ],
+  "integrity": {
+    "projecao_formulas": 19224,
+    "comite_formulas": 342,
+    "tabs": [
+      "PROJEÇÃO ",
+      "LOG",
+      "DASH",
+      "REDES_FRANQUIAS_v2",
+      "COMITE"
+    ]
+  },
+  "overall": "PASS"
+}
