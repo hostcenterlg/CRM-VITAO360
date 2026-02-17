@@ -20,20 +20,20 @@ Rebuild definitivo do CRM VITAO360 em 10 fases, da reconstrução crítica da PR
 ## Phase Details
 
 ### Phase 1: Projeção
-**Goal**: Reconstruir as 18.180 fórmulas perdidas da aba PROJEÇÃO, tornando-a 100% dinâmica e recalculável. Esta é a entrega mais crítica do projeto.
+**Goal**: Validar as 19.224 formulas existentes na PROJECAO (V12) e popular com dados SAP 2026 atualizados (metas + vendas realizadas), gerando o arquivo V13 com formulas 100% dinamicas e recalculaveis.
 **Depends on**: Nothing (first phase)
 **Requirements**: PROJ-01, PROJ-02, PROJ-03, PROJ-04
 **Success Criteria** (what must be TRUE):
-  1. Aba PROJEÇÃO contém 18.180 fórmulas dinâmicas (não dados estáticos)
-  2. Projeção recalcula automaticamente quando dados da CARTEIRA mudam
-  3. Consolidação por consultor, ABC, status e região funciona
-  4. Projeção 2026 mostra R$ 5.7M / 3.168 vendas / 3 por dia por consultor
+  1. Aba PROJECAO contem 19.224 formulas dinamicas validadas (nao dados estaticos)
+  2. Projecao recalcula automaticamente quando dados de REALIZADO mudam (Z=SUM(AA:AL))
+  3. Consolidacao por consultor e rede funciona (4 consultores, 15 redes)
+  4. Meta 2026 R$ 4.747.200 populada (nota: requisito original R$5.7M revisado com dados SAP reais)
 **Plans**: 3 plans
 
 Plans:
-- [ ] 01-01: Analisar estrutura da PROJEÇÃO existente e mapear fórmulas necessárias
-- [ ] 01-02: Gerar fórmulas dinâmicas em Python (openpyxl) respeitando INGLÊS
-- [ ] 01-03: Validar PROJEÇÃO contra dados do PAINEL e números de referência
+- [ ] 01-01-PLAN.md — Validar 19.224 formulas intactas + extrair dados SAP (mapeamento CNPJ, vendas 2025, metas 2026)
+- [ ] 01-02-PLAN.md — Popular PROJECAO com dados SAP 2026 via Read-Modify-Write preservando formulas
+- [ ] 01-03-PLAN.md — Verificacao completa de integridade (10 checks) + validacao requisitos PROJ-01..04
 
 ### Phase 2: Faturamento
 **Goal**: Processar os 12+ relatórios de vendas Mercos (com armadilhas de nomes) e consolidar faturamento mensal validado contra R$ 2.156.179 do PAINEL.
