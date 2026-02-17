@@ -52,18 +52,19 @@ Plans:
 - [ ] 02-03-PLAN.md — Validar totais contra PAINEL R$ 2.156.179, documentar gap R$ 6.790, avaliar FAT-01..04
 
 ### Phase 3: Timeline Mensal
-**Goal**: Popular as vendas mês a mês por cliente na CARTEIRA, cruzando Mercos e SAP.
-**Depends on**: Phase 2 (precisa dos dados de faturamento processados)
+**Goal**: Popular o DRAFT 1 do V12 COM_DADOS com vendas mensais dos 537 clientes (sap_mercos_merged.json), calcular campos derivados (ABC, COMPRAS, POSITIVADO, TICKET, MEDIA), expandir formulas INDEX/MATCH da CARTEIRA para 537 rows, e validar cruzamento completo com avaliacao TIME-01..03.
+**Depends on**: Phase 2 (precisa do sap_mercos_merged.json com 537 clientes)
 **Requirements**: TIME-01, TIME-02, TIME-03
 **Success Criteria** (what must be TRUE):
-  1. Colunas de vendas mensais (Jan-Dez 2025) preenchidas para cada cliente
-  2. Dados cruzados entre Mercos (vendas) e SAP (mês a mês) sem divergência
-  3. Classificação ABC recalculada com base na timeline completa
+  1. DRAFT 1 com 537 rows de vendas mensais MAR/25-JAN/26 + campos derivados
+  2. CARTEIRA com 537 rows de formulas INDEX/MATCH puxando do DRAFT 1
+  3. Classificacao ABC recalculada (A>=2000, B>=500, C<500) para todos os 537 clientes
+  4. Zero divergencia entre DRAFT 1 e sap_mercos_merged.json
 **Plans**: 2 plans
 
 Plans:
-- [ ] 03-01: Cruzar vendas mensais Mercos + SAP por CNPJ e popular na CARTEIRA
-- [ ] 03-02: Recalcular classificação ABC e validar totais mensais
+- [ ] 03-01-PLAN.md — Popular DRAFT 1 com vendas + derivados e expandir CARTEIRA formulas (537 rows)
+- [ ] 03-02-PLAN.md — Validar cruzamento DRAFT 1 vs merged JSON, ABC recalculo, avaliar TIME-01..03
 
 ### Phase 4: LOG Completo
 **Goal**: Integrar todas as fontes de dados de interações no LOG, atingindo ~11.758 registros com Two-Base Architecture respeitada.
