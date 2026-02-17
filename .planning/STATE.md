@@ -17,16 +17,16 @@ O objetivo FINAL de todo este trabalho NÃO é "ter uma planilha limpa". É GERA
 - Se a CARTEIRA não gerar essa inteligência de agenda diária, TODO O TRABALHO DAS 10 FASES NÃO SERVE PRA NADA
 - As regras, status, grupos de colunas do funil na CARTEIRA já foram DESENHADOS para isso — respeitar 100%
 
-**Current focus:** Phase 09 Blueprint v2 -- CONTEXT gathered, ready for planning.
+**Current focus:** Phase 09 Blueprint v2 -- Plan 01 COMPLETE, Plan 02 next (Supporting Tabs).
 
 ## Current Position
 
-Phase: 8 of 10 (Comite e Metas) -- COMPLETE
-Plan: 2 of 2 in current phase (08-02 COMPLETE -- COMITE tab built, META-01..03 all PASS)
-Status: Phase 08 COMPLETE -- COMITE tab with 5 blocks (342 formulas), META-01..03 validated, V13 5 tabs
-Last activity: 2026-02-17 -- Plan 08-02 executed (COMITE builder + META validation)
+Phase: 9 of 10 (Blueprint v2) -- IN PROGRESS
+Plan: 1 of 6 in current phase (09-01 COMPLETE -- V12 CARTEIRA audit, 263 cols, 7 formula patterns)
+Status: Plan 09-01 COMPLETE -- 4 JSON artifacts created, ready for Plan 09-02 (Supporting Tabs)
+Last activity: 2026-02-17 -- Plan 09-01 executed (V12 audit + DRAFT 1 column map)
 
-Progress: [██████████████████████] 77% (plans 01-01..03, 02-01..03, 03-01..02, 04-01..04, 05-01..03, 06-01..02, 07-01..03, 08-01..02 of 31 total complete)
+Progress: [███████████████████████] 80% (plans 01-01..03, 02-01..03, 03-01..02, 04-01..04, 05-01..03, 06-01..02, 07-01..03, 08-01..02, 09-01 of 31 total complete)
 
 ## DESCOBERTA CRITICA (16/FEV/2026)
 
@@ -57,9 +57,9 @@ As fórmulas da PROJEÇÃO **NÃO estão perdidas**:
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 24
+- Total plans completed: 25
 - Average duration: 13 min
-- Total execution time: 5.22 hours
+- Total execution time: 5.49 hours
 
 | Phase | Plan | Duration | Tasks | Files |
 |-------|------|----------|-------|-------|
@@ -85,6 +85,7 @@ As fórmulas da PROJEÇÃO **NÃO estão perdidas**:
 | 07-redes-franquias | 03 | 3 min | 1 | 2 |
 | 08-comite-metas | 01 | 10 min | 1 | 2 |
 | 08-comite-metas | 02 | 10 min | 2 | 5 |
+| 09-blueprint-v2 | 01 | 16 min | 2 | 6 |
 
 *Updated after each plan completion*
 
@@ -188,6 +189,13 @@ As fórmulas da PROJEÇÃO **NÃO estão perdidas**:
 - [17/02]: META MES = annual/12 approximation (avoids INDIRECT month-indexed formula complexity)
 - [17/02]: OUTROS/SEM CONSULTOR = total minus named (subtraction, not SUMPRODUCT inverse)
 - [17/02]: Phase 08 COMPLETE -- META-01..03 all PASS, COMITE built, 19,224 PROJECAO formulas intact
+- [17/02]: V12 CARTEIRA R1 headers use emoji prefixes -- super-groups detected by known column ranges
+- [17/02]: DRAFT 1 columns at identical positions in V12 and V13 -- no remapping needed for formula injection
+- [17/02]: META columns are static in V12 (not PROJECAO formulas) -- V13 needs META MES = PROJECAO col L / 12
+- [17/02]: 1 _xlfn.LET formula (SINALEIRO at BJ) must be rewritten as nested IF
+- [17/02]: All 3 tabs referenced by CARTEIRA (DRAFT 1, DRAFT 2, REGRAS) must be created in V13
+- [17/02]: V12 CARTEIRA: 263 cols, 114 formula, 149 static, 6 super-groups, 3 outline levels
+- [17/02]: FATURAMENTO: 186 cols = 12 months x 15 sub-cols (BZ-JC), 48 countifs_draft2 + 19 internal_calc
 
 ### Fase 1 Revisada
 
@@ -207,11 +215,11 @@ None yet.
 - Julio Gadret 100% fora do sistema — dados limitados disponíveis
 - 558 registros ALUCINAÇÃO do CONTROLE_FUNIL — não integrar
 - LibreOffice recalc ≠ Excel recalc — testar no Excel real
-- CARTEIRA no V12 tem 265 cols (vs 46 "imutáveis" doc) — investigar
+- CARTEIRA no V12 tem 263 cols (confirmado via auditoria 09-01) — 6 super-grupos mapeados
 
 ## Session Continuity
 
 Last session: 2026-02-17
-Stopped at: Phase 9 context gathered (discuss-phase complete -- 24 decisions captured across 4 areas)
-Resume file: .planning/phases/09-blueprint-v2/09-CONTEXT.md
-Next step: /gsd:plan-phase 9 (Blueprint v2 -- auditoria V12 + recriacao CARTEIRA 263 cols + motor inteligencia + 4 abas AGENDA)
+Stopped at: Completed 09-01-PLAN.md (V12 CARTEIRA audit -- 263 cols, 7 formula patterns, 3 tab mappings)
+Resume file: .planning/phases/09-blueprint-v2/09-01-SUMMARY.md
+Next step: /gsd:execute-phase 09-02 (Supporting Tabs -- REGRAS, DRAFT 1, DRAFT 2 creation in V13)
