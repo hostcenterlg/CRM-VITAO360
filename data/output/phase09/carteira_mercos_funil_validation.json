@@ -1,0 +1,80 @@
+{
+  "mercos_spot_check": {
+    "result": "PASS",
+    "rows_tested": [
+      29,
+      118,
+      232,
+      254,
+      285
+    ],
+    "column": "P (DIAS SEM COMPRA)",
+    "pattern": "INDEX/MATCH referencing DRAFT 1"
+  },
+  "funil_spot_check": {
+    "result": "PASS",
+    "rows_tested": [
+      93,
+      108,
+      146
+    ],
+    "column": "AR (ESTAGIO FUNIL)",
+    "pattern": "CSE array formula referencing DRAFT 2"
+  },
+  "temperatura_regras": {
+    "result": "PASS",
+    "rows_tested": [
+      4,
+      100,
+      400
+    ],
+    "pattern": "REGRAS!$G$220:$G$282 motor lookup"
+  },
+  "sinaleiro_no_let": {
+    "result": "PASS",
+    "rows_tested": [
+      4,
+      200,
+      557
+    ],
+    "pattern": "Nested IF without _xlfn.LET"
+  },
+  "no_full_column_refs": {
+    "result": "PASS",
+    "full_col_refs_found": 0
+  },
+  "formula_count_mercos_funil": {
+    "result": "PASS",
+    "count": 27146,
+    "threshold": 25000
+  },
+  "projecao_intact": {
+    "result": "PASS",
+    "formula_count": 19224,
+    "expected": 19224
+  },
+  "column_count_263": {
+    "result": "PASS",
+    "col_263_value": "JUSTIFICATIVA MENSAL",
+    "col_264_value": "None"
+  },
+  "cnpj_count": {
+    "result": "PASS",
+    "count": 554,
+    "expected": 554
+  },
+  "freeze_panes": {
+    "result": "PASS",
+    "value": "AR6",
+    "expected": "AR6"
+  },
+  "grouped_columns": {
+    "result": "PASS",
+    "count": 210,
+    "threshold": 200
+  },
+  "overall": "ALL PASS",
+  "total_formulas_mercos_funil": 27146,
+  "total_formulas_projecao": 19224,
+  "total_formulas_v13": 46370
+}
