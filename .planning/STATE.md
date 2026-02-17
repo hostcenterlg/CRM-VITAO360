@@ -17,16 +17,16 @@ O objetivo FINAL de todo este trabalho NÃO é "ter uma planilha limpa". É GERA
 - Se a CARTEIRA não gerar essa inteligência de agenda diária, TODO O TRABALHO DAS 10 FASES NÃO SERVE PRA NADA
 - As regras, status, grupos de colunas do funil na CARTEIRA já foram DESENHADOS para isso — respeitar 100%
 
-**Current focus:** Phase 04 LOG Completo COMPLETE -- All 4 plans done, V13 LOG populated.
+**Current focus:** Phase 05 Dashboard -- Plan 01 COMPLETE, LOG TIPO normalized. Plans 02-03 remaining.
 
 ## Current Position
 
-Phase: 4 of 10 (LOG Completo) -- COMPLETE
-Plan: 4 of 4 in current phase -- ALL COMPLETE
-Status: Phase 04 COMPLETE -- 20,830 LOG records (CONTROLE_FUNIL 10,434 + Deskrio 4,240 + Synthetic 6,156), V13 LOG tab populated, 19,224 PROJECAO formulas preserved
-Last activity: 2026-02-17 -- Plan 04-04 executed (Merge + dedup + validate + V13 LOG population)
+Phase: 5 of 10 (Dashboard)
+Plan: 1 of 3 in current phase
+Status: Plan 05-01 COMPLETE -- LOG TIPO DO CONTATO normalized from 12 to 7 canonical values (10,434 changes), 20,830 records preserved, 19,224 PROJECAO formulas intact
+Last activity: 2026-02-17 -- Plan 05-01 executed (LOG TIPO normalization prerequisite for DASH COUNTIFS)
 
-Progress: [██████████] 43% (plans 01-01..03, 02-01..03, 03-01..02, 04-01..04 of 28 total complete)
+Progress: [████████████] 46% (plans 01-01..03, 02-01..03, 03-01..02, 04-01..04, 05-01 of 28 total complete)
 
 ## DESCOBERTA CRITICA (16/FEV/2026)
 
@@ -57,7 +57,7 @@ As fórmulas da PROJEÇÃO **NÃO estão perdidas**:
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 14
+- Total plans completed: 15
 - Average duration: 10 min
 - Total execution time: 2.5 hours
 
@@ -75,6 +75,7 @@ As fórmulas da PROJEÇÃO **NÃO estão perdidas**:
 | 04-log-completo | 02 | 10 min | 1 | 2 |
 | 04-log-completo | 03 | 25 min | 3 | 2 |
 | 04-log-completo | 04 | 45 min | 2 | 5 |
+| 05-dashboard | 01 | 2 min | 1 | 2 |
 
 *Updated after each plan completion*
 
@@ -131,6 +132,9 @@ As fórmulas da PROJEÇÃO **NÃO estão perdidas**:
 - [17/02]: Deskrio TIPO ACAO preserves Origem field (60.6% Ativo, 39.4% Receptivo) -- not all RECEPTIVO as initially assumed
 - [17/02]: Rodrigo (952 Deskrio tickets) kept as consultant -- Deskrio operator, not in canonical CRM team
 - [17/02]: Deskrio WHATSAPP=NAO, LIGACAO=NAO for all (own chat platform, not WhatsApp/phone)
+- [17/02]: TIPO DO CONTATO normalized 12->7: CONTATOS PASSIVO/SUPORTE->POS-VENDA, ENVIO MKT->PROSPECCAO, PROSPECCAO NOVOS->PROSPECCAO
+- [17/02]: ATENDIMENTO CLIENTES INATIVOS abbreviated to ATEND. CLIENTES INATIVOS (matching ATIVOS pattern)
+- [17/02]: After normalization: POS-VENDA 8,670 | ATEND.ATIVOS 5,296 | PROSPECCAO 4,634 | ATEND.INATIVOS 1,227 | NEGOCIACAO 944 | PERDA 55 | FOLLOW UP 4
 
 ### Fase 1 Revisada
 
@@ -154,7 +158,7 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-17 07:15
-Stopped at: Phase 04 COMPLETE. All 4 plans executed. V13 LOG populated with 20,830 records.
-Resume file: .planning/phases/04-log-completo/04-04-SUMMARY.md
-Next step: /gsd:plan-phase 5 (Dashboard)
+Last session: 2026-02-17 10:15
+Stopped at: Completed 05-01-PLAN.md (LOG TIPO normalization). Phase 05 Plan 01 done.
+Resume file: .planning/phases/05-dashboard/05-01-SUMMARY.md
+Next step: /gsd:execute-phase 05-dashboard (Plan 05-02: Build DASH tab with 3 blocks + KPIs + filters)
