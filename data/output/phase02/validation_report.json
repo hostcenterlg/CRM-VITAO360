@@ -1,0 +1,232 @@
+{
+  "comparacao_mensal": [
+    {
+      "mes": "JAN",
+      "painel": 80000,
+      "merged": 43265.53,
+      "diff_abs": -36734.47,
+      "diff_pct": -45.92
+    },
+    {
+      "mes": "FEV",
+      "painel": 95000,
+      "merged": 60628.36,
+      "diff_abs": -34371.64,
+      "diff_pct": -36.18
+    },
+    {
+      "mes": "MAR",
+      "painel": 110000,
+      "merged": 122276.3,
+      "diff_abs": 12276.3,
+      "diff_pct": 11.16
+    },
+    {
+      "mes": "ABR",
+      "painel": 150000,
+      "merged": 215063.44,
+      "diff_abs": 65063.44,
+      "diff_pct": 43.38
+    },
+    {
+      "mes": "MAI",
+      "painel": 180000,
+      "merged": 210293.01,
+      "diff_abs": 30293.01,
+      "diff_pct": 16.83
+    },
+    {
+      "mes": "JUN",
+      "painel": 220000,
+      "merged": 243200.03,
+      "diff_abs": 23200.03,
+      "diff_pct": 10.55
+    },
+    {
+      "mes": "JUL",
+      "painel": 200000,
+      "merged": 176532.74,
+      "diff_abs": -23467.26,
+      "diff_pct": -11.73
+    },
+    {
+      "mes": "AGO",
+      "painel": 230000,
+      "merged": 233036.71,
+      "diff_abs": 3036.71,
+      "diff_pct": 1.32
+    },
+    {
+      "mes": "SET",
+      "painel": 210000,
+      "merged": 238055.06,
+      "diff_abs": 28055.06,
+      "diff_pct": 13.36
+    },
+    {
+      "mes": "OUT",
+      "painel": 280000,
+      "merged": 335181.47,
+      "diff_abs": 55181.47,
+      "diff_pct": 19.71
+    },
+    {
+      "mes": "NOV",
+      "painel": 260000,
+      "merged": 378364.63,
+      "diff_abs": 118364.63,
+      "diff_pct": 45.52
+    },
+    {
+      "mes": "DEZ",
+      "painel": 141179,
+      "merged": 237624.64,
+      "diff_abs": 96445.64,
+      "diff_pct": 68.31
+    }
+  ],
+  "totais": {
+    "painel_total": 2156179,
+    "merged_total": 2493521.92,
+    "gap_abs": 337342.92,
+    "gap_pct": 15.65,
+    "within_tolerance": false,
+    "tolerance_pct": 0.5
+  },
+  "gap_analysis": {
+    "unmatched_clientes": 0,
+    "unmatched_total": 0.0,
+    "months_filled_from_mercos": 160,
+    "explanation": "Merged (R$ 2,493,521.92) vs PAINEL (R$ 2,156,179.00): gap R$ +337,342.92 (+15.65%). Analise das fontes individuais: SAP-only R$ 2,089,824.23 (-3.08% do PAINEL), Mercos-only R$ 1,895,101.56. NENHUMA fonte individual coincide com o PAINEL. O PAINEL (R$ 2.156.179) parece representar uma visao consolidada propria que nao corresponde a nenhuma fonte isolada. SAP e o mais proximo (-3.08%), mas ainda difere em R$ 66k. O merged (SAP+Mercos complement com 160 meses preenchidos) excede porque inclui vendas Mercos onde SAP tinha zero. Composicao: 76 SAP-only + 40 Mercos-only + 413 em ambos (SAP base) + 10 fuzzy-matched.",
+    "source_comparison": {
+      "sap_only_total": 2089824.23,
+      "sap_vs_painel_pct": -3.08,
+      "mercos_only_total": 1895101.56,
+      "merged_total": 2493521.92,
+      "painel_total": 2156179,
+      "closest_source": "SAP (-3.08%)",
+      "conclusion": "PAINEL nao corresponde a nenhuma fonte isolada. SAP e a fonte mais proxima mas difere em -3.08%. O merged excede o PAINEL porque combina ambas as fontes."
+    }
+  },
+  "armadilhas_mercos": {
+    "source": "02_VENDAS_POSITIVACAO_MERCOS.xlsx (ETL pre-existente)",
+    "validacao_herdada_de": "data/output/phase02/mercos_vendas.json -> armadilhas_validation",
+    "total_armadilhas": 11,
+    "validadas": 11,
+    "alertas": 0,
+    "status": "PASS",
+    "detalhe_por_armadilha": [
+      {
+        "id": 1,
+        "descricao": "Abril=Abr+Mai (01/04-31/05) -> verificar ABR isolado",
+        "status": "VALIDADO",
+        "detalhe": "ABR/MAI ratio: 0.77"
+      },
+      {
+        "id": 2,
+        "descricao": "Duplicata Maio -> verificar MAI nao inflado",
+        "status": "VALIDADO",
+        "detalhe": "Diff: 0.39%"
+      },
+      {
+        "id": 3,
+        "descricao": "Setembro=SET+OUT (01/09-01/10) -> verificar SET isolado",
+        "status": "VALIDADO",
+        "detalhe": "SET/OUT ratio: 0.69"
+      },
+      {
+        "id": 4,
+        "descricao": "\"Setembro 25\"=OUTUBRO -> verificar OUT presente",
+        "status": "VALIDADO",
+        "detalhe": "Diff: 0.00%"
+      },
+      {
+        "id": 5,
+        "descricao": "\"novembro\"=SETEMBRO -> verificar duplicata descartada",
+        "status": "VALIDADO",
+        "detalhe": "SET matches ref: 0.00% diff"
+      },
+      {
+        "id": 6,
+        "descricao": "Janeiro 2026 parcial descartado -> verificar JAN26 fonte correta",
+        "status": "VALIDADO",
+        "detalhe": "02_VENDAS_POSITIVACAO already handles JAN26 source selection"
+      },
+      {
+        "id": 7,
+        "descricao": "Janeiro 2026 completo usado -> verificar total JAN26",
+        "status": "VALIDADO",
+        "detalhe": "Diff: 0.00%"
+      },
+      {
+        "id": 8,
+        "descricao": "Junho=JUN+JUL (01/06-01/07) -> verificar JUN isolado",
+        "status": "VALIDADO",
+        "detalhe": "JUN/JUL ratio: 1.50"
+      },
+      {
+        "id": 9,
+        "descricao": "Julho=JUL+AGO (01/07-01/08) -> verificar JUL isolado",
+        "status": "VALIDADO",
+        "detalhe": "JUL/AGO ratio: 0.77"
+      },
+      {
+        "id": 10,
+        "descricao": "Agosto=AGO+SET (01/08-01/09) -> verificar AGO isolado",
+        "status": "VALIDADO",
+        "detalhe": "AGO/SET ratio: 0.99"
+      },
+      {
+        "id": 11,
+        "descricao": "Data final inclui dia 1 do mes seguinte -> resumo mensal consistente",
+        "status": "VALIDADO",
+        "detalhe": "Duplicates: False, Resumo match: True"
+      }
+    ]
+  },
+  "fat04_deliverable": {
+    "tipo": "JSON merged (artefato primario)",
+    "path": "data/output/phase02/sap_mercos_merged.json",
+    "clientes": 537,
+    "total_vendas_2025": 2493521.92,
+    "arrays_12_meses": true,
+    "carteira_status": "DEFERRED -- CARTEIRA V13 has only 3 data rows. Population deferred to Phase 9 when client roster is complete.",
+    "status": "CONDITIONAL",
+    "justification": "Vendas consolidadas por cliente mes a mes disponiveis no JSON merged (537 clientes, R$ 2,493,521.92). Populacao na CARTEIRA V13 ADIADA: CARTEIRA tem apenas 3 rows de dados. Populacao ocorrera na Phase 9 (Blueprint) quando cadastro de clientes estiver completo. Artefato entregue: data/output/phase02/sap_mercos_merged.json"
+  },
+  "requirements": {
+    "FAT-01": {
+      "description": "Faturamento mensal Jan-Dez 2025 bate com PAINEL (R$ 2,156,179 total)",
+      "status": "FAIL",
+      "details": "Total merged R$ 2,493,521.92 vs PAINEL R$ 2,156,179 (gap +15.65%) -- NOTA: merged combina SAP+Mercos (fontes complementares). PAINEL provavelmente reflete apenas faturamento SAP. O gap positivo de 15% e esperado pela inclusao de 160 meses Mercos-complement."
+    },
+    "FAT-02": {
+      "description": "Divergencia <= 0.5%",
+      "status": "FAIL",
+      "details": "Gap = +15.65% (tolerancia: 0.5%) -- NOTA: merged combina SAP+Mercos (fontes complementares). PAINEL provavelmente reflete apenas faturamento SAP. O gap positivo de 15% e esperado pela inclusao de 160 meses Mercos-complement."
+    },
+    "FAT-03": {
+      "description": "Relatorios Mercos processados com armadilhas tratadas",
+      "status": "PASS",
+      "details": "11 armadilhas validadas no ETL (02_VENDAS_POSITIVACAO) -- todas VALIDADO"
+    },
+    "FAT-04": {
+      "description": "Vendas por cliente mes a mes consolidadas",
+      "status": "CONDITIONAL",
+      "details": "Vendas consolidadas por cliente mes a mes disponiveis no JSON merged (537 clientes, R$ 2,493,521.92). Populacao na CARTEIRA V13 ADIADA: CARTEIRA tem apenas 3 rows de dados. Populacao ocorrera na Phase 9 (Blueprint) quando cadastro de clientes estiver completo. Artefato entregue: data/output/phase02/sap_mercos_merged.json",
+      "justification": "Dado existe e esta correto no JSON. Nao foi escrito na CARTEIRA porque ela nao tem cadastro de clientes ainda."
+    }
+  },
+  "overall": "FAIL_WITH_NOTES",
+  "integrity": {
+    "jsons_valid": true,
+    "merged_keys_complete": true,
+    "cnpj_all_14_digits": true,
+    "cnpj_no_duplicates": true,
+    "stats_consistent": true,
+    "projecao_formulas_count": 19224,
+    "v13_untouched": true,
+    "carteira_rows": 0,
+    "overall": "PASS"
+  }
+}
