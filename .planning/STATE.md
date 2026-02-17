@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-02-15)
 ## Current Position
 
 Phase: 1 of 10 (Projeção)
-Plan: 1 of 3 in current phase
-Status: Executing — Plan 01 complete, Plan 02 next
-Last activity: 2026-02-17 — Plan 01-01 executed (formula validation + SAP extraction)
+Plan: 2 of 3 in current phase
+Status: Executing — Plan 02 complete, Plan 03 next
+Last activity: 2026-02-17 — Plan 01-02 executed (populate PROJECAO with SAP 2026 data)
 
-Progress: [██░░░░░░░░] 8% (plan 01-01 of 28 total complete)
+Progress: [██░░░░░░░░] 7% (plans 01-01, 01-02 of 28 total complete)
 
 ## DESCOBERTA CRITICA (16/FEV/2026)
 
@@ -46,13 +46,14 @@ As fórmulas da PROJEÇÃO **NÃO estão perdidas**:
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 1
-- Average duration: 4 min
-- Total execution time: 0.07 hours
+- Total plans completed: 2
+- Average duration: 5 min
+- Total execution time: 0.17 hours
 
 | Phase | Plan | Duration | Tasks | Files |
 |-------|------|----------|-------|-------|
 | 01-projecao | 01 | 4 min | 2 | 4 |
+| 01-projecao | 02 | 6 min | 1 | 2 |
 
 *Updated after each plan completion*
 
@@ -72,6 +73,9 @@ As fórmulas da PROJEÇÃO **NÃO estão perdidas**:
 - [17/02]: AO column uses emoji indicators, not text labels -- validate structure not exact strings
 - [17/02]: Simplified meta extraction from PROJECAO col L (0.67% vs SAP ref) instead of Grupo Chave distribution
 - [17/02]: freeze_panes=E30 (not C4), 12 redes (not 15) in actual PROJECAO file
+- [17/02]: Unmatched vendas CNPJs zeroed (49 clients) -- clean data for formula recalculation
+- [17/02]: Monthly weight rounding 0.001% acceptable -- float precision with weights sum=0.999990
+- [17/02]: 4 SAP vendas CNPJs not in PROJECAO roster (R$ 8,794 delta) -- fixed client list
 
 ### Fase 1 Revisada
 
@@ -95,6 +99,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-17 00:55
-Stopped at: Completed 01-01-PLAN.md (formula validation + SAP extraction). Ready for 01-02-PLAN.md.
-Resume file: .planning/phases/01-projecao/01-01-SUMMARY.md
+Last session: 2026-02-17 01:04
+Stopped at: Completed 01-02-PLAN.md (populate PROJECAO with SAP 2026 data). Ready for 01-03-PLAN.md.
+Resume file: .planning/phases/01-projecao/01-02-SUMMARY.md
