@@ -17,16 +17,16 @@ O objetivo FINAL de todo este trabalho NÃO é "ter uma planilha limpa". É GERA
 - Se a CARTEIRA não gerar essa inteligência de agenda diária, TODO O TRABALHO DAS 10 FASES NÃO SERVE PRA NADA
 - As regras, status, grupos de colunas do funil na CARTEIRA já foram DESENHADOS para isso — respeitar 100%
 
-**Current focus:** Phase 07 Redes e Franquias COMPLETE -- all 3 plans done, ready for Phase 08.
+**Current focus:** Phase 08 Comite e Metas -- Plan 01 COMPLETE, Plan 02 next.
 
 ## Current Position
 
-Phase: 7 of 10 (Redes e Franquias) -- COMPLETE
-Plan: 3 of 3 in current phase (07-03 COMPLETE -- all Phase 7 requirements verified PASS)
-Status: Phase 07 COMPLETE -- REDE-01..04 all PASS, 19,224 PROJECAO formulas intact, validation_report.json generated
-Last activity: 2026-02-17 -- Plan 07-03 executed (validation of all Phase 7 requirements)
+Phase: 8 of 10 (Comite e Metas) -- IN PROGRESS
+Plan: 1 of 2 in current phase (08-01 COMPLETE -- META validation all 6 checks PASS)
+Status: Plan 08-01 COMPLETE -- META infrastructure validated, meta_validation_report.json generated, ready for 08-02
+Last activity: 2026-02-17 -- Plan 08-01 executed (META infrastructure validation)
 
-Progress: [████████████████████] 71% (plans 01-01..03, 02-01..03, 03-01..02, 04-01..04, 05-01..03, 06-01..02, 07-01..03 of 31 total complete)
+Progress: [█████████████████████] 74% (plans 01-01..03, 02-01..03, 03-01..02, 04-01..04, 05-01..03, 06-01..02, 07-01..03, 08-01 of 31 total complete)
 
 ## DESCOBERTA CRITICA (16/FEV/2026)
 
@@ -57,9 +57,9 @@ As fórmulas da PROJEÇÃO **NÃO estão perdidas**:
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 22
+- Total plans completed: 23
 - Average duration: 13 min
-- Total execution time: 4.88 hours
+- Total execution time: 5.05 hours
 
 | Phase | Plan | Duration | Tasks | Files |
 |-------|------|----------|-------|-------|
@@ -83,6 +83,7 @@ As fórmulas da PROJEÇÃO **NÃO estão perdidas**:
 | 07-redes-franquias | 01 | 69 min | 1 | 2 |
 | 07-redes-franquias | 02 | 5 min | 1 | 2 |
 | 07-redes-franquias | 03 | 3 min | 1 | 2 |
+| 08-comite-metas | 01 | 10 min | 1 | 2 |
 
 *Updated after each plan completion*
 
@@ -176,6 +177,11 @@ As fórmulas da PROJEÇÃO **NÃO estão perdidas**:
 - [17/02]: Phase 07 COMPLETE -- all 4 requirements PASS (REDE-01..04), 7/7 validation checks passed, 0 deviations
 - [17/02]: 5 SAP-only redes (MIX VALI, FEDERZONI, JARDIM DAS ERVAS, NOVA GERACAO, ARMAZEM FIT STORE) correctly absent from PROJECAO col C
 - [17/02]: META 6M cross-check: FITLAND R$283.5k, CIA DA SAUDE R$351k, VIDA LEVE R$154.5k, DIVINA TERRA R$157.5k -- all 0.0% diff
+- [17/02]: Proportional META (col L) contains static values from Phase 1 (not formulas) -- 493 non-zero of 534
+- [17/02]: REALIZADO has ALL 12 months of data (not just OCT/NOV/DEC as research estimated) -- R$ 2,081,030 total
+- [17/02]: 0 orphan clients (research estimated 41) -- all 534 have consultant in col D
+- [17/02]: 7 consultants total: LARISSA(224), HEMANUELE(170), JULIO(66), DAIANE(62), MANU DITZEL alias(10), Leandro(1), Lorrany(1)
+- [17/02]: SAP delta confirmed: R$ 31,803.04 (0.67%) from Phase 1 proportional rounding -- acceptable
 
 ### Fase 1 Revisada
 
@@ -199,7 +205,7 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-17 15:30
-Stopped at: Completed 07-03-PLAN.md (Phase 07 validation -- all 4 requirements PASS)
-Resume file: .planning/phases/07-redes-franquias/07-03-SUMMARY.md
-Next step: Plan Phase 08 (next phase in roadmap)
+Last session: 2026-02-17 17:42
+Stopped at: Completed 08-01-PLAN.md (META infrastructure validation -- all 6 checks PASS)
+Resume file: .planning/phases/08-comite-metas/08-01-SUMMARY.md
+Next step: Execute 08-02-PLAN.md (build COMITE tab with 5 blocks)
