@@ -79,10 +79,10 @@ Plans:
 **Plans**: 4 plans
 
 Plans:
-- [ ] 04-01: Processar 10.484 registros do CONTROLE_FUNIL com classificação 3-tier
-- [ ] 04-02: Processar 5.329 tickets Deskrio (77.805 mensagens, 5.425 conversas)
-- [ ] 04-03: Integrar 3.540 contatos históricos retroativos + dados Julio
-- [ ] 04-04: Dedup, validação Two-Base e contagem final
+- [ ] 04-01-PLAN.md — Criar _helpers.py compartilhado + ETL CONTROLE_FUNIL (10,544 registros, 4 abas, classificacao 3-tier) [Wave 1]
+- [ ] 04-02-PLAN.md — ETL Deskrio (5,329 tickets ao nivel conversa, matching CNPJ, mapeamento LOG 20-col) [Wave 1]
+- [ ] 04-03-PLAN.md — Gerador sintetico SAP-anchored (866 vendas, 6 jornadas GENOMA, 200+ templates, ~3,540 registros) [Wave 2]
+- [ ] 04-04-PLAN.md — Merge cross-source, dedup, validacao 15 regras, popular aba LOG no V13, avaliar LOG-01..07 [Wave 3]
 
 ### Phase 5: Dashboard
 **Goal**: Redesenhar a DASH de 8 blocos "Frankenstein" (164 rows × 19 cols) para 3 blocos compactos (~45 rows) com fórmulas válidas.
