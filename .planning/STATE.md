@@ -17,16 +17,16 @@ O objetivo FINAL de todo este trabalho NÃO é "ter uma planilha limpa". É GERA
 - Se a CARTEIRA não gerar essa inteligência de agenda diária, TODO O TRABALHO DAS 10 FASES NÃO SERVE PRA NADA
 - As regras, status, grupos de colunas do funil na CARTEIRA já foram DESENHADOS para isso — respeitar 100%
 
-**Current focus:** Phase 02 Faturamento -- Plan 01 COMPLETE, Plan 02 next
+**Current focus:** Phase 02 Faturamento -- Plan 02 COMPLETE, Plan 03 next
 
 ## Current Position
 
 Phase: 2 of 10 (Faturamento)
-Plan: 1 of 3 in current phase -- COMPLETE
-Status: Phase 02 Plan 01 COMPLETE -- Ready for Plan 02-02 (merge SAP+Mercos)
-Last activity: 2026-02-17 — Plan 02-01 executed (extract Mercos + SAP vendas, 11/11 armadilhas VALIDADO)
+Plan: 2 of 3 in current phase -- COMPLETE
+Status: Phase 02 Plan 02 COMPLETE -- Ready for Plan 02-03 (CARTEIRA population)
+Last activity: 2026-02-17 — Plan 02-02 executed (SAP-First merge + 10/10 fuzzy match, 537 clients, R$ 2.49M)
 
-Progress: [████░░░░░░] 14% (plans 01-01, 01-02, 01-03, 02-01 of 28 total complete)
+Progress: [█████░░░░░] 18% (plans 01-01, 01-02, 01-03, 02-01, 02-02 of 28 total complete)
 
 ## DESCOBERTA CRITICA (16/FEV/2026)
 
@@ -58,9 +58,9 @@ As fórmulas da PROJEÇÃO **NÃO estão perdidas**:
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 4
-- Average duration: 8 min
-- Total execution time: 0.53 hours
+- Total plans completed: 5
+- Average duration: 7 min
+- Total execution time: 0.60 hours
 
 | Phase | Plan | Duration | Tasks | Files |
 |-------|------|----------|-------|-------|
@@ -68,6 +68,7 @@ As fórmulas da PROJEÇÃO **NÃO estão perdidas**:
 | 01-projecao | 02 | 6 min | 1 | 2 |
 | 01-projecao | 03 | 4 min | 2 | 2 |
 | 02-faturamento | 01 | 18 min | 2 | 4 |
+| 02-faturamento | 02 | 4 min | 2 | 3 |
 
 *Updated after each plan completion*
 
@@ -97,6 +98,11 @@ As fórmulas da PROJEÇÃO **NÃO estão perdidas**:
 - [17/02]: Sem CNPJ clients on dedicated sheet in 02_VENDAS_POSITIVACAO (not in Vendas Mes a Mes)
 - [17/02]: Independent SAP re-extraction matches Phase 1 exactly (489 CNPJs, R$ 2,089,824.23, 0% diff)
 - [17/02]: 11 Mercos armadilhas validated (FAT-03 pre-requisite satisfied)
+- [17/02]: SAP-First merge: 160 month-cells filled from Mercos where SAP=0, total R$ 2,493k (not R$ 2,149k estimated)
+- [17/02]: 27 SAP negative values (credit notes) zeroed at merge time
+- [17/02]: All 10 sem_cnpj matched via exact name in Mercos Carteira (no partial/fuzzy needed)
+- [17/02]: 529 unique CNPJs from merge + 8 new from fuzzy = 537 total clients
+- [17/02]: CARTEIRA population DEFERRED -- V13 has only 3 data rows, needs Phase 9 client roster
 
 ### Fase 1 Revisada
 
@@ -120,6 +126,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-17 02:25
-Stopped at: Completed 02-01-PLAN.md (extract Mercos + SAP vendas). Ready for 02-02 (merge SAP+Mercos).
-Resume file: .planning/phases/02-faturamento/02-01-SUMMARY.md
+Last session: 2026-02-17 02:33
+Stopped at: Completed 02-02-PLAN.md (SAP-First merge + fuzzy match). Ready for 02-03 (CARTEIRA population).
+Resume file: .planning/phases/02-faturamento/02-02-SUMMARY.md
