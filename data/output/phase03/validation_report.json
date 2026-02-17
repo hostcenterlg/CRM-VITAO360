@@ -1,0 +1,96 @@
+{
+  "phase": "03-timeline-mensal",
+  "plan": "02",
+  "date": "2026-02-17",
+  "cross_check": {
+    "total_cnpjs_json": 537,
+    "total_cnpjs_draft1": 554,
+    "common": 537,
+    "matched": 537,
+    "mismatches": [],
+    "missing_from_draft1": [],
+    "extra_in_draft1": [
+      "03790904000407",
+      "05382867000172",
+      "13338712000248",
+      "13338712000400",
+      "32889911000108",
+      "35830031000154",
+      "36093445000100",
+      "39797983000174",
+      "47900505000176",
+      "48794235000129",
+      "50446226000199",
+      "50815238000143",
+      "55383649000120",
+      "62167819000103",
+      "63826539000114",
+      "63964303000144",
+      "64425601000129"
+    ],
+    "duplicates_in_draft1": []
+  },
+  "abc_validation": {
+    "total_match": 537,
+    "total_mismatch": 0,
+    "distribution": {
+      "A": 298,
+      "B": 220,
+      "C": 19
+    },
+    "mismatches": []
+  },
+  "derived_fields_spot_check": {
+    "checked": 10,
+    "all_pass": true,
+    "failures": []
+  },
+  "carteira_formulas": {
+    "checked": 10,
+    "all_have_formulas": false,
+    "issues": [
+      {
+        "cnpj": "05589673000142",
+        "row": 6088,
+        "issues": [
+          "Col 26: empty (expected formula)",
+          "Col 27: empty (expected formula)",
+          "Col 28: empty (expected formula)",
+          "Col 29: empty (expected formula)",
+          "Col 30: empty (expected formula)",
+          "Col 31: empty (expected formula)",
+          "Col 32: empty (expected formula)",
+          "Col 33: empty (expected formula)",
+          "Col 34: empty (expected formula)",
+          "Col 35: empty (expected formula)",
+          "Col 36: empty (expected formula)",
+          "Col 25 (TOTAL): empty",
+          "Col 38: empty (expected formula)",
+          "Col 39: empty (expected formula)",
+          "Col 40: empty (expected formula)",
+          "Col 41: empty (expected formula)",
+          "Col 42: empty (expected formula)"
+        ]
+      }
+    ]
+  },
+  "v13_integrity": {
+    "projecao_formulas": 19224,
+    "status": "PASS"
+  },
+  "requirements": {
+    "TIME-01": {
+      "status": "PASS",
+      "detail": "537 clientes com vendas MAR/25-JAN/26 no DRAFT 1 + CARTEIRA. 0 mismatches, 0 missing."
+    },
+    "TIME-02": {
+      "status": "PASS",
+      "detail": "Dados cruzados via sap_mercos_merged.json (SAP-First + Mercos complement). 537 clients, 160 month-cells from Mercos."
+    },
+    "TIME-03": {
+      "status": "PASS",
+      "detail": "ABC recalculada: A=298, B=220, C=19 (thresholds A>=2000, B>=500, C<500). 0 mismatches."
+    }
+  },
+  "overall": "PASS"
+}
