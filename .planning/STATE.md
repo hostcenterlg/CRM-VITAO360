@@ -17,16 +17,16 @@ O objetivo FINAL de todo este trabalho NÃO é "ter uma planilha limpa". É GERA
 - Se a CARTEIRA não gerar essa inteligência de agenda diária, TODO O TRABALHO DAS 10 FASES NÃO SERVE PRA NADA
 - As regras, status, grupos de colunas do funil na CARTEIRA já foram DESENHADOS para isso — respeitar 100%
 
-**Current focus:** Phase 07 Redes e Franquias -- Plan 01 COMPLETE, executing Plan 02.
+**Current focus:** Phase 07 Redes e Franquias -- Plan 02 COMPLETE, executing Plan 03.
 
 ## Current Position
 
 Phase: 7 of 10 (Redes e Franquias)
-Plan: 1 of 3 in current phase (07-01 COMPLETE)
-Status: Plan 07-01 COMPLETE -- 11 SEM GRUPO remapped, AS:AZ expanded to 20 redes + SEM GRUPO, 2,670 VLOOKUPs updated
-Last activity: 2026-02-17 -- Plan 07-01 executed (remap + expand reference table)
+Plan: 2 of 3 in current phase (07-02 COMPLETE)
+Status: Plan 07-02 COMPLETE -- REDES_FRANQUIAS_v2 tab created with 280 dynamic formulas, META 6M populated, sinaleiro de penetracao chain
+Last activity: 2026-02-17 -- Plan 07-02 executed (create REDES_FRANQUIAS_v2 tab)
 
-Progress: [██████████████████] 65% (plans 01-01..03, 02-01..03, 03-01..02, 04-01..04, 05-01..03, 06-01..02, 07-01 of 31 total complete)
+Progress: [███████████████████] 68% (plans 01-01..03, 02-01..03, 03-01..02, 04-01..04, 05-01..03, 06-01..02, 07-01..02 of 31 total complete)
 
 ## DESCOBERTA CRITICA (16/FEV/2026)
 
@@ -57,9 +57,9 @@ As fórmulas da PROJEÇÃO **NÃO estão perdidas**:
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 20
+- Total plans completed: 21
 - Average duration: 14 min
-- Total execution time: 4.75 hours
+- Total execution time: 4.83 hours
 
 | Phase | Plan | Duration | Tasks | Files |
 |-------|------|----------|-------|-------|
@@ -81,6 +81,7 @@ As fórmulas da PROJEÇÃO **NÃO estão perdidas**:
 | 06-e-commerce | 01 | 8 min | 1 | 2 |
 | 06-e-commerce | 02 | 53 min | 2 | 4 |
 | 07-redes-franquias | 01 | 69 min | 1 | 2 |
+| 07-redes-franquias | 02 | 5 min | 1 | 2 |
 
 *Updated after each plan completion*
 
@@ -166,6 +167,11 @@ As fórmulas da PROJEÇÃO **NÃO estão perdidas**:
 - [17/02]: FAT.REAL via sum AA:AL (col Z formula returns None with data_only=True)
 - [17/02]: MINHA QUITANDINHA has 0 lojas in SAP Leads but R$1,928 fat.real from 1 active client
 - [17/02]: 11 SEM GRUPO remapped: 7 ESMERALDA, 1 DIVINA TERRA, 1 MERCOCENTRO, 1 MINHA QUITANDINHA, 1 VIDA LEVE
+- [17/02]: REDES_FRANQUIAS_v2: 21 data rows (20 redes + SEM GRUPO), TOTAL at row 25, RANK range $Q$4:$Q$24
+- [17/02]: META 6M from SAP Faturamento: aggregated '01. TOTAL' rows, 80 total (19 redes + 61 SEM GRUPO entries)
+- [17/02]: SEM GRUPO META 6M = R$1,029,000 (aggregated from 61 microregion entries), TOTAL LOJAS = 0
+- [17/02]: Redes sorted by META 6M descending in REDES_FRANQUIAS_v2 (not FAT.REAL as in AS:AZ ref table)
+- [17/02]: 280 formulas in REDES_FRANQUIAS_v2: 13 per rede (SUMIFS, COUNTIFS, IFERROR, IF, MAX, RANK) + 7 TOTAL
 
 ### Fase 1 Revisada
 
@@ -189,7 +195,7 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-17 15:12
-Stopped at: Completed 07-01-PLAN.md (remap 11 SEM GRUPO + expand AS:AZ to 20 redes + SEM GRUPO)
-Resume file: .planning/phases/07-redes-franquias/07-01-SUMMARY.md
-Next step: Execute 07-02-PLAN.md (create REDES_FRANQUIAS_v2 tab)
+Last session: 2026-02-17 15:22
+Stopped at: Completed 07-02-PLAN.md (create REDES_FRANQUIAS_v2 tab with 280 dynamic formulas)
+Resume file: .planning/phases/07-redes-franquias/07-02-SUMMARY.md
+Next step: Execute 07-03-PLAN.md (final validation and formatting)
