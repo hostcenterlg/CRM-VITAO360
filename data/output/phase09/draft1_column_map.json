@@ -1,0 +1,640 @@
+{
+  "v12_draft1_columns": {
+    "A": "NOME FANTASIA",
+    "B": "CNPJ",
+    "C": "RAZÃO SOCIAL",
+    "D": "UF",
+    "E": "CIDADE",
+    "F": "EMAIL",
+    "G": "TELEFONE",
+    "H": "DATA CADASTRO",
+    "I": "REDE / REGIONAL",
+    "J": "CONSULTOR",
+    "K": "VENDEDOR ÚLTIMO PEDIDO",
+    "L": "DIAS SEM COMPRA",
+    "M": "DATA ÚLTIMO PEDIDO",
+    "N": "VALOR ÚLTIMO PEDIDO",
+    "O": "ACESSOS SEMANA",
+    "P": "ACESSO B2B",
+    "Q": "ACESSOS PORTAL",
+    "R": "ITENS CARRINHO",
+    "S": "VALOR B2B",
+    "T": "OPORTUNIDADE",
+    "U": "MAR/25",
+    "V": "ABR/25",
+    "W": "MAI/25",
+    "X": "JUN/25",
+    "Y": "JUL/25",
+    "Z": "AGO/25",
+    "AA": "SET/25",
+    "AB": "OUT/25",
+    "AC": "NOV/25",
+    "AD": "DEZ/25",
+    "AE": "JAN/26",
+    "AF": "FEV/26",
+    "AG": "CICLO MÉDIO",
+    "AH": "Nº COMPRAS",
+    "AI": "CURVA ABC",
+    "AJ": "MESES POSITIVADO",
+    "AK": "TICKET MÉDIO",
+    "AL": "ÚLT. REGISTRO MERCOS",
+    "AM": "DATA ÚLT. ATENDIMENTO MERCOS",
+    "AN": "TIPO ATENDIMENTO MERCOS",
+    "AO": "OBS ATENDIMENTO MERCOS",
+    "AP": "TIPO CLIENTE",
+    "AQ": "MÉDIA MENSAL",
+    "AR": "IDENTIDADE (A-K)",
+    "AS": "Carteira Detalhada de Clientes"
+  },
+  "v13_draft1_columns": {
+    "A": "NOME FANTASIA",
+    "B": "CNPJ",
+    "C": "RAZÃO SOCIAL",
+    "D": "UF",
+    "E": "CIDADE",
+    "F": "EMAIL",
+    "G": "TELEFONE",
+    "H": "DATA CADASTRO",
+    "I": "REDE / REGIONAL",
+    "J": "CONSULTOR",
+    "K": "VENDEDOR ÚLTIMO PEDIDO",
+    "L": "DIAS SEM COMPRA",
+    "M": "DATA ÚLTIMO PEDIDO",
+    "N": "VALOR ÚLTIMO PEDIDO",
+    "O": "ACESSOS SEMANA",
+    "P": "ACESSO B2B",
+    "Q": "ACESSOS PORTAL",
+    "R": "ITENS CARRINHO",
+    "S": "VALOR B2B",
+    "T": "OPORTUNIDADE",
+    "U": "MAR/25",
+    "V": "ABR/25",
+    "W": "MAI/25",
+    "X": "JUN/25",
+    "Y": "JUL/25",
+    "Z": "AGO/25",
+    "AA": "SET/25",
+    "AB": "OUT/25",
+    "AC": "NOV/25",
+    "AD": "DEZ/25",
+    "AE": "JAN/26",
+    "AF": "FEV/26",
+    "AG": "CICLO MÉDIO",
+    "AH": "Nº COMPRAS",
+    "AI": "CURVA ABC",
+    "AJ": "MESES POSITIVADO",
+    "AK": "TICKET MÉDIO",
+    "AL": "ÚLT. REGISTRO MERCOS",
+    "AM": "DATA ÚLT. ATENDIMENTO MERCOS",
+    "AN": "TIPO ATENDIMENTO MERCOS",
+    "AO": "OBS ATENDIMENTO MERCOS",
+    "AP": "TIPO CLIENTE",
+    "AQ": "MÉDIA MENSAL",
+    "AR": "AUDIT TELEFONE",
+    "AS": "FONTE ATUALIZAÇÃO"
+  },
+  "referenced_by_carteira": [
+    "AA",
+    "AB",
+    "AC",
+    "AD",
+    "AE",
+    "AH",
+    "AI",
+    "AJ",
+    "AK",
+    "AL",
+    "AP",
+    "B",
+    "C",
+    "D",
+    "E",
+    "F",
+    "G",
+    "H",
+    "I",
+    "J",
+    "K",
+    "L",
+    "M",
+    "N",
+    "O",
+    "P",
+    "Q",
+    "R",
+    "S",
+    "T",
+    "U",
+    "V",
+    "W",
+    "X",
+    "Y",
+    "Z"
+  ],
+  "carteira_formula_refs": {
+    "C": {
+      "carteira_header": "RAZÃO SOCIAL",
+      "draft1_cols_referenced": [
+        "B",
+        "C"
+      ]
+    },
+    "D": {
+      "carteira_header": "UF",
+      "draft1_cols_referenced": [
+        "B",
+        "D"
+      ]
+    },
+    "E": {
+      "carteira_header": "CIDADE",
+      "draft1_cols_referenced": [
+        "B",
+        "E"
+      ]
+    },
+    "F": {
+      "carteira_header": "EMAIL",
+      "draft1_cols_referenced": [
+        "B",
+        "F"
+      ]
+    },
+    "G": {
+      "carteira_header": "TELEFONE",
+      "draft1_cols_referenced": [
+        "B",
+        "G"
+      ]
+    },
+    "H": {
+      "carteira_header": "DATA CADASTRO",
+      "draft1_cols_referenced": [
+        "B",
+        "H"
+      ]
+    },
+    "I": {
+      "carteira_header": "REDE  REGIONAL",
+      "draft1_cols_referenced": [
+        "B",
+        "I"
+      ]
+    },
+    "K": {
+      "carteira_header": "ÚLT REGISTRO MERCOS",
+      "draft1_cols_referenced": [
+        "AL",
+        "B"
+      ]
+    },
+    "L": {
+      "carteira_header": "CONSULTOR",
+      "draft1_cols_referenced": [
+        "B",
+        "J"
+      ]
+    },
+    "M": {
+      "carteira_header": "VENDEDOR ÚLTIMO PEDIDO",
+      "draft1_cols_referenced": [
+        "B",
+        "K"
+      ]
+    },
+    "P": {
+      "carteira_header": "DIAS SEM COMPRA",
+      "draft1_cols_referenced": [
+        "B",
+        "L"
+      ]
+    },
+    "Q": {
+      "carteira_header": "DATA ÚLTIMO PEDIDO",
+      "draft1_cols_referenced": [
+        "B",
+        "M"
+      ]
+    },
+    "R": {
+      "carteira_header": "VALOR ÚLTIMO PEDIDO",
+      "draft1_cols_referenced": [
+        "B",
+        "N"
+      ]
+    },
+    "S": {
+      "carteira_header": "CICLO MÉDIO",
+      "draft1_cols_referenced": [
+        "B",
+        "O"
+      ]
+    },
+    "T": {
+      "carteira_header": "ACESSO B2B",
+      "draft1_cols_referenced": [
+        "B",
+        "P"
+      ]
+    },
+    "U": {
+      "carteira_header": "ACESSOS PORTAL",
+      "draft1_cols_referenced": [
+        "B",
+        "Q"
+      ]
+    },
+    "V": {
+      "carteira_header": "ITENS CARRINHO",
+      "draft1_cols_referenced": [
+        "B",
+        "R"
+      ]
+    },
+    "W": {
+      "carteira_header": "VALOR B2B",
+      "draft1_cols_referenced": [
+        "B",
+        "S"
+      ]
+    },
+    "X": {
+      "carteira_header": "OPORTUNIDADE",
+      "draft1_cols_referenced": [
+        "B",
+        "T"
+      ]
+    },
+    "Z": {
+      "carteira_header": "45717",
+      "draft1_cols_referenced": [
+        "B",
+        "U"
+      ]
+    },
+    "AA": {
+      "carteira_header": "45748",
+      "draft1_cols_referenced": [
+        "B",
+        "V"
+      ]
+    },
+    "AB": {
+      "carteira_header": "45778",
+      "draft1_cols_referenced": [
+        "B",
+        "W"
+      ]
+    },
+    "AC": {
+      "carteira_header": "45809",
+      "draft1_cols_referenced": [
+        "B",
+        "X"
+      ]
+    },
+    "AD": {
+      "carteira_header": "45839",
+      "draft1_cols_referenced": [
+        "B",
+        "Y"
+      ]
+    },
+    "AE": {
+      "carteira_header": "45870",
+      "draft1_cols_referenced": [
+        "B",
+        "Z"
+      ]
+    },
+    "AF": {
+      "carteira_header": "45901",
+      "draft1_cols_referenced": [
+        "AA",
+        "B"
+      ]
+    },
+    "AG": {
+      "carteira_header": "45931",
+      "draft1_cols_referenced": [
+        "AB",
+        "B"
+      ]
+    },
+    "AH": {
+      "carteira_header": "45962",
+      "draft1_cols_referenced": [
+        "AC",
+        "B"
+      ]
+    },
+    "AI": {
+      "carteira_header": "45992",
+      "draft1_cols_referenced": [
+        "AD",
+        "B"
+      ]
+    },
+    "AJ": {
+      "carteira_header": "46023",
+      "draft1_cols_referenced": [
+        "AE",
+        "B"
+      ]
+    },
+    "AL": {
+      "carteira_header": "Nº COMPRAS",
+      "draft1_cols_referenced": [
+        "AH",
+        "B"
+      ]
+    },
+    "AM": {
+      "carteira_header": "CURVA ABC",
+      "draft1_cols_referenced": [
+        "AI",
+        "B"
+      ]
+    },
+    "AN": {
+      "carteira_header": "MESES POSITIVADO",
+      "draft1_cols_referenced": [
+        "AJ",
+        "B"
+      ]
+    },
+    "AP": {
+      "carteira_header": "TICKET MÉDIO",
+      "draft1_cols_referenced": [
+        "AK",
+        "B"
+      ]
+    },
+    "AX": {
+      "carteira_header": "TIPO CLIENTE",
+      "draft1_cols_referenced": [
+        "AP",
+        "B"
+      ]
+    }
+  },
+  "remapping": {
+    "SET/25": {
+      "v12_col": "AA",
+      "v13_col": "AA",
+      "v12_header": "SET/25",
+      "v13_header": "SET/25",
+      "match": true
+    },
+    "OUT/25": {
+      "v12_col": "AB",
+      "v13_col": "AB",
+      "v12_header": "OUT/25",
+      "v13_header": "OUT/25",
+      "match": true
+    },
+    "NOV/25": {
+      "v12_col": "AC",
+      "v13_col": "AC",
+      "v12_header": "NOV/25",
+      "v13_header": "NOV/25",
+      "match": true
+    },
+    "DEZ/25": {
+      "v12_col": "AD",
+      "v13_col": "AD",
+      "v12_header": "DEZ/25",
+      "v13_header": "DEZ/25",
+      "match": true
+    },
+    "JAN/26": {
+      "v12_col": "AE",
+      "v13_col": "AE",
+      "v12_header": "JAN/26",
+      "v13_header": "JAN/26",
+      "match": true
+    },
+    "Nº COMPRAS": {
+      "v12_col": "AH",
+      "v13_col": "AH",
+      "v12_header": "Nº COMPRAS",
+      "v13_header": "Nº COMPRAS",
+      "match": true
+    },
+    "CURVA ABC": {
+      "v12_col": "AI",
+      "v13_col": "AI",
+      "v12_header": "CURVA ABC",
+      "v13_header": "CURVA ABC",
+      "match": true
+    },
+    "MESES POSITIVADO": {
+      "v12_col": "AJ",
+      "v13_col": "AJ",
+      "v12_header": "MESES POSITIVADO",
+      "v13_header": "MESES POSITIVADO",
+      "match": true
+    },
+    "TICKET MÉDIO": {
+      "v12_col": "AK",
+      "v13_col": "AK",
+      "v12_header": "TICKET MÉDIO",
+      "v13_header": "TICKET MÉDIO",
+      "match": true
+    },
+    "ÚLT. REGISTRO MERCOS": {
+      "v12_col": "AL",
+      "v13_col": "AL",
+      "v12_header": "ÚLT. REGISTRO MERCOS",
+      "v13_header": "ÚLT. REGISTRO MERCOS",
+      "match": true
+    },
+    "TIPO CLIENTE": {
+      "v12_col": "AP",
+      "v13_col": "AP",
+      "v12_header": "TIPO CLIENTE",
+      "v13_header": "TIPO CLIENTE",
+      "match": true
+    },
+    "CNPJ": {
+      "v12_col": "B",
+      "v13_col": "B",
+      "v12_header": "CNPJ",
+      "v13_header": "CNPJ",
+      "match": true
+    },
+    "RAZÃO SOCIAL": {
+      "v12_col": "C",
+      "v13_col": "C",
+      "v12_header": "RAZÃO SOCIAL",
+      "v13_header": "RAZÃO SOCIAL",
+      "match": true
+    },
+    "UF": {
+      "v12_col": "D",
+      "v13_col": "D",
+      "v12_header": "UF",
+      "v13_header": "UF",
+      "match": true
+    },
+    "CIDADE": {
+      "v12_col": "E",
+      "v13_col": "E",
+      "v12_header": "CIDADE",
+      "v13_header": "CIDADE",
+      "match": true
+    },
+    "EMAIL": {
+      "v12_col": "F",
+      "v13_col": "F",
+      "v12_header": "EMAIL",
+      "v13_header": "EMAIL",
+      "match": true
+    },
+    "TELEFONE": {
+      "v12_col": "G",
+      "v13_col": "G",
+      "v12_header": "TELEFONE",
+      "v13_header": "TELEFONE",
+      "match": true
+    },
+    "DATA CADASTRO": {
+      "v12_col": "H",
+      "v13_col": "H",
+      "v12_header": "DATA CADASTRO",
+      "v13_header": "DATA CADASTRO",
+      "match": true
+    },
+    "REDE / REGIONAL": {
+      "v12_col": "I",
+      "v13_col": "I",
+      "v12_header": "REDE / REGIONAL",
+      "v13_header": "REDE / REGIONAL",
+      "match": true
+    },
+    "CONSULTOR": {
+      "v12_col": "J",
+      "v13_col": "J",
+      "v12_header": "CONSULTOR",
+      "v13_header": "CONSULTOR",
+      "match": true
+    },
+    "VENDEDOR ÚLTIMO PEDIDO": {
+      "v12_col": "K",
+      "v13_col": "K",
+      "v12_header": "VENDEDOR ÚLTIMO PEDIDO",
+      "v13_header": "VENDEDOR ÚLTIMO PEDIDO",
+      "match": true
+    },
+    "DIAS SEM COMPRA": {
+      "v12_col": "L",
+      "v13_col": "L",
+      "v12_header": "DIAS SEM COMPRA",
+      "v13_header": "DIAS SEM COMPRA",
+      "match": true
+    },
+    "DATA ÚLTIMO PEDIDO": {
+      "v12_col": "M",
+      "v13_col": "M",
+      "v12_header": "DATA ÚLTIMO PEDIDO",
+      "v13_header": "DATA ÚLTIMO PEDIDO",
+      "match": true
+    },
+    "VALOR ÚLTIMO PEDIDO": {
+      "v12_col": "N",
+      "v13_col": "N",
+      "v12_header": "VALOR ÚLTIMO PEDIDO",
+      "v13_header": "VALOR ÚLTIMO PEDIDO",
+      "match": true
+    },
+    "ACESSOS SEMANA": {
+      "v12_col": "O",
+      "v13_col": "O",
+      "v12_header": "ACESSOS SEMANA",
+      "v13_header": "ACESSOS SEMANA",
+      "match": true
+    },
+    "ACESSO B2B": {
+      "v12_col": "P",
+      "v13_col": "P",
+      "v12_header": "ACESSO B2B",
+      "v13_header": "ACESSO B2B",
+      "match": true
+    },
+    "ACESSOS PORTAL": {
+      "v12_col": "Q",
+      "v13_col": "Q",
+      "v12_header": "ACESSOS PORTAL",
+      "v13_header": "ACESSOS PORTAL",
+      "match": true
+    },
+    "ITENS CARRINHO": {
+      "v12_col": "R",
+      "v13_col": "R",
+      "v12_header": "ITENS CARRINHO",
+      "v13_header": "ITENS CARRINHO",
+      "match": true
+    },
+    "VALOR B2B": {
+      "v12_col": "S",
+      "v13_col": "S",
+      "v12_header": "VALOR B2B",
+      "v13_header": "VALOR B2B",
+      "match": true
+    },
+    "OPORTUNIDADE": {
+      "v12_col": "T",
+      "v13_col": "T",
+      "v12_header": "OPORTUNIDADE",
+      "v13_header": "OPORTUNIDADE",
+      "match": true
+    },
+    "MAR/25": {
+      "v12_col": "U",
+      "v13_col": "U",
+      "v12_header": "MAR/25",
+      "v13_header": "MAR/25",
+      "match": true
+    },
+    "ABR/25": {
+      "v12_col": "V",
+      "v13_col": "V",
+      "v12_header": "ABR/25",
+      "v13_header": "ABR/25",
+      "match": true
+    },
+    "MAI/25": {
+      "v12_col": "W",
+      "v13_col": "W",
+      "v12_header": "MAI/25",
+      "v13_header": "MAI/25",
+      "match": true
+    },
+    "JUN/25": {
+      "v12_col": "X",
+      "v13_col": "X",
+      "v12_header": "JUN/25",
+      "v13_header": "JUN/25",
+      "match": true
+    },
+    "JUL/25": {
+      "v12_col": "Y",
+      "v13_col": "Y",
+      "v12_header": "JUL/25",
+      "v13_header": "JUL/25",
+      "match": true
+    },
+    "AGO/25": {
+      "v12_col": "Z",
+      "v13_col": "Z",
+      "v12_header": "AGO/25",
+      "v13_header": "AGO/25",
+      "match": true
+    }
+  },
+  "mismatches": [],
+  "v13_draft1_path": "data\\sources\\drafts\\DL_DRAFT1_FEV2026.xlsx",
+  "v13_draft1_max_row": 505,
+  "v12_draft1_max_row": 557,
+  "columns_match": true
+}
