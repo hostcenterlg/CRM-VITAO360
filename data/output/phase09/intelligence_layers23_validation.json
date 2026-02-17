@@ -1,0 +1,46 @@
+{
+  "meta_diaria_count": {
+    "status": "PASS",
+    "detail": "554/554 META DIARIA formulas"
+  },
+  "pipeline_value_count": {
+    "status": "PASS",
+    "detail": "554/554 PIPELINE VALUE formulas"
+  },
+  "coverage_ratio_count": {
+    "status": "PASS",
+    "detail": "554/554 COVERAGE RATIO formulas"
+  },
+  "alerta_count": {
+    "status": "PASS",
+    "detail": "554/554 ALERTA formulas"
+  },
+  "gap_value_count": {
+    "status": "PASS",
+    "detail": "554/554 GAP VALUE formulas"
+  },
+  "coverage_sumifs": {
+    "status": "PASS",
+    "detail": "COVERAGE uses SUMIFS with L (CONSULTOR): True"
+  },
+  "cf_rules_count": {
+    "status": "PASS",
+    "detail": "42 CF rules applied (minimum 6)"
+  },
+  "no_circular": {
+    "status": "PASS",
+    "detail": "No circular refs in intelligence cols: True"
+  },
+  "projecao_intact": {
+    "status": "PASS",
+    "detail": "PROJECAO formulas: 19224 (expected 19,224)"
+  },
+  "carteira_total": {
+    "status": "PASS",
+    "detail": "CARTEIRA total formulas: 134092"
+  },
+  "v13_total": {
+    "status": "PASS",
+    "detail": "V13 total formulas: 154242"
+  }
+}
