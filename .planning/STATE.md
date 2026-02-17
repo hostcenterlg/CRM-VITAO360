@@ -17,16 +17,16 @@ O objetivo FINAL de todo este trabalho NÃO é "ter uma planilha limpa". É GERA
 - Se a CARTEIRA não gerar essa inteligência de agenda diária, TODO O TRABALHO DAS 10 FASES NÃO SERVE PRA NADA
 - As regras, status, grupos de colunas do funil na CARTEIRA já foram DESENHADOS para isso — respeitar 100%
 
-**Current focus:** Phase 09 Blueprint v2 -- Plan 03 COMPLETE, Plan 04 next (SAP + FATURAMENTO Blocks).
+**Current focus:** Phase 09 Blueprint v2 -- Plan 04 COMPLETE, Plan 05 next (AGENDA tabs).
 
 ## Current Position
 
 Phase: 9 of 10 (Blueprint v2) -- IN PROGRESS
-Plan: 3 of 6 in current phase (09-03 COMPLETE -- CARTEIRA tab with 263 cols, MERCOS+FUNIL 27,146 formulas)
-Status: Plan 09-03 COMPLETE -- V13 has 9 tabs, CARTEIRA skeleton + MERCOS/FUNIL formulas injected, ready for Plan 09-04
-Last activity: 2026-02-17 -- Plan 09-03 executed (CARTEIRA Skeleton + MERCOS/FUNIL Blocks)
+Plan: 4 of 6 in current phase (09-04 COMPLETE -- SAP + FATURAMENTO blocks, 130,214 CARTEIRA formulas, all 263 cols populated)
+Status: Plan 09-04 COMPLETE -- V13 CARTEIRA has all 263 columns with SAP data + FATURAMENTO formulas, ready for Plan 09-05
+Last activity: 2026-02-17 -- Plan 09-04 executed (SAP + FATURAMENTO Blocks)
 
-Progress: [█████████████████████████] 87% (plans 01-01..03, 02-01..03, 03-01..02, 04-01..04, 05-01..03, 06-01..02, 07-01..03, 08-01..02, 09-01..03 of 31 total complete)
+Progress: [██████████████████████████] 90% (plans 01-01..03, 02-01..03, 03-01..02, 04-01..04, 05-01..03, 06-01..02, 07-01..03, 08-01..02, 09-01..04 of 31 total complete)
 
 ## DESCOBERTA CRITICA (16/FEV/2026)
 
@@ -57,9 +57,9 @@ As fórmulas da PROJEÇÃO **NÃO estão perdidas**:
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 27
+- Total plans completed: 28
 - Average duration: 13 min
-- Total execution time: 5.77 hours
+- Total execution time: 5.88 hours
 
 | Phase | Plan | Duration | Tasks | Files |
 |-------|------|----------|-------|-------|
@@ -88,6 +88,7 @@ As fórmulas da PROJEÇÃO **NÃO estão perdidas**:
 | 09-blueprint-v2 | 01 | 16 min | 2 | 6 |
 | 09-blueprint-v2 | 02 | 12 min | 2 | 4 |
 | 09-blueprint-v2 | 03 | 5 min | 2 | 4 |
+| 09-blueprint-v2 | 04 | 7 min | 2 | 4 |
 
 *Updated after each plan completion*
 
@@ -209,6 +210,14 @@ As fórmulas da PROJEÇÃO **NÃO estão perdidas**:
 - [17/02]: All V12 formula templates converted to bounded ranges via regex: $COL:$COL -> $COL$3:$COL$25000
 - [17/02]: CARTEIRA 27,146 formulas in MERCOS+FUNIL blocks, 46,370 total formulas in V13 (with PROJECAO 19,224)
 - [17/02]: V13 now has 9 tabs: PROJECAO, LOG, DASH, REDES_FRANQUIAS_v2, COMITE, REGRAS, DRAFT 1, DRAFT 2, CARTEIRA
+- [17/02]: SAP blocks (BK-BY) use static values from SAP Cadastro (1,698 clients, 518/554 matched by CNPJ)
+- [17/02]: FATURAMENTO year = 2026 (confirmed by V12 COUNTIFS DATE patterns)
+- [17/02]: REALIZADO MES maps to DRAFT 1: JAN=AE(JAN/26), FEB=AF(FEB/26), MAR=U(MAR/25)...DEZ=AD(DEZ/25)
+- [17/02]: % ALCANCADO = FEB %MES (current operational month), BZ=CA reference
+- [17/02]: Quarter anchors = AVERAGE of 3 monthly %MES columns within quarter
+- [17/02]: FATURAMENTO 103,068 formulas + MERCOS/FUNIL 27,146 = 130,214 CARTEIRA total
+- [17/02]: 150,364 total V13 formulas across all 9 tabs (PROJECAO 19,224 intact)
+- [17/02]: 11 empty cols (J,N,O,AK,AQ,BA,BC-BG) are user-editable static fields -- expected, not formula columns
 
 ### Fase 1 Revisada
 
@@ -233,6 +242,6 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-17
-Stopped at: Completed 09-03-PLAN.md (CARTEIRA Skeleton + MERCOS/FUNIL Blocks -- 263 cols, 27,146 formulas, all validated)
-Resume file: .planning/phases/09-blueprint-v2/09-03-SUMMARY.md
-Next step: /gsd:execute-phase 09-04 (SAP + FATURAMENTO Blocks)
+Stopped at: Completed 09-04-PLAN.md (SAP + FATURAMENTO Blocks -- 518 SAP clients + 103K FATURAMENTO formulas, 130,214 total CARTEIRA)
+Resume file: .planning/phases/09-blueprint-v2/09-04-SUMMARY.md
+Next step: /gsd:execute-phase 09-05 (AGENDA tabs)
