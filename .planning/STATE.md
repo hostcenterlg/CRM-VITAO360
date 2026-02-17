@@ -17,16 +17,16 @@ O objetivo FINAL de todo este trabalho NÃO é "ter uma planilha limpa". É GERA
 - Se a CARTEIRA não gerar essa inteligência de agenda diária, TODO O TRABALHO DAS 10 FASES NÃO SERVE PRA NADA
 - As regras, status, grupos de colunas do funil na CARTEIRA já foram DESENHADOS para isso — respeitar 100%
 
-**Current focus:** Phase 09 Blueprint v2 -- Plan 04 COMPLETE, Plan 05 next (AGENDA tabs).
+**Current focus:** Phase 09 Blueprint v2 -- Plan 05 COMPLETE, Plan 06 next (Final Validation).
 
 ## Current Position
 
 Phase: 9 of 10 (Blueprint v2) -- IN PROGRESS
-Plan: 4 of 6 in current phase (09-04 COMPLETE -- SAP + FATURAMENTO blocks, 130,214 CARTEIRA formulas, all 263 cols populated)
-Status: Plan 09-04 COMPLETE -- V13 CARTEIRA has all 263 columns with SAP data + FATURAMENTO formulas, ready for Plan 09-05
-Last activity: 2026-02-17 -- Plan 09-04 executed (SAP + FATURAMENTO Blocks)
+Plan: 5 of 6 in current phase (09-05 COMPLETE -- 3-layer intelligence engine, 134,092 CARTEIRA formulas, 269 cols with SCORE/RANK/PIPELINE/ALERTA)
+Status: Plan 09-05 COMPLETE -- Intelligence engine operational with weighted SCORE, pipeline coverage, urgency alerts, and 42 CF rules
+Last activity: 2026-02-17 -- Plan 09-05 executed (Intelligence Engine)
 
-Progress: [██████████████████████████] 90% (plans 01-01..03, 02-01..03, 03-01..02, 04-01..04, 05-01..03, 06-01..02, 07-01..03, 08-01..02, 09-01..04 of 31 total complete)
+Progress: [███████████████████████████] 94% (plans 01-01..03, 02-01..03, 03-01..02, 04-01..04, 05-01..03, 06-01..02, 07-01..03, 08-01..02, 09-01..05 of 31 total complete)
 
 ## DESCOBERTA CRITICA (16/FEV/2026)
 
@@ -57,9 +57,9 @@ As fórmulas da PROJEÇÃO **NÃO estão perdidas**:
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 28
+- Total plans completed: 29
 - Average duration: 13 min
-- Total execution time: 5.88 hours
+- Total execution time: 6.01 hours
 
 | Phase | Plan | Duration | Tasks | Files |
 |-------|------|----------|-------|-------|
@@ -89,6 +89,7 @@ As fórmulas da PROJEÇÃO **NÃO estão perdidas**:
 | 09-blueprint-v2 | 02 | 12 min | 2 | 4 |
 | 09-blueprint-v2 | 03 | 5 min | 2 | 4 |
 | 09-blueprint-v2 | 04 | 7 min | 2 | 4 |
+| 09-blueprint-v2 | 05 | 8 min | 2 | 5 |
 
 *Updated after each plan completion*
 
@@ -218,6 +219,14 @@ As fórmulas da PROJEÇÃO **NÃO estão perdidas**:
 - [17/02]: FATURAMENTO 103,068 formulas + MERCOS/FUNIL 27,146 = 130,214 CARTEIRA total
 - [17/02]: 150,364 total V13 formulas across all 9 tabs (PROJECAO 19,224 intact)
 - [17/02]: 11 empty cols (J,N,O,AK,AQ,BA,BC-BG) are user-editable static fields -- expected, not formula columns
+- [17/02]: Column O (PRIORIDADE) repurposed for composite SCORE -- was empty static_data, now has 6-factor weighted formula
+- [17/02]: Intelligence columns JD-JI (264-269) placed after JC to avoid shifting 130K FATURAMENTO formulas
+- [17/02]: COVERAGE RATIO uses SUMIFS on L (CONSULTOR) for consultant-level pipeline aggregation
+- [17/02]: ACAO FUTURA enhanced: DRAFT 2 primary + REGRAS motor fallback (rows 221-283 SITUACAO x RESULTADO)
+- [17/02]: PROX FOLLOWUP enhanced: DRAFT 2 primary + REGRAS section 1 follow-up days fallback (rows 6-20)
+- [17/02]: 42 CF rules: SCORE color scale, TEMPERATURA fills, COVERAGE/ALERTA traffic lights, 38 FATURAMENTO % columns
+- [17/02]: 134,092 CARTEIRA formulas (130,214 existing + 3,878 intelligence), 154,242 V13 total
+- [17/02]: SINALEIRO CF skipped -- uses emoji indicators, openpyxl emoji CF not reliable
 
 ### Fase 1 Revisada
 
@@ -242,6 +251,6 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-17
-Stopped at: Completed 09-04-PLAN.md (SAP + FATURAMENTO Blocks -- 518 SAP clients + 103K FATURAMENTO formulas, 130,214 total CARTEIRA)
-Resume file: .planning/phases/09-blueprint-v2/09-04-SUMMARY.md
-Next step: /gsd:execute-phase 09-05 (AGENDA tabs)
+Stopped at: Completed 09-05-PLAN.md (Intelligence Engine -- 3-layer: SCORE/RANK + PIPELINE/COVERAGE + ALERTA/GAP, 134,092 CARTEIRA formulas)
+Resume file: .planning/phases/09-blueprint-v2/09-05-SUMMARY.md
+Next step: /gsd:execute-phase 09-06 (Final Validation)
