@@ -132,7 +132,7 @@ Plans:
 - [ ] 07-03-PLAN.md -- Validar REDE-01..04 + integridade V13 (19.224 formulas) + gerar validation_report.json
 
 ### Phase 8: Comitê e Metas
-**Goal**: Integrar metas 2026 do SAP e criar visão consolidada do COMITÊ.
+**Goal**: Validar infraestrutura de metas existente na PROJECAO (3 variantes de rateio), construir aba COMITE com 5 blocos gerenciais (Meta vs Realizado, Capacidade, Alertas, Funil, Motivos), filtros interativos (VENDEDOR, PERIODO, RATEIO toggle), e validar META-01..03.
 **Depends on**: Phase 3 (precisa da timeline mensal), Phase 7 (precisa das redes)
 **Requirements**: META-01, META-02, META-03
 **Success Criteria** (what must be TRUE):
@@ -142,8 +142,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 08-01: Importar metas 2026 do SAP e cruzar com CARTEIRA
-- [ ] 08-02: Construir aba COMITÊ com visão consolidada
+- [ ] 08-01-PLAN.md — Validar/auditar metas existentes na PROJECAO (3 variantes), reconciliar SAP delta R$31.803, mapear consultores + REALIZADO, gerar meta_validation_report.json
+- [ ] 08-02-PLAN.md — Construir aba COMITE com 5 blocos + filtros VENDEDOR/PERIODO/RATEIO + conditional formatting + validar META-01..03
 
 ### Phase 9: Blueprint v2
 **Goal**: Expandir CARTEIRA de 46 para 81 colunas com 8 grupos expansíveis [+], sem alterar as 46 originais.
