@@ -146,20 +146,23 @@ Plans:
 - [ ] 08-02-PLAN.md — Construir aba COMITE com 5 blocos + filtros VENDEDOR/PERIODO/RATEIO + conditional formatting + validar META-01..03
 
 ### Phase 9: Blueprint v2
-**Goal**: Expandir CARTEIRA de 46 para 81 colunas com 8 grupos expansíveis [+], sem alterar as 46 originais.
+**Goal**: Recriar CARTEIRA completa do V12 (263 colunas, 6 super-grupos, 3 niveis agrupamento) no V13, com motor de inteligencia de 3 camadas, abas de suporte (REGRAS, DRAFT 1, DRAFT 2), e 4 abas AGENDA individuais por consultor para gerar AGENDA DIARIA INTELIGENTE.
 **Depends on**: Todas as fases anteriores (precisa de todos os dados populados)
 **Requirements**: BLUE-01, BLUE-02, BLUE-03, BLUE-04
 **Success Criteria** (what must be TRUE):
-  1. CARTEIRA tem 81 colunas organizadas em 8 grupos
-  2. 10 colunas fixas (A-J) mantidas na posição original
-  3. 46 colunas originais 100% preservadas e funcionais
-  4. Grupos: Identificação, Vida Comercial, Timeline, Jornada, Ecommerce, SAP, Operacional, Comitê
-**Plans**: 3 plans
+  1. CARTEIRA tem 263 colunas organizadas em 6 super-grupos (MERCOS, FUNIL, SAP, STATUS SAP, DADOS CADASTRAIS SAP, FATURAMENTO)
+  2. 3 niveis de agrupamento [+] com ancoras por super-grupo e sub-grupo
+  3. Motor de inteligencia: Score ranking (6 fatores ponderados), Pipeline vs Meta, Alerta de urgencia
+  4. 4 abas AGENDA (LARISSA, DAIANE, MANU, JULIO) com tarefas priorizadas por SCORE
+**Plans**: 6 plans
 
 Plans:
-- [ ] 09-01: Mapear posição das 35 novas colunas nos 8 grupos
-- [ ] 09-02: Inserir colunas via openpyxl preservando fórmulas existentes
-- [ ] 09-03: Configurar agrupamento [+] e validar integridade
+- [ ] 09-01-PLAN.md — Auditoria profunda V12 CARTEIRA: 263 colunas catalogadas, padroes de formula extraidos, mapeamento tabs V12->V13
+- [ ] 09-02-PLAN.md — Criar abas de suporte: REGRAS (17 secoes, 63 combinacoes motor), DRAFT 1 (554 clientes), DRAFT 2 (staging operacional + historico)
+- [ ] 09-03-PLAN.md — Esqueleto CARTEIRA (263 cols, 3 niveis grupo) + formulas MERCOS (INDEX/MATCH DRAFT 1) e FUNIL (array DRAFT 2 + REGRAS motor)
+- [ ] 09-04-PLAN.md — Blocos SAP (15 cols dados cadastrais) + FATURAMENTO mega-bloco (186 cols = 12 meses x 15 sub-colunas META/REALIZADO/JUSTIFICATIVA)
+- [ ] 09-05-PLAN.md — Motor de inteligencia 3 camadas: Ranking Score (6 fatores), Pipeline vs Meta (coverage ratio), Alertas de urgencia + conditional formatting
+- [ ] 09-06-PLAN.md — 4 abas AGENDA (FILTER/SORT por consultor + data) com dropdowns REGRAS + validacao completa BLUE-01..04
 
 ### Phase 10: Validação Final
 **Goal**: Auditoria completa do CRM: 0 erros de fórmula, faturamento correto, Two-Base respeitada, teste no Excel real.
@@ -194,10 +197,10 @@ Phases execute em ordem: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9 → 1
 | 5. Dashboard | 3/3 | COMPLETE | 2026-02-17 |
 | 6. E-commerce | 2/2 | COMPLETE | 2026-02-17 |
 | 7. Redes e Franquias | 3/3 | COMPLETE | 2026-02-17 |
-| 8. Comitê e Metas | 0/2 | Not started | - |
-| 9. Blueprint v2 | 0/3 | Not started | - |
+| 8. Comitê e Metas | 2/2 | COMPLETE | 2026-02-17 |
+| 9. Blueprint v2 | 0/6 | Not started | - |
 | 10. Validação Final | 0/3 | Not started | - |
 
 ---
 *Roadmap created: 2026-02-15 via DEUS-AIOS*
-*Total: 10 phases, 28 plans, 43 requirements*
+*Total: 10 phases, 31 plans, 43 requirements*
