@@ -17,16 +17,16 @@ O objetivo FINAL de todo este trabalho NÃO é "ter uma planilha limpa". É GERA
 - Se a CARTEIRA não gerar essa inteligência de agenda diária, TODO O TRABALHO DAS 10 FASES NÃO SERVE PRA NADA
 - As regras, status, grupos de colunas do funil na CARTEIRA já foram DESENHADOS para isso — respeitar 100%
 
-**Current focus:** Phase 06 E-commerce -- Plan 01 COMPLETE, Plan 02 next.
+**Current focus:** Phase 06 E-commerce COMPLETE -- ready for Phase 07.
 
 ## Current Position
 
-Phase: 6 of 10 (E-commerce)
-Plan: 1 of 2 in current phase (06-01 COMPLETE)
-Status: Plan 06-01 COMPLETE -- ETL 10 months, 1075 records, 5 dedup groups, 2 missing months (May, Oct)
-Last activity: 2026-02-17 -- Plan 06-01 executed (e-commerce ETL with dedup)
+Phase: 6 of 10 (E-commerce) -- COMPLETE
+Plan: 2 of 2 in current phase (06-02 COMPLETE)
+Status: Phase 06 COMPLETE -- 391 CNPJs with e-commerce data, DRAFT 1 cols 15-20 populated, 64.6% match rate
+Last activity: 2026-02-17 -- Plan 06-02 executed (e-commerce match + populate)
 
-Progress: [███████████████] 57% (plans 01-01..03, 02-01..03, 03-01..02, 04-01..04, 05-01..03, 06-01 of 28 total complete)
+Progress: [████████████████] 61% (plans 01-01..03, 02-01..03, 03-01..02, 04-01..04, 05-01..03, 06-01..02 of 28 total complete)
 
 ## DESCOBERTA CRITICA (16/FEV/2026)
 
@@ -57,9 +57,9 @@ As fórmulas da PROJEÇÃO **NÃO estão perdidas**:
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 18
-- Average duration: 10 min
-- Total execution time: 2.72 hours
+- Total plans completed: 19
+- Average duration: 12 min
+- Total execution time: 3.60 hours
 
 | Phase | Plan | Duration | Tasks | Files |
 |-------|------|----------|-------|-------|
@@ -79,6 +79,7 @@ As fórmulas da PROJEÇÃO **NÃO estão perdidas**:
 | 05-dashboard | 02 | 3 min | 1 | 2 |
 | 05-dashboard | 03 | 2 min | 1 | 1 |
 | 06-e-commerce | 01 | 8 min | 1 | 2 |
+| 06-e-commerce | 02 | 53 min | 2 | 4 |
 
 *Updated after each plan completion*
 
@@ -152,6 +153,12 @@ As fórmulas da PROJEÇÃO **NÃO estão perdidas**:
 - [17/02]: October 2025 and May 2025 ABSENT from e-commerce data -- no files found
 - [17/02]: .xls files gracefully skipped (pip broken, xlrd unavailable) -- non-blocking
 - [17/02]: E-commerce ETL produces 10 months, 1075 records in ecommerce_raw.json
+- [17/02]: E-commerce match rate 64.6% (441/683 names) -- 200+ unmatched are B2B portal prospects NOT in any client database
+- [17/02]: 5-level matching: cnpj_prefix -> exact -> exact_normalized -> partial -> partial_normalized
+- [17/02]: 3 lookup sources: Mercos Carteira (497), DRAFT 1 (502), SAP Cadastro (1698) = 3699 merged entries
+- [17/02]: DRAFT 1 actual path: data/sources/drafts/ (not crm-versoes/v11-v12); CNPJ in col 2 (not col 3)
+- [17/02]: DRAFT 1 cols 15-20 populated: 294 rows with e-commerce data (ACESSOS, ACESSO B2B, PORTAL, ITENS, VALOR B2B, OPORTUNIDADE)
+- [17/02]: Phase 06 E-commerce COMPLETE -- ETL + Match + Populate all done
 
 ### Fase 1 Revisada
 
@@ -175,7 +182,7 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-17 12:20
-Stopped at: Completed 06-01-PLAN.md (e-commerce ETL with dedup, 10 months, 1075 records).
-Resume file: .planning/phases/06-e-commerce/06-01-SUMMARY.md
-Next step: Execute 06-02-PLAN.md (e-commerce match + populate)
+Last session: 2026-02-17 13:21
+Stopped at: Completed 06-02-PLAN.md (e-commerce match + populate, 391 CNPJs, 294 DRAFT 1 rows).
+Resume file: .planning/phases/06-e-commerce/06-02-SUMMARY.md
+Next step: Phase 07 planning/execution
