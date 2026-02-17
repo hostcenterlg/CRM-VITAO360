@@ -1,0 +1,204 @@
+{
+  "phase": "08-comite-metas",
+  "plan": "01",
+  "validated_at": "2026-02-17T17:41:50.297112+00:00",
+  "v13_path": "C:\\Users\\User\\OneDrive\\Documentos\\GitHub\\CRM-VITAO360\\data\\output\\CRM_VITAO360_V13_PROJECAO.xlsx",
+  "meta_totals": {
+    "proportional": {
+      "total": 4779003.04,
+      "non_zero": 493,
+      "formula_count": 0,
+      "monthly_formula_count": 0,
+      "col_range": "L:X (12:24)"
+    },
+    "equal": {
+      "total": 0.0,
+      "non_zero": 0,
+      "formula_count": 534,
+      "monthly_formula_count": 6408,
+      "col_range": "BB:BN (54:66)"
+    },
+    "dynamic": {
+      "total": 0.0,
+      "non_zero": 0,
+      "formula_count": 534,
+      "monthly_formula_count": 6408,
+      "col_range": "BP:CB (68:80)"
+    }
+  },
+  "sap_reconciliation": {
+    "projecao_total": 4779003.04,
+    "sap_total": 4747200,
+    "delta": 31803.04,
+    "delta_pct": 0.6699,
+    "cause": "Rounding from proportional distribution in Phase 1 (meta per client = client_venda_2025 / total_venda_2025 * rede_meta)"
+  },
+  "consultants": {
+    "LARISSA PADILHA": {
+      "clients": 224,
+      "meta_anual": 2543746.55,
+      "real_anual": 955039.62,
+      "pct_atingimento": 37.54
+    },
+    "HEMANUELE DITZEL (MANU)": {
+      "clients": 170,
+      "meta_anual": 1552436.92,
+      "real_anual": 619076.52,
+      "pct_atingimento": 39.88
+    },
+    "JULIO GADRET": {
+      "clients": 66,
+      "meta_anual": 412013.91,
+      "real_anual": 165698.33,
+      "pct_atingimento": 40.22
+    },
+    "DAIANE STAVICKI": {
+      "clients": 62,
+      "meta_anual": 260204.64,
+      "real_anual": 318182.96,
+      "pct_atingimento": 122.28
+    },
+    "MANU DITZEL": {
+      "clients": 10,
+      "meta_anual": 10601.03,
+      "real_anual": 23032.85,
+      "pct_atingimento": 217.27
+    },
+    "Leandro Garcia": {
+      "clients": 1,
+      "meta_anual": 0.0,
+      "real_anual": 0.0,
+      "pct_atingimento": 0
+    },
+    "Lorrany": {
+      "clients": 1,
+      "meta_anual": 0.0,
+      "real_anual": 0.0,
+      "pct_atingimento": 0
+    }
+  },
+  "realizado_availability": {
+    "JAN": {
+      "col": "AA",
+      "col_index": 27,
+      "non_zero_count": 32
+    },
+    "FEV": {
+      "col": "AB",
+      "col_index": 28,
+      "non_zero_count": 26
+    },
+    "MAR": {
+      "col": "AC",
+      "col_index": 29,
+      "non_zero_count": 54
+    },
+    "ABR": {
+      "col": "AD",
+      "col_index": 30,
+      "non_zero_count": 65
+    },
+    "MAI": {
+      "col": "AE",
+      "col_index": 31,
+      "non_zero_count": 76
+    },
+    "JUN": {
+      "col": "AF",
+      "col_index": 32,
+      "non_zero_count": 103
+    },
+    "JUL": {
+      "col": "AG",
+      "col_index": 33,
+      "non_zero_count": 80
+    },
+    "AGO": {
+      "col": "AH",
+      "col_index": 34,
+      "non_zero_count": 118
+    },
+    "SET": {
+      "col": "AI",
+      "col_index": 35,
+      "non_zero_count": 94
+    },
+    "OUT": {
+      "col": "AJ",
+      "col_index": 36,
+      "non_zero_count": 118
+    },
+    "NOV": {
+      "col": "AK",
+      "col_index": 37,
+      "non_zero_count": 95
+    },
+    "DEZ": {
+      "col": "AL",
+      "col_index": 38,
+      "non_zero_count": 91
+    }
+  },
+  "realizado_summary": {
+    "months_with_data": [
+      "JAN",
+      "FEV",
+      "MAR",
+      "ABR",
+      "MAI",
+      "JUN",
+      "JUL",
+      "AGO",
+      "SET",
+      "OUT",
+      "NOV",
+      "DEZ"
+    ],
+    "total_realizado": 2081030.28
+  },
+  "indicators": {
+    "pct_ytd": {
+      "col": "AN",
+      "col_index": 40,
+      "formula_count": 534,
+      "sample_formula": "=IF(L4=0,0,Z4/L4)"
+    },
+    "sinal_meta": {
+      "col": "AO",
+      "col_index": 41,
+      "formula_count": 534,
+      "sample_formula": "=IF(AN4=\"\",\"\",IF(AN4>=0.9,\"🟢\",IF(AN4>=0.7,\"🟡\",IF(AN4>=0.5,\"🟠\",\"🔴\"))))"
+    },
+    "gap": {
+      "col": "AP",
+      "col_index": 42,
+      "formula_count": 534,
+      "sample_formula": "=IF(L4=0,0,L4-Z4)"
+    },
+    "ranking": {
+      "col": "AQ",
+      "col_index": 43,
+      "formula_count": 534,
+      "sample_formula": "=IF(Z4=0,\"\",RANK(Z4,Z$4:Z$537,0))"
+    }
+  },
+  "integrity": {
+    "total_formulas": 19224,
+    "min_required": 19224,
+    "status": "PASS"
+  },
+  "manu_alias": {
+    "HEMANUELE_count": 170,
+    "MANU_DITZEL_count": 10,
+    "recommendation": "COMITE formulas must sum both names: SUMIFS(...,'HEMANUELE*') or use criteria list"
+  },
+  "checks": {
+    "META column sets": "PASS",
+    "SAP reconciliation": "PASS",
+    "Consultant mapping": "PASS",
+    "REALIZADO availability": "PASS",
+    "Indicator columns": "PASS",
+    "Formula integrity": "PASS"
+  },
+  "overall_status": "PASS"
+}
