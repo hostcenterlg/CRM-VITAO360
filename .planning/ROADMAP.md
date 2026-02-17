@@ -116,20 +116,20 @@ Plans:
 - [ ] 06-02-PLAN.md -- Matching nome->CNPJ (4 niveis), agregacao por CNPJ, popular DRAFT 1 cols 15-20, output ecommerce_matched.json
 
 ### Phase 7: Redes e Franquias
-**Goal**: Preencher REDE/REGIONAL para todos os clientes e corrigir os erros #REF! na aba REDES_FRANQUIAS_v2.
+**Goal**: Remapear clientes SEM GRUPO via SAP, expandir tabela de referencia de 12 para 19 redes, criar aba REDES_FRANQUIAS_v2 com sinaleiro de penetracao dinamico e metas 6M, e validar os 4 requisitos REDE-01..04.
 **Depends on**: Phase 2 (precisa da CARTEIRA com faturamento)
 **Requirements**: REDE-01, REDE-02, REDE-03, REDE-04
 **Success Criteria** (what must be TRUE):
-  1. REDE/REGIONAL preenchido para 100% dos 489 clientes
+  1. REDE/REGIONAL preenchido para 100% dos 534 clientes (534 no V13, nao 489)
   2. Zero #REF! na aba REDES_FRANQUIAS_v2
   3. Sinaleiro de penetração atualizado com dados 2025 completos
   4. Metas 6M por rede calculadas e operacionais
 **Plans**: 3 plans
 
 Plans:
-- [ ] 07-01: Mapear clientes → redes/regionais usando Motor de Matching + regex
-- [ ] 07-02: Corrigir #REF! na REDES_FRANQUIAS_v2
-- [ ] 07-03: Atualizar sinaleiro de penetração e metas 6M
+- [ ] 07-01-PLAN.md -- Remapear 11 clientes SEM GRUPO via SAP CNPJ match + expandir tabela referencia AS:AZ de 12 para 19 redes + atualizar VLOOKUPs
+- [ ] 07-02-PLAN.md -- Criar aba REDES_FRANQUIAS_v2 com 20 colunas, formulas SUMIFS/COUNTIFS dinamicas, metas 6M SAP, sinaleiro de penetracao
+- [ ] 07-03-PLAN.md -- Validar REDE-01..04 + integridade V13 (19.224 formulas) + gerar validation_report.json
 
 ### Phase 8: Comitê e Metas
 **Goal**: Integrar metas 2026 do SAP e criar visão consolidada do COMITÊ.
@@ -192,7 +192,7 @@ Phases execute em ordem: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9 → 1
 | 3. Timeline Mensal | 2/2 | COMPLETE | 2026-02-17 |
 | 4. LOG Completo | 4/4 | COMPLETE | 2026-02-17 |
 | 5. Dashboard | 3/3 | COMPLETE | 2026-02-17 |
-| 6. E-commerce | 0/2 | Not started | - |
+| 6. E-commerce | 2/2 | COMPLETE | 2026-02-17 |
 | 7. Redes e Franquias | 0/3 | Not started | - |
 | 8. Comitê e Metas | 0/2 | Not started | - |
 | 9. Blueprint v2 | 0/3 | Not started | - |
