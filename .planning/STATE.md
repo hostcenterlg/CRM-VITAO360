@@ -17,16 +17,16 @@ O objetivo FINAL de todo este trabalho NÃO é "ter uma planilha limpa". É GERA
 - Se a CARTEIRA não gerar essa inteligência de agenda diária, TODO O TRABALHO DAS 10 FASES NÃO SERVE PRA NADA
 - As regras, status, grupos de colunas do funil na CARTEIRA já foram DESENHADOS para isso — respeitar 100%
 
-**Current focus:** Phase 09 Blueprint v2 -- Plan 05 COMPLETE, Plan 06 next (Final Validation).
+**Current focus:** Phase 09 Blueprint v2 COMPLETE -- All 6 plans done. REGRA PRINCIPAL satisfied. Next: Phase 10 (Final Validation).
 
 ## Current Position
 
-Phase: 9 of 10 (Blueprint v2) -- IN PROGRESS
-Plan: 5 of 6 in current phase (09-05 COMPLETE -- 3-layer intelligence engine, 134,092 CARTEIRA formulas, 269 cols with SCORE/RANK/PIPELINE/ALERTA)
-Status: Plan 09-05 COMPLETE -- Intelligence engine operational with weighted SCORE, pipeline coverage, urgency alerts, and 42 CF rules
-Last activity: 2026-02-17 -- Plan 09-05 executed (Intelligence Engine)
+Phase: 9 of 10 (Blueprint v2) -- COMPLETE
+Plan: 6 of 6 in current phase (09-06 COMPLETE -- 4 AGENDA tabs + comprehensive validation, 26/26 checks PASS, BLUE-01..04 PASS)
+Status: Phase 09 COMPLETE -- V13 CRM operational with 13 tabs, 154,302 formulas, 4 AGENDA tabs, REGRA PRINCIPAL satisfied
+Last activity: 2026-02-17 -- Plan 09-06 executed (AGENDA Tabs + Validation)
 
-Progress: [███████████████████████████] 94% (plans 01-01..03, 02-01..03, 03-01..02, 04-01..04, 05-01..03, 06-01..02, 07-01..03, 08-01..02, 09-01..05 of 31 total complete)
+Progress: [████████████████████████████] 97% (plans 01-01..03, 02-01..03, 03-01..02, 04-01..04, 05-01..03, 06-01..02, 07-01..03, 08-01..02, 09-01..06 of 31 total complete)
 
 ## DESCOBERTA CRITICA (16/FEV/2026)
 
@@ -57,9 +57,9 @@ As fórmulas da PROJEÇÃO **NÃO estão perdidas**:
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 29
+- Total plans completed: 30
 - Average duration: 13 min
-- Total execution time: 6.01 hours
+- Total execution time: 6.16 hours
 
 | Phase | Plan | Duration | Tasks | Files |
 |-------|------|----------|-------|-------|
@@ -90,6 +90,7 @@ As fórmulas da PROJEÇÃO **NÃO estão perdidas**:
 | 09-blueprint-v2 | 03 | 5 min | 2 | 4 |
 | 09-blueprint-v2 | 04 | 7 min | 2 | 4 |
 | 09-blueprint-v2 | 05 | 8 min | 2 | 5 |
+| 09-blueprint-v2 | 06 | 9 min | 2 | 3 |
 
 *Updated after each plan completion*
 
@@ -227,6 +228,12 @@ As fórmulas da PROJEÇÃO **NÃO estão perdidas**:
 - [17/02]: 42 CF rules: SCORE color scale, TEMPERATURA fills, COVERAGE/ALERTA traffic lights, 38 FATURAMENTO % columns
 - [17/02]: 134,092 CARTEIRA formulas (130,214 existing + 3,878 intelligence), 154,242 V13 total
 - [17/02]: SINALEIRO CF skipped -- uses emoji indicators, openpyxl emoji CF not reliable
+- [17/02]: RESULTADO dropdown references REGRAS!$B$6:$B$20 (col B text values, not col A index numbers)
+- [17/02]: MOTIVO dropdown references REGRAS!$B$34:$B$55 (22 text values in col B)
+- [17/02]: MANU AGENDA uses OR condition: (L="MANU DITZEL")+(L="HEMANUELE DITZEL (MANU)") for dual-name handling
+- [17/02]: SORTBY+FILTER chosen over FILTER+SORT for Excel 365 multi-column sorting by SCORE descending
+- [17/02]: AGENDA date filter at F1 with =TODAY() default for daily operational cycle
+- [17/02]: Phase 09 COMPLETE -- 26/26 validation checks PASS, BLUE-01..04 all PASS, 154,302 total V13 formulas, REGRA PRINCIPAL satisfied
 
 ### Fase 1 Revisada
 
@@ -251,6 +258,6 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-17
-Stopped at: Completed 09-05-PLAN.md (Intelligence Engine -- 3-layer: SCORE/RANK + PIPELINE/COVERAGE + ALERTA/GAP, 134,092 CARTEIRA formulas)
-Resume file: .planning/phases/09-blueprint-v2/09-05-SUMMARY.md
-Next step: /gsd:execute-phase 09-06 (Final Validation)
+Stopped at: Completed 09-06-PLAN.md (AGENDA Tabs + Phase 9 Validation -- 4 AGENDA tabs, 26/26 checks PASS, BLUE-01..04 PASS, Phase 09 COMPLETE)
+Resume file: .planning/phases/09-blueprint-v2/09-06-SUMMARY.md
+Next step: /gsd:plan-phase 10 (Final Validation / Go-Live Preparation)
