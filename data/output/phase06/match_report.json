@@ -1,0 +1,5240 @@
+{
+  "summary": {
+    "total_unique_names": 683,
+    "matched": 441,
+    "unmatched": 242,
+    "match_rate": 0.6457,
+    "by_level": {
+      "cnpj_prefix": 54,
+      "exact": 291,
+      "partial": 96,
+      "fuzzy": 0
+    }
+  },
+  "matches": [
+    {
+      "name": "S J RISSI TEIXEIRA LTDA",
+      "nome_fantasia": "PRO SAUDE CRUZEIRO DO OESTE",
+      "cnpj": "31794256000141",
+      "level": "partial",
+      "detail": "razao_social partial match in sap_nome_cliente: 'S J RISSI TEIXEIRA LTDA - ME'",
+      "months_seen": 2
+    },
+    {
+      "name": "AE BEM NATURAL LTDA",
+      "nome_fantasia": "BEM NATURAL",
+      "cnpj": "39557193000111",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 5
+    },
+    {
+      "name": "NATURE COMERCIO E DISTRIBUICAO LTDA",
+      "nome_fantasia": "NATURE PRODUTOS NATURAIS",
+      "cnpj": "46814160000175",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 3
+    },
+    {
+      "name": "40.185.487 ANTONIO JURANDI DA SILVA",
+      "nome_fantasia": "40.185.487 ANTONIO JURANDI DA SILVA",
+      "cnpj": "40185487000149",
+      "level": "cnpj_prefix",
+      "detail": "CNPJ prefix 40185487 matched to 40185487000149",
+      "months_seen": 5
+    },
+    {
+      "name": "MANOEL C DOS ANJOS LTDA",
+      "nome_fantasia": "PEROLA FIT",
+      "cnpj": "58256204000178",
+      "level": "exact",
+      "detail": "Nome Fantasia exact match (mercos_nome_fantasia)",
+      "months_seen": 1
+    },
+    {
+      "name": "MAE KALLI COMERCIO DE PRODUTOS ARTESANAIS LTDA",
+      "nome_fantasia": "MAE KALLI CHAS PREMIUM E COSMETICOS NATURAIS",
+      "cnpj": "51218382000165",
+      "level": "partial",
+      "detail": "razao_social partial match in sap_nome_cliente: 'MAE KALLI COMERCIO DE PRODUTOS ARTESANAI'",
+      "months_seen": 1
+    },
+    {
+      "name": "PILOES - DISTRIBUIDORA, COMERCIO E SERVICOS LTDA",
+      "nome_fantasia": "SUPER PILOES",
+      "cnpj": "37015609000144",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "WEDJA MARIA DA SILVA",
+      "nome_fantasia": "Bom da terra RN",
+      "cnpj": "24118392000156",
+      "level": "partial",
+      "detail": "razao_social partial match in sap_nome_cliente: 'WEDJA MARIA DA SILVA - ME'",
+      "months_seen": 2
+    },
+    {
+      "name": "MAIS NATURAL COMERCIO DE PRODUTOS NATURAIS LTDA.",
+      "nome_fantasia": "MAIS NATURAL COMERCIO DE PRODUTOS NATURAIS",
+      "cnpj": "17880439000230",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 4
+    },
+    {
+      "name": "56.237.854 SAMUELL CARVALHO LUCIANO",
+      "nome_fantasia": "56.237.854 SAMUELL CARVALHO LUCIANO",
+      "cnpj": "56237854000140",
+      "level": "cnpj_prefix",
+      "detail": "CNPJ prefix 56237854 matched to 56237854000140",
+      "months_seen": 5
+    },
+    {
+      "name": "50.620.234 GEISIANE RODRIGUES MACHADO",
+      "nome_fantasia": "GEISIANE RODRIGUES MACHADO",
+      "cnpj": "50620234000100",
+      "level": "cnpj_prefix",
+      "detail": "CNPJ prefix 50620234 matched to 50620234000100",
+      "months_seen": 1
+    },
+    {
+      "name": "MISTER GRAOS SS MOCOQUINHA LTDA",
+      "nome_fantasia": "MISTER GRAOS SS MOCOQUINHA LTDA",
+      "cnpj": "58434075000160",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_nome_fantasia)",
+      "months_seen": 3
+    },
+    {
+      "name": "P H V MOTA",
+      "nome_fantasia": "CAPITAL FITNESS - 2/3",
+      "cnpj": "43922481000286",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 4
+    },
+    {
+      "name": "B. P. SOARES - PRATINHO CRIATIVO COMERCIO LTDA",
+      "nome_fantasia": "PRATINHO CRIATIVO",
+      "cnpj": "43497241000109",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "NIL TRANSPORTES LTDA",
+      "nome_fantasia": "NIL TRANSPORTES LTDA",
+      "cnpj": "03143533000110",
+      "level": "exact",
+      "detail": "Razao Social exact match (sap_nome_cliente)",
+      "months_seen": 1
+    },
+    {
+      "name": "MORUNGABA PRODUTOS ALIMENTICIOS LTDA",
+      "nome_fantasia": "MORUNGABA PRODUTOS ALIMENTICIOS LTDA",
+      "cnpj": "39155900000143",
+      "level": "partial",
+      "detail": "razao_social partial match in sap_nome_cliente: 'MORUNGABA PRODUTOS ALIMENTICIOS LTDA - E'",
+      "months_seen": 1
+    },
+    {
+      "name": "L O PASTRO",
+      "nome_fantasia": "EMPORIO GRAOTERRA",
+      "cnpj": "31574092000147",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "CRISTAL FRUTA ALIMENTOS LTDA",
+      "nome_fantasia": "CAJUSUL",
+      "cnpj": "00094461000170",
+      "level": "partial",
+      "detail": "razao_social_norm partial match in sap_nome_cliente: 'CRISTAL FRUTA ALIMENTOS EIRELI - ME'",
+      "months_seen": 1
+    },
+    {
+      "name": "FAZENDINHA SALU.D LTDA",
+      "nome_fantasia": "FAZENDINHA SALU.D LTDA",
+      "cnpj": "45100604000148",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_nome_fantasia)",
+      "months_seen": 3
+    },
+    {
+      "name": "50.182.712 ANDRESSA PEREIRA DA SILVA",
+      "nome_fantasia": "OPIS! PRODUTOS NATURAIS",
+      "cnpj": "50182712000147",
+      "level": "cnpj_prefix",
+      "detail": "CNPJ prefix 50182712 matched to 50182712000147",
+      "months_seen": 1
+    },
+    {
+      "name": "NUTRIR PRODUTOS NATURAIS LTDA",
+      "nome_fantasia": "NUTRIR PRODUTOS NATURAIS",
+      "cnpj": "27376725000135",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "DS COMERCIAL LTDA",
+      "nome_fantasia": "MUNDO VERDE",
+      "cnpj": "58429130000124",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 2
+    },
+    {
+      "name": "+VERDE PRODUTOS NATURAIS E SUPLEMENTOS LTDA",
+      "nome_fantasia": "+VERDE",
+      "cnpj": "58249963000103",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 2
+    },
+    {
+      "name": "58.087.394 LEONARDO RODRIGUES RABE DE OLIVEIRA",
+      "nome_fantasia": "58.087.394 LEONARDO RODRIGUES RABE DE OLIVEIRA",
+      "cnpj": "58087394000147",
+      "level": "cnpj_prefix",
+      "detail": "CNPJ prefix 58087394 matched to 58087394000147",
+      "months_seen": 1
+    },
+    {
+      "name": "DIONEI ARMACHUKI",
+      "nome_fantasia": "INTENSE CACAU",
+      "cnpj": "12886112000170",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 5
+    },
+    {
+      "name": "A.M.MENDANHA LTDA",
+      "nome_fantasia": "TRILHAS DA AMAZONIA",
+      "cnpj": "57185527000155",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 2
+    },
+    {
+      "name": "ANTONELLO COMERCIO DE ALIMENTOS E PRODUTOS NATURAIS LTDA",
+      "nome_fantasia": "PROSAUDE CORBELIA",
+      "cnpj": "21437528000100",
+      "level": "partial",
+      "detail": "nome_fantasia partial match in mercos_nome_fantasia: 'PROSAUDE'",
+      "months_seen": 2
+    },
+    {
+      "name": "56.239.498 AMANDA LETICIA VARGAS",
+      "nome_fantasia": "56.239.498 AMANDA LETICIA VARGAS",
+      "cnpj": "56239498000102",
+      "level": "cnpj_prefix",
+      "detail": "CNPJ prefix 56239498 matched to 56239498000102",
+      "months_seen": 1
+    },
+    {
+      "name": "RANIG COMERCIO DE ALIMENTOS LTDA",
+      "nome_fantasia": "DIVINA TERRA",
+      "cnpj": "42415997000190",
+      "level": "exact",
+      "detail": "Nome Fantasia exact match (mercos_nome_fantasia)",
+      "months_seen": 2
+    },
+    {
+      "name": "CASA DE CEREAIS BIO GRANEL LTDA",
+      "nome_fantasia": "COMERCIAL BIO GRANEL",
+      "cnpj": "39245986000103",
+      "level": "partial",
+      "detail": "razao_social partial match in sap_nome_cliente: 'CASA DE CEREAIS BIO GRANEL LTDA - ME'",
+      "months_seen": 1
+    },
+    {
+      "name": "E-Labore Comercio de Produtos Alimenticios LTDA",
+      "nome_fantasia": "E-labore",
+      "cnpj": "13495805000103",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 5
+    },
+    {
+      "name": "ALCINA P DE MEDEIROS OLIVEIRA",
+      "nome_fantasia": "KILAO DA GALEGA",
+      "cnpj": "40679450000177",
+      "level": "partial",
+      "detail": "razao_social partial match in sap_nome_cliente: 'ALCINA P DE MEDEIROS OLIVEIRA - ME'",
+      "months_seen": 1
+    },
+    {
+      "name": "ALANA DOS SANTOS ALVARENGA LTDA",
+      "nome_fantasia": "SAUDE EM GRAOS",
+      "cnpj": "35855272000158",
+      "level": "partial",
+      "detail": "razao_social partial match in sap_nome_cliente: 'ALANA DOS SANTOS ALVARENGA LTDA - ME'",
+      "months_seen": 1
+    },
+    {
+      "name": "PORT-GALI HOTELARIA E TURISMO LTDA",
+      "nome_fantasia": "VIVA PORTO DE GALINHAS RESORT",
+      "cnpj": "00939085000178",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 8
+    },
+    {
+      "name": "ROTTA DO SOL HOTELARIA E TURISMO LTDA",
+      "nome_fantasia": "SOLAR PORTO DE GALINHAS",
+      "cnpj": "08895369000111",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 6
+    },
+    {
+      "name": "ESTELAMARIS FRANCISCA TOGNON",
+      "nome_fantasia": "HABITTUDE",
+      "cnpj": "44238838000193",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 2
+    },
+    {
+      "name": "ADRIANA FONSECA LEMOS STEFFENS 83969578191",
+      "nome_fantasia": "NATURALLE EMPORIO",
+      "cnpj": "31921194000191",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "K V DE CARLI MARTINS COMERCIO DE ALIMENTOS LTDA",
+      "nome_fantasia": "PETIT MERCADO RECIFE",
+      "cnpj": "42045188000134",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 2
+    },
+    {
+      "name": "BERBERIAN OLIVEIRA COMERCIO LTDA",
+      "nome_fantasia": "EXPRESSO CEREALISTA",
+      "cnpj": "49366518000132",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 3
+    },
+    {
+      "name": "DIVINA TERRA VILA MADALENA LTDA",
+      "nome_fantasia": "BRUNO GIANNETTI DO AMARAL",
+      "cnpj": "42415997000190",
+      "level": "partial",
+      "detail": "razao_social partial match in mercos_nome_fantasia: 'DIVINA TERRA'",
+      "months_seen": 1
+    },
+    {
+      "name": "M C SANTANA FILHO & S OLIVEIRA ALIMENTOS LTDA",
+      "nome_fantasia": "EMPORIO OLIVEIRA",
+      "cnpj": "42591694000129",
+      "level": "exact",
+      "detail": "Razao Social normalized exact match (sap_nome_cliente)",
+      "months_seen": 1
+    },
+    {
+      "name": "IMPORT LAND DOCES LTDA",
+      "nome_fantasia": "IMPORT LAND DOCES",
+      "cnpj": "60487702000173",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 2
+    },
+    {
+      "name": "PH COMERCIO DE PRODUTOS ALIMENTICIOS LTDA",
+      "nome_fantasia": "PH COMERCIO DE PRODUTOS ALIMENTICIOS",
+      "cnpj": "45090536000183",
+      "level": "partial",
+      "detail": "razao_social partial match in sap_nome_cliente: 'PH COMERCIO DE PRODUTOS ALIMENTICIOS LTD'",
+      "months_seen": 1
+    },
+    {
+      "name": "R. DOS SANTOS COSTA CAMATTI EIRELI",
+      "nome_fantasia": "SHOPPING NATURAL",
+      "cnpj": "15428647000196",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 3
+    },
+    {
+      "name": "FOLHA VERDE PRODUTOS NATURAIS EIRELI",
+      "nome_fantasia": "FOLHA VERDE PRODUTOS NATURAIS",
+      "cnpj": "33572325000106",
+      "level": "partial",
+      "detail": "nome_fantasia partial match in sap_nome_cliente: 'FOLHA VERDE PRODUTOS NATURAIS LTDA - ME'",
+      "months_seen": 1
+    },
+    {
+      "name": "MARTINS & DALTO LTDA",
+      "nome_fantasia": "MUNDO VERDE",
+      "cnpj": "58429130000124",
+      "level": "exact",
+      "detail": "Nome Fantasia exact match (mercos_nome_fantasia)",
+      "months_seen": 1
+    },
+    {
+      "name": "TERRA NOVA BAR E COZINHA LTDA",
+      "nome_fantasia": "TERRAN NOVA BAR E COZINHA",
+      "cnpj": "52822587000118",
+      "level": "partial",
+      "detail": "razao_social partial match in sap_nome_cliente: 'TERRA NOVA BAR E COZINHA LTDA - ME'",
+      "months_seen": 1
+    },
+    {
+      "name": "MARAVILHA FILADELPHO ALIMENTOS SAUDAVEIS LTDA",
+      "nome_fantasia": "DIVINA TERRA CAMPOS DOS GOYTACAZES",
+      "cnpj": "55429349000135",
+      "level": "exact",
+      "detail": "Razao Social normalized exact match (sap_nome_cliente)",
+      "months_seen": 1
+    },
+    {
+      "name": "MARIA FITNESS LTDA",
+      "nome_fantasia": "MARIA FITNESS",
+      "cnpj": "58067518000122",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 2
+    },
+    {
+      "name": "Pro Abelha Comercio e Ind Prod Alimentcios LTDA",
+      "nome_fantasia": "Pro Abelha Comercio e Ind Prod Alimentcios LTDA",
+      "cnpj": "31983992000148",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_nome_fantasia)",
+      "months_seen": 5
+    },
+    {
+      "name": "MACROBIOTICA COMERCIO DE ALIMENTOS LTDA",
+      "nome_fantasia": "A MACROBIOTICA",
+      "cnpj": "14535501000187",
+      "level": "partial",
+      "detail": "razao_social_norm partial match in sap_nome_cliente: 'MACROBIOTICA COMERCIO DE ALIMENTOS - ME'",
+      "months_seen": 1
+    },
+    {
+      "name": "SABORAMAIS COMERCIO DE ALIMENTOS LTDA.",
+      "nome_fantasia": "SABORAMAIS COMERCIO DE ALIMENTOS LTDA.",
+      "cnpj": "30327498000162",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_nome_fantasia)",
+      "months_seen": 2
+    },
+    {
+      "name": "PURO NATUREBA LTDA",
+      "nome_fantasia": "PURO NATUREBA",
+      "cnpj": "43830206000151",
+      "level": "partial",
+      "detail": "razao_social partial match in sap_nome_cliente: 'PURO NATUREBA LTDA - ME'",
+      "months_seen": 2
+    },
+    {
+      "name": "BIO BUENO LTDA",
+      "nome_fantasia": "BIO MUNDO",
+      "cnpj": "40724765000199",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "BATEL GOURMET ARMAZEM, EMPORIO E HORTIFRUTI LTDA",
+      "nome_fantasia": "BATEL GOURMET HORTIFRUTI E EMPORIO",
+      "cnpj": "30289781000147",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 3
+    },
+    {
+      "name": "BIO GOIANIA SHOPPING LTDA",
+      "nome_fantasia": "BIO GOIANIA SHOPPING",
+      "cnpj": "54126104000176",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "BIO FLAMBOYANT LTDA",
+      "nome_fantasia": "BIO MUNDO",
+      "cnpj": "33016679000166",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "52.901.038 NATACHA APARECIDA DOS SANTOS FERREIRA",
+      "nome_fantasia": "52.901.038 NATACHA APARECIDA DOS SANTOS FERREIRA",
+      "cnpj": "52901038000139",
+      "level": "cnpj_prefix",
+      "detail": "CNPJ prefix 52901038 matched to 52901038000139",
+      "months_seen": 1
+    },
+    {
+      "name": "60.088.708 JOSE CARLOS MARCELINO SOARES",
+      "nome_fantasia": "60.088.708 JOSE CARLOS MARCELINO SOARES",
+      "cnpj": "60088708000178",
+      "level": "cnpj_prefix",
+      "detail": "CNPJ prefix 60088708 matched to 60088708000178",
+      "months_seen": 2
+    },
+    {
+      "name": "TORO EMPORIO LTDA",
+      "nome_fantasia": "TORO EMPORIO",
+      "cnpj": "61814136000120",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 4
+    },
+    {
+      "name": "BARBARA DE ASSIS LUCIO",
+      "nome_fantasia": "ARMAZÉM SANTO ANTÔNIO",
+      "cnpj": "39437222000101",
+      "level": "partial",
+      "detail": "razao_social partial match in sap_nome_cliente: 'BARBARA DE ASSIS LUCIO 10093160607 - ME'",
+      "months_seen": 2
+    },
+    {
+      "name": "NUTRI CENTER EMPORIO NATURAL LTDA",
+      "nome_fantasia": "NUTRI CENTER - EMPORIO NATURAL",
+      "cnpj": "22306079000116",
+      "level": "partial",
+      "detail": "razao_social partial match in sap_nome_cliente: 'NUTRI CENTER EMPORIO NATURAL LTDA - ME'",
+      "months_seen": 2
+    },
+    {
+      "name": "ANGELITA GRESPAN",
+      "nome_fantasia": "PROSAUDE MATUPA",
+      "cnpj": "21437528000100",
+      "level": "partial",
+      "detail": "nome_fantasia partial match in mercos_nome_fantasia: 'PROSAUDE'",
+      "months_seen": 1
+    },
+    {
+      "name": "TEMPEROS & MEL LTDA",
+      "nome_fantasia": "TEMPEROS & MEL",
+      "cnpj": "22105950000113",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 5
+    },
+    {
+      "name": "ARMAZEM VERDE PRODUTOS NATURAIS E PRESENTES LTDA",
+      "nome_fantasia": "ARMAZEM VERDE",
+      "cnpj": "21617756000154",
+      "level": "partial",
+      "detail": "razao_social partial match in sap_nome_cliente: 'ARMAZEM VERDE PRODUTOS NATURAIS E PRESEN'",
+      "months_seen": 2
+    },
+    {
+      "name": "OLIVEIRA - COMERCIO DE PRODUTOS ALIMENTICIOS LTDA",
+      "nome_fantasia": "CIA DA SAUDE COMBO SOMBRIO",
+      "cnpj": "46016348000178",
+      "level": "partial",
+      "detail": "razao_social partial match in sap_nome_cliente: 'OLIVEIRA - COMERCIO DE PRODUTOS ALIMENTI'",
+      "months_seen": 1
+    },
+    {
+      "name": "REI DO NORTE PRODUTOS ALIMENTICIOS LTDA",
+      "nome_fantasia": "REI DO NORTE PRODUTOS ALIMENTICIOS LTDA",
+      "cnpj": "32293063000170",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_nome_fantasia)",
+      "months_seen": 2
+    },
+    {
+      "name": "SOLUCAO PRODUTOS NATURAIS E ORGANICOS LTDA",
+      "nome_fantasia": "KORIN",
+      "cnpj": "18885226000182",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "CSJ BRASIL ALIMENTOS LTDA",
+      "nome_fantasia": "CSJ BRASIL ALIMENTOS LTDA",
+      "cnpj": "58363567000102",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_nome_fantasia)",
+      "months_seen": 2
+    },
+    {
+      "name": "RAIZ E GRAOS EMPORIO NATURAL LTDA",
+      "nome_fantasia": "",
+      "cnpj": "38449259000197",
+      "level": "partial",
+      "detail": "razao_social partial match in mercos_nome_fantasia: 'EMPORIO NATU'",
+      "months_seen": 2
+    },
+    {
+      "name": "ABTM LTDA",
+      "nome_fantasia": "ABTM LTDA",
+      "cnpj": "45345641000116",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_nome_fantasia)",
+      "months_seen": 3
+    },
+    {
+      "name": "EMPORIO JAYA DISTRIBUICAO DE ALIMENTOS LTDA",
+      "nome_fantasia": "EMPORIO JAYA DISTRIBUICAO",
+      "cnpj": "22746850000176",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 5
+    },
+    {
+      "name": "SORAYA MAIA BARBOSA 09747541610",
+      "nome_fantasia": "A GRANEL",
+      "cnpj": "37524044000120",
+      "level": "partial",
+      "detail": "razao_social partial match in sap_nome_cliente: 'SORAYA MAIA BARBOSA 09747541610 - ME'",
+      "months_seen": 2
+    },
+    {
+      "name": "SULPLEMENTARIA - SUPLEMENTOS E NATURAIS LTDA",
+      "nome_fantasia": "SULPLEMENTARIA",
+      "cnpj": "49963221000154",
+      "level": "partial",
+      "detail": "nome_fantasia partial match in sap_nome_cliente: 'SULPLEMENTARIA - SUP E NATURAIS - ME'",
+      "months_seen": 2
+    },
+    {
+      "name": "TOMAS COMERCIO DE ALIMENTOS LTDA",
+      "nome_fantasia": "EMPORIO AGORA ECO",
+      "cnpj": "39324235000174",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "SALLES & SALLES LTDA",
+      "nome_fantasia": "MERCADO KRAU'S",
+      "cnpj": "29841719000137",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 4
+    },
+    {
+      "name": "LEANDRO DELFINO DE SOUSA",
+      "nome_fantasia": "DELFINO FESTAS EMBALAGENS & EQUIPAMENTOS",
+      "cnpj": "26593516000180",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "G & G COMERCIO DE PRODUTOS NATURAIS LTDA",
+      "nome_fantasia": "NATURAL GUI",
+      "cnpj": "50996878000105",
+      "level": "exact",
+      "detail": "Razao Social exact match (sap_nome_cliente)",
+      "months_seen": 1
+    },
+    {
+      "name": "WILSON DE REZENDE PENHA",
+      "nome_fantasia": "SUPERACAO & VIDA SAUDAVEL",
+      "cnpj": "34060666000157",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "55.274.946 MARCELO FERREIRA BASTOS JUNIOR",
+      "nome_fantasia": "55.274.946 MARCELO FERREIRA BASTOS JUNIOR",
+      "cnpj": "55274946000138",
+      "level": "cnpj_prefix",
+      "detail": "CNPJ prefix 55274946 matched to 55274946000138",
+      "months_seen": 4
+    },
+    {
+      "name": "VIVER COM SAUDE PRODUTOS NATURAIS LTDA",
+      "nome_fantasia": "VIVER COM SAUDE PRODUTOS NATURAIS",
+      "cnpj": "53162733000199",
+      "level": "partial",
+      "detail": "razao_social partial match in sap_nome_cliente: 'VIVER COM SAUDE PRODUTOS NATURAIS LTDA -'",
+      "months_seen": 1
+    },
+    {
+      "name": "GC NATURALIS LTDA",
+      "nome_fantasia": "GC NATURALIS",
+      "cnpj": "54801197000197",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "ISOLETE SCHUENKE GAEDKE",
+      "nome_fantasia": "NUTRI LEVE",
+      "cnpj": "12659548000127",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 6
+    },
+    {
+      "name": "KUWADA COMPANIA LTDA",
+      "nome_fantasia": "KUWADA COMPANIA LTDA",
+      "cnpj": "18997672000189",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_nome_fantasia)",
+      "months_seen": 3
+    },
+    {
+      "name": "ANNA PAULA LOPES DE OLIVEIRA",
+      "nome_fantasia": "IMPERIUM SAUDAVEL",
+      "cnpj": "41920449000155",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 6
+    },
+    {
+      "name": "BATEZINI PRODUTOS NATURAIS LTDA",
+      "nome_fantasia": "BATEZINI PRODUTOS NATURAIS LTDA",
+      "cnpj": "45181418000180",
+      "level": "exact",
+      "detail": "Razao Social exact match (sap_nome_cliente)",
+      "months_seen": 2
+    },
+    {
+      "name": "SAUDABLE ALIMENTOS LTDA",
+      "nome_fantasia": "SAUDABLE",
+      "cnpj": "53775140000106",
+      "level": "partial",
+      "detail": "razao_social partial match in sap_nome_cliente: 'SAUDABLE ALIMENTOS LTDA - ME'",
+      "months_seen": 1
+    },
+    {
+      "name": "PACOMIL PAVAO COMERCIAL MINEIRO LTDA",
+      "nome_fantasia": "SUPERMERCADO SERVE BEM",
+      "cnpj": "02672868000163",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "MDORNELLAS PRODUTOS NATURAIS E SUPLEMENTOS LTDA",
+      "nome_fantasia": "FITLAND BLUMENAU AGUA VERDE",
+      "cnpj": "49982339000120",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 7
+    },
+    {
+      "name": "EPC PRODUTOS NATURAIS E SUPLEMENTACAO LTDA",
+      "nome_fantasia": "FRANQUIA FITLAND BLUMENAU",
+      "cnpj": "40917018000177",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 6
+    },
+    {
+      "name": "ECAMP PRODUTOS NATURAIS E SUPLEMENTOS LTDA",
+      "nome_fantasia": "FRANQUIA FITLAND TIMBO",
+      "cnpj": "53304073000133",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 4
+    },
+    {
+      "name": "JRCM EMPREENDIMENTOS MINIMERCADO LTDA",
+      "nome_fantasia": "NOSSO GREEN MARKET",
+      "cnpj": "52916686000169",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 4
+    },
+    {
+      "name": "FRANCIELLI FRANCALACCI DE OLIVEIRA EIRELI",
+      "nome_fantasia": "FRAN FIT",
+      "cnpj": "05926581000100",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 6
+    },
+    {
+      "name": "VITALI ESPECIARIAS E EMBALAGENS LTDA",
+      "nome_fantasia": "VITALY'S ESPECIARIAS E EMBALAGENS",
+      "cnpj": "07750414000187",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 2
+    },
+    {
+      "name": "FMC COMERCIO LTDA",
+      "nome_fantasia": "NATERRA SLZ",
+      "cnpj": "09088606000103",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 3
+    },
+    {
+      "name": "QUINOA NATURAL ALIMENTOS E SAUDAVEIS LTDA",
+      "nome_fantasia": "QUINOA NATURAL",
+      "cnpj": "24778921000148",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 2
+    },
+    {
+      "name": "UNIAO LESTE BRASILEIRA DA IGREJA ADVENTISTA DO SETIMO DIA",
+      "nome_fantasia": "LOJA MULTIBOM",
+      "cnpj": "17261509001839",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "51.599.613 GENESIO PAIXAO DE JESUS",
+      "nome_fantasia": "51.599.613 GENESIO PAIXAO DE JESUS",
+      "cnpj": "51599613000128",
+      "level": "cnpj_prefix",
+      "detail": "CNPJ prefix 51599613 matched to 51599613000128",
+      "months_seen": 3
+    },
+    {
+      "name": "EMPÓRIO GAIA PRODUTOS NATURAIS LTDA",
+      "nome_fantasia": "EMPÓRIO GAIA",
+      "cnpj": "28180051000161",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 3
+    },
+    {
+      "name": "LENOIR DA SILVA LTDA",
+      "nome_fantasia": "VIVA MAIS PRODUTOS NATURAIS",
+      "cnpj": "59359915000130",
+      "level": "exact",
+      "detail": "Nome Fantasia exact match (mercos_nome_fantasia)",
+      "months_seen": 1
+    },
+    {
+      "name": "ALAVER & REZENDE LTDA",
+      "nome_fantasia": "DELICIAS TRIUNFAL",
+      "cnpj": "79725255000171",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 2
+    },
+    {
+      "name": "DANIEL LAURENTINO PINTO",
+      "nome_fantasia": "SAUDE & FORMA PRODUTOS NATURAIS",
+      "cnpj": "13779804000182",
+      "level": "partial",
+      "detail": "razao_social partial match in sap_nome_cliente: 'DANIEL LAURENTINO PINTO - ME'",
+      "months_seen": 1
+    },
+    {
+      "name": "KAROLINE SABINO DA SILVA",
+      "nome_fantasia": "SWEET AND FIT ATELIER",
+      "cnpj": "37370567000160",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 3
+    },
+    {
+      "name": "REIS COMERCIO DE PRODUTOS NATURAIS LTDA",
+      "nome_fantasia": "MUNDO VERDE",
+      "cnpj": "72500887000198",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 3
+    },
+    {
+      "name": "61.030.585 CRISTIANE SVIECH TIBUCHESKI",
+      "nome_fantasia": "FITIBU",
+      "cnpj": "61030585000187",
+      "level": "cnpj_prefix",
+      "detail": "CNPJ prefix 61030585 matched to 61030585000187",
+      "months_seen": 2
+    },
+    {
+      "name": "HFBR ALIMENTOS LTDA",
+      "nome_fantasia": "VILLA HORTIFRUTI",
+      "cnpj": "22787082000107",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 4
+    },
+    {
+      "name": "60.764.392 WELLINGTON LOPES PINHEIRO",
+      "nome_fantasia": "60.764.392 WELLINGTON LOPES PINHEIRO",
+      "cnpj": "60764392000197",
+      "level": "cnpj_prefix",
+      "detail": "CNPJ prefix 60764392 matched to 60764392000197",
+      "months_seen": 1
+    },
+    {
+      "name": "HUMAN HEALTH COMERCIO DE PRODUTOS NATURAIS LTDA",
+      "nome_fantasia": "MUNDO VERDE JUNDIAI -  ANHANGABAU",
+      "cnpj": "58429130000124",
+      "level": "partial",
+      "detail": "nome_fantasia partial match in mercos_nome_fantasia: 'MUNDO VERDE'",
+      "months_seen": 1
+    },
+    {
+      "name": "CENTRO DE EMAGRECIMENTO E SAUDE JUIZ DE FORA LTDA",
+      "nome_fantasia": "EMAGRECENTRO JUIZ DE FORA",
+      "cnpj": "46796336000103",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 6
+    },
+    {
+      "name": "GAMA COMERCIO LTDA",
+      "nome_fantasia": "EMPORIO DOLL PRODUTOS NATURAIS",
+      "cnpj": "33778381000193",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 6
+    },
+    {
+      "name": "GS SUPLEMENTOS LTDA",
+      "nome_fantasia": "SAUDE TOTAL",
+      "cnpj": "58281843000193",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "CECILIA DIAS SUPLEMENTOS LTDA",
+      "nome_fantasia": "CECILIA DIAS SUPLEMENTOS",
+      "cnpj": "54679245000116",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "35.423.131 ALDEBARAN MONTEIRO ANGREVES",
+      "nome_fantasia": "ALDEBARAN MONTEIRO ANGREVES",
+      "cnpj": "35423131000166",
+      "level": "cnpj_prefix",
+      "detail": "CNPJ prefix 35423131 matched to 35423131000166",
+      "months_seen": 2
+    },
+    {
+      "name": "DENDERA DRUGSTORE LTDA",
+      "nome_fantasia": "STYLO FARMA CURITIBA",
+      "cnpj": "55795646000102",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "M. A. SILVA DE FREITAS COMERCIO DE PRODUTOS NATURAIS",
+      "nome_fantasia": "EMPORIO NATU",
+      "cnpj": "38449259000197",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 2
+    },
+    {
+      "name": "NATURVIDA MERCADO SAUDAVEL LTDA",
+      "nome_fantasia": "NATURVIDA MERCADO SAUDAVEL LTDA",
+      "cnpj": "09185428000392",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_nome_fantasia)",
+      "months_seen": 2
+    },
+    {
+      "name": "NATURVIDA MERCADO SAUDAVEL LTDA",
+      "nome_fantasia": "NATURVIDA",
+      "cnpj": "09185428000392",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_nome_fantasia)",
+      "months_seen": 6
+    },
+    {
+      "name": "DORAN COMERCIO DE CEREAIS LTDA",
+      "nome_fantasia": "MANAH CEREAIS cia da saude",
+      "cnpj": "10948481000115",
+      "level": "partial",
+      "detail": "razao_social partial match in sap_nome_cliente: 'DORAN COMERCIO DE CEREAIS LTDA - EPP'",
+      "months_seen": 1
+    },
+    {
+      "name": "ISSA & MEIRA - COMERCIO DE PRODUTOS NATURAIS LTDA",
+      "nome_fantasia": "MUNDO VERDE PARAUAPEBAS",
+      "cnpj": "58429130000124",
+      "level": "partial",
+      "detail": "nome_fantasia partial match in mercos_nome_fantasia: 'MUNDO VERDE'",
+      "months_seen": 1
+    },
+    {
+      "name": "MN MAIS NUTRI EMPORIO LTDA",
+      "nome_fantasia": "EMPORIO MAIS VIDA",
+      "cnpj": "30698924000174",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 3
+    },
+    {
+      "name": "HUMBERTO COMERCIO DE PRODUTOS NATURAIS LTDA",
+      "nome_fantasia": "PRODUTOS NATURAIS DE STELLA MARIS",
+      "cnpj": "44814111000107",
+      "level": "partial",
+      "detail": "razao_social partial match in sap_nome_cliente: 'HUMBERTO COMERCIO DE PRODUTOS NATURAIS L'",
+      "months_seen": 1
+    },
+    {
+      "name": "57.480.928 WESLLEY APARECIDO COSTA DA SILVA",
+      "nome_fantasia": "57.480.928 WESLLEY APARECIDO COSTA DA SILVA",
+      "cnpj": "57480928000138",
+      "level": "cnpj_prefix",
+      "detail": "CNPJ prefix 57480928 matched to 57480928000138",
+      "months_seen": 1
+    },
+    {
+      "name": "PENINSULA VERDE PRODUTOS NATURAIS LTDA",
+      "nome_fantasia": "MUNDO VERDE",
+      "cnpj": "58429130000124",
+      "level": "exact",
+      "detail": "Nome Fantasia exact match (mercos_nome_fantasia)",
+      "months_seen": 1
+    },
+    {
+      "name": "MBD CURTY REIS - PRODUTOS NATURAIS",
+      "nome_fantasia": "MUNDO VERDE FRIBURGO PRAÇA",
+      "cnpj": "18078522000171",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 3
+    },
+    {
+      "name": "VITA PRODUTOS NATURAIS GTBA LTDA",
+      "nome_fantasia": "VITA PRODUTOS NATURAIS",
+      "cnpj": "16762003000100",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 5
+    },
+    {
+      "name": "JAQUELINE DE MELLO VICENTE EMPORIO",
+      "nome_fantasia": "UANA PRODUTOS NATURAIS E A GRANEL",
+      "cnpj": "39647311000182",
+      "level": "partial",
+      "detail": "razao_social partial match in sap_nome_cliente: 'JAQUELINE DE MELLO VICENTE EMPORIO - ME'",
+      "months_seen": 1
+    },
+    {
+      "name": "R C DE ARAUJO MEDEIROS",
+      "nome_fantasia": "EQUILLIBRIUN",
+      "cnpj": "12165772000162",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "ADRIANA JAEGER DA SILVA",
+      "nome_fantasia": "RAIZES DA VIDA PRODUTOS ORGANICOS E NATURAIS",
+      "cnpj": "46384752000102",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "IVANILDO BARBOSA DOS SANTOS 08664084874",
+      "nome_fantasia": "PONTO CERTO NATURAL",
+      "cnpj": "15626213000109",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 6
+    },
+    {
+      "name": "R DE S MENESES LTDA",
+      "nome_fantasia": "CORPUS SUPPLEMENTS NUTRICAO ESPORTIVA",
+      "cnpj": "36833981000103",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "F. MATTOS DA SILVA",
+      "nome_fantasia": "F. MATTOS DA SILVA",
+      "cnpj": "54943813000144",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_nome_fantasia)",
+      "months_seen": 1
+    },
+    {
+      "name": "PERINI VIDA SAUDAVEL LTDA",
+      "nome_fantasia": "PERINI VIDA SAUDAVEL",
+      "cnpj": "54763882000176",
+      "level": "partial",
+      "detail": "razao_social partial match in sap_nome_cliente: 'PERINI VIDA SAUDAVEL LTDA - EPP'",
+      "months_seen": 1
+    },
+    {
+      "name": "VEGSIM LTDA",
+      "nome_fantasia": "VEGSIM LTDA",
+      "cnpj": "37738174000247",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_nome_fantasia)",
+      "months_seen": 1
+    },
+    {
+      "name": "EMPORIO BEM ESTAR LTDA",
+      "nome_fantasia": "EMPORIO BEM ESTAR",
+      "cnpj": "59902133000104",
+      "level": "partial",
+      "detail": "razao_social partial match in sap_nome_cliente: 'EMPORIO BEM ESTAR LTDA - ME'",
+      "months_seen": 1
+    },
+    {
+      "name": "MADOR PRODUTOS NATURAIS E SUPLEMENTOS LTDA",
+      "nome_fantasia": "FRANQUIA FITLAND BLUMENAU SALTO WEISSBACH",
+      "cnpj": "55483453000108",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 6
+    },
+    {
+      "name": "LUMAFER PRODUTOS NATURAIS E ORGANICOS LTDA",
+      "nome_fantasia": "GRANO & VITA",
+      "cnpj": "21757527000135",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "TOP FIT COMERCIO DE NUTRICAO LTDA",
+      "nome_fantasia": "TOP FIT",
+      "cnpj": "57200778000161",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "60.641.605 LARA DE BARROS AMANDO ALENCAR - ME",
+      "nome_fantasia": "Nutrindo+",
+      "cnpj": "60641605000193",
+      "level": "cnpj_prefix",
+      "detail": "CNPJ prefix 60641605 matched to 60641605000193",
+      "months_seen": 2
+    },
+    {
+      "name": "EMPORIO MAIS VIDA LTDA",
+      "nome_fantasia": "EMPORIO MAIS VIDA",
+      "cnpj": "30698924000174",
+      "level": "exact",
+      "detail": "Nome Fantasia exact match (mercos_nome_fantasia)",
+      "months_seen": 1
+    },
+    {
+      "name": "ARGOLO & BICHARA LTDA",
+      "nome_fantasia": "MUNDO VERDE",
+      "cnpj": "58429130000124",
+      "level": "exact",
+      "detail": "Nome Fantasia exact match (mercos_nome_fantasia)",
+      "months_seen": 1
+    },
+    {
+      "name": "ESPVERDE ICARAI COMERCIO DE PRODUTOS NATURAIS LTDA EPP",
+      "nome_fantasia": "Mundo Verde Icaraí",
+      "cnpj": "13664585000196",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 2
+    },
+    {
+      "name": "NATURHAUS LOJA DE PRODUTOS ALIMENTICIOS NATURAIS LTDA",
+      "nome_fantasia": "NATURHAUS",
+      "cnpj": "08626347000156",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 5
+    },
+    {
+      "name": "45.288.851 GRAZIELI ALINE KUNST",
+      "nome_fantasia": "GRAZIELI ALINE KUNST",
+      "cnpj": "45288851000110",
+      "level": "cnpj_prefix",
+      "detail": "CNPJ prefix 45288851 matched to 45288851000110",
+      "months_seen": 1
+    },
+    {
+      "name": "GRAOS NATURALLE LTDA",
+      "nome_fantasia": "GRAOS NATURALLE",
+      "cnpj": "43097733000107",
+      "level": "partial",
+      "detail": "razao_social partial match in sap_nome_cliente: 'GRAOS NATURALLE LTDA - ME'",
+      "months_seen": 1
+    },
+    {
+      "name": "55.175.614 BRENDA FOSTER LOBO",
+      "nome_fantasia": "IMPERIO ADONAI",
+      "cnpj": "55175614000104",
+      "level": "cnpj_prefix",
+      "detail": "CNPJ prefix 55175614 matched to 55175614000104",
+      "months_seen": 1
+    },
+    {
+      "name": "NOVA DESPENSA COMERCIO DE PRODUTOS ALIMENTICIOS LTDA",
+      "nome_fantasia": "NOVA DESPENSA",
+      "cnpj": "41006563000174",
+      "level": "partial",
+      "detail": "razao_social partial match in sap_nome_cliente: 'NOVA DESPENSA COMERCIO DE PRODUTOS ALIME'",
+      "months_seen": 1
+    },
+    {
+      "name": "DIVINO VALE COMERCIO DE ALIMENTOS LTDA",
+      "nome_fantasia": "DIVINO VALE COMERCIO DE ALIMENTOS",
+      "cnpj": "29113564000112",
+      "level": "exact",
+      "detail": "Razao Social exact match (sap_nome_cliente)",
+      "months_seen": 1
+    },
+    {
+      "name": "44.615.142 DAIANE PEREIRA DA SILVA",
+      "nome_fantasia": "GRAOS PRODUTOS NATURAIS",
+      "cnpj": "44615142000139",
+      "level": "cnpj_prefix",
+      "detail": "CNPJ prefix 44615142 matched to 44615142000139",
+      "months_seen": 1
+    },
+    {
+      "name": "SOU FUNCIONAL PRODUTOS NATURAIS LTDA",
+      "nome_fantasia": "SOU FUNCIONAL",
+      "cnpj": "23440429000103",
+      "level": "partial",
+      "detail": "razao_social partial match in sap_nome_cliente: 'SOU FUNCIONAL PRODUTOS NATURAIS LTDA - M'",
+      "months_seen": 1
+    },
+    {
+      "name": "REDE HIPER GRAOS RODOVIARIA RJ COMERCIO LTDA",
+      "nome_fantasia": "REDE HIPER GRAOS RODOVIARIA RJ COMERCIO LTDA",
+      "cnpj": "48506346000192",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_nome_fantasia)",
+      "months_seen": 4
+    },
+    {
+      "name": "ARMAZEM ESTIVA LTDA",
+      "nome_fantasia": "ARMAZEM ESTIVA",
+      "cnpj": "38614942000132",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 2
+    },
+    {
+      "name": "GABRIELA ROXO MONTEIRO 03859211013",
+      "nome_fantasia": "GABRIELA ROXO MONTEIRO",
+      "cnpj": "32869684000159",
+      "level": "exact",
+      "detail": "Razao Social exact match (sap_nome_cliente)",
+      "months_seen": 2
+    },
+    {
+      "name": "EMPORIO MUNDO FITNESS LTDA",
+      "nome_fantasia": "MUNDO FITNESS",
+      "cnpj": "37717783000139",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 2
+    },
+    {
+      "name": "BENDITO CASARAO PRODUTOS NATURAIS LTDA",
+      "nome_fantasia": "BENDITO CASARAO PRODUTOS NATURAIS LTDA",
+      "cnpj": "28277519000130",
+      "level": "partial",
+      "detail": "razao_social partial match in sap_nome_cliente: 'BENDITO CASARAO PRODUTOS NATURAIS LTDA -'",
+      "months_seen": 1
+    },
+    {
+      "name": "L R DUARTE MARINHO OLIVEIRA LTDA",
+      "nome_fantasia": "VIVA MAIS MOSSORO",
+      "cnpj": "38474074000132",
+      "level": "exact",
+      "detail": "Razao Social exact match (sap_nome_cliente)",
+      "months_seen": 1
+    },
+    {
+      "name": "F DIVINA TERRA DO NASCIMENTO",
+      "nome_fantasia": "DIVINA TERRA",
+      "cnpj": "55026263000161",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 2
+    },
+    {
+      "name": "SIMONE DOS SANTOS TEIXEIRA 03405073650",
+      "nome_fantasia": "EMPORIO VIDA NATURAL",
+      "cnpj": "31323790000170",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 3
+    },
+    {
+      "name": "VIDA COM SAUDE PRODUTOS NATURAIS LTDA",
+      "nome_fantasia": "VIDA COM SAUDE PRODUTOS NATURAIS",
+      "cnpj": "23295236000106",
+      "level": "partial",
+      "detail": "razao_social partial match in sap_nome_cliente: 'VIDA COM SAUDE PRODUTOS NATURAIS LTDA -M'",
+      "months_seen": 1
+    },
+    {
+      "name": "49.641.497 SAMARA CRISTIANE DA SILVA",
+      "nome_fantasia": "Espaço Saúde Produtos Naturais",
+      "cnpj": "49641497000116",
+      "level": "cnpj_prefix",
+      "detail": "CNPJ prefix 49641497 matched to 49641497000116",
+      "months_seen": 1
+    },
+    {
+      "name": "COMPANHIA THERMAS DO RIO QUENTE",
+      "nome_fantasia": "COMPANHIA THERMAS DO RIO QUENTE",
+      "cnpj": "01540533000129",
+      "level": "exact",
+      "detail": "Razao Social exact match (sap_nome_cliente)",
+      "months_seen": 1
+    },
+    {
+      "name": "EMPORIO NATURAL XINGUARA LTDA",
+      "nome_fantasia": "EMPORIO NATURAL",
+      "cnpj": "57609668000158",
+      "level": "partial",
+      "detail": "nome_fantasia partial match in sap_nome_cliente: 'J&D EMPORIO NATURAL LTDA - ME'",
+      "months_seen": 1
+    },
+    {
+      "name": "MERCADO FIT & GRANEL PRODUTOS NATURAIS LTDA",
+      "nome_fantasia": "FIT & GRANEL",
+      "cnpj": "41069473000122",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 4
+    },
+    {
+      "name": "CIA DA SAUDE ILHOTA ALIMENTACAO SAUDAVEL LTDA",
+      "nome_fantasia": "CIA ILHOTA",
+      "cnpj": "62757635000195",
+      "level": "partial",
+      "detail": "razao_social partial match in mercos_nome_fantasia: 'CIA DA SAUDE'",
+      "months_seen": 2
+    },
+    {
+      "name": "MS COMERCIO DE PRODUTOS NATURAIS LTDA",
+      "nome_fantasia": "MS DISTRIBUIDORA",
+      "cnpj": "37790248000103",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 2
+    },
+    {
+      "name": "JORDANA MILACH LAMBRECHT PORTANTIOLO",
+      "nome_fantasia": "JORDANA MILACH LAMBRECHT PORTANTIOLO",
+      "cnpj": "28792086000151",
+      "level": "partial",
+      "detail": "razao_social partial match in sap_nome_cliente: 'JORDANA MILACH LAMBRECHT PORTANTIOLO - M'",
+      "months_seen": 1
+    },
+    {
+      "name": "SANTOS & LEGNANI COMERCIO DE PRODUTOS NATURAIS LTDA",
+      "nome_fantasia": "CACIQUE PRODUTOS NATURAIS",
+      "cnpj": "49427554000169",
+      "level": "partial",
+      "detail": "razao_social partial match in sap_nome_cliente: 'SANTOS & LEGNANI COMERCIO DE PRODUTOS NA'",
+      "months_seen": 1
+    },
+    {
+      "name": "AC PRODUTOS NATURAIS LTDA",
+      "nome_fantasia": "CIA DA SAUDE - PRODUTOS NATURAIS",
+      "cnpj": "22570775000135",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "CE.NHORINHA COZINHA FUNCIONAL LTDA",
+      "nome_fantasia": "CE.NHORINHA COZINHA FUNCIONAL",
+      "cnpj": "38272246000195",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 3
+    },
+    {
+      "name": "NUTRIFIT ARMAZEM SAUDAVEL LTDA",
+      "nome_fantasia": "",
+      "cnpj": "49616582000124",
+      "level": "partial",
+      "detail": "razao_social partial match in sap_nome_cliente: 'NUTRIFIT ARMAZEM SAUDAVEL LTDA - ME'",
+      "months_seen": 1
+    },
+    {
+      "name": "51.774.001 EDUARDO BAUERMANN DOS SANTOS",
+      "nome_fantasia": "VIVA MAIS NATURAL",
+      "cnpj": "51774001000124",
+      "level": "cnpj_prefix",
+      "detail": "CNPJ prefix 51774001 matched to 51774001000124",
+      "months_seen": 1
+    },
+    {
+      "name": "VIVA MAIS LTDA",
+      "nome_fantasia": "VIVA MAIS",
+      "cnpj": "26815445000113",
+      "level": "partial",
+      "detail": "razao_social partial match in sap_nome_cliente: 'VIVA MAIS LTDA - ME'",
+      "months_seen": 1
+    },
+    {
+      "name": "FRANCIELI MINATI BARP 06601803910",
+      "nome_fantasia": "NATURALE SAUDE E SABOR",
+      "cnpj": "51924211000151",
+      "level": "partial",
+      "detail": "nome_fantasia partial match in sap_nome_cliente: 'NATURALE SAUDE E SABOR LTDA - ME'",
+      "months_seen": 1
+    },
+    {
+      "name": "INTERBRANDS FOODS LTDA",
+      "nome_fantasia": "INTERBRANDS FOODS LTDA",
+      "cnpj": "00288948000194",
+      "level": "exact",
+      "detail": "Razao Social exact match (sap_nome_cliente)",
+      "months_seen": 1
+    },
+    {
+      "name": "NATIVA PRIME SAO JOSE EMPORIO NATURAL COMERCIO DE ALIMENTOS EIRELI",
+      "nome_fantasia": "NATIVA Prime Itaguaçu",
+      "cnpj": "36631473000134",
+      "level": "partial",
+      "detail": "razao_social partial match in sap_nome_cliente: 'NATIVA PRIME SAO JOSE EMPORIO NATURAL CO'",
+      "months_seen": 1
+    },
+    {
+      "name": "E. A. KASPEICHAKI LTDA",
+      "nome_fantasia": "EMPORIO DA MATA PRODUTOS NATURAIS",
+      "cnpj": "52212261000179",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "CJ PRODUTOS NATURAIS LTDA",
+      "nome_fantasia": "GRANELLO",
+      "cnpj": "51515279000187",
+      "level": "partial",
+      "detail": "razao_social partial match in sap_nome_cliente: 'CJ PRODUTOS NATURAIS LTDA - ME'",
+      "months_seen": 1
+    },
+    {
+      "name": "L V PRODUTOS NATURAIS LTDA",
+      "nome_fantasia": "PONTO NATURAL",
+      "cnpj": "20284100000102",
+      "level": "partial",
+      "detail": "razao_social partial match in sap_nome_cliente: 'L V PRODUTOS NATURAIS LTDA - EPP'",
+      "months_seen": 1
+    },
+    {
+      "name": "SONIA IOLANDA DUARTE 33558442091",
+      "nome_fantasia": "SONIA IOLANDA DUARTE",
+      "cnpj": "37266276000126",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "COMERCIAL CARAPA DE SECOS E MOLHADOS LTDA",
+      "nome_fantasia": "SUPERMERCADOS MACHADO",
+      "cnpj": "03790904000580",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "DIVINA TERRA TOCANTINS",
+      "nome_fantasia": "DIVINA TERRA TOCANTINS",
+      "cnpj": "42415997000190",
+      "level": "partial",
+      "detail": "razao_social partial match in mercos_nome_fantasia: 'DIVINA TERRA'",
+      "months_seen": 1
+    },
+    {
+      "name": "NATU & FIT LTDA",
+      "nome_fantasia": "NATU & FIT",
+      "cnpj": "28088475000109",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 2
+    },
+    {
+      "name": "50.047.503 GIOVANA SANCHES DA SILVA",
+      "nome_fantasia": "EMPORIO PIMENTA VERDE",
+      "cnpj": "50047503000190",
+      "level": "cnpj_prefix",
+      "detail": "CNPJ prefix 50047503 matched to 50047503000190",
+      "months_seen": 1
+    },
+    {
+      "name": "IZETE SELENKA NICOLAI LTDA",
+      "nome_fantasia": "O ARMAZEM DE PRODUTOS NATURAIS E EMBALAGENS",
+      "cnpj": "23468249000121",
+      "level": "partial",
+      "detail": "razao_social partial match in sap_nome_cliente: 'IZETE SELENKA NICOLAI LTDA - ME'",
+      "months_seen": 1
+    },
+    {
+      "name": "CRESPO E PIRES COMERCIO VAREJISTA LTDA",
+      "nome_fantasia": "EMPORIO DONA SEMENTE",
+      "cnpj": "40647114000142",
+      "level": "partial",
+      "detail": "nome_fantasia partial match in sap_nome_cliente: 'EMPORIO DONA SEMENTE COMERCIO VAREJISTA-'",
+      "months_seen": 1
+    },
+    {
+      "name": "COMERCIAL CARAPA DE SECOS E MOLHADOS LTDA",
+      "nome_fantasia": "MACHADAO ATACADISTA",
+      "cnpj": "03790904000580",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "NA COZINHA DO BEM EMPORIO NATURAL EIRELI",
+      "nome_fantasia": "NA COZINHA DO BEM EMPORIO NATURAL EIRELI",
+      "cnpj": "38449259000197",
+      "level": "partial",
+      "detail": "razao_social partial match in mercos_nome_fantasia: 'EMPORIO NATU'",
+      "months_seen": 1
+    },
+    {
+      "name": "UNIAO SUL BRASILEIRA DA IGREJA ADVENTISTA DO SETIMO DIA",
+      "nome_fantasia": "UNIAO SUL BRASILEIRA DA IGREJA ADVENTISTA DO SETIMO DIA",
+      "cnpj": "79080602000156",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_nome_fantasia)",
+      "months_seen": 1
+    },
+    {
+      "name": "MARILEA NOGUEIRA DE SOUZA E SILVA 85793698604",
+      "nome_fantasia": "EMPORIO KINKAS",
+      "cnpj": "44900196000146",
+      "level": "partial",
+      "detail": "razao_social partial match in sap_nome_cliente: 'MARILEA NOGUEIRA DE SOUZA E SILVA 857936'",
+      "months_seen": 1
+    },
+    {
+      "name": "DIVINO ARMAZEM COMERCIO DE PRODUTOS NATURAIS LTDA",
+      "nome_fantasia": "DIVINO ARMAZEM - EMPORIO PRODUTOS NATURAIS",
+      "cnpj": "51284304000169",
+      "level": "partial",
+      "detail": "razao_social partial match in sap_nome_cliente: 'DIVINO ARMAZEM COMERCIO DE PRODUTOS NATU'",
+      "months_seen": 1
+    },
+    {
+      "name": "DIVINA ATIBAIA COMERCIO DE PRODUTOS NATURAIS LTDA",
+      "nome_fantasia": "DIVINA TERRA ATIBAIA",
+      "cnpj": "42415997000190",
+      "level": "partial",
+      "detail": "nome_fantasia partial match in mercos_nome_fantasia: 'DIVINA TERRA'",
+      "months_seen": 1
+    },
+    {
+      "name": "46.685.493 MELISSA ROHRBACHER DA SILVA",
+      "nome_fantasia": "MELISSA ROHRBACHER DA SILVA",
+      "cnpj": "46685493000141",
+      "level": "cnpj_prefix",
+      "detail": "CNPJ prefix 46685493 matched to 46685493000141",
+      "months_seen": 1
+    },
+    {
+      "name": "NUTREE EMPORIO NATURAL LTDA",
+      "nome_fantasia": "NUTREE EMPORIO NATURAL",
+      "cnpj": "41191401000153",
+      "level": "partial",
+      "detail": "razao_social partial match in sap_nome_cliente: 'NUTREE EMPORIO NATURAL LTDA - ME'",
+      "months_seen": 1
+    },
+    {
+      "name": "BIOMUNDO ARAGUAINA LTDA",
+      "nome_fantasia": "BIO MUNDO ARAGUAINA",
+      "cnpj": "50860678000112",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "J F COMERCIO DE ALIMENTOS LTDA",
+      "nome_fantasia": "J F COMERCIO DE ALIMENTOS LTDA",
+      "cnpj": "49639041000111",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_nome_fantasia)",
+      "months_seen": 1
+    },
+    {
+      "name": "REDE HIPER GRAOS RIO DAS OSTRAS LTDA",
+      "nome_fantasia": "REDE HIPER GRAOS RIO DAS OSTRAS LTDA",
+      "cnpj": "50324818000138",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_nome_fantasia)",
+      "months_seen": 1
+    },
+    {
+      "name": "REDE HIPER GRAO DE BACAXA LTDA",
+      "nome_fantasia": "HIPER DOCE SAQUAREMA",
+      "cnpj": "42502454000100",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "REDE HIPER DOCE DE CABO FRIO LTDA",
+      "nome_fantasia": "REDE HIPER DOCE DE CABO FRIO LTDA",
+      "cnpj": "26225527000108",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_nome_fantasia)",
+      "months_seen": 2
+    },
+    {
+      "name": "REDE NOVO TEMPO DE COMUNICACAO",
+      "nome_fantasia": "REDE NOVO TEMPO DE COMUNICACAO",
+      "cnpj": "01385423000130",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_nome_fantasia)",
+      "months_seen": 4
+    },
+    {
+      "name": "EMPORIUM GRÃOS E ESPECIARIAS LTDA",
+      "nome_fantasia": "EMPORIUM GRÃOS E ESPECIARIAS LTDA",
+      "cnpj": "06202229000195",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_nome_fantasia)",
+      "months_seen": 2
+    },
+    {
+      "name": "TRIBO VERDE PRODUTOS NATURAIS LTDA",
+      "nome_fantasia": "EMPORIO TRIBO ALDEIA VERDE",
+      "cnpj": "48391847000170",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 3
+    },
+    {
+      "name": "EPERCAM PRODUTOS NATURAIS E SUPLEMENTOS LTDA",
+      "nome_fantasia": "FRANQUIA FITLAND POMERODE",
+      "cnpj": "55717635000104",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 3
+    },
+    {
+      "name": "ITALO ZILMER BEDERODE LTDA",
+      "nome_fantasia": "ITALO ZILMER BEDERODE LTDA",
+      "cnpj": "53754257000103",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_nome_fantasia)",
+      "months_seen": 2
+    },
+    {
+      "name": "MARILIA RAFAELA FERREIRA DA LUZ LTDA",
+      "nome_fantasia": "MARILIA RAFAELA FERREIRA DA LUZ LTDA",
+      "cnpj": "61746555000171",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_nome_fantasia)",
+      "months_seen": 2
+    },
+    {
+      "name": "JAQUELINE MACHADO COUTO 08791417600",
+      "nome_fantasia": "JAQUELINE MACHADO COUTO 08791417600",
+      "cnpj": "45120770000106",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_nome_fantasia)",
+      "months_seen": 3
+    },
+    {
+      "name": "SOUZA & FERREIRA COMERCIO DE PRODUTOS NATURAIS LTDA",
+      "nome_fantasia": "PROSAUDE - NOVO PROGRESSO",
+      "cnpj": "22081589000132",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "MARCOS HENRIQUE RODRIGUES HERTZOG LTDA",
+      "nome_fantasia": "HERTZ NUTRITION",
+      "cnpj": "17039758000136",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "REDE HIPER DOCE CENTRO LTDA",
+      "nome_fantasia": "HIPER GRANEL",
+      "cnpj": "26198700000126",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 2
+    },
+    {
+      "name": "N. F. P. DE ALMEIDA COMERCIO LTDA",
+      "nome_fantasia": "VIDA LEVE ALTAMIRA",
+      "cnpj": "58258680000128",
+      "level": "partial",
+      "detail": "nome_fantasia partial match in mercos_nome_fantasia: 'VIDA LEVE'",
+      "months_seen": 2
+    },
+    {
+      "name": "59.359.915 DAVID CESAR DA SILVA",
+      "nome_fantasia": "Viva mais produtos naturais",
+      "cnpj": "59359915000130",
+      "level": "cnpj_prefix",
+      "detail": "CNPJ prefix 59359915 matched to 59359915000130",
+      "months_seen": 2
+    },
+    {
+      "name": "PRODUTOS DA TERRA COM DE CEREAIS PROD NATURAIS LTDA",
+      "nome_fantasia": "NATUREZA EM KILO",
+      "cnpj": "00211115000206",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 3
+    },
+    {
+      "name": "NEM PEIXE ALIMENTOS VEGANOS LTDA",
+      "nome_fantasia": "NEM PEIXE",
+      "cnpj": "56608812000179",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 4
+    },
+    {
+      "name": "P & M NUTRICAO LTDA",
+      "nome_fantasia": "FIT NUTRICAO",
+      "cnpj": "57425671000111",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "61.932.319 LEONARDO PANDOLFI",
+      "nome_fantasia": "WOLFI MACHINES",
+      "cnpj": "61932319000140",
+      "level": "cnpj_prefix",
+      "detail": "CNPJ prefix 61932319 matched to 61932319000140",
+      "months_seen": 3
+    },
+    {
+      "name": "G.F. NOGUEIRA ARMAZEM NATURAL",
+      "nome_fantasia": "CONTORNO ARMAZEM",
+      "cnpj": "29466137000118",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "VITANOVA PRODUTOS NATURAIS LTDA",
+      "nome_fantasia": "VITANOVA PRODUTOS NATURAIS LTDA",
+      "cnpj": "64425601000129",
+      "level": "partial",
+      "detail": "razao_social partial match in mercos_nome_fantasia: 'VITANO'",
+      "months_seen": 1
+    },
+    {
+      "name": "VINICIUS HERNANDEZ 06011449107",
+      "nome_fantasia": "RAIZES E SABORES",
+      "cnpj": "35031254000151",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 3
+    },
+    {
+      "name": "GRATITUDE EMPORIO NATURAL E BRISTO LTDA",
+      "nome_fantasia": "GRATITUDE EMPORIO NATURAL E BRISTO",
+      "cnpj": "38449259000197",
+      "level": "partial",
+      "detail": "razao_social partial match in mercos_nome_fantasia: 'EMPORIO NATU'",
+      "months_seen": 1
+    },
+    {
+      "name": "LORENA TEIXEIRA CARDOSO",
+      "nome_fantasia": "VIDA LEVE ESPECIARIAS",
+      "cnpj": "32203302000153",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "MAIARA LORCA DE OLIVEIRA",
+      "nome_fantasia": "MUNDO VERDE VOCE MAIS SAUDAVEL",
+      "cnpj": "28019593000157",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 3
+    },
+    {
+      "name": "SS COMERCIO DE SUPLEMENTOS LTDA",
+      "nome_fantasia": "POWER SUPLEMENTOS",
+      "cnpj": "48606158000136",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "52.575.072 ANA LETICIA PIRES PISTORI",
+      "nome_fantasia": "BISTROZINHO INFANTIL",
+      "cnpj": "52575072000160",
+      "level": "cnpj_prefix",
+      "detail": "CNPJ prefix 52575072 matched to 52575072000160",
+      "months_seen": 1
+    },
+    {
+      "name": "NUTRI NATURAL SUPLEMENTOS E MODA FITNESS LTDA",
+      "nome_fantasia": "NUTRI NATURAL",
+      "cnpj": "47128253000109",
+      "level": "exact",
+      "detail": "Razao Social normalized exact match (sap_nome_cliente)",
+      "months_seen": 1
+    },
+    {
+      "name": "FRANCIELE PELISSARI COMERCIO DE ALIMENTOS LTDA",
+      "nome_fantasia": "DIVINA TERRA SORRISO",
+      "cnpj": "50772174000140",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "PELISSARI COMERCIO DE ALIMENTOS LTDA",
+      "nome_fantasia": "DIVINA TERRA SINOP",
+      "cnpj": "45095489000160",
+      "level": "partial",
+      "detail": "razao_social partial match in sap_nome_cliente: 'PELISSARI COMERCIO DE ALIMENTOS LTDA - M'",
+      "months_seen": 1
+    },
+    {
+      "name": "MADAE PRODUTOS NATURAIS LTDA",
+      "nome_fantasia": "MADAE PRODUTOS NATURAIS",
+      "cnpj": "55738450000178",
+      "level": "partial",
+      "detail": "razao_social partial match in sap_nome_cliente: 'MADAE PRODUTOS NATURAIS LTDA - ME'",
+      "months_seen": 1
+    },
+    {
+      "name": "POSTOS LP LTDA",
+      "nome_fantasia": "POSTO LP",
+      "cnpj": "03207136000165",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 4
+    },
+    {
+      "name": "COMPLEX COMERCIO DE SUPLEMENTOS ALIMENTICIOS LTDA",
+      "nome_fantasia": "COMPLEX NUTRITION",
+      "cnpj": "34316966000154",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "DRITOS COMERCIO DE DOCES E SALGADOS LTDA",
+      "nome_fantasia": "COMERCIO DE PRODUTOS ALIMENTICIOS DRITOS",
+      "cnpj": "08103255000191",
+      "level": "exact",
+      "detail": "Razao Social exact match (sap_nome_cliente)",
+      "months_seen": 1
+    },
+    {
+      "name": "EMPORIO POMAR URBANO ALIMENTOS LTDA",
+      "nome_fantasia": "EMPORIO POMAR URBANO",
+      "cnpj": "22332946000198",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 4
+    },
+    {
+      "name": "QUANTO BASTA COMERCIO DE ALIMENTOS LTDA",
+      "nome_fantasia": "RAIZES E FOLHAS PRODUTOS NATURAIS",
+      "cnpj": "08294051000185",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 3
+    },
+    {
+      "name": "LAKOSKI MERCEARIA SEM GLUTEN LTDA",
+      "nome_fantasia": "LAKOSKI MERCEARIA SEM GLUTEN",
+      "cnpj": "60484125000166",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 2
+    },
+    {
+      "name": "RAIZES COMERCIO DE PRODUTOS NATURAIS E INCLUSIVOS LTDA",
+      "nome_fantasia": "RAIZES COMERCIO DE PRODUTOS NATURAIS E INCLUSIVOS LTDA",
+      "cnpj": "32093388000109",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_nome_fantasia)",
+      "months_seen": 1
+    },
+    {
+      "name": "NICE STORE PRESENTES LTDA",
+      "nome_fantasia": "NICE STORE PRESENTES",
+      "cnpj": "32940804000167",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 5
+    },
+    {
+      "name": "L N G PRODUTOS NATURAIS LTDA",
+      "nome_fantasia": "BIO MUNDO GURUPI",
+      "cnpj": "55861609000147",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 2
+    },
+    {
+      "name": "PADOCA DA BAXA LTDA",
+      "nome_fantasia": "PADOCA DA BAXA",
+      "cnpj": "55906608000171",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "AUDINEI ALVES DE SOUZA & CIA LTDA",
+      "nome_fantasia": "CHA E VITTA",
+      "cnpj": "42435340000195",
+      "level": "partial",
+      "detail": "razao_social partial match in sap_nome_cliente: 'AUDINEI ALVES DE SOUZA & CIA LTDA - ME'",
+      "months_seen": 1
+    },
+    {
+      "name": "BV ALIMENTOS LTDA",
+      "nome_fantasia": "BV ALIMENTOS LTDA",
+      "cnpj": "60475933000167",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_nome_fantasia)",
+      "months_seen": 3
+    },
+    {
+      "name": "49.620.132 EIGLA MOREIRA PORATO",
+      "nome_fantasia": "GRAO E VIDA TABOADO",
+      "cnpj": "49620132000105",
+      "level": "cnpj_prefix",
+      "detail": "CNPJ prefix 49620132 matched to 49620132000105",
+      "months_seen": 2
+    },
+    {
+      "name": "LARISSA AYUMI KAKIHATA 08094869976",
+      "nome_fantasia": "BELLA VITA - CAFE",
+      "cnpj": "39251980000130",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 3
+    },
+    {
+      "name": "SUPERMERCADO NATIANAS LTDA",
+      "nome_fantasia": "HIPER CORDEIRO JUA",
+      "cnpj": "10337748000138",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 2
+    },
+    {
+      "name": "LDP COMERCIO DE PRODUTOS LTDA",
+      "nome_fantasia": "VERCATTO BOUTIQUE SÁUDAVEL",
+      "cnpj": "41711232000135",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 4
+    },
+    {
+      "name": "GDB COMERCIO DE PRODUTOS NATURAIS LTDA",
+      "nome_fantasia": "VERCATTO BOUTIQUE - ALTO DA XV",
+      "cnpj": "53934453000151",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "VERCATTO BOUTIQUE SAUDAVEL LTDA",
+      "nome_fantasia": "VERCATTO - BARIGUI",
+      "cnpj": "42657490000143",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "LINDA CLARA OLIVEIRA PONTES 08862442696",
+      "nome_fantasia": "CARIMBO ACAI E BEBIDAS DO NORTE",
+      "cnpj": "26176117000114",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "CARD NUTRICAO SPE LTDA",
+      "nome_fantasia": "CARD DISTRIBUIDORA",
+      "cnpj": "27141630000132",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "ACADEMIA LIFE ENERGY LTDA",
+      "nome_fantasia": "ACADEMIA LIFE ENERGY",
+      "cnpj": "13154456000239",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 2
+    },
+    {
+      "name": "EMPORIO SEMENTE DO BEM LTDA",
+      "nome_fantasia": "EMPORIO SEMENTE DO BEM",
+      "cnpj": "26363134000160",
+      "level": "partial",
+      "detail": "razao_social partial match in sap_nome_cliente: 'EMPORIO SEMENTE DO BEM LTDA - EPP'",
+      "months_seen": 1
+    },
+    {
+      "name": "50.342.650 PRISCILA LILIANE ROSSETO",
+      "nome_fantasia": "50.342.650 PRISCILA LILIANE ROSSETO",
+      "cnpj": "50342650000193",
+      "level": "cnpj_prefix",
+      "detail": "CNPJ prefix 50342650 matched to 50342650000193",
+      "months_seen": 5
+    },
+    {
+      "name": "MAGE MAIS COMERCIO DE ALIMENTOS LTDA",
+      "nome_fantasia": "VIDA LEVE BARIGUI",
+      "cnpj": "54423411000119",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 3
+    },
+    {
+      "name": "R B COMERCIO DE COSMETICOS LTDA",
+      "nome_fantasia": "RB CONSULTORIA",
+      "cnpj": "16548054000126",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "VALDECI APARECIDO DE NICOLAI",
+      "nome_fantasia": "VALDECI APARECIDO DE NICOLAI",
+      "cnpj": "37633350000103",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_nome_fantasia)",
+      "months_seen": 2
+    },
+    {
+      "name": "LILIZ COMERCIO DE ALIMENTOS LTDA",
+      "nome_fantasia": "MINHA QUITANDINHA",
+      "cnpj": "57609477000196",
+      "level": "exact",
+      "detail": "Nome Fantasia exact match (mercos_nome_fantasia)",
+      "months_seen": 1
+    },
+    {
+      "name": "PICADO'S DA TERRA COMERCIO DE PRODUTOS NATURAIS LTDA",
+      "nome_fantasia": "PICADOS DA TERRA",
+      "cnpj": "59633825000196",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 2
+    },
+    {
+      "name": "D'MELO & COLISSI PRODUTOS ALIMENTICIOS LTDA",
+      "nome_fantasia": "UNIVERSO GRANEL",
+      "cnpj": "20057883000183",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 2
+    },
+    {
+      "name": "WATANABE MINI MERCADOS LTDA",
+      "nome_fantasia": "MINHA QUITANDINHA",
+      "cnpj": "57609477000196",
+      "level": "exact",
+      "detail": "Nome Fantasia exact match (mercos_nome_fantasia)",
+      "months_seen": 1
+    },
+    {
+      "name": "FERNANDA MARIA ALMEIDA PEREIRA LTDA",
+      "nome_fantasia": "FA COMERCIO DE ALIMENTOS SAUDAVEIS",
+      "cnpj": "33389565000161",
+      "level": "partial",
+      "detail": "razao_social partial match in sap_nome_cliente: 'FERNANDA MARIA ALMEIDA PEREIRA LTDA - EP'",
+      "months_seen": 2
+    },
+    {
+      "name": "SEMEANDO PRODUTOS NATURAIS LTDA",
+      "nome_fantasia": "SEMEANDO",
+      "cnpj": "62862222000170",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "EMPORIO TUDO EM GRAOS COMERCIO DE ALIMENTOS LTDA",
+      "nome_fantasia": "TUDO EM GRAOS",
+      "cnpj": "20474456000109",
+      "level": "partial",
+      "detail": "razao_social partial match in mercos_nome_fantasia: 'TUDO EM GRAOS COMERCIO DE ALIMENTOS LTDA'",
+      "months_seen": 1
+    },
+    {
+      "name": "LEAZ COMERCIO DE ALIMENTOS LTDA",
+      "nome_fantasia": "LEAZ COMERCIO DE ALIMENTOS LTDA",
+      "cnpj": "56109080000172",
+      "level": "partial",
+      "detail": "razao_social partial match in sap_nome_cliente: 'LEAZ COMERCIO DE ALIMENTOS LTDA - ME'",
+      "months_seen": 1
+    },
+    {
+      "name": "ZANETTI FRANCHISING LTDA",
+      "nome_fantasia": "REDE VIDA LEVE",
+      "cnpj": "58258680000128",
+      "level": "partial",
+      "detail": "nome_fantasia partial match in mercos_nome_fantasia: 'VIDA LEVE'",
+      "months_seen": 1
+    },
+    {
+      "name": "62.351.082 JOANA BATISTA DOS SANTOS AMORIM",
+      "nome_fantasia": "62.351.082 JOANA BATISTA DOS SANTOS AMORIM",
+      "cnpj": "62351082000176",
+      "level": "cnpj_prefix",
+      "detail": "CNPJ prefix 62351082 matched to 62351082000176",
+      "months_seen": 1
+    },
+    {
+      "name": "AVILA SUPLEMENTOS ALIMENTICIOS LTDA",
+      "nome_fantasia": "AVILA SUPLEMENTOS",
+      "cnpj": "16966212000168",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 2
+    },
+    {
+      "name": "FARMACIA HOMEOPATICA AVILA LTDA",
+      "nome_fantasia": "Ávila Natural",
+      "cnpj": "76384908000108",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 2
+    },
+    {
+      "name": "HENRI G. VALCARENGHI LTDA",
+      "nome_fantasia": "HENRI G. VALCARENGHI LTDA",
+      "cnpj": "57963322000153",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_nome_fantasia)",
+      "months_seen": 5
+    },
+    {
+      "name": "INOVASMART SOLUTIONS LTDA",
+      "nome_fantasia": "MINHA QUITANDINHA",
+      "cnpj": "59087175000120",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "AVILA CRICIUMA COMERCIO DE PRODUTOS NATURAIS LTDA.",
+      "nome_fantasia": "AVILA",
+      "cnpj": "16966212000168",
+      "level": "partial",
+      "detail": "nome_fantasia partial match in sap_nome_cliente: 'AVILA SUPLEMENTOS ALIMENTICIOS LTDA - ME'",
+      "months_seen": 2
+    },
+    {
+      "name": "EMPORIUM COMERCIO DE ALIMENTOS LTDA",
+      "nome_fantasia": "EMPORIUM LOW FIT",
+      "cnpj": "45663004000198",
+      "level": "partial",
+      "detail": "razao_social_norm partial match in sap_nome_cliente: 'EMPORIUM COMERCIO DE ALIMENTOS - ME'",
+      "months_seen": 1
+    },
+    {
+      "name": "HOTEL DE NADAI LTDA",
+      "nome_fantasia": "HOTEL & SPA DE NADAI",
+      "cnpj": "75608620000107",
+      "level": "exact",
+      "detail": "Razao Social exact match (sap_nome_cliente)",
+      "months_seen": 1
+    },
+    {
+      "name": "ELIAS MACIEL DA ROSA",
+      "nome_fantasia": "VILLA DOS GRAOS",
+      "cnpj": "31118319000140",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "TUDO EM GRAOS COMERCIO DE ALIMENTOS LTDA",
+      "nome_fantasia": "TUDO EM GRAOS COMERCIO DE ALIMENTOS LTDA",
+      "cnpj": "20474456000109",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_nome_fantasia)",
+      "months_seen": 1
+    },
+    {
+      "name": "49.493.957 KARISA TONIN CARON",
+      "nome_fantasia": "MINHA QUITANDINHA - KARISA",
+      "cnpj": "57609477000196",
+      "level": "partial",
+      "detail": "nome_fantasia partial match in mercos_nome_fantasia: 'MINHA QUITANDINHA'",
+      "months_seen": 1
+    },
+    {
+      "name": "52.655.585 LAURA ISABEL RICARDO OCHOA",
+      "nome_fantasia": "LAURA ISABEL RICARDO OCHOA",
+      "cnpj": "52655585000181",
+      "level": "cnpj_prefix",
+      "detail": "CNPJ prefix 52655585 matched to 52655585000181",
+      "months_seen": 3
+    },
+    {
+      "name": "FONTE LTDA",
+      "nome_fantasia": "MINHA QUITANDINHA",
+      "cnpj": "44191961000104",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 3
+    },
+    {
+      "name": "PRO FIT SUPLEMENTOS LTDA",
+      "nome_fantasia": "PRO FIT SUPLEMENTOS",
+      "cnpj": "57701048000144",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "39.695.922 LAILA DE CASSIA CORREIA SANTOS",
+      "nome_fantasia": "LAILA DE CASSIA CORREIA SANTOS",
+      "cnpj": "39695922000104",
+      "level": "cnpj_prefix",
+      "detail": "CNPJ prefix 39695922 matched to 39695922000104",
+      "months_seen": 4
+    },
+    {
+      "name": "DAVOS MERCADOS AUTONOMOS LTDA",
+      "nome_fantasia": "MINHA QUITANDINHA",
+      "cnpj": "57609477000196",
+      "level": "exact",
+      "detail": "Nome Fantasia exact match (mercos_nome_fantasia)",
+      "months_seen": 2
+    },
+    {
+      "name": "ESSENCIAS E FESTAS CONFEITARIA LTDA",
+      "nome_fantasia": "ESSENCIAS E FESTAS CONFEITARIA",
+      "cnpj": "46894141000104",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "ARMAZEM VITAL COMERCIAL LTDA",
+      "nome_fantasia": "ARMAZÉM VITAL",
+      "cnpj": "05376415000188",
+      "level": "partial",
+      "detail": "razao_social partial match in sap_nome_cliente: 'ARMAZEM VITAL COMERCIAL LTDA - EPP'",
+      "months_seen": 1
+    },
+    {
+      "name": "BIOLIZ COMERCIO DE PRODUTOS NATURAIS LTDA",
+      "nome_fantasia": "Divina Terra Capão da Canoa",
+      "cnpj": "49300020000177",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "COMERCIO DE ALIMENTOS BLUMENAU LTDA",
+      "nome_fantasia": "DIVINA TERRA - BLUMENAU",
+      "cnpj": "62341898000119",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "SILVEIRA E LIMA COMERCIO DE PRODUTOS ALIMENTICIOS LTDA",
+      "nome_fantasia": "DIVINA TERRA CACHOEIRA DO SUL",
+      "cnpj": "42415997000190",
+      "level": "partial",
+      "detail": "nome_fantasia partial match in mercos_nome_fantasia: 'DIVINA TERRA'",
+      "months_seen": 1
+    },
+    {
+      "name": "JSC COMERCIO LTDA",
+      "nome_fantasia": "MINHA QUITANDINHA",
+      "cnpj": "57609477000196",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "PEDRA BRANCA NUTRICAO LTDA",
+      "nome_fantasia": "FIT PEDRA BRANCA",
+      "cnpj": "60546169000173",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "RM MARKET LTDA",
+      "nome_fantasia": "MINHA QUITANDINHA",
+      "cnpj": "57609477000196",
+      "level": "exact",
+      "detail": "Nome Fantasia exact match (mercos_nome_fantasia)",
+      "months_seen": 1
+    },
+    {
+      "name": "GOMES & PINA MINI MERCADINHO LTDA",
+      "nome_fantasia": "MINHA QUITANDINHA",
+      "cnpj": "57609477000196",
+      "level": "exact",
+      "detail": "Nome Fantasia exact match (mercos_nome_fantasia)",
+      "months_seen": 1
+    },
+    {
+      "name": "BTMIX MARKET LTDA",
+      "nome_fantasia": "MINHA QUITANDINHA",
+      "cnpj": "57609477000196",
+      "level": "exact",
+      "detail": "Nome Fantasia exact match (mercos_nome_fantasia)",
+      "months_seen": 1
+    },
+    {
+      "name": "LET'S MARKET LTDA",
+      "nome_fantasia": "MINHA QUITANDINHA - AGUA VERDE - BLUMENAU",
+      "cnpj": "54729143000168",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "CASAL MONSTRO SUPLEMENTOS LTDA",
+      "nome_fantasia": "CASAL MONSTRO SUPLEMENTOS",
+      "cnpj": "29301639000199",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "JVL MERCADOS INTELIGENTES LTDA",
+      "nome_fantasia": "MINHA QUITANDINHA - POA",
+      "cnpj": "57609477000196",
+      "level": "partial",
+      "detail": "nome_fantasia partial match in mercos_nome_fantasia: 'MINHA QUITANDINHA'",
+      "months_seen": 1
+    },
+    {
+      "name": "M&R MERCADOS INTELIGENTES LTDA",
+      "nome_fantasia": "MINHA QUITANDINHA - JARDIM OASIS",
+      "cnpj": "57609477000196",
+      "level": "partial",
+      "detail": "nome_fantasia partial match in mercos_nome_fantasia: 'MINHA QUITANDINHA'",
+      "months_seen": 1
+    },
+    {
+      "name": "JULIANA ROBERTA CARNIO DE CASTRO",
+      "nome_fantasia": "MERCADO MODELO",
+      "cnpj": "12104010000156",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 2
+    },
+    {
+      "name": "JACKSON HEBERT DE BARROS LIMA DUARTE",
+      "nome_fantasia": "JACKSON",
+      "cnpj": "00009534909475",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 3
+    },
+    {
+      "name": "RAIZES DA PROMESSA LTDA",
+      "nome_fantasia": "RAIZES DA PROMESSA",
+      "cnpj": "61771710000100",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 3
+    },
+    {
+      "name": "JOELLY COSMETICOS LTDA",
+      "nome_fantasia": "ARMAZEM FIT STORE ROLIM DE MOURA",
+      "cnpj": "30194738000360",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 2
+    },
+    {
+      "name": "CJP ALIMENTOS NATURAIS LTDA",
+      "nome_fantasia": "CJP ALIMENTOS NATURAIS",
+      "cnpj": "38118266000106",
+      "level": "partial",
+      "detail": "razao_social partial match in sap_nome_cliente: 'CJP ALIMENTOS NATURAIS LTDA - ME'",
+      "months_seen": 2
+    },
+    {
+      "name": "CELEIRO PRODUTOS NATURAIS LTDA",
+      "nome_fantasia": "CELEIRO PRODUTOS NATURAIS LTDA",
+      "cnpj": "62697942000128",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_nome_fantasia)",
+      "months_seen": 4
+    },
+    {
+      "name": "62.373.627 STELLA SABRINA LEONEL",
+      "nome_fantasia": "VERDI BEE EMPORIO NATURAL",
+      "cnpj": "62373627000145",
+      "level": "cnpj_prefix",
+      "detail": "CNPJ prefix 62373627 matched to 62373627000145",
+      "months_seen": 2
+    },
+    {
+      "name": "VILA GRANEL COMERCIO DE PRODUTOS ALIMENTICIOS LTDA",
+      "nome_fantasia": "VILA GRANEL COMERCIO DE PRODUTOS ALIMENTICIOS",
+      "cnpj": "28781911000112",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 2
+    },
+    {
+      "name": "AMELIA SOARES CAZUMBA PERES",
+      "nome_fantasia": "CELEIRO CERRADO",
+      "cnpj": "21599262000194",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "63.488.180 VERA ADRIANE ALMEIDA FAGUNDES",
+      "nome_fantasia": "63.488.180 VERA ADRIANE ALMEIDA FAGUNDES",
+      "cnpj": "63488180000112",
+      "level": "cnpj_prefix",
+      "detail": "CNPJ prefix 63488180 matched to 63488180000112",
+      "months_seen": 1
+    },
+    {
+      "name": "CeL Comércio de Alimento LTDA",
+      "nome_fantasia": "Terra Naturalle",
+      "cnpj": "28842901000140",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "Viverde Grãos",
+      "nome_fantasia": "Viverde Grãos",
+      "cnpj": "59686644000128",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_nome_fantasia)",
+      "months_seen": 1
+    },
+    {
+      "name": "EMPORIO VIDA PLENA LTDA",
+      "nome_fantasia": "EMPORIO VIDA PLENA",
+      "cnpj": "59481985000167",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "61.480.365 CRISLEY MARTINS DA COSTA CAMPOS",
+      "nome_fantasia": "MARKA VERDE NATURAIS",
+      "cnpj": "61480365000155",
+      "level": "cnpj_prefix",
+      "detail": "CNPJ prefix 61480365 matched to 61480365000155",
+      "months_seen": 1
+    },
+    {
+      "name": "59.515.814 THUANY CRISTINE MACEDO CAMPOS",
+      "nome_fantasia": "PONTE DOS GRAOS",
+      "cnpj": "59515814000101",
+      "level": "cnpj_prefix",
+      "detail": "CNPJ prefix 59515814 matched to 59515814000101",
+      "months_seen": 2
+    },
+    {
+      "name": "CASA MACHADO LTDA",
+      "nome_fantasia": "CASA MACHADO LTDA",
+      "cnpj": "62253704000123",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_nome_fantasia)",
+      "months_seen": 2
+    },
+    {
+      "name": "MARTINA MAIARA PRODUTOS NATURAIS LTDA",
+      "nome_fantasia": "DESTAQUE SHAPE 2",
+      "cnpj": "62754907000101",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "MAIARA ISABEL PINTO LTDA",
+      "nome_fantasia": "DESTAQUE SHAPE",
+      "cnpj": "59794577000165",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "BIOMUNDO PATIO COMERCIO DE PRODUTOS NATURAIS LTDA",
+      "nome_fantasia": "BIOMUNDO",
+      "cnpj": "50260791000167",
+      "level": "partial",
+      "detail": "razao_social partial match in sap_nome_cliente: 'BIOMUNDO PATIO COMERCIO DE PRODUTOS NATU'",
+      "months_seen": 2
+    },
+    {
+      "name": "53.692.717 DIOMARA BASTOS MARCELO DE OLIVA",
+      "nome_fantasia": "53.692.717 DIOMARA BASTOS MARCELO DE OLIVA",
+      "cnpj": "53692717000108",
+      "level": "cnpj_prefix",
+      "detail": "CNPJ prefix 53692717 matched to 53692717000108",
+      "months_seen": 3
+    },
+    {
+      "name": "SACOI BRASIL COMERCIO DE ALIMENTOS LTDA",
+      "nome_fantasia": "SACOI SUPERMERCADOS",
+      "cnpj": "17847228000203",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "54.758.201 MICAELLE DE MORAES BALDUCI",
+      "nome_fantasia": "54.758.201 MICAELLE DE MORAES BALDUCI",
+      "cnpj": "54758201000181",
+      "level": "cnpj_prefix",
+      "detail": "CNPJ prefix 54758201 matched to 54758201000181",
+      "months_seen": 2
+    },
+    {
+      "name": "EVORA GASTRONOMIA COMERCIO ALIMENTACAO LTDA",
+      "nome_fantasia": "EVORA GASTRONOMIA",
+      "cnpj": "49336255000119",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 2
+    },
+    {
+      "name": "GRACIELA GRITTI LTDA",
+      "nome_fantasia": "FOLHA E GRAO PRODUTOS NATURAIS",
+      "cnpj": "58771384000126",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "BELA SAUDE PRODUTOS NATURAIS LTDA",
+      "nome_fantasia": "BELA SAUDE",
+      "cnpj": "54606760000176",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 2
+    },
+    {
+      "name": "61.631.622 RICARDO AMERICO DOS SANTOS",
+      "nome_fantasia": "RAIZ FIT",
+      "cnpj": "61631622000102",
+      "level": "cnpj_prefix",
+      "detail": "CNPJ prefix 61631622 matched to 61631622000102",
+      "months_seen": 1
+    },
+    {
+      "name": "MUSSAMBE PRODUTOS NATURAIS E VARIEDADES LTDA",
+      "nome_fantasia": "MUSSAMBE PRODUTOS NATURAIS",
+      "cnpj": "63187605000153",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "Melfit Produtos Naturais",
+      "nome_fantasia": "Melfit Produtos Naturais",
+      "cnpj": "49621622000126",
+      "level": "partial",
+      "detail": "razao_social partial match in sap_nome_cliente: 'MELFIT PRODUTOS NATURAIS LTDA - ME'",
+      "months_seen": 1
+    },
+    {
+      "name": "VS COMERCIO DE PRODUTOS NATURAIS LTDA",
+      "nome_fantasia": "SEMENTE DO CORPO",
+      "cnpj": "35883706000123",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 3
+    },
+    {
+      "name": "MODESTA VEGANA MERCADO E CAFE LTDA",
+      "nome_fantasia": "MODESTA VEGANA",
+      "cnpj": "36093651000110",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "FV COMERCIO DE ALIMENTOS SAUDAVEIS LTDA",
+      "nome_fantasia": "FOCUS EMPORIO",
+      "cnpj": "32952562000121",
+      "level": "partial",
+      "detail": "razao_social partial match in sap_nome_cliente: 'FV COMERCIO DE ALIMENTOS SAUDAVEIS LTDA-'",
+      "months_seen": 1
+    },
+    {
+      "name": "49.733.252 MARIA MADALENA ANDRADE SILVA CARRARA TAVARES",
+      "nome_fantasia": "BELLA NATURA PRODUTOS NATURAIS",
+      "cnpj": "49733252000119",
+      "level": "cnpj_prefix",
+      "detail": "CNPJ prefix 49733252 matched to 49733252000119",
+      "months_seen": 2
+    },
+    {
+      "name": "ALANA GARCIA MOREIRA SUARES DA SILVA",
+      "nome_fantasia": "GRAO VIDA",
+      "cnpj": "31599810000130",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "AVILA SUPLEMENTOS ALIMENTICIOS LTDA",
+      "nome_fantasia": "AVILA SUPLEMENTOS ALIMENTICIOS LTDA",
+      "cnpj": "16966212000168",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "AVILA SUPRIMENTO CENTRAL COMERCIO DE PRODUTOS NATURAIS LTDA",
+      "nome_fantasia": "AVILA",
+      "cnpj": "16966212000168",
+      "level": "partial",
+      "detail": "nome_fantasia partial match in sap_nome_cliente: 'AVILA SUPLEMENTOS ALIMENTICIOS LTDA - ME'",
+      "months_seen": 1
+    },
+    {
+      "name": "RESTAURANTE NOSSA SENHORA DE CARAVAGGIO LTDA",
+      "nome_fantasia": "RESTAURANTE NOSSA SENHORA DE CARAVAGGIO LTDA",
+      "cnpj": "05132031000110",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_nome_fantasia)",
+      "months_seen": 2
+    },
+    {
+      "name": "P. RAMOS COMERCIO DE PRODUTOS ALIMENTICIOS",
+      "nome_fantasia": "BELLA VIDA",
+      "cnpj": "43144817000146",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "AVILA NATURAL COMERCIO DE PRODUTOS NATURAIS LTDA",
+      "nome_fantasia": "NATURAL",
+      "cnpj": "60209127000147",
+      "level": "partial",
+      "detail": "nome_fantasia partial match in sap_nome_cliente: 'AGRO & NATURAL COMERCIO CONSULTORIA DE P'",
+      "months_seen": 1
+    },
+    {
+      "name": "NATURAL COMERCIO DE ALIMENTOS LTDA",
+      "nome_fantasia": "NATURAL COMERCIO DE PRODUTOS NATURAIS",
+      "cnpj": "17880439000230",
+      "level": "partial",
+      "detail": "nome_fantasia partial match in mercos_nome_fantasia: 'MAIS NATURAL COMERCIO DE PRODUTOS NATURAIS'",
+      "months_seen": 1
+    },
+    {
+      "name": "AMORA COM TEDDY PRODUTOS NATURAIS LTDA",
+      "nome_fantasia": "RESERVA SAUDAVEL PRODUTOS NATURAIS",
+      "cnpj": "52902829000183",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 2
+    },
+    {
+      "name": "GRAO E VIDA PRODUTOS NATURAIS ITURAMA LTDA",
+      "nome_fantasia": "GRAO E VIDA",
+      "cnpj": "43590125000121",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "GANDA COMERCIO DE ALIMENTOS LTDA",
+      "nome_fantasia": "Vida Leve Salvador Pituba",
+      "cnpj": "58258680000128",
+      "level": "partial",
+      "detail": "nome_fantasia partial match in mercos_nome_fantasia: 'VIDA LEVE'",
+      "months_seen": 1
+    },
+    {
+      "name": "63.300.724 FRANCIELLE APARECIDA DE OLIVEIRA FERREIRA",
+      "nome_fantasia": "AVIÃO AZUL DOCES",
+      "cnpj": "63300724000170",
+      "level": "cnpj_prefix",
+      "detail": "CNPJ prefix 63300724 matched to 63300724000170",
+      "months_seen": 1
+    },
+    {
+      "name": "ALICE NO PAIS DOS GRAOS COMERCIO DE ALIMENTOS LTDA",
+      "nome_fantasia": "ALICE NO PAIS DOS GRAOS COMERCIO DE ALIMENTOS",
+      "cnpj": "41626544000140",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 2
+    },
+    {
+      "name": "EMPORIUM MERCATO NOSTRO LTDA",
+      "nome_fantasia": "MINHA QUITANDINHA",
+      "cnpj": "59618403000141",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 2
+    },
+    {
+      "name": "16.586.235 IARA REGINA MULLER DE OLIVEIRA",
+      "nome_fantasia": "16.586.235 IARA REGINA MULLER DE OLIVEIRA",
+      "cnpj": "16586235000147",
+      "level": "cnpj_prefix",
+      "detail": "CNPJ prefix 16586235 matched to 16586235000147",
+      "months_seen": 1
+    },
+    {
+      "name": "55.168.822 VALDECIR ANTONIO SPADA",
+      "nome_fantasia": "55.168.822 VALDECIR ANTONIO SPADA",
+      "cnpj": "55168822000178",
+      "level": "cnpj_prefix",
+      "detail": "CNPJ prefix 55168822 matched to 55168822000178",
+      "months_seen": 1
+    },
+    {
+      "name": "36.455.705 LAURA SARA IRENE MULAS VERONESI",
+      "nome_fantasia": "ELLES VEGAN CAFETERIA",
+      "cnpj": "36455705000140",
+      "level": "cnpj_prefix",
+      "detail": "CNPJ prefix 36455705 matched to 36455705000140",
+      "months_seen": 3
+    },
+    {
+      "name": "61.819.408 RAYNARA PAULINA ROCHA FRANCO",
+      "nome_fantasia": "RAYNARA PAULINA ROCHA FRANCO - JUSTGO",
+      "cnpj": "61819408000184",
+      "level": "cnpj_prefix",
+      "detail": "CNPJ prefix 61819408 matched to 61819408000184",
+      "months_seen": 1
+    },
+    {
+      "name": "EMPORIO VITTA LTDA",
+      "nome_fantasia": "EMPORIO VITTA",
+      "cnpj": "36293214000140",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "RIO BISTRO SAUDAVEL LTDA",
+      "nome_fantasia": "RIO BISTRO SAUDAVEL",
+      "cnpj": "53401615000196",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "BARRAQUINHA DA MACA LTDA",
+      "nome_fantasia": "BARRAQUINHA DA MACA LTDA",
+      "cnpj": "08888228000171",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_nome_fantasia)",
+      "months_seen": 1
+    },
+    {
+      "name": "RIKATI COMERCIO DE PRODUTOS NATURAIS LTDA",
+      "nome_fantasia": "RIKATI PRODUTOS NATURAIS",
+      "cnpj": "59876252000121",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "38.713.931 JOAO BOSCO DE OLIVEIRA NETO",
+      "nome_fantasia": "38.713.931 JOAO BOSCO DE OLIVEIRA NETO",
+      "cnpj": "38713931000100",
+      "level": "cnpj_prefix",
+      "detail": "CNPJ prefix 38713931 matched to 38713931000100",
+      "months_seen": 2
+    },
+    {
+      "name": "CIA TORRES 1 COMERCIO DE PRODUTOS NATURAIS LTDA",
+      "nome_fantasia": "CIA DA SAUDE BISTEK",
+      "cnpj": "62757635000195",
+      "level": "partial",
+      "detail": "nome_fantasia partial match in mercos_nome_fantasia: 'CIA DA SAUDE'",
+      "months_seen": 1
+    },
+    {
+      "name": "LEMOS COMERCIO ALIMENTICIO LTDA",
+      "nome_fantasia": "MINHA QUITANDINHA",
+      "cnpj": "57609477000196",
+      "level": "exact",
+      "detail": "Nome Fantasia exact match (mercos_nome_fantasia)",
+      "months_seen": 1
+    },
+    {
+      "name": "NOZZIES PRODUTOS NATURAIS LTDA",
+      "nome_fantasia": "NOZZIES",
+      "cnpj": "63179884000103",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "THE HOUSE BR PRODUTOS E SERVICOS DE BEM-ESTAR LTDA",
+      "nome_fantasia": "THE HOUSE BR PRODUTOS E SERVICOS DE BEM-ESTAR",
+      "cnpj": "61835839000134",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 2
+    },
+    {
+      "name": "J&R SABORES DA NATUREZA LTDA",
+      "nome_fantasia": "TUDO EM GRAOS",
+      "cnpj": "20474456000109",
+      "level": "partial",
+      "detail": "nome_fantasia partial match in sap_nome_cliente: 'TUDO EM GRAOS COMERCIO DE ALIMENTOS EIRE'",
+      "months_seen": 1
+    },
+    {
+      "name": "A 28 COMERCIO & EMPACOTADORA LTDA",
+      "nome_fantasia": "ARMAZEM 28",
+      "cnpj": "24544945000132",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "EMPORIO E HORTIFRUTI SEMENTE DE LUZ LTDA",
+      "nome_fantasia": "SEMENTE DE LUZ",
+      "cnpj": "62288560000140",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 2
+    },
+    {
+      "name": "ORIGENS EMPORIO NATURAL LTDA",
+      "nome_fantasia": "ORIGENS EMPORIO NATURAL LTDA",
+      "cnpj": "46013288000130",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_nome_fantasia)",
+      "months_seen": 1
+    },
+    {
+      "name": "STELLA FONTES B B AFONSO COMERCIO DE COOKIES LTDA",
+      "nome_fantasia": "STELLE PATISSERIE",
+      "cnpj": "44191961000104",
+      "level": "partial",
+      "detail": "razao_social partial match in mercos_razao_social: 'FONTE'",
+      "months_seen": 2
+    },
+    {
+      "name": "ROBERTO B DA COSTA JUNIOR",
+      "nome_fantasia": "DELICIAS DO NORDESTE II",
+      "cnpj": "33156790000158",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "54.487.016 JACKELINE RABELO TARGAS LINO",
+      "nome_fantasia": "54.487.016 JACKELINE RABELO TARGAS LINO",
+      "cnpj": "54487016000108",
+      "level": "cnpj_prefix",
+      "detail": "CNPJ prefix 54487016 matched to 54487016000108",
+      "months_seen": 1
+    },
+    {
+      "name": "BANCA12 ARMAZEM DE PRODUTOS NATURAIS LTDA",
+      "nome_fantasia": "BANCA12 ARMAZEM DE PRODUTOS NATURAIS LTDA",
+      "cnpj": "92916360000237",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_nome_fantasia)",
+      "months_seen": 1
+    },
+    {
+      "name": "DSC POWERFIT LTDA",
+      "nome_fantasia": "POWERFIT NUTRITION",
+      "cnpj": "59458633000190",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "TERRA DIVINA COMERCIO DE ALIMENTOS EIRELI",
+      "nome_fantasia": "PRODUTOS DA TERRA",
+      "cnpj": "13975801000114",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 3
+    },
+    {
+      "name": "TAILANA DA SILVA TOLEDO LTDA",
+      "nome_fantasia": "NUTRIVIDA",
+      "cnpj": "47058031000167",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 3
+    },
+    {
+      "name": "EVOLUCAO FIT NUTRICAO LTDA",
+      "nome_fantasia": "EVOLUCAO FIT NUTRICAO",
+      "cnpj": "62555863000182",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "58.355.920 BEATRIZ HONORIO MACEDO",
+      "nome_fantasia": "BEATRIZ HONORIO MACEDO",
+      "cnpj": "58355920000102",
+      "level": "cnpj_prefix",
+      "detail": "CNPJ prefix 58355920 matched to 58355920000102",
+      "months_seen": 1
+    },
+    {
+      "name": "CEREAIS SOUZA LTDA",
+      "nome_fantasia": "PISTACHE EMPORIO",
+      "cnpj": "20161192000125",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "PEDRO CLAUDIO CAMARGO TATUI",
+      "nome_fantasia": "LOS BENAVIDES SORVETES",
+      "cnpj": "07260140000148",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "VGA COMERCIO DE PRODUTOS ALIMENTICIOS NATURAIS LTDA",
+      "nome_fantasia": "TUDO EM GRAOS",
+      "cnpj": "20474456000109",
+      "level": "partial",
+      "detail": "nome_fantasia partial match in sap_nome_cliente: 'TUDO EM GRAOS COMERCIO DE ALIMENTOS EIRE'",
+      "months_seen": 1
+    },
+    {
+      "name": "51.156.959 ELAINE CRISTINA KOERICH",
+      "nome_fantasia": "51.156.959 ELAINE CRISTINA KOERICH",
+      "cnpj": "51156959000151",
+      "level": "cnpj_prefix",
+      "detail": "CNPJ prefix 51156959 matched to 51156959000151",
+      "months_seen": 1
+    },
+    {
+      "name": "CASAS JORDANIA ABC - MOVEIS E DECORACOES LTDA",
+      "nome_fantasia": "CASAS JORDANIA ABC - MOVEIS E DECORACOES LTDA",
+      "cnpj": "10610044000197",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_nome_fantasia)",
+      "months_seen": 1
+    },
+    {
+      "name": "ANPA COMERCIAL DE ALIMENTOS LTDA",
+      "nome_fantasia": "MARGHERITA",
+      "cnpj": "49946160000117",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 2
+    },
+    {
+      "name": "TP NUTRICAO LTDA",
+      "nome_fantasia": "TP NUTRICAO",
+      "cnpj": "48486297000173",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "LILIANE GUERREIRO GONCALVES & CIA LTDA",
+      "nome_fantasia": "CHOCOLATES CASEIRO GAROPABA",
+      "cnpj": "81586596000155",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "43.023.380 SOMAR IBRAHEM",
+      "nome_fantasia": "SAFITA DOCES",
+      "cnpj": "43023380000192",
+      "level": "cnpj_prefix",
+      "detail": "CNPJ prefix 43023380 matched to 43023380000192",
+      "months_seen": 1
+    },
+    {
+      "name": "AGRANOLLA GRAOS DE SAUDE LTDA",
+      "nome_fantasia": "AGRANOLLA",
+      "cnpj": "55699460000141",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "EMPORIO Z&E COMERCIO DE PRODUTOS NATURAIS LTDA",
+      "nome_fantasia": "EMPORIO CATARINA",
+      "cnpj": "24713639000182",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 3
+    },
+    {
+      "name": "63.488.180 VERA ADRIANE ALMEIDA FAGUNDES",
+      "nome_fantasia": "EMPORIO DARI",
+      "cnpj": "63488180000112",
+      "level": "cnpj_prefix",
+      "detail": "CNPJ prefix 63488180 matched to 63488180000112",
+      "months_seen": 2
+    },
+    {
+      "name": "VITTONI COMERCIO DE PRODUTOS NATURAIS LTDA",
+      "nome_fantasia": "VITTONI COMERCIO DE PRODUTOS NATURAIS",
+      "cnpj": "30515235000187",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 2
+    },
+    {
+      "name": "VIVER PRODUTOS NATURAIS LTDA",
+      "nome_fantasia": "VIVER PRODUTOS NATURAIS",
+      "cnpj": "14719923000293",
+      "level": "partial",
+      "detail": "razao_social partial match in sap_nome_cliente: 'BEM VIVER PRODUTOS NATURAIS LTDA - ME'",
+      "months_seen": 2
+    },
+    {
+      "name": "63.835.315 ADASSYA NOBERTO FERREIRA",
+      "nome_fantasia": "63.835.315 ADASSYA NOBERTO FERREIRA",
+      "cnpj": "63835315000179",
+      "level": "cnpj_prefix",
+      "detail": "CNPJ prefix 63835315 matched to 63835315000179",
+      "months_seen": 1
+    },
+    {
+      "name": "DSJ COMERCIO DE ALIMENTOS EM GERAL E PANIFICACAO LTDA",
+      "nome_fantasia": "UNIBAHIA",
+      "cnpj": "30372997000171",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "G S DIAS LTDA",
+      "nome_fantasia": "NUTRILIFE",
+      "cnpj": "51938854000154",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "POSTO DE GASOLINA MARINA PARQUE VEROLME LTDA",
+      "nome_fantasia": "POSTO DE GASOLINA MARINA PARQUE VEROLME LTDA",
+      "cnpj": "08081191000175",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_nome_fantasia)",
+      "months_seen": 1
+    },
+    {
+      "name": "BRACHA MERCADO LTDA",
+      "nome_fantasia": "MINHA QUITANDINHA",
+      "cnpj": "57609477000196",
+      "level": "exact",
+      "detail": "Nome Fantasia exact match (mercos_nome_fantasia)",
+      "months_seen": 1
+    },
+    {
+      "name": "NUTRI SAFE ALIMENTOS SAUDAVEIS LTDA",
+      "nome_fantasia": "NUTRI SAFE",
+      "cnpj": "63791809000107",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 2
+    },
+    {
+      "name": "KANITZ & DANTAS LTDA",
+      "nome_fantasia": "GRAO D'TERRA",
+      "cnpj": "63487473000185",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 2
+    },
+    {
+      "name": "SAMANTA SULTANO PAES 31570955875",
+      "nome_fantasia": "ARMAZEM VILLAREJO",
+      "cnpj": "46314956000169",
+      "level": "partial",
+      "detail": "nome_fantasia partial match in sap_nome_cliente: 'ARMAZEM VILLAREJO LTDA - ME'",
+      "months_seen": 1
+    },
+    {
+      "name": "TORRE FORTE PRODUTOS E ALIMENTOS LTDA",
+      "nome_fantasia": "TORRE FORTE PRODUTOS E ALIMENTOS LTDA",
+      "cnpj": "60010307000103",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_nome_fantasia)",
+      "months_seen": 1
+    },
+    {
+      "name": "JC PRODUTOS NATURAIS LTDA",
+      "nome_fantasia": "JC PRODUTOS NATURAIS",
+      "cnpj": "59254662000130",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "LF NUTRI VIDA LTDA",
+      "nome_fantasia": "LF NUTRI VIDA",
+      "cnpj": "53918909000190",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "HONEST MARKET LTDA",
+      "nome_fantasia": "MINHA QUITANDINHA",
+      "cnpj": "57609477000196",
+      "level": "exact",
+      "detail": "Nome Fantasia exact match (mercos_nome_fantasia)",
+      "months_seen": 1
+    },
+    {
+      "name": "P M DA SILVA ROSA PRODUTOS NATURAIS LTDA",
+      "nome_fantasia": "LOJA VIDA LEVE VILA ARENS",
+      "cnpj": "62004109000154",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "51.172.110 BRENDHA EVELYN LOPES ERRERA ROCA",
+      "nome_fantasia": "BRENDHA EVELYN LOPES ERRERA ROCA",
+      "cnpj": "51172110000171",
+      "level": "cnpj_prefix",
+      "detail": "CNPJ prefix 51172110 matched to 51172110000171",
+      "months_seen": 1
+    },
+    {
+      "name": "BIDO GUITES VIDA SAUDAVEL LTDA",
+      "nome_fantasia": "BIDO GUITES VIDA SAUDAVEL LTDA",
+      "cnpj": "58010332000137",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_nome_fantasia)",
+      "months_seen": 2
+    },
+    {
+      "name": "HECE PRODUTOS NATURAIS LTDA",
+      "nome_fantasia": "HECE PRODUTOS NATURAIS",
+      "cnpj": "52088258000195",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "SEVEN ROOTS PRODUTOS NATURAIS LTDA",
+      "nome_fantasia": "SEVEN ROOTS",
+      "cnpj": "60940727000180",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "FITO-ARTES LTDA",
+      "nome_fantasia": "FITO-ARTES LTDA",
+      "cnpj": "01379976000180",
+      "level": "partial",
+      "detail": "razao_social partial match in sap_nome_cliente: 'FITO-ARTES LTDA - ME'",
+      "months_seen": 1
+    },
+    {
+      "name": "HIPER VERDE ALIMENTOS SAUDAVEIS E NATURAIS LTDA",
+      "nome_fantasia": "DIVINA TERRA CURITIBA",
+      "cnpj": "32828171000108",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "MELISSA AURICH PETTINELLI DARRIGO 97264903087",
+      "nome_fantasia": "CRUmidinhas da Mel",
+      "cnpj": "36093445000100",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "GFGRAOS PRODUTOS ALIMENTICIOS LTDA",
+      "nome_fantasia": "GRAO E FLOR",
+      "cnpj": "41774112000187",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "LUCIANE CASAS MESQUITA 77055357934",
+      "nome_fantasia": "YUMMY ALIMENTOS SAUDAVEIS",
+      "cnpj": "27487261000134",
+      "level": "partial",
+      "detail": "nome_fantasia partial match in sap_nome_cliente: 'YUMMY ALIMENTOS SAUDAVEIS LTDA - ME'",
+      "months_seen": 1
+    },
+    {
+      "name": "VIDA NATURAL COMERCIO DE PRODUTOS ALIMENTICIOS LTDA",
+      "nome_fantasia": "VIDA NATURAL",
+      "cnpj": "61791187000183",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "LIMA FAGUNDES PRODUTOS NATURAIS LTDA",
+      "nome_fantasia": "VIDA LEVE EUNAPOLIS",
+      "cnpj": "60427099000134",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 2
+    },
+    {
+      "name": "ARMAZEM DA 18 COMERCIO DE ALIMENTOS LTDA",
+      "nome_fantasia": "ARMAZEM DA 18",
+      "cnpj": "21691717000105",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 2
+    },
+    {
+      "name": "TERRITORIO SAUDE CABRAL LTDA",
+      "nome_fantasia": "TERRITORIO SAUDE CABRAL",
+      "cnpj": "58820609000197",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "L & M NUTRICAO LTDA",
+      "nome_fantasia": "L & M NUTRICAO",
+      "cnpj": "52261228000210",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "MERCADO SAUDAVEL COMERCIO DE ALIMENTOS LTDA",
+      "nome_fantasia": "DIVINA TERRA XANXERE",
+      "cnpj": "55666250000157",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "ROSANGELA DE LOURDES OLIVEIRA CASARINO LTDA",
+      "nome_fantasia": "ROSANGELA DE LOURDES OLIVEIRA CASARINO LTDA",
+      "cnpj": "03283237000115",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_nome_fantasia)",
+      "months_seen": 1
+    },
+    {
+      "name": "LA FEE CAFETERIA E RESTAURANTE LTDA",
+      "nome_fantasia": "LA FEE CAFETERIA E RESTAURANTE LTDA",
+      "cnpj": "15735146000152",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_nome_fantasia)",
+      "months_seen": 1
+    },
+    {
+      "name": "CALLIERO PRODUTOS SAUDAVEIS & LAERTE PRODUTOS SAUDAVEIS LTDA",
+      "nome_fantasia": "SAUDE NOS ALIMENTOS",
+      "cnpj": "40053395000105",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "M. ELIETE RAUPP MONTEIRO",
+      "nome_fantasia": "RAIZ FORTE",
+      "cnpj": "63574330000100",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "VITANO MERCADO SAUDAVEL LTDA",
+      "nome_fantasia": "VITANO",
+      "cnpj": "64425601000129",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 2
+    },
+    {
+      "name": "RO2 SERVICOS CORPORATIVOS LTDA",
+      "nome_fantasia": "PEQII",
+      "cnpj": "44931711000155",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "CARLA FERNANDA COUTINHO MACHADO COMERCIO DE PRODUTOS ALIMENTICIOS",
+      "nome_fantasia": "ARMAZEM VIDA SAUDAVEL",
+      "cnpj": "33629436000101",
+      "level": "partial",
+      "detail": "razao_social partial match in sap_nome_cliente: 'CARLA FERNANDA COUTINHO MACHADO COMERCIO'",
+      "months_seen": 1
+    },
+    {
+      "name": "TERRITORIO SAUDE XV LTDA",
+      "nome_fantasia": "TERRITORIO SAUDE XV",
+      "cnpj": "55726945000187",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "ASSOC DA UNIAO ESTE BRAS DOS ADVENTISTAS DO SETIMO DIA",
+      "nome_fantasia": "LOJA DA NOVO TEMPO",
+      "cnpj": "30097554011901",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "PRODUTOS NATURAIS FORLIFE LTDA",
+      "nome_fantasia": "DIVINA TERRA SANTA MARIA RS",
+      "cnpj": "34422518000135",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "COMPRE FACIL LTDA",
+      "nome_fantasia": "EMPORIO COMPRE FACIL",
+      "cnpj": "50353207000118",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "SEVERO SILVA COMERCIO DE PRODUTOS NATURAIS LTDA",
+      "nome_fantasia": "BIO MUNDO",
+      "cnpj": "33950384000162",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    },
+    {
+      "name": "59.594.680 AGUIDA DE FATIMA DE SOUZA",
+      "nome_fantasia": "59.594.680 AGUIDA DE FATIMA DE SOUZA",
+      "cnpj": "59594680000161",
+      "level": "cnpj_prefix",
+      "detail": "CNPJ prefix 59594680 matched to 59594680000161",
+      "months_seen": 1
+    },
+    {
+      "name": "J R MEDEIROS DE MELO LTDA",
+      "nome_fantasia": "VIDA LEVE",
+      "cnpj": "58258680000128",
+      "level": "exact",
+      "detail": "Nome Fantasia exact match (mercos_nome_fantasia)",
+      "months_seen": 1
+    },
+    {
+      "name": "EMPORIO NUTREE GRAOS LTDA",
+      "nome_fantasia": "EMPORIO NUTREE GRAOS",
+      "cnpj": "26839789000162",
+      "level": "partial",
+      "detail": "razao_social partial match in sap_nome_cliente: 'EMPORIO NUTREE GRAOS LTDA - ME'",
+      "months_seen": 1
+    },
+    {
+      "name": "MINA PRECIOSA COMERCIO DE ALIMENTOS LTDA",
+      "nome_fantasia": "BROTO BOTICA",
+      "cnpj": "54325795000137",
+      "level": "exact",
+      "detail": "Razao Social exact match (sap_nome_cliente)",
+      "months_seen": 1
+    },
+    {
+      "name": "LEVE SABOR ALIMENTACAO SAUDAVEL LTDA",
+      "nome_fantasia": "LEVE SABOR ALIMENTACAO SAUDAVEL",
+      "cnpj": "36611091000149",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 2
+    },
+    {
+      "name": "MJ PRODUTOS NATURAIS SAO LOURENCO DO OESTE LTDA",
+      "nome_fantasia": "MJ PRODUTOS NATURAIS",
+      "cnpj": "60670819000198",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 2
+    },
+    {
+      "name": "NATURAL BOM LTDA",
+      "nome_fantasia": "DIVINA TERRA PERDIZES",
+      "cnpj": "63826539000114",
+      "level": "exact",
+      "detail": "Razao Social exact match (draft1_razao_social_full)",
+      "months_seen": 1
+    },
+    {
+      "name": "JLGD COMERCIO DE PRODUTOS NATURAIS LTDA",
+      "nome_fantasia": "GRAO EMPORIO NATURAL",
+      "cnpj": "55383649000120",
+      "level": "exact",
+      "detail": "Razao Social exact match (draft1_razao_social_full)",
+      "months_seen": 1
+    },
+    {
+      "name": "51.613.874 GESSICA APARECIDA BANDEIRA SANTOS",
+      "nome_fantasia": "SALUTE NATURAIS QUATRO BARRAS",
+      "cnpj": "51613874000155",
+      "level": "cnpj_prefix",
+      "detail": "CNPJ prefix 51613874 matched to 51613874000155",
+      "months_seen": 1
+    },
+    {
+      "name": "BRUNA DUBEUX DUARTE",
+      "nome_fantasia": "GRAO EMPORIO NATURAL",
+      "cnpj": "32889911000108",
+      "level": "exact",
+      "detail": "Razao Social exact match (draft1_razao_social_full)",
+      "months_seen": 1
+    },
+    {
+      "name": "GRÃO EMPÓRIO COMÉRCIO DE PRODUTOS NATURAIS LTDA",
+      "nome_fantasia": "GRÃO EMPÓRIO NATURAL",
+      "cnpj": "39797983000174",
+      "level": "exact",
+      "detail": "Razao Social exact match (draft1_razao_social_full)",
+      "months_seen": 1
+    },
+    {
+      "name": "GRAO CASA AMARELA LTDA",
+      "nome_fantasia": "GRAO EMPORIO NATURAL",
+      "cnpj": "48794235000129",
+      "level": "exact",
+      "detail": "Nome Fantasia exact match (draft1_nome_fantasia)",
+      "months_seen": 1
+    },
+    {
+      "name": "J L G DUARTE FILHO LTDA",
+      "nome_fantasia": "GRAO EMPORIO NATURAL",
+      "cnpj": "50446226000199",
+      "level": "exact",
+      "detail": "Razao Social exact match (draft1_razao_social_full)",
+      "months_seen": 1
+    },
+    {
+      "name": "EMPORIO MIX DE SAPUCAIA LTDA",
+      "nome_fantasia": "EMPORIO MIX DE SAPUCAIA LTDA",
+      "cnpj": "47900505000176",
+      "level": "exact",
+      "detail": "Razao Social exact match (draft1_razao_social_full)",
+      "months_seen": 1
+    },
+    {
+      "name": "ELISA CASCAES NATAL 06635302964",
+      "nome_fantasia": "NATURALIZE",
+      "cnpj": "19801686000148",
+      "level": "partial",
+      "detail": "razao_social partial match in sap_nome_cliente: 'ELISA CASCAES NATAL 06635302964 - ME'",
+      "months_seen": 1
+    },
+    {
+      "name": "J L G COMERCIO DE PRODUTOS NATURAIS LTDA",
+      "nome_fantasia": "GRAO EMPORIO NATURAL",
+      "cnpj": "48794235000129",
+      "level": "exact",
+      "detail": "Razao Social exact match (draft1_razao_social_full)",
+      "months_seen": 1
+    },
+    {
+      "name": "EDUARDO D DUARTE",
+      "nome_fantasia": "GRAO EMPORIO NATURAL",
+      "cnpj": "48794235000129",
+      "level": "exact",
+      "detail": "Nome Fantasia exact match (draft1_nome_fantasia)",
+      "months_seen": 1
+    },
+    {
+      "name": "VIVA MAIS EMPORIO E CAFE LTDA",
+      "nome_fantasia": "VIVA MAIS SJ",
+      "cnpj": "43713223000109",
+      "level": "exact",
+      "detail": "Razao Social exact match (sap_nome_cliente)",
+      "months_seen": 1
+    },
+    {
+      "name": "QUINTAL CENTRO DE DESENVOLVIMENTO INFANTIL LTDA",
+      "nome_fantasia": "QUINTAL DAS DESCOBERTAS",
+      "cnpj": "35830031000154",
+      "level": "exact",
+      "detail": "Razao Social exact match (draft1_razao_social_full)",
+      "months_seen": 1
+    },
+    {
+      "name": "INES DO ROCIO FONSACA PIETROVSKI",
+      "nome_fantasia": "PRODUTOS DA TERRA",
+      "cnpj": "13975801000114",
+      "level": "exact",
+      "detail": "Nome Fantasia exact match (mercos_nome_fantasia)",
+      "months_seen": 1
+    },
+    {
+      "name": "SHEILA RAQUEL DA SILVA COHEN",
+      "nome_fantasia": "OPCAO NATURAL",
+      "cnpj": "13712462000183",
+      "level": "partial",
+      "detail": "razao_social partial match in sap_nome_cliente: 'SHEILA RAQUEL DA SILVA COHEN - ME'",
+      "months_seen": 1
+    },
+    {
+      "name": "LUCKY MARKET LTDA",
+      "nome_fantasia": "MINHA QUITANDINHA",
+      "cnpj": "57609477000196",
+      "level": "exact",
+      "detail": "Nome Fantasia exact match (mercos_nome_fantasia)",
+      "months_seen": 1
+    },
+    {
+      "name": "PATRICIA FINKLER CAPELARI",
+      "nome_fantasia": "EMPORIO NATURAL FINKLER",
+      "cnpj": "38449259000197",
+      "level": "partial",
+      "detail": "nome_fantasia partial match in mercos_nome_fantasia: 'EMPORIO NATU'",
+      "months_seen": 1
+    },
+    {
+      "name": "RAFAELA LOUZADO",
+      "nome_fantasia": "RAFAELA",
+      "cnpj": "61746555000171",
+      "level": "partial",
+      "detail": "nome_fantasia partial match in mercos_nome_fantasia: 'MARILIA RAFAELA FERREIRA DA LUZ LTDA'",
+      "months_seen": 1
+    },
+    {
+      "name": "50.815.238 MIGUEL VIANA DE ARAUJO",
+      "nome_fantasia": "HORA DO DOCE",
+      "cnpj": "50815238000143",
+      "level": "cnpj_prefix",
+      "detail": "CNPJ prefix 50815238 matched to 50815238000143",
+      "months_seen": 1
+    },
+    {
+      "name": "C J LIFE LTDA",
+      "nome_fantasia": "VIDA LEVE",
+      "cnpj": "58258680000128",
+      "level": "exact",
+      "detail": "Razao Social exact match (mercos_razao_social)",
+      "months_seen": 1
+    }
+  ],
+  "failures": [
+    {
+      "razao_social": "POTIGUARES PRODUTOS NATURAIS LTDA",
+      "nome_fantasia": "POTIGUARES",
+      "months_seen": 2,
+      "total_acessos": 3,
+      "reason": "No match in any lookup (razao='POTIGUARES PRODUTOS NATURAIS LTDA', fantasia='POTIGUARES')"
+    },
+    {
+      "razao_social": "Teste Ricardo Design",
+      "nome_fantasia": "Teste Ricardo Design",
+      "months_seen": 4,
+      "total_acessos": 95,
+      "reason": "No match in any lookup (razao='TESTE RICARDO DESIGN', fantasia='TESTE RICARDO DESIGN')"
+    },
+    {
+      "razao_social": "NOVA CENTER COMERCIO E SERVICOS LTDA",
+      "nome_fantasia": "NOVA CENTER COMERCIO E SERVICOS LTDA",
+      "months_seen": 2,
+      "total_acessos": 2,
+      "reason": "No match in any lookup (razao='NOVA CENTER COMERCIO E SERVICOS LTDA', fantasia='NOVA CENTER COMERCIO E SERVICOS LTDA')"
+    },
+    {
+      "razao_social": "41.162.432 ELIZIO VIANA DE OLIVEIRA",
+      "nome_fantasia": "",
+      "months_seen": 1,
+      "total_acessos": 4,
+      "reason": "No match in any lookup (razao='41.162.432 ELIZIO VIANA DE OLIVEIRA')"
+    },
+    {
+      "razao_social": "29.050.016 ADRIANE DO ROCIO SCHMITZ",
+      "nome_fantasia": "29.050.016 ADRIANE DO ROCIO SCHMITZ",
+      "months_seen": 1,
+      "total_acessos": 2,
+      "reason": "No match in any lookup (razao='29.050.016 ADRIANE DO ROCIO SCHMITZ', fantasia='29.050.016 ADRIANE DO ROCIO SCHMITZ')"
+    },
+    {
+      "razao_social": "COMERCIAL CASA DO SACHE LTDA.",
+      "nome_fantasia": "CASA DO SACHE",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='COMERCIAL CASA DO SACHE LTDA.', fantasia='CASA DO SACHE')"
+    },
+    {
+      "razao_social": "NUTRI SUPLEMENTOS ALIMENTARES LTDA",
+      "nome_fantasia": "NUTRI SUPLEMENTOS",
+      "months_seen": 2,
+      "total_acessos": 2,
+      "reason": "No match in any lookup (razao='NUTRI SUPLEMENTOS ALIMENTARES LTDA', fantasia='NUTRI SUPLEMENTOS')"
+    },
+    {
+      "razao_social": "MUNDO BEM ESTAR PRODUTOS NATURAIS LTDA",
+      "nome_fantasia": "MUNDO BEM ESTAR PRODUTOS NATURAIS LTDA",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='MUNDO BEM ESTAR PRODUTOS NATURAIS LTDA', fantasia='MUNDO BEM ESTAR PRODUTOS NATURAIS LTDA')"
+    },
+    {
+      "razao_social": "48.722.140 JONAS GONCALVES DE ANDRADE",
+      "nome_fantasia": "48.722.140 JONAS GONCALVES DE ANDRADE",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='48.722.140 JONAS GONCALVES DE ANDRADE', fantasia='48.722.140 JONAS GONCALVES DE ANDRADE')"
+    },
+    {
+      "razao_social": "59.777.619 VANDA DA MATA COSTA",
+      "nome_fantasia": "59.777.619 VANDA DA MATA COSTA",
+      "months_seen": 1,
+      "total_acessos": 6,
+      "reason": "No match in any lookup (razao='59.777.619 VANDA DA MATA COSTA', fantasia='59.777.619 VANDA DA MATA COSTA')"
+    },
+    {
+      "razao_social": "59.249.690 JAQUELINE DE OLIVEIRA BARBOSA",
+      "nome_fantasia": "59.249.690 JAQUELINE DE OLIVEIRA BARBOSA",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='59.249.690 JAQUELINE DE OLIVEIRA BARBOSA', fantasia='59.249.690 JAQUELINE DE OLIVEIRA BARBOSA')"
+    },
+    {
+      "razao_social": "LAURI SCHNEIDER",
+      "nome_fantasia": "",
+      "months_seen": 1,
+      "total_acessos": 2,
+      "reason": "No match in any lookup (razao='LAURI SCHNEIDER')"
+    },
+    {
+      "razao_social": "58.688.167 FABIANA FREITAS",
+      "nome_fantasia": "58.688.167 FABIANA FREITAS",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='58.688.167 FABIANA FREITAS', fantasia='58.688.167 FABIANA FREITAS')"
+    },
+    {
+      "razao_social": "MERCADO ALVORADA LTDA",
+      "nome_fantasia": "MERCADO ALVORADA",
+      "months_seen": 2,
+      "total_acessos": 3,
+      "reason": "No match in any lookup (razao='MERCADO ALVORADA LTDA', fantasia='MERCADO ALVORADA')"
+    },
+    {
+      "razao_social": "CAMILE DJANIKIAN CORDEIRO LTDA",
+      "nome_fantasia": "CAMILE DJANIKIAN CORDEIRO LTDA",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='CAMILE DJANIKIAN CORDEIRO LTDA', fantasia='CAMILE DJANIKIAN CORDEIRO LTDA')"
+    },
+    {
+      "razao_social": "60.183.966 DIEGO ALVES DOS SANTOS",
+      "nome_fantasia": "60.183.966 DIEGO ALVES DOS SANTOS",
+      "months_seen": 2,
+      "total_acessos": 5,
+      "reason": "No match in any lookup (razao='60.183.966 DIEGO ALVES DOS SANTOS', fantasia='60.183.966 DIEGO ALVES DOS SANTOS')"
+    },
+    {
+      "razao_social": "CASA GOMES DE PRODUTOS NATURAIS E NORDESTINO LTDA",
+      "nome_fantasia": "CASA GOMES DE PRODUTOS NATURAIS E NORDESTINO LTDA",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='CASA GOMES DE PRODUTOS NATURAIS E NORDESTINO LTDA', fantasia='CASA GOMES DE PRODUTOS NATURAIS E NORDESTINO LTDA')"
+    },
+    {
+      "razao_social": "60.357.277 FERNANDA APARECIDA DE CARVALHO RIBEIRO",
+      "nome_fantasia": "FERNANDA APARECIDA DE CARVALHO RIBEIRO",
+      "months_seen": 2,
+      "total_acessos": 3,
+      "reason": "No match in any lookup (razao='60.357.277 FERNANDA APARECIDA DE CARVALHO RIBEIRO', fantasia='FERNANDA APARECIDA DE CARVALHO RIBEIRO')"
+    },
+    {
+      "razao_social": "59.784.857 GISELLE PEREIRA DE ALMEIDA SOUZA",
+      "nome_fantasia": "59.784.857 GISELLE PEREIRA DE ALMEIDA SOUZA",
+      "months_seen": 1,
+      "total_acessos": 2,
+      "reason": "No match in any lookup (razao='59.784.857 GISELLE PEREIRA DE ALMEIDA SOUZA', fantasia='59.784.857 GISELLE PEREIRA DE ALMEIDA SOUZA')"
+    },
+    {
+      "razao_social": "49.548.291 SALETE APARECIDA BRITO KOHLER",
+      "nome_fantasia": "SK PRODUTOS NATURAIS",
+      "months_seen": 1,
+      "total_acessos": 2,
+      "reason": "No match in any lookup (razao='49.548.291 SALETE APARECIDA BRITO KOHLER', fantasia='SK PRODUTOS NATURAIS')"
+    },
+    {
+      "razao_social": "59.769.306 ALESSANDRA APARECIDA KULKAMP",
+      "nome_fantasia": "59.769.306 ALESSANDRA APARECIDA KULKAMP",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='59.769.306 ALESSANDRA APARECIDA KULKAMP', fantasia='59.769.306 ALESSANDRA APARECIDA KULKAMP')"
+    },
+    {
+      "razao_social": "VITAO ALIMENTOS LTDA",
+      "nome_fantasia": "TESTE",
+      "months_seen": 5,
+      "total_acessos": 53,
+      "reason": "No match in any lookup (razao='VITAO ALIMENTOS LTDA', fantasia='TESTE')"
+    },
+    {
+      "razao_social": "ELISABETE PEREIRA DE ALMEIDA MARTINS DA CRUZ 03002614971",
+      "nome_fantasia": "DOCE ERVAS",
+      "months_seen": 4,
+      "total_acessos": 13,
+      "reason": "No match in any lookup (razao='ELISABETE PEREIRA DE ALMEIDA MARTINS DA CRUZ 03002614971', fantasia='DOCE ERVAS')"
+    },
+    {
+      "razao_social": "WILSON CARVALHO DOS SANTOS",
+      "nome_fantasia": "'EMPORIO RNA''--SP",
+      "months_seen": 2,
+      "total_acessos": 6,
+      "reason": "No match in any lookup (razao='WILSON CARVALHO DOS SANTOS', fantasia=''EMPORIO RNA''--SP')"
+    },
+    {
+      "razao_social": "48.144.171 ROSANGELA LIMA DA SILVA SIQUEIRA",
+      "nome_fantasia": "48.144.171 ROSANGELA LIMA DA SILVA SIQUEIRA",
+      "months_seen": 1,
+      "total_acessos": 3,
+      "reason": "No match in any lookup (razao='48.144.171 ROSANGELA LIMA DA SILVA SIQUEIRA', fantasia='48.144.171 ROSANGELA LIMA DA SILVA SIQUEIRA')"
+    },
+    {
+      "razao_social": "53.879.794 PETTER VIEIRA DE LIMA",
+      "nome_fantasia": "53.879.794 PETTER VIEIRA DE LIMA",
+      "months_seen": 1,
+      "total_acessos": 3,
+      "reason": "No match in any lookup (razao='53.879.794 PETTER VIEIRA DE LIMA', fantasia='53.879.794 PETTER VIEIRA DE LIMA')"
+    },
+    {
+      "razao_social": "ARMARINHO DOS GRÃOS PRODUTOS NATURAIS LTDA",
+      "nome_fantasia": "ARMARINHO DOS GRÃOS",
+      "months_seen": 1,
+      "total_acessos": 15,
+      "reason": "No match in any lookup (razao='ARMARINHO DOS GRÃOS PRODUTOS NATURAIS LTDA', fantasia='ARMARINHO DOS GRÃOS')"
+    },
+    {
+      "razao_social": "61.420.008 NEMUEL KESLEY DE SOUSA MATOS REIS",
+      "nome_fantasia": "NEMUEL KESLEY DE SOUSA MATOS REIS",
+      "months_seen": 1,
+      "total_acessos": 4,
+      "reason": "No match in any lookup (razao='61.420.008 NEMUEL KESLEY DE SOUSA MATOS REIS', fantasia='NEMUEL KESLEY DE SOUSA MATOS REIS')"
+    },
+    {
+      "razao_social": "BRASIL FIT GOURMET ALIMENTACAO SAUDAVEL LTDA",
+      "nome_fantasia": "BRASIL FIT GOURMET",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='BRASIL FIT GOURMET ALIMENTACAO SAUDAVEL LTDA', fantasia='BRASIL FIT GOURMET')"
+    },
+    {
+      "razao_social": "S R PRODUTOS NATURAIS LTDA",
+      "nome_fantasia": "RAIZ DA VIDA",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='S R PRODUTOS NATURAIS LTDA', fantasia='RAIZ DA VIDA')"
+    },
+    {
+      "razao_social": "N. DE OLIVEIRA UCHOA LTDA",
+      "nome_fantasia": "PROSPERITA GROUP",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='N. DE OLIVEIRA UCHOA LTDA', fantasia='PROSPERITA GROUP')"
+    },
+    {
+      "razao_social": "REAL BARRA SUPERMERCADO LTDA",
+      "nome_fantasia": "REAL SUPERMERCADO",
+      "months_seen": 2,
+      "total_acessos": 3,
+      "reason": "No match in any lookup (razao='REAL BARRA SUPERMERCADO LTDA', fantasia='REAL SUPERMERCADO')"
+    },
+    {
+      "razao_social": "48.522.990 GLEICE KELLY DOS PRAZERES FARIAS",
+      "nome_fantasia": "48.522.990 GLEICE KELLY DOS PRAZERES FARIAS",
+      "months_seen": 1,
+      "total_acessos": 8,
+      "reason": "No match in any lookup (razao='48.522.990 GLEICE KELLY DOS PRAZERES FARIAS', fantasia='48.522.990 GLEICE KELLY DOS PRAZERES FARIAS')"
+    },
+    {
+      "razao_social": "MAURICIO ANSELMO 78598400904",
+      "nome_fantasia": "5 FOLHAS",
+      "months_seen": 2,
+      "total_acessos": 3,
+      "reason": "No match in any lookup (razao='MAURICIO ANSELMO 78598400904', fantasia='5 FOLHAS')"
+    },
+    {
+      "razao_social": "LEANDRO GIONGO LTDA",
+      "nome_fantasia": "ARMAZEM DO NINI DISTRIBUIDORA",
+      "months_seen": 1,
+      "total_acessos": 2,
+      "reason": "No match in any lookup (razao='LEANDRO GIONGO LTDA', fantasia='ARMAZEM DO NINI DISTRIBUIDORA')"
+    },
+    {
+      "razao_social": "53.697.989 ENYA FRANZINI PORTO DE OLIVEIRA",
+      "nome_fantasia": "CRAVO & CANELA - Doceria Fit",
+      "months_seen": 1,
+      "total_acessos": 2,
+      "reason": "No match in any lookup (razao='53.697.989 ENYA FRANZINI PORTO DE OLIVEIRA', fantasia='CRAVO & CANELA - DOCERIA FIT')"
+    },
+    {
+      "razao_social": "MAIS GRANEL - PRODUTOS NATURAIS LTDA",
+      "nome_fantasia": "APRESENTAÇÃO MAIS GRANEL",
+      "months_seen": 3,
+      "total_acessos": 21,
+      "reason": "No match in any lookup (razao='MAIS GRANEL - PRODUTOS NATURAIS LTDA', fantasia='APRESENTAÇÃO MAIS GRANEL')"
+    },
+    {
+      "razao_social": "A L KAMINSKI & CIA LTDA",
+      "nome_fantasia": "A L KAMINSKI & CIA LTDA",
+      "months_seen": 1,
+      "total_acessos": 4,
+      "reason": "No match in any lookup (razao='A L KAMINSKI & CIA LTDA', fantasia='A L KAMINSKI & CIA LTDA')"
+    },
+    {
+      "razao_social": "37.551.225 LAND VATAM",
+      "nome_fantasia": "37.551.225 LAND VATAM",
+      "months_seen": 1,
+      "total_acessos": 5,
+      "reason": "No match in any lookup (razao='37.551.225 LAND VATAM', fantasia='37.551.225 LAND VATAM')"
+    },
+    {
+      "razao_social": "BALDIN & GUIMARAES COMERCIO LTDA",
+      "nome_fantasia": "BALDIN & GUIMARAES COMERCIO LTDA",
+      "months_seen": 1,
+      "total_acessos": 3,
+      "reason": "No match in any lookup (razao='BALDIN & GUIMARAES COMERCIO LTDA', fantasia='BALDIN & GUIMARAES COMERCIO LTDA')"
+    },
+    {
+      "razao_social": "ROCHA E DOMINGOS LTDA",
+      "nome_fantasia": "M V PATIO MACEIO",
+      "months_seen": 1,
+      "total_acessos": 2,
+      "reason": "No match in any lookup (razao='ROCHA E DOMINGOS LTDA', fantasia='M V PATIO MACEIO')"
+    },
+    {
+      "razao_social": "WILLIAM P DA SILVA",
+      "nome_fantasia": "WILLIAM P DA SILVA",
+      "months_seen": 1,
+      "total_acessos": 3,
+      "reason": "No match in any lookup (razao='WILLIAM P DA SILVA', fantasia='WILLIAM P DA SILVA')"
+    },
+    {
+      "razao_social": "54.046.006 RASEC HENRIQUE DE SOUZA",
+      "nome_fantasia": "54.046.006 RASEC HENRIQUE DE SOUZA",
+      "months_seen": 1,
+      "total_acessos": 6,
+      "reason": "No match in any lookup (razao='54.046.006 RASEC HENRIQUE DE SOUZA', fantasia='54.046.006 RASEC HENRIQUE DE SOUZA')"
+    },
+    {
+      "razao_social": "ADRIANO FABRIS VIEIRA",
+      "nome_fantasia": "EMPORIO SALUTARE - CONSUMINDO QUALIDADE EM SAUDE",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='ADRIANO FABRIS VIEIRA', fantasia='EMPORIO SALUTARE - CONSUMINDO QUALIDADE EM SAUDE')"
+    },
+    {
+      "razao_social": "PEGASUS COMERCIO DE MERCADORIAS EM GERAL E PRODUTOS ALIMENTICIOS LTDA",
+      "nome_fantasia": "COMERCIAL PEGASUS",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='PEGASUS COMERCIO DE MERCADORIAS EM GERAL E PRODUTOS ALIMENTICIOS LTDA', fantasia='COMERCIAL PEGASUS')"
+    },
+    {
+      "razao_social": "58.302.473 CAMILLE PRESTES DE OLIVEIRA DA SILVA",
+      "nome_fantasia": "58.302.473 CAMILLE PRESTES DE OLIVEIRA DA SILVA",
+      "months_seen": 2,
+      "total_acessos": 4,
+      "reason": "No match in any lookup (razao='58.302.473 CAMILLE PRESTES DE OLIVEIRA DA SILVA', fantasia='58.302.473 CAMILLE PRESTES DE OLIVEIRA DA SILVA')"
+    },
+    {
+      "razao_social": "TOP 1 FITT SUPLEMENTOS E CEREAIS LTDA",
+      "nome_fantasia": "TOP 1 FITT SUPLEMENTOS E CEREAIS LTDA",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='TOP 1 FITT SUPLEMENTOS E CEREAIS LTDA', fantasia='TOP 1 FITT SUPLEMENTOS E CEREAIS LTDA')"
+    },
+    {
+      "razao_social": "LUCAS VINICIUS ODORIZZI 07457052941",
+      "nome_fantasia": "DOD'Z",
+      "months_seen": 1,
+      "total_acessos": 2,
+      "reason": "No match in any lookup (razao='LUCAS VINICIUS ODORIZZI 07457052941', fantasia='DOD'Z')"
+    },
+    {
+      "razao_social": "SEM RESTRICAO COMERCIO DE ALIMENTOS LTDA",
+      "nome_fantasia": "SEM RESTRICAO",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='SEM RESTRICAO COMERCIO DE ALIMENTOS LTDA', fantasia='SEM RESTRICAO')"
+    },
+    {
+      "razao_social": "CEDRUS LIBANI PRODUTOS NATURAIS LTDA",
+      "nome_fantasia": "CEDRUS LIBANI",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='CEDRUS LIBANI PRODUTOS NATURAIS LTDA', fantasia='CEDRUS LIBANI')"
+    },
+    {
+      "razao_social": "41.962.210 ERICK MATEUS COSTA DOS REIS",
+      "nome_fantasia": "41.962.210 ERICK MATEUS COSTA DOS REIS",
+      "months_seen": 2,
+      "total_acessos": 9,
+      "reason": "No match in any lookup (razao='41.962.210 ERICK MATEUS COSTA DOS REIS', fantasia='41.962.210 ERICK MATEUS COSTA DOS REIS')"
+    },
+    {
+      "razao_social": "DISTRIBUIDORA C&F LTDA",
+      "nome_fantasia": "DISTRIBUIDORA C&F LTDA",
+      "months_seen": 1,
+      "total_acessos": 2,
+      "reason": "No match in any lookup (razao='DISTRIBUIDORA C&F LTDA', fantasia='DISTRIBUIDORA C&F LTDA')"
+    },
+    {
+      "razao_social": "DANILO LIMA FERREIRA",
+      "nome_fantasia": "DANILO LIMA FERREIRA",
+      "months_seen": 1,
+      "total_acessos": 2,
+      "reason": "No match in any lookup (razao='DANILO LIMA FERREIRA', fantasia='DANILO LIMA FERREIRA')"
+    },
+    {
+      "razao_social": "BEATRIZ MARTINS DOS SANTOS",
+      "nome_fantasia": "EMPORIO DA TERRA",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='BEATRIZ MARTINS DOS SANTOS', fantasia='EMPORIO DA TERRA')"
+    },
+    {
+      "razao_social": "51.677.181 PRISCILA ALVES DA SILVA",
+      "nome_fantasia": "51.677.181 PRISCILA ALVES DA SILVA",
+      "months_seen": 1,
+      "total_acessos": 7,
+      "reason": "No match in any lookup (razao='51.677.181 PRISCILA ALVES DA SILVA', fantasia='51.677.181 PRISCILA ALVES DA SILVA')"
+    },
+    {
+      "razao_social": "MRL COMERCIO DE CHOCOLATES LTDA",
+      "nome_fantasia": "MRL COMERCIO DE CHOCOLATES LTDA",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='MRL COMERCIO DE CHOCOLATES LTDA', fantasia='MRL COMERCIO DE CHOCOLATES LTDA')"
+    },
+    {
+      "razao_social": "R T D MELO ACADEMIA",
+      "nome_fantasia": "GENETICA SUPLEMENTOS",
+      "months_seen": 1,
+      "total_acessos": 2,
+      "reason": "No match in any lookup (razao='R T D MELO ACADEMIA', fantasia='GENETICA SUPLEMENTOS')"
+    },
+    {
+      "razao_social": "53.015.246 RACHEL DE ASSIS DO ESPIRITO SANTO",
+      "nome_fantasia": "53.015.246 RACHEL DE ASSIS DO ESPIRITO SANTO",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='53.015.246 RACHEL DE ASSIS DO ESPIRITO SANTO', fantasia='53.015.246 RACHEL DE ASSIS DO ESPIRITO SANTO')"
+    },
+    {
+      "razao_social": "JULIANA DE CASSIA CORREA",
+      "nome_fantasia": "LOJA MAIS VIDA",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='JULIANA DE CASSIA CORREA', fantasia='LOJA MAIS VIDA')"
+    },
+    {
+      "razao_social": "EMPORIO NIHON LTDA",
+      "nome_fantasia": "EMPORIO NIHON",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='EMPORIO NIHON LTDA', fantasia='EMPORIO NIHON')"
+    },
+    {
+      "razao_social": "HORTI MERCADO FARYAS LTDA",
+      "nome_fantasia": "HORTI MERCADO FARYAS",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='HORTI MERCADO FARYAS LTDA', fantasia='HORTI MERCADO FARYAS')"
+    },
+    {
+      "razao_social": "38.039.306 LUCIANA DIAS DA SILVA",
+      "nome_fantasia": "38.039.306 LUCIANA DIAS DA SILVA",
+      "months_seen": 2,
+      "total_acessos": 4,
+      "reason": "No match in any lookup (razao='38.039.306 LUCIANA DIAS DA SILVA', fantasia='38.039.306 LUCIANA DIAS DA SILVA')"
+    },
+    {
+      "razao_social": "AVILA POSSAMAI PRODUTOS NATURAIS LTDA",
+      "nome_fantasia": "CIA 057 MORRO DA FUMAÇA GIASSI",
+      "months_seen": 2,
+      "total_acessos": 2,
+      "reason": "No match in any lookup (razao='AVILA POSSAMAI PRODUTOS NATURAIS LTDA', fantasia='CIA 057 MORRO DA FUMAÇA GIASSI')"
+    },
+    {
+      "razao_social": "EDJAILSON DA SILVA 74983202404",
+      "nome_fantasia": "PURO VERDE NATURAIS E ORGANICOS",
+      "months_seen": 2,
+      "total_acessos": 15,
+      "reason": "No match in any lookup (razao='EDJAILSON DA SILVA 74983202404', fantasia='PURO VERDE NATURAIS E ORGANICOS')"
+    },
+    {
+      "razao_social": "DONA NELZA ADMINISTRATIVO LTDA",
+      "nome_fantasia": "DONA NELZA ADMINISTRATIVO",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='DONA NELZA ADMINISTRATIVO LTDA', fantasia='DONA NELZA ADMINISTRATIVO')"
+    },
+    {
+      "razao_social": "NUTRI SUPLEMENTOS LTDA",
+      "nome_fantasia": "DM NUTRI",
+      "months_seen": 1,
+      "total_acessos": 2,
+      "reason": "No match in any lookup (razao='NUTRI SUPLEMENTOS LTDA', fantasia='DM NUTRI')"
+    },
+    {
+      "razao_social": "38.341.492 FABIANA SANTOS DE OLIVEIRA MOREIRA",
+      "nome_fantasia": "FABIANA SANTOS DE OLIVEIRA MOREIRA",
+      "months_seen": 2,
+      "total_acessos": 11,
+      "reason": "No match in any lookup (razao='38.341.492 FABIANA SANTOS DE OLIVEIRA MOREIRA', fantasia='FABIANA SANTOS DE OLIVEIRA MOREIRA')"
+    },
+    {
+      "razao_social": "MANIA BOMBONIERE E ARTIGOS PARA FESTAS LTDA",
+      "nome_fantasia": "MANIA DOCES E FESTAS",
+      "months_seen": 1,
+      "total_acessos": 15,
+      "reason": "No match in any lookup (razao='MANIA BOMBONIERE E ARTIGOS PARA FESTAS LTDA', fantasia='MANIA DOCES E FESTAS')"
+    },
+    {
+      "razao_social": "CAFE E CONFEITARIA PB LTDA",
+      "nome_fantasia": "CIA DO DOCE CAFE E CONFEITARIA",
+      "months_seen": 1,
+      "total_acessos": 3,
+      "reason": "No match in any lookup (razao='CAFE E CONFEITARIA PB LTDA', fantasia='CIA DO DOCE CAFE E CONFEITARIA')"
+    },
+    {
+      "razao_social": "48.527.306 LUCIANE DE SOUZA DA CONCEICAO",
+      "nome_fantasia": "48.527.306 LUCIANE DE SOUZA DA CONCEICAO",
+      "months_seen": 1,
+      "total_acessos": 2,
+      "reason": "No match in any lookup (razao='48.527.306 LUCIANE DE SOUZA DA CONCEICAO', fantasia='48.527.306 LUCIANE DE SOUZA DA CONCEICAO')"
+    },
+    {
+      "razao_social": "ALVES COMERCIAL LTDA",
+      "nome_fantasia": "ALVES COMERCIAL",
+      "months_seen": 4,
+      "total_acessos": 6,
+      "reason": "No match in any lookup (razao='ALVES COMERCIAL LTDA', fantasia='ALVES COMERCIAL')"
+    },
+    {
+      "razao_social": "53.560.100 SIMONY ROSA DE OLIVEIRA COSTA",
+      "nome_fantasia": "53.560.100 SIMONY ROSA DE OLIVEIRA COSTA",
+      "months_seen": 3,
+      "total_acessos": 6,
+      "reason": "No match in any lookup (razao='53.560.100 SIMONY ROSA DE OLIVEIRA COSTA', fantasia='53.560.100 SIMONY ROSA DE OLIVEIRA COSTA')"
+    },
+    {
+      "razao_social": "FITLAND ADMINISTRACAO DE FRANQUIAS LTDA",
+      "nome_fantasia": "FITLAND ADMINISTRACAO DE FRANQUIAS",
+      "months_seen": 2,
+      "total_acessos": 8,
+      "reason": "No match in any lookup (razao='FITLAND ADMINISTRACAO DE FRANQUIAS LTDA', fantasia='FITLAND ADMINISTRACAO DE FRANQUIAS')"
+    },
+    {
+      "razao_social": "EMPORIO SPLASH NATURAL LTDA",
+      "nome_fantasia": "EMPORIO SPLASH NATURAL LTDA",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='EMPORIO SPLASH NATURAL LTDA', fantasia='EMPORIO SPLASH NATURAL LTDA')"
+    },
+    {
+      "razao_social": "MARIA DAS GRACAS TELES 46061193300",
+      "nome_fantasia": "QUANTUM SUPLEMENTOS",
+      "months_seen": 1,
+      "total_acessos": 4,
+      "reason": "No match in any lookup (razao='MARIA DAS GRACAS TELES 46061193300', fantasia='QUANTUM SUPLEMENTOS')"
+    },
+    {
+      "razao_social": "GADRET REPRESENTACOES LTDA",
+      "nome_fantasia": "GADRET REPRESENTACOES",
+      "months_seen": 6,
+      "total_acessos": 22,
+      "reason": "No match in any lookup (razao='GADRET REPRESENTACOES LTDA', fantasia='GADRET REPRESENTACOES')"
+    },
+    {
+      "razao_social": "FIORI MALFATTI SERVICOS ADMINISTRATIVOS LTDA",
+      "nome_fantasia": "DRAMA CAFE",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='FIORI MALFATTI SERVICOS ADMINISTRATIVOS LTDA', fantasia='DRAMA CAFE')"
+    },
+    {
+      "razao_social": "ALELHI BUZIOS RESTAURANTE LTDA",
+      "nome_fantasia": "ALELHI RESTAURANTE",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='ALELHI BUZIOS RESTAURANTE LTDA', fantasia='ALELHI RESTAURANTE')"
+    },
+    {
+      "razao_social": "LIMA COMERCIO DE ALIMENTOS LTDA",
+      "nome_fantasia": "LIMA COMERCIO DE ALIMENTOS LTDA",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='LIMA COMERCIO DE ALIMENTOS LTDA', fantasia='LIMA COMERCIO DE ALIMENTOS LTDA')"
+    },
+    {
+      "razao_social": "DOCE VIDA DIABETES EIRELI",
+      "nome_fantasia": "DOCE VIDA DIABETES",
+      "months_seen": 1,
+      "total_acessos": 4,
+      "reason": "No match in any lookup (razao='DOCE VIDA DIABETES EIRELI', fantasia='DOCE VIDA DIABETES')"
+    },
+    {
+      "razao_social": "55.034.960 RAFAELA IVANOVICK",
+      "nome_fantasia": "Delícias do Pântano",
+      "months_seen": 1,
+      "total_acessos": 2,
+      "reason": "No match in any lookup (razao='55.034.960 RAFAELA IVANOVICK', fantasia='DELÍCIAS DO PÂNTANO')"
+    },
+    {
+      "razao_social": "58.162.718 ANALICE BUENO GONCALVES",
+      "nome_fantasia": "ANALICE BUENO GONCALVES",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='58.162.718 ANALICE BUENO GONCALVES', fantasia='ANALICE BUENO GONCALVES')"
+    },
+    {
+      "razao_social": "49.032.435 ABDULLAH ABDELRAHMAN RAGAB MOHAMED",
+      "nome_fantasia": "BEEDO BAKER",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='49.032.435 ABDULLAH ABDELRAHMAN RAGAB MOHAMED', fantasia='BEEDO BAKER')"
+    },
+    {
+      "razao_social": "EMBALEME COMERCIO DE EMBALAGENS DESCARTAVEIS LTDA",
+      "nome_fantasia": "EMBALEME",
+      "months_seen": 1,
+      "total_acessos": 3,
+      "reason": "No match in any lookup (razao='EMBALEME COMERCIO DE EMBALAGENS DESCARTAVEIS LTDA', fantasia='EMBALEME')"
+    },
+    {
+      "razao_social": "DONA BRANDS COMERCIO E DISTRIBUICAO DE SUPLEMENTOS E ARTIGOS ESPORTIVOS LTDA",
+      "nome_fantasia": "INTENSE LIFE GRAVATAI",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='DONA BRANDS COMERCIO E DISTRIBUICAO DE SUPLEMENTOS E ARTIGOS ESPORTIVOS LTDA', fantasia='INTENSE LIFE GRAVATAI')"
+    },
+    {
+      "razao_social": "A C L S COMERCIO VAREJISTA DE ALIMENTOS LTDA",
+      "nome_fantasia": "ARMAZEM E PRODUTOS NATURAIS",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='A C L S COMERCIO VAREJISTA DE ALIMENTOS LTDA', fantasia='ARMAZEM E PRODUTOS NATURAIS')"
+    },
+    {
+      "razao_social": "EMPORIO SAUDE MERCEARIA LTDA",
+      "nome_fantasia": "EMPORIO KING",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='EMPORIO SAUDE MERCEARIA LTDA', fantasia='EMPORIO KING')"
+    },
+    {
+      "razao_social": "ESSENCIA COMERCIO DE PRODUTOS NATURAIS LTDA",
+      "nome_fantasia": "ESSENCIA PRODUTOS NATURAIS",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='ESSENCIA COMERCIO DE PRODUTOS NATURAIS LTDA', fantasia='ESSENCIA PRODUTOS NATURAIS')"
+    },
+    {
+      "razao_social": "INOV3 ENGENHARIA DE ALIMENTOS LTDA",
+      "nome_fantasia": "INOV3 SOLUCOES EM ALIMENTOS",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='INOV3 ENGENHARIA DE ALIMENTOS LTDA', fantasia='INOV3 SOLUCOES EM ALIMENTOS')"
+    },
+    {
+      "razao_social": "JENIFFER RIBEIRO TAVARES 04855695904",
+      "nome_fantasia": "Jani Cupcakes",
+      "months_seen": 1,
+      "total_acessos": 4,
+      "reason": "No match in any lookup (razao='JENIFFER RIBEIRO TAVARES 04855695904', fantasia='JANI CUPCAKES')"
+    },
+    {
+      "razao_social": "KAUCLINICAL CARE LTDA",
+      "nome_fantasia": "KAUCLINICAL CARE",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='KAUCLINICAL CARE LTDA', fantasia='KAUCLINICAL CARE')"
+    },
+    {
+      "razao_social": "RIBEIRO FREIRE SMART COMMERCE LTDA",
+      "nome_fantasia": "MINHA QUINTANDINHA",
+      "months_seen": 1,
+      "total_acessos": 2,
+      "reason": "No match in any lookup (razao='RIBEIRO FREIRE SMART COMMERCE LTDA', fantasia='MINHA QUINTANDINHA')"
+    },
+    {
+      "razao_social": "28.195.053 MARIA ANGELA SANTOS SANQUETI",
+      "nome_fantasia": "MARIA ANGELA SANTOS SANQUETI",
+      "months_seen": 1,
+      "total_acessos": 3,
+      "reason": "No match in any lookup (razao='28.195.053 MARIA ANGELA SANTOS SANQUETI', fantasia='MARIA ANGELA SANTOS SANQUETI')"
+    },
+    {
+      "razao_social": "MARIA DE LOURDES DA SILVA",
+      "nome_fantasia": "CHEIRO DA TERRA",
+      "months_seen": 1,
+      "total_acessos": 6,
+      "reason": "No match in any lookup (razao='MARIA DE LOURDES DA SILVA', fantasia='CHEIRO DA TERRA')"
+    },
+    {
+      "razao_social": "TDG GESTAO EMPRESARIAL LTDA",
+      "nome_fantasia": "TDG GESTAO EMPRESARIAL",
+      "months_seen": 1,
+      "total_acessos": 4,
+      "reason": "No match in any lookup (razao='TDG GESTAO EMPRESARIAL LTDA', fantasia='TDG GESTAO EMPRESARIAL')"
+    },
+    {
+      "razao_social": "CASA DEI GRANI COMERCIO DE ALIMENTOS LTDA",
+      "nome_fantasia": "CASA DEI GRANI COMERCIO DE ALIMENTOS",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='CASA DEI GRANI COMERCIO DE ALIMENTOS LTDA', fantasia='CASA DEI GRANI COMERCIO DE ALIMENTOS')"
+    },
+    {
+      "razao_social": "MOVITTA SMOOTHIES E SUPLEMENTOS ALIMENTARES LTDA",
+      "nome_fantasia": "MOVITTA SMOOTHIES",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='MOVITTA SMOOTHIES E SUPLEMENTOS ALIMENTARES LTDA', fantasia='MOVITTA SMOOTHIES')"
+    },
+    {
+      "razao_social": "BEACH 80 LTDA",
+      "nome_fantasia": "BEACH 80",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='BEACH 80 LTDA', fantasia='BEACH 80')"
+    },
+    {
+      "razao_social": "ESPACO NUTRI AMELIA ELISLANDIA LTDA",
+      "nome_fantasia": "ESPACO NUTRI AMELIA ELISLANDIA",
+      "months_seen": 1,
+      "total_acessos": 2,
+      "reason": "No match in any lookup (razao='ESPACO NUTRI AMELIA ELISLANDIA LTDA', fantasia='ESPACO NUTRI AMELIA ELISLANDIA')"
+    },
+    {
+      "razao_social": "ANTONINO VAIANELLA COMERCIO IMPORTACAO E EXPORTACAO LTDA",
+      "nome_fantasia": "SAPORE D ITALIA",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='ANTONINO VAIANELLA COMERCIO IMPORTACAO E EXPORTACAO LTDA', fantasia='SAPORE D ITALIA')"
+    },
+    {
+      "razao_social": "BRENDA PIGNATON COSTA 14684820769",
+      "nome_fantasia": "BRENDA PIGNATON COSTA",
+      "months_seen": 2,
+      "total_acessos": 7,
+      "reason": "No match in any lookup (razao='BRENDA PIGNATON COSTA 14684820769', fantasia='BRENDA PIGNATON COSTA')"
+    },
+    {
+      "razao_social": "MARAGNO & HARTMANN COMERCIO DE PRODUTOS NATURAIS LTDA",
+      "nome_fantasia": "MARIA GRANEL",
+      "months_seen": 1,
+      "total_acessos": 4,
+      "reason": "No match in any lookup (razao='MARAGNO & HARTMANN COMERCIO DE PRODUTOS NATURAIS LTDA', fantasia='MARIA GRANEL')"
+    },
+    {
+      "razao_social": "F & G VITALIDADE NATURAL LTDA",
+      "nome_fantasia": "F & G VITALIDADE NATURAL",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='F & G VITALIDADE NATURAL LTDA', fantasia='F & G VITALIDADE NATURAL')"
+    },
+    {
+      "razao_social": "61.015.175 JESSICA ANUNCIACAO GOMES",
+      "nome_fantasia": "JESSICA ANUNCIACAO GOMES",
+      "months_seen": 1,
+      "total_acessos": 2,
+      "reason": "No match in any lookup (razao='61.015.175 JESSICA ANUNCIACAO GOMES', fantasia='JESSICA ANUNCIACAO GOMES')"
+    },
+    {
+      "razao_social": "BEPS ALIMENTACAO SAUDAVEL LTDA",
+      "nome_fantasia": "BEPS ALIMENTACAO SAUDAVEL LTDA",
+      "months_seen": 1,
+      "total_acessos": 3,
+      "reason": "No match in any lookup (razao='BEPS ALIMENTACAO SAUDAVEL LTDA', fantasia='BEPS ALIMENTACAO SAUDAVEL LTDA')"
+    },
+    {
+      "razao_social": "VITALOY PRODUTOS NATURAIS E SUPLEMENTOS LTDA",
+      "nome_fantasia": "VITALOY PRODUTOS NATURAIS E SUPLEMENTOS",
+      "months_seen": 1,
+      "total_acessos": 3,
+      "reason": "No match in any lookup (razao='VITALOY PRODUTOS NATURAIS E SUPLEMENTOS LTDA', fantasia='VITALOY PRODUTOS NATURAIS E SUPLEMENTOS')"
+    },
+    {
+      "razao_social": "Natha Floriano",
+      "nome_fantasia": "Natha Floriano",
+      "months_seen": 1,
+      "total_acessos": 2,
+      "reason": "No match in any lookup (razao='NATHA FLORIANO', fantasia='NATHA FLORIANO')"
+    },
+    {
+      "razao_social": "RENATA CARARA DE MARCH 02900060907",
+      "nome_fantasia": "RENATA CARARA DE MARCH 02900060907",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='RENATA CARARA DE MARCH 02900060907', fantasia='RENATA CARARA DE MARCH 02900060907')"
+    },
+    {
+      "razao_social": "54.697.562 MARLY BRIZENO CHALFUM",
+      "nome_fantasia": "DaVida cozinha saudável",
+      "months_seen": 1,
+      "total_acessos": 3,
+      "reason": "No match in any lookup (razao='54.697.562 MARLY BRIZENO CHALFUM', fantasia='DAVIDA COZINHA SAUDÁVEL')"
+    },
+    {
+      "razao_social": "GG MERCADINHOS LTDA",
+      "nome_fantasia": "MINHA QUINTADINHA - Lauro de freitas Bahia",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='GG MERCADINHOS LTDA', fantasia='MINHA QUINTADINHA - LAURO DE FREITAS BAHIA')"
+    },
+    {
+      "razao_social": "NUTRIAR PRODUTOS NATURAIS E SUPLEMENTOS LTDA",
+      "nome_fantasia": "NUTRIAR",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='NUTRIAR PRODUTOS NATURAIS E SUPLEMENTOS LTDA', fantasia='NUTRIAR')"
+    },
+    {
+      "razao_social": "58.440.304 LUANA KEMELY SANTOS SANTIAGO",
+      "nome_fantasia": "ALL GREEN",
+      "months_seen": 1,
+      "total_acessos": 9,
+      "reason": "No match in any lookup (razao='58.440.304 LUANA KEMELY SANTOS SANTIAGO', fantasia='ALL GREEN')"
+    },
+    {
+      "razao_social": "P H B DOS SANTOS SUPLEMENTOS",
+      "nome_fantasia": "RH SUPLEMENTOS",
+      "months_seen": 2,
+      "total_acessos": 5,
+      "reason": "No match in any lookup (razao='P H B DOS SANTOS SUPLEMENTOS', fantasia='RH SUPLEMENTOS')"
+    },
+    {
+      "razao_social": "GRAOS E FIT PRODUTOS NATURAIS LTDA",
+      "nome_fantasia": "GRAOS E FIT",
+      "months_seen": 3,
+      "total_acessos": 35,
+      "reason": "No match in any lookup (razao='GRAOS E FIT PRODUTOS NATURAIS LTDA', fantasia='GRAOS E FIT')"
+    },
+    {
+      "razao_social": "48.590.452 PHILIPPE MEYLAN",
+      "nome_fantasia": "48.590.452 PHILIPPE MEYLAN",
+      "months_seen": 2,
+      "total_acessos": 4,
+      "reason": "No match in any lookup (razao='48.590.452 PHILIPPE MEYLAN', fantasia='48.590.452 PHILIPPE MEYLAN')"
+    },
+    {
+      "razao_social": "50.682.651 REGINALDO DE JESUS LEME",
+      "nome_fantasia": "DOCE VITTA",
+      "months_seen": 2,
+      "total_acessos": 3,
+      "reason": "No match in any lookup (razao='50.682.651 REGINALDO DE JESUS LEME', fantasia='DOCE VITTA')"
+    },
+    {
+      "razao_social": "GRASSI & BALEST LTDA",
+      "nome_fantasia": "ESPACO VERDE",
+      "months_seen": 2,
+      "total_acessos": 3,
+      "reason": "No match in any lookup (razao='GRASSI & BALEST LTDA', fantasia='ESPACO VERDE')"
+    },
+    {
+      "razao_social": "20.705.978 CARMEN BARBOSA DE MIRANDA",
+      "nome_fantasia": "20.705.978 CARMEN BARBOSA DE MIRANDA",
+      "months_seen": 2,
+      "total_acessos": 7,
+      "reason": "No match in any lookup (razao='20.705.978 CARMEN BARBOSA DE MIRANDA', fantasia='20.705.978 CARMEN BARBOSA DE MIRANDA')"
+    },
+    {
+      "razao_social": "J B S DE MATOS COM SERV IMPORT E EXPORTACAO",
+      "nome_fantasia": "MONSTERGYM",
+      "months_seen": 1,
+      "total_acessos": 4,
+      "reason": "No match in any lookup (razao='J B S DE MATOS COM SERV IMPORT E EXPORTACAO', fantasia='MONSTERGYM')"
+    },
+    {
+      "razao_social": "60.131.726 VIVIAN PIMENTEL",
+      "nome_fantasia": "60.131.726 VIVIAN PIMENTEL",
+      "months_seen": 1,
+      "total_acessos": 2,
+      "reason": "No match in any lookup (razao='60.131.726 VIVIAN PIMENTEL', fantasia='60.131.726 VIVIAN PIMENTEL')"
+    },
+    {
+      "razao_social": "ROSANGELA MUNHOZ DE ALMEIDA ARGUELLO LTDA",
+      "nome_fantasia": "EMPÓRIO MISTURA NATIVA",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='ROSANGELA MUNHOZ DE ALMEIDA ARGUELLO LTDA', fantasia='EMPÓRIO MISTURA NATIVA')"
+    },
+    {
+      "razao_social": "NUTRINICE COMERCIO DE ALIMENTOS LTDA",
+      "nome_fantasia": "NUTRINICE",
+      "months_seen": 1,
+      "total_acessos": 2,
+      "reason": "No match in any lookup (razao='NUTRINICE COMERCIO DE ALIMENTOS LTDA', fantasia='NUTRINICE')"
+    },
+    {
+      "razao_social": "44.294.694 CAMILA LOYANE LEONHARDT",
+      "nome_fantasia": "44.294.694 CAMILA LOYANE LEONHARDT",
+      "months_seen": 1,
+      "total_acessos": 4,
+      "reason": "No match in any lookup (razao='44.294.694 CAMILA LOYANE LEONHARDT', fantasia='44.294.694 CAMILA LOYANE LEONHARDT')"
+    },
+    {
+      "razao_social": "63.349.493 PAMELA NATALIA CAMARGO",
+      "nome_fantasia": "63.349.493 PAMELA NATALIA CAMARGO",
+      "months_seen": 1,
+      "total_acessos": 5,
+      "reason": "No match in any lookup (razao='63.349.493 PAMELA NATALIA CAMARGO', fantasia='63.349.493 PAMELA NATALIA CAMARGO')"
+    },
+    {
+      "razao_social": "FELIPAO P&C LTDA",
+      "nome_fantasia": "PADARIA FELIPAO",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='FELIPAO P&C LTDA', fantasia='PADARIA FELIPAO')"
+    },
+    {
+      "razao_social": "Empório e Especiarias Canela do Veio e Cristal Ltda",
+      "nome_fantasia": "Empório e Especiarias Canela do Veio e Cristal Ltda",
+      "months_seen": 1,
+      "total_acessos": 7,
+      "reason": "No match in any lookup (razao='EMPÓRIO E ESPECIARIAS CANELA DO VEIO E CRISTAL LTDA', fantasia='EMPÓRIO E ESPECIARIAS CANELA DO VEIO E CRISTAL LTDA')"
+    },
+    {
+      "razao_social": "Viva Leve Produtos ALIMENTÍCIOS LtDa",
+      "nome_fantasia": "Viva Leve Produtos ALIMENTÍCIOS LtDa",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='VIVA LEVE PRODUTOS ALIMENTÍCIOS LTDA', fantasia='VIVA LEVE PRODUTOS ALIMENTÍCIOS LTDA')"
+    },
+    {
+      "razao_social": "TERRA DA MATA COMERCIO LTDA",
+      "nome_fantasia": "TERRA DA MATA COMERCIO LTDA",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='TERRA DA MATA COMERCIO LTDA', fantasia='TERRA DA MATA COMERCIO LTDA')"
+    },
+    {
+      "razao_social": "55.321.025 EVELYN THAMIRES SILVA TOME",
+      "nome_fantasia": "55.321.025 EVELYN THAMIRES SILVA TOME",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='55.321.025 EVELYN THAMIRES SILVA TOME', fantasia='55.321.025 EVELYN THAMIRES SILVA TOME')"
+    },
+    {
+      "razao_social": "TUDO EM GRÃOS PORTO ALEGRE (PROSPECÇÃO)",
+      "nome_fantasia": "",
+      "months_seen": 3,
+      "total_acessos": 10,
+      "reason": "No match in any lookup (razao='TUDO EM GRÃOS PORTO ALEGRE (PROSPECÇÃO)')"
+    },
+    {
+      "razao_social": "Limpalar",
+      "nome_fantasia": "Limpalar",
+      "months_seen": 2,
+      "total_acessos": 3,
+      "reason": "No match in any lookup (razao='LIMPALAR', fantasia='LIMPALAR')"
+    },
+    {
+      "razao_social": "Empório Vitória",
+      "nome_fantasia": "Empório Vitória",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='EMPÓRIO VITÓRIA', fantasia='EMPÓRIO VITÓRIA')"
+    },
+    {
+      "razao_social": "Armazem santa hildegard",
+      "nome_fantasia": "Armazem santa hildegard",
+      "months_seen": 1,
+      "total_acessos": 4,
+      "reason": "No match in any lookup (razao='ARMAZEM SANTA HILDEGARD', fantasia='ARMAZEM SANTA HILDEGARD')"
+    },
+    {
+      "razao_social": "Armazém Grãos de Ouro",
+      "nome_fantasia": "Armazém Grãos de Ouro",
+      "months_seen": 2,
+      "total_acessos": 4,
+      "reason": "No match in any lookup (razao='ARMAZÉM GRÃOS DE OURO', fantasia='ARMAZÉM GRÃOS DE OURO')"
+    },
+    {
+      "razao_social": "62.905.611 ROSALIA MARIA DA SILVA LEAL",
+      "nome_fantasia": "62.905.611 ROSALIA MARIA DA SILVA LEAL",
+      "months_seen": 1,
+      "total_acessos": 3,
+      "reason": "No match in any lookup (razao='62.905.611 ROSALIA MARIA DA SILVA LEAL', fantasia='62.905.611 ROSALIA MARIA DA SILVA LEAL')"
+    },
+    {
+      "razao_social": "BERTONI DOCES LTDA",
+      "nome_fantasia": "BERTONI DOCES",
+      "months_seen": 2,
+      "total_acessos": 2,
+      "reason": "No match in any lookup (razao='BERTONI DOCES LTDA', fantasia='BERTONI DOCES')"
+    },
+    {
+      "razao_social": "MEDEIROS SUPERMERCADOS LTDA",
+      "nome_fantasia": "MEDEIROS SUPERMERCADOS LTDA",
+      "months_seen": 1,
+      "total_acessos": 2,
+      "reason": "No match in any lookup (razao='MEDEIROS SUPERMERCADOS LTDA', fantasia='MEDEIROS SUPERMERCADOS LTDA')"
+    },
+    {
+      "razao_social": "62.312.736 FRANCISCO DE ASSIS RIBEIRO DOS SANTOS JUNIOR",
+      "nome_fantasia": "62.312.736 FRANCISCO DE ASSIS RIBEIRO DOS SANTOS JUNIOR",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='62.312.736 FRANCISCO DE ASSIS RIBEIRO DOS SANTOS JUNIOR', fantasia='62.312.736 FRANCISCO DE ASSIS RIBEIRO DOS SANTOS JUNIOR')"
+    },
+    {
+      "razao_social": "61.432.763 NATHALIA SILVA E FRANCO",
+      "nome_fantasia": "61.432.763 NATHALIA SILVA E FRANCO",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='61.432.763 NATHALIA SILVA E FRANCO', fantasia='61.432.763 NATHALIA SILVA E FRANCO')"
+    },
+    {
+      "razao_social": "58.174.386 GLAUBER ALVES GOMES RODRIGUES",
+      "nome_fantasia": "58.174.386 GLAUBER ALVES GOMES RODRIGUES",
+      "months_seen": 1,
+      "total_acessos": 3,
+      "reason": "No match in any lookup (razao='58.174.386 GLAUBER ALVES GOMES RODRIGUES', fantasia='58.174.386 GLAUBER ALVES GOMES RODRIGUES')"
+    },
+    {
+      "razao_social": "JFC MANIPULACAO LTDA",
+      "nome_fantasia": "JFCMANIPULACAO",
+      "months_seen": 1,
+      "total_acessos": 2,
+      "reason": "No match in any lookup (razao='JFC MANIPULACAO LTDA', fantasia='JFCMANIPULACAO')"
+    },
+    {
+      "razao_social": "PADOCCA & LM SERVICOS LTDA",
+      "nome_fantasia": "PADOCCA & LM SERVICOS LTDA",
+      "months_seen": 1,
+      "total_acessos": 2,
+      "reason": "No match in any lookup (razao='PADOCCA & LM SERVICOS LTDA', fantasia='PADOCCA & LM SERVICOS LTDA')"
+    },
+    {
+      "razao_social": "EMPORIUM MANSALUTTE COMERCIO DE PRODUTOS NATURAIS LTDA",
+      "nome_fantasia": "EMPORIUM MANSALUTTE",
+      "months_seen": 1,
+      "total_acessos": 3,
+      "reason": "No match in any lookup (razao='EMPORIUM MANSALUTTE COMERCIO DE PRODUTOS NATURAIS LTDA', fantasia='EMPORIUM MANSALUTTE')"
+    },
+    {
+      "razao_social": "57.336.899 LEONARDO FERREIRA DOS SANTOS",
+      "nome_fantasia": "57.336.899 LEONARDO FERREIRA DOS SANTOS",
+      "months_seen": 1,
+      "total_acessos": 3,
+      "reason": "No match in any lookup (razao='57.336.899 LEONARDO FERREIRA DOS SANTOS', fantasia='57.336.899 LEONARDO FERREIRA DOS SANTOS')"
+    },
+    {
+      "razao_social": "61.770.305 MATHEUS COSTA",
+      "nome_fantasia": "61.770.305 MATHEUS COSTA",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='61.770.305 MATHEUS COSTA', fantasia='61.770.305 MATHEUS COSTA')"
+    },
+    {
+      "razao_social": "62.347.781 RAFAELA ANDRESSA KUPKA",
+      "nome_fantasia": "SEMENTES DA TERRA",
+      "months_seen": 1,
+      "total_acessos": 2,
+      "reason": "No match in any lookup (razao='62.347.781 RAFAELA ANDRESSA KUPKA', fantasia='SEMENTES DA TERRA')"
+    },
+    {
+      "razao_social": "63.096.319 MATHEUS RODRIGUES DE SOUZA",
+      "nome_fantasia": "Men’s Physique",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='63.096.319 MATHEUS RODRIGUES DE SOUZA', fantasia='MEN’S PHYSIQUE')"
+    },
+    {
+      "razao_social": "+ SAUDAVEL PRODUTOS NATURAIS E SUPLEMENTOS LTDA",
+      "nome_fantasia": "+ SAUDAVEL PRODUTOS NATURAIS E SUPLEMENTOS",
+      "months_seen": 1,
+      "total_acessos": 3,
+      "reason": "No match in any lookup (razao='+ SAUDAVEL PRODUTOS NATURAIS E SUPLEMENTOS LTDA', fantasia='+ SAUDAVEL PRODUTOS NATURAIS E SUPLEMENTOS')"
+    },
+    {
+      "razao_social": "ORGANICOS MADALENA HORTIFRUTI LTDA",
+      "nome_fantasia": "ORGANICOS MADALENA",
+      "months_seen": 1,
+      "total_acessos": 2,
+      "reason": "No match in any lookup (razao='ORGANICOS MADALENA HORTIFRUTI LTDA', fantasia='ORGANICOS MADALENA')"
+    },
+    {
+      "razao_social": "48.830.176 MAIZA FERNANDA DE SOUZA SILVA",
+      "nome_fantasia": "48.830.176 MAIZA FERNANDA DE SOUZA SILVA",
+      "months_seen": 1,
+      "total_acessos": 4,
+      "reason": "No match in any lookup (razao='48.830.176 MAIZA FERNANDA DE SOUZA SILVA', fantasia='48.830.176 MAIZA FERNANDA DE SOUZA SILVA')"
+    },
+    {
+      "razao_social": "ESPACO ARVORE DA VIDA LTDA",
+      "nome_fantasia": "ESPACO ARVORE DA VIDA",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='ESPACO ARVORE DA VIDA LTDA', fantasia='ESPACO ARVORE DA VIDA')"
+    },
+    {
+      "razao_social": "59.524.208 LAVINIA CORREA SANTIAGO",
+      "nome_fantasia": "59.524.208 LAVINIA CORREA SANTIAGO",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='59.524.208 LAVINIA CORREA SANTIAGO', fantasia='59.524.208 LAVINIA CORREA SANTIAGO')"
+    },
+    {
+      "razao_social": "FELIPE BISCARO BARBOSA 38749800817",
+      "nome_fantasia": "GARAGEM GORILLA PIRACICABA",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='FELIPE BISCARO BARBOSA 38749800817', fantasia='GARAGEM GORILLA PIRACICABA')"
+    },
+    {
+      "razao_social": "50.578.634 RENATA LEAL DE SANT ANNA",
+      "nome_fantasia": "50.578.634 RENATA LEAL DE SANT ANNA",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='50.578.634 RENATA LEAL DE SANT ANNA', fantasia='50.578.634 RENATA LEAL DE SANT ANNA')"
+    },
+    {
+      "razao_social": "MULTIVERSO COMERCIO, INDUSTRIA E SERVICOS LTDA",
+      "nome_fantasia": "MULTIVERSO COMERCIO, INDUSTRIA E SERVICOS LTDA",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='MULTIVERSO COMERCIO, INDUSTRIA E SERVICOS LTDA', fantasia='MULTIVERSO COMERCIO, INDUSTRIA E SERVICOS LTDA')"
+    },
+    {
+      "razao_social": "J R BAZAR E UTILIDADES LTDA",
+      "nome_fantasia": "BIG UTILIDADES",
+      "months_seen": 1,
+      "total_acessos": 3,
+      "reason": "No match in any lookup (razao='J R BAZAR E UTILIDADES LTDA', fantasia='BIG UTILIDADES')"
+    },
+    {
+      "razao_social": "BRUNA ZANELLATO NUTRICAO LTDA",
+      "nome_fantasia": "BRUNA ZANELLATO ASSESSORIA NUTRICIONAL",
+      "months_seen": 2,
+      "total_acessos": 7,
+      "reason": "No match in any lookup (razao='BRUNA ZANELLATO NUTRICAO LTDA', fantasia='BRUNA ZANELLATO ASSESSORIA NUTRICIONAL')"
+    },
+    {
+      "razao_social": "LUCAS OLIVEIRA CAMPOREZZI 03957524938",
+      "nome_fantasia": "EMPORIO AURORA",
+      "months_seen": 1,
+      "total_acessos": 20,
+      "reason": "No match in any lookup (razao='LUCAS OLIVEIRA CAMPOREZZI 03957524938', fantasia='EMPORIO AURORA')"
+    },
+    {
+      "razao_social": "58.897.162 CAMILA LIMA SOARES PEREIRA",
+      "nome_fantasia": "58.897.162 CAMILA LIMA SOARES PEREIRA",
+      "months_seen": 1,
+      "total_acessos": 2,
+      "reason": "No match in any lookup (razao='58.897.162 CAMILA LIMA SOARES PEREIRA', fantasia='58.897.162 CAMILA LIMA SOARES PEREIRA')"
+    },
+    {
+      "razao_social": "INSTITUTO TERRA",
+      "nome_fantasia": "INSTITUTO TERRA",
+      "months_seen": 1,
+      "total_acessos": 4,
+      "reason": "No match in any lookup (razao='INSTITUTO TERRA', fantasia='INSTITUTO TERRA')"
+    },
+    {
+      "razao_social": "VISIONARY SUPLEMENTOS COMERCIO VAREJISTA LTDA",
+      "nome_fantasia": "VISIONARY",
+      "months_seen": 1,
+      "total_acessos": 42,
+      "reason": "No match in any lookup (razao='VISIONARY SUPLEMENTOS COMERCIO VAREJISTA LTDA', fantasia='VISIONARY')"
+    },
+    {
+      "razao_social": "36.152.778 LUANA APARECIDA ANDRIONI",
+      "nome_fantasia": "EMPORIO DOS GRÃOS",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='36.152.778 LUANA APARECIDA ANDRIONI', fantasia='EMPORIO DOS GRÃOS')"
+    },
+    {
+      "razao_social": "57.117.691 SAMUEL JEFFTE DE FREITAS SILVA",
+      "nome_fantasia": "57.117.691 SAMUEL JEFFTE DE FREITAS SILVA",
+      "months_seen": 1,
+      "total_acessos": 2,
+      "reason": "No match in any lookup (razao='57.117.691 SAMUEL JEFFTE DE FREITAS SILVA', fantasia='57.117.691 SAMUEL JEFFTE DE FREITAS SILVA')"
+    },
+    {
+      "razao_social": "LAIS MIRIAN DE OLIVEIRA QUEIROZ LTDA",
+      "nome_fantasia": "LAIS MIRIAN DE OLIVEIRA QUEIROZ LTDA",
+      "months_seen": 1,
+      "total_acessos": 3,
+      "reason": "No match in any lookup (razao='LAIS MIRIAN DE OLIVEIRA QUEIROZ LTDA', fantasia='LAIS MIRIAN DE OLIVEIRA QUEIROZ LTDA')"
+    },
+    {
+      "razao_social": "63.579.191 LAERCIO ROCHA DO NASCIMENTO",
+      "nome_fantasia": "63.579.191 LAERCIO ROCHA DO NASCIMENTO",
+      "months_seen": 2,
+      "total_acessos": 9,
+      "reason": "No match in any lookup (razao='63.579.191 LAERCIO ROCHA DO NASCIMENTO', fantasia='63.579.191 LAERCIO ROCHA DO NASCIMENTO')"
+    },
+    {
+      "razao_social": "ATELIER DOS SABORES INDUSTRIA DE ALIMENTOS LTDA",
+      "nome_fantasia": "ATELIER DOS SABORES INDUSTRIA DE ALIMENTOS LTDA",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='ATELIER DOS SABORES INDUSTRIA DE ALIMENTOS LTDA', fantasia='ATELIER DOS SABORES INDUSTRIA DE ALIMENTOS LTDA')"
+    },
+    {
+      "razao_social": "Vitta Raíz",
+      "nome_fantasia": "Vitta Raíz",
+      "months_seen": 1,
+      "total_acessos": 2,
+      "reason": "No match in any lookup (razao='VITTA RAÍZ', fantasia='VITTA RAÍZ')"
+    },
+    {
+      "razao_social": "50.812.539 ROSANE RUBASKI BERNARDO ARAUJO",
+      "nome_fantasia": "CESTAS ROSEANE",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='50.812.539 ROSANE RUBASKI BERNARDO ARAUJO', fantasia='CESTAS ROSEANE')"
+    },
+    {
+      "razao_social": "IAL - INSTITUTO DE ATENCAO A LONGEVIDADE LTDA",
+      "nome_fantasia": "INSTITUTO VIDA LONGA",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='IAL - INSTITUTO DE ATENCAO A LONGEVIDADE LTDA', fantasia='INSTITUTO VIDA LONGA')"
+    },
+    {
+      "razao_social": "JOYCE DE MENEZES MELGAREJO 00988295059",
+      "nome_fantasia": "CASTANHAS PRODUTOS NATURAIS",
+      "months_seen": 1,
+      "total_acessos": 2,
+      "reason": "No match in any lookup (razao='JOYCE DE MENEZES MELGAREJO 00988295059', fantasia='CASTANHAS PRODUTOS NATURAIS')"
+    },
+    {
+      "razao_social": "57.726.569 FRANCISCA EDVANIA FREIRE DA SILVA",
+      "nome_fantasia": "57.726.569 FRANCISCA EDVANIA FREIRE DA SILVA",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='57.726.569 FRANCISCA EDVANIA FREIRE DA SILVA', fantasia='57.726.569 FRANCISCA EDVANIA FREIRE DA SILVA')"
+    },
+    {
+      "razao_social": "FITHUB LTDA",
+      "nome_fantasia": "FITHUB",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='FITHUB LTDA', fantasia='FITHUB')"
+    },
+    {
+      "razao_social": "NATALIA DE SIQUEIRA LIMA MARCHIONE DAMASCENO",
+      "nome_fantasia": "NUTRILAR PRODUTOS NATURAIS",
+      "months_seen": 1,
+      "total_acessos": 3,
+      "reason": "No match in any lookup (razao='NATALIA DE SIQUEIRA LIMA MARCHIONE DAMASCENO', fantasia='NUTRILAR PRODUTOS NATURAIS')"
+    },
+    {
+      "razao_social": "29.502.357 MARLI MENDES",
+      "nome_fantasia": "CASA DE CHÁS",
+      "months_seen": 1,
+      "total_acessos": 3,
+      "reason": "No match in any lookup (razao='29.502.357 MARLI MENDES', fantasia='CASA DE CHÁS')"
+    },
+    {
+      "razao_social": "BRITO & OLIVEIRA COMERCIO LTDA",
+      "nome_fantasia": "BRITO & OLIVEIRA COMERCIO LTDA",
+      "months_seen": 1,
+      "total_acessos": 2,
+      "reason": "No match in any lookup (razao='BRITO & OLIVEIRA COMERCIO LTDA', fantasia='BRITO & OLIVEIRA COMERCIO LTDA')"
+    },
+    {
+      "razao_social": "62.832.245 VANESSA APARECIDA DA SILVA",
+      "nome_fantasia": "62.832.245 VANESSA APARECIDA DA SILVA",
+      "months_seen": 2,
+      "total_acessos": 2,
+      "reason": "No match in any lookup (razao='62.832.245 VANESSA APARECIDA DA SILVA', fantasia='62.832.245 VANESSA APARECIDA DA SILVA')"
+    },
+    {
+      "razao_social": "63.344.137 RICARDO MAGNO FABRICIO",
+      "nome_fantasia": "63.344.137 RICARDO MAGNO FABRICIO",
+      "months_seen": 2,
+      "total_acessos": 9,
+      "reason": "No match in any lookup (razao='63.344.137 RICARDO MAGNO FABRICIO', fantasia='63.344.137 RICARDO MAGNO FABRICIO')"
+    },
+    {
+      "razao_social": "BEDIN COMERCIO VAREJISTA E ENTREGAS LTDA",
+      "nome_fantasia": "MERCADEX24H",
+      "months_seen": 1,
+      "total_acessos": 3,
+      "reason": "No match in any lookup (razao='BEDIN COMERCIO VAREJISTA E ENTREGAS LTDA', fantasia='MERCADEX24H')"
+    },
+    {
+      "razao_social": "ADRIANA LIRA DA COSTA",
+      "nome_fantasia": "IMPERIO FLOR DE CANELA",
+      "months_seen": 2,
+      "total_acessos": 4,
+      "reason": "No match in any lookup (razao='ADRIANA LIRA DA COSTA', fantasia='IMPERIO FLOR DE CANELA')"
+    },
+    {
+      "razao_social": "47.026.189 KARYNNE PEIXOTO XAVIER DA COSTA CUNHA",
+      "nome_fantasia": "47.026.189 KARYNNE PEIXOTO XAVIER DA COSTA CUNHA",
+      "months_seen": 1,
+      "total_acessos": 4,
+      "reason": "No match in any lookup (razao='47.026.189 KARYNNE PEIXOTO XAVIER DA COSTA CUNHA', fantasia='47.026.189 KARYNNE PEIXOTO XAVIER DA COSTA CUNHA')"
+    },
+    {
+      "razao_social": "57.352.624 BRUNA KAMARK PEREIRA SILVA",
+      "nome_fantasia": "57.352.624 BRUNA KAMARK PEREIRA SILVA",
+      "months_seen": 2,
+      "total_acessos": 3,
+      "reason": "No match in any lookup (razao='57.352.624 BRUNA KAMARK PEREIRA SILVA', fantasia='57.352.624 BRUNA KAMARK PEREIRA SILVA')"
+    },
+    {
+      "razao_social": "SOL NATURAL PRODUTOS ALIMENTICIOS LTDA",
+      "nome_fantasia": "CASAS THEREZA",
+      "months_seen": 1,
+      "total_acessos": 4,
+      "reason": "No match in any lookup (razao='SOL NATURAL PRODUTOS ALIMENTICIOS LTDA', fantasia='CASAS THEREZA')"
+    },
+    {
+      "razao_social": "Jadson Campagnol Comércio de Produtos Veganos",
+      "nome_fantasia": "Jadson Campagnol Comércio de Produtos Veganos",
+      "months_seen": 1,
+      "total_acessos": 7,
+      "reason": "No match in any lookup (razao='JADSON CAMPAGNOL COMÉRCIO DE PRODUTOS VEGANOS', fantasia='JADSON CAMPAGNOL COMÉRCIO DE PRODUTOS VEGANOS')"
+    },
+    {
+      "razao_social": "54.814.685 ADIELE PEREIRA DE SOUZA",
+      "nome_fantasia": "54.814.685 ADIELE PEREIRA DE SOUZA",
+      "months_seen": 2,
+      "total_acessos": 2,
+      "reason": "No match in any lookup (razao='54.814.685 ADIELE PEREIRA DE SOUZA', fantasia='54.814.685 ADIELE PEREIRA DE SOUZA')"
+    },
+    {
+      "razao_social": "CASAS THEREZA PRODUTOS ALIMENTICIOS LTDA",
+      "nome_fantasia": "CASAS THEREZA",
+      "months_seen": 1,
+      "total_acessos": 11,
+      "reason": "No match in any lookup (razao='CASAS THEREZA PRODUTOS ALIMENTICIOS LTDA', fantasia='CASAS THEREZA')"
+    },
+    {
+      "razao_social": "63.576.994 FERNANDA FURTADO MANCINI SENNA",
+      "nome_fantasia": "63.576.994 FERNANDA FURTADO MANCINI SENNA",
+      "months_seen": 1,
+      "total_acessos": 2,
+      "reason": "No match in any lookup (razao='63.576.994 FERNANDA FURTADO MANCINI SENNA', fantasia='63.576.994 FERNANDA FURTADO MANCINI SENNA')"
+    },
+    {
+      "razao_social": "EMPORIO ROSADO LTDA",
+      "nome_fantasia": "EMPORIO ROSADO",
+      "months_seen": 1,
+      "total_acessos": 2,
+      "reason": "No match in any lookup (razao='EMPORIO ROSADO LTDA', fantasia='EMPORIO ROSADO')"
+    },
+    {
+      "razao_social": "PRODUTOS NATURAIS ORGANICA LTDA",
+      "nome_fantasia": "ORGANICA PRODUTOS NATURAIS",
+      "months_seen": 1,
+      "total_acessos": 3,
+      "reason": "No match in any lookup (razao='PRODUTOS NATURAIS ORGANICA LTDA', fantasia='ORGANICA PRODUTOS NATURAIS')"
+    },
+    {
+      "razao_social": "62.936.379 IRACI VENTURI MORETTI",
+      "nome_fantasia": "VITALLE",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='62.936.379 IRACI VENTURI MORETTI', fantasia='VITALLE')"
+    },
+    {
+      "razao_social": "LEMOS TESSARO GASTRONOMIA FUNCIONAL LTDA",
+      "nome_fantasia": "ALECRIM & OLIVA GASTRONOMIA FUNCIONAL",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='LEMOS TESSARO GASTRONOMIA FUNCIONAL LTDA', fantasia='ALECRIM & OLIVA GASTRONOMIA FUNCIONAL')"
+    },
+    {
+      "razao_social": "63.628.802 LUCAS FREDERICO TRAMM",
+      "nome_fantasia": "63.628.802 LUCAS FREDERICO TRAMM",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='63.628.802 LUCAS FREDERICO TRAMM', fantasia='63.628.802 LUCAS FREDERICO TRAMM')"
+    },
+    {
+      "razao_social": "VITTA MARIA COMERCIO DE ALIMENTOS E EMBALAGENS LTDA",
+      "nome_fantasia": "VITTA MARIA COMERCIO DE ALIMENTOS E EMBALAGENS LTDA",
+      "months_seen": 1,
+      "total_acessos": 2,
+      "reason": "No match in any lookup (razao='VITTA MARIA COMERCIO DE ALIMENTOS E EMBALAGENS LTDA', fantasia='VITTA MARIA COMERCIO DE ALIMENTOS E EMBALAGENS LTDA')"
+    },
+    {
+      "razao_social": "60.569.906 DIOGO RODRIGUES DOS SANTOS",
+      "nome_fantasia": "60.569.906 DIOGO RODRIGUES DOS SANTOS",
+      "months_seen": 1,
+      "total_acessos": 4,
+      "reason": "No match in any lookup (razao='60.569.906 DIOGO RODRIGUES DOS SANTOS', fantasia='60.569.906 DIOGO RODRIGUES DOS SANTOS')"
+    },
+    {
+      "razao_social": "Empório essencial",
+      "nome_fantasia": "Empório essencial",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='EMPÓRIO ESSENCIAL', fantasia='EMPÓRIO ESSENCIAL')"
+    },
+    {
+      "razao_social": "METALURGICA ARAUJO LTDA",
+      "nome_fantasia": "CENTRAL METALICA",
+      "months_seen": 1,
+      "total_acessos": 10,
+      "reason": "No match in any lookup (razao='METALURGICA ARAUJO LTDA', fantasia='CENTRAL METALICA')"
+    },
+    {
+      "razao_social": "NOVA ERA SORVETES LTDA",
+      "nome_fantasia": "NOVA ERA SORVETES LTDA",
+      "months_seen": 1,
+      "total_acessos": 5,
+      "reason": "No match in any lookup (razao='NOVA ERA SORVETES LTDA', fantasia='NOVA ERA SORVETES LTDA')"
+    },
+    {
+      "razao_social": "17.985.368 GENUINO LUIZ DA SILVEIRA",
+      "nome_fantasia": "17.985.368 GENUINO LUIZ DA SILVEIRA",
+      "months_seen": 1,
+      "total_acessos": 5,
+      "reason": "No match in any lookup (razao='17.985.368 GENUINO LUIZ DA SILVEIRA', fantasia='17.985.368 GENUINO LUIZ DA SILVEIRA')"
+    },
+    {
+      "razao_social": "59.789.273 SILVANIA CASSEMIRO LOPES",
+      "nome_fantasia": "59.789.273 SILVANIA CASSEMIRO LOPES",
+      "months_seen": 1,
+      "total_acessos": 8,
+      "reason": "No match in any lookup (razao='59.789.273 SILVANIA CASSEMIRO LOPES', fantasia='59.789.273 SILVANIA CASSEMIRO LOPES')"
+    },
+    {
+      "razao_social": "42.490.890 REGIANE TIAGO DOS SANTOS",
+      "nome_fantasia": "42.490.890 REGIANE TIAGO DOS SANTOS",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='42.490.890 REGIANE TIAGO DOS SANTOS', fantasia='42.490.890 REGIANE TIAGO DOS SANTOS')"
+    },
+    {
+      "razao_social": "CASA CARIBE NATURAL LTDA",
+      "nome_fantasia": "CASA CARIBE NATURAL",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='CASA CARIBE NATURAL LTDA', fantasia='CASA CARIBE NATURAL')"
+    },
+    {
+      "razao_social": "61.031.077 MAIRA CRISTIANE DA ROSA",
+      "nome_fantasia": "61.031.077 MAIRA CRISTIANE DA ROSA",
+      "months_seen": 1,
+      "total_acessos": 4,
+      "reason": "No match in any lookup (razao='61.031.077 MAIRA CRISTIANE DA ROSA', fantasia='61.031.077 MAIRA CRISTIANE DA ROSA')"
+    },
+    {
+      "razao_social": "61.208.410 ALEXANDRE MAZARIOLLI",
+      "nome_fantasia": "61.208.410 ALEXANDRE MAZARIOLLI",
+      "months_seen": 1,
+      "total_acessos": 4,
+      "reason": "No match in any lookup (razao='61.208.410 ALEXANDRE MAZARIOLLI', fantasia='61.208.410 ALEXANDRE MAZARIOLLI')"
+    },
+    {
+      "razao_social": "46.813.227 EDUARDO EUFRAZIO MORENO",
+      "nome_fantasia": "46.813.227 EDUARDO EUFRAZIO MORENO",
+      "months_seen": 1,
+      "total_acessos": 2,
+      "reason": "No match in any lookup (razao='46.813.227 EDUARDO EUFRAZIO MORENO', fantasia='46.813.227 EDUARDO EUFRAZIO MORENO')"
+    },
+    {
+      "razao_social": "63.504.589 CLEUZA RIBEIRO DA SILVA",
+      "nome_fantasia": "63.504.589 CLEUZA RIBEIRO DA SILVA",
+      "months_seen": 1,
+      "total_acessos": 9,
+      "reason": "No match in any lookup (razao='63.504.589 CLEUZA RIBEIRO DA SILVA', fantasia='63.504.589 CLEUZA RIBEIRO DA SILVA')"
+    },
+    {
+      "razao_social": "17.490.766 MARCIA LIMA DO ESPIRITO SANTO",
+      "nome_fantasia": "17.490.766 MARCIA LIMA DO ESPIRITO SANTO",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='17.490.766 MARCIA LIMA DO ESPIRITO SANTO', fantasia='17.490.766 MARCIA LIMA DO ESPIRITO SANTO')"
+    },
+    {
+      "razao_social": "63.796.067 VITORIA JOSETE DOS SANTOS FERREIRA SILVA",
+      "nome_fantasia": "63.796.067 VITORIA JOSETE DOS SANTOS FERREIRA SILVA",
+      "months_seen": 1,
+      "total_acessos": 4,
+      "reason": "No match in any lookup (razao='63.796.067 VITORIA JOSETE DOS SANTOS FERREIRA SILVA', fantasia='63.796.067 VITORIA JOSETE DOS SANTOS FERREIRA SILVA')"
+    },
+    {
+      "razao_social": "55.458.577 EMILLY DEODATO ALVES DA SILVA",
+      "nome_fantasia": "55.458.577 EMILLY DEODATO ALVES DA SILVA",
+      "months_seen": 1,
+      "total_acessos": 2,
+      "reason": "No match in any lookup (razao='55.458.577 EMILLY DEODATO ALVES DA SILVA', fantasia='55.458.577 EMILLY DEODATO ALVES DA SILVA')"
+    },
+    {
+      "razao_social": "TCA ALIMENTOS LTDA",
+      "nome_fantasia": "T. C. A. ALIMENTOS",
+      "months_seen": 2,
+      "total_acessos": 7,
+      "reason": "No match in any lookup (razao='TCA ALIMENTOS LTDA', fantasia='T. C. A. ALIMENTOS')"
+    },
+    {
+      "razao_social": "WILSON ALVES-COMERCIO DE HORTIFRUTIGRANJEIROS LTDA",
+      "nome_fantasia": "WILSON ALVES-COMERCIO DE HORTIFRUTIGRANJEIROS LTDA",
+      "months_seen": 1,
+      "total_acessos": 4,
+      "reason": "No match in any lookup (razao='WILSON ALVES-COMERCIO DE HORTIFRUTIGRANJEIROS LTDA', fantasia='WILSON ALVES-COMERCIO DE HORTIFRUTIGRANJEIROS LTDA')"
+    },
+    {
+      "razao_social": "43.982.877 ARIADNA JESSICA DURANS",
+      "nome_fantasia": "43.982.877 ARIADNA JESSICA DURANS",
+      "months_seen": 1,
+      "total_acessos": 3,
+      "reason": "No match in any lookup (razao='43.982.877 ARIADNA JESSICA DURANS', fantasia='43.982.877 ARIADNA JESSICA DURANS')"
+    },
+    {
+      "razao_social": "57.663.799 ANA PAULA MARTINS GUERRA MORAES",
+      "nome_fantasia": "57.663.799 ANA PAULA MARTINS GUERRA MORAES",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='57.663.799 ANA PAULA MARTINS GUERRA MORAES', fantasia='57.663.799 ANA PAULA MARTINS GUERRA MORAES')"
+    },
+    {
+      "razao_social": "53.925.324 PAULYANA MARIA PEREIRA PESSANHA",
+      "nome_fantasia": "53.925.324 PAULYANA MARIA PEREIRA PESSANHA",
+      "months_seen": 1,
+      "total_acessos": 4,
+      "reason": "No match in any lookup (razao='53.925.324 PAULYANA MARIA PEREIRA PESSANHA', fantasia='53.925.324 PAULYANA MARIA PEREIRA PESSANHA')"
+    },
+    {
+      "razao_social": "EMPORIO TEIXEIRA LTDA",
+      "nome_fantasia": "EMPORIO TEIXEIRA",
+      "months_seen": 1,
+      "total_acessos": 6,
+      "reason": "No match in any lookup (razao='EMPORIO TEIXEIRA LTDA', fantasia='EMPORIO TEIXEIRA')"
+    },
+    {
+      "razao_social": "MHS COMERCIO DE COSMETICOS E PERFUMARIA LTDA",
+      "nome_fantasia": "ILUMINUS",
+      "months_seen": 1,
+      "total_acessos": 3,
+      "reason": "No match in any lookup (razao='MHS COMERCIO DE COSMETICOS E PERFUMARIA LTDA', fantasia='ILUMINUS')"
+    },
+    {
+      "razao_social": "JB Panificadora LTDA",
+      "nome_fantasia": "JB Panificadora LTDA",
+      "months_seen": 1,
+      "total_acessos": 2,
+      "reason": "No match in any lookup (razao='JB PANIFICADORA LTDA', fantasia='JB PANIFICADORA LTDA')"
+    },
+    {
+      "razao_social": "ORQUIDEA COMERCIO VAREJISTA DE ALIMENTOS LTDA",
+      "nome_fantasia": "ORQUIDEA COMERCIO VAREJISTA DE ALIMENTOS LTDA",
+      "months_seen": 1,
+      "total_acessos": 3,
+      "reason": "No match in any lookup (razao='ORQUIDEA COMERCIO VAREJISTA DE ALIMENTOS LTDA', fantasia='ORQUIDEA COMERCIO VAREJISTA DE ALIMENTOS LTDA')"
+    },
+    {
+      "razao_social": "63.292.868 EMILYN FERNANDA DE OLIVEIRA OSTWALD",
+      "nome_fantasia": "CASA MIA",
+      "months_seen": 1,
+      "total_acessos": 2,
+      "reason": "No match in any lookup (razao='63.292.868 EMILYN FERNANDA DE OLIVEIRA OSTWALD', fantasia='CASA MIA')"
+    },
+    {
+      "razao_social": "MERCEARIA ANTONIA LTDA",
+      "nome_fantasia": "MERCEARIA ANTONIA LTDA",
+      "months_seen": 1,
+      "total_acessos": 5,
+      "reason": "No match in any lookup (razao='MERCEARIA ANTONIA LTDA', fantasia='MERCEARIA ANTONIA LTDA')"
+    },
+    {
+      "razao_social": "COMERCIO VAREJISTA DE MERCADORIA E INSUMOS JN LTDA",
+      "nome_fantasia": "SANTO ANTONIO ATACAREJO",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='COMERCIO VAREJISTA DE MERCADORIA E INSUMOS JN LTDA', fantasia='SANTO ANTONIO ATACAREJO')"
+    },
+    {
+      "razao_social": "ADRIEL SILVA SOUSA LTDA",
+      "nome_fantasia": "ADRIEL SILVA SOUSA LTDA",
+      "months_seen": 1,
+      "total_acessos": 2,
+      "reason": "No match in any lookup (razao='ADRIEL SILVA SOUSA LTDA', fantasia='ADRIEL SILVA SOUSA LTDA')"
+    },
+    {
+      "razao_social": "RODRIGO OLIVEIRA SCHERER E CIA LTDA",
+      "nome_fantasia": "FERMENTADO'S BAKERY",
+      "months_seen": 1,
+      "total_acessos": 2,
+      "reason": "No match in any lookup (razao='RODRIGO OLIVEIRA SCHERER E CIA LTDA', fantasia='FERMENTADO'S BAKERY')"
+    },
+    {
+      "razao_social": "SMART SHOP LTDA",
+      "nome_fantasia": "REDE SMART SHOP 24H",
+      "months_seen": 1,
+      "total_acessos": 2,
+      "reason": "No match in any lookup (razao='SMART SHOP LTDA', fantasia='REDE SMART SHOP 24H')"
+    },
+    {
+      "razao_social": "THAIS MAROTTA DE PAIVA",
+      "nome_fantasia": "SORVETERIA DOCE SONHO",
+      "months_seen": 1,
+      "total_acessos": 4,
+      "reason": "No match in any lookup (razao='THAIS MAROTTA DE PAIVA', fantasia='SORVETERIA DOCE SONHO')"
+    },
+    {
+      "razao_social": "TOP CARNES PINHAIS LTDA",
+      "nome_fantasia": "TOP CARNES PINHAIS",
+      "months_seen": 1,
+      "total_acessos": 2,
+      "reason": "No match in any lookup (razao='TOP CARNES PINHAIS LTDA', fantasia='TOP CARNES PINHAIS')"
+    },
+    {
+      "razao_social": "60.974.384 VAGNER RODRIGUES FERREIRA",
+      "nome_fantasia": "60.974.384 VAGNER RODRIGUES FERREIRA",
+      "months_seen": 1,
+      "total_acessos": 2,
+      "reason": "No match in any lookup (razao='60.974.384 VAGNER RODRIGUES FERREIRA', fantasia='60.974.384 VAGNER RODRIGUES FERREIRA')"
+    },
+    {
+      "razao_social": "CASA DOS SUPLEMENTOS NUTRICIONAIS LTDA",
+      "nome_fantasia": "CASA DOS SUPLEMENTOS",
+      "months_seen": 1,
+      "total_acessos": 2,
+      "reason": "No match in any lookup (razao='CASA DOS SUPLEMENTOS NUTRICIONAIS LTDA', fantasia='CASA DOS SUPLEMENTOS')"
+    },
+    {
+      "razao_social": "JUCIELY ARAUJO DA SILVA 10340962658",
+      "nome_fantasia": "PORTEIRA DE MINAS",
+      "months_seen": 1,
+      "total_acessos": 2,
+      "reason": "No match in any lookup (razao='JUCIELY ARAUJO DA SILVA 10340962658', fantasia='PORTEIRA DE MINAS')"
+    },
+    {
+      "razao_social": "VINHA TRES COMERCIO DE ALIMENTOS E BEBIDAS LTDA",
+      "nome_fantasia": "VINHA TRES / VINHOS - CHOCOLATES - CAFES",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='VINHA TRES COMERCIO DE ALIMENTOS E BEBIDAS LTDA', fantasia='VINHA TRES / VINHOS - CHOCOLATES - CAFES')"
+    },
+    {
+      "razao_social": "43.780.245 DOUGLAS SIGNORELLI",
+      "nome_fantasia": "RAPIDEX SUPLEMENTOS",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='43.780.245 DOUGLAS SIGNORELLI', fantasia='RAPIDEX SUPLEMENTOS')"
+    },
+    {
+      "razao_social": "61.942.036 ANDRIELLY FACCHI OENNING LEAO",
+      "nome_fantasia": "61.942.036 ANDRIELLY FACCHI OENNING LEAO",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='61.942.036 ANDRIELLY FACCHI OENNING LEAO', fantasia='61.942.036 ANDRIELLY FACCHI OENNING LEAO')"
+    },
+    {
+      "razao_social": "COMERCIAL DE ALIMENTOS ERENO LTDA",
+      "nome_fantasia": "ERENO ALIMENTOS",
+      "months_seen": 1,
+      "total_acessos": 2,
+      "reason": "No match in any lookup (razao='COMERCIAL DE ALIMENTOS ERENO LTDA', fantasia='ERENO ALIMENTOS')"
+    },
+    {
+      "razao_social": "LUIZIA RAMOS DE MOURA",
+      "nome_fantasia": "ARIZA MODAS",
+      "months_seen": 1,
+      "total_acessos": 2,
+      "reason": "No match in any lookup (razao='LUIZIA RAMOS DE MOURA', fantasia='ARIZA MODAS')"
+    },
+    {
+      "razao_social": "WANDERLEI DIAS MACHADO 25854168871",
+      "nome_fantasia": "WANDERLEI DIAS MACHADO 25854168871",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='WANDERLEI DIAS MACHADO 25854168871', fantasia='WANDERLEI DIAS MACHADO 25854168871')"
+    },
+    {
+      "razao_social": "62.274.066 GABRIEL BODEMEIER ALVES",
+      "nome_fantasia": "62.274.066 GABRIEL BODEMEIER ALVES",
+      "months_seen": 1,
+      "total_acessos": 2,
+      "reason": "No match in any lookup (razao='62.274.066 GABRIEL BODEMEIER ALVES', fantasia='62.274.066 GABRIEL BODEMEIER ALVES')"
+    },
+    {
+      "razao_social": "54.772.340 LUCIVANIA PEREIRA DOS SANTOS",
+      "nome_fantasia": "54.772.340 LUCIVANIA PEREIRA DOS SANTOS",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='54.772.340 LUCIVANIA PEREIRA DOS SANTOS', fantasia='54.772.340 LUCIVANIA PEREIRA DOS SANTOS')"
+    },
+    {
+      "razao_social": "PILATTI DE OLIVEIRA LTDA",
+      "nome_fantasia": "PILATTI DE OLIVEIRA LTDA",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='PILATTI DE OLIVEIRA LTDA', fantasia='PILATTI DE OLIVEIRA LTDA')"
+    },
+    {
+      "razao_social": "64.892.101 PAMELA NAIRA DE MELO APOLINARIO",
+      "nome_fantasia": "64.892.101 PAMELA NAIRA DE MELO APOLINARIO",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='64.892.101 PAMELA NAIRA DE MELO APOLINARIO', fantasia='64.892.101 PAMELA NAIRA DE MELO APOLINARIO')"
+    },
+    {
+      "razao_social": "M L DE OLIVEIRA LOPES",
+      "nome_fantasia": "CEBOLA SPORT NUTRITION",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='M L DE OLIVEIRA LOPES', fantasia='CEBOLA SPORT NUTRITION')"
+    },
+    {
+      "razao_social": "61.805.706 ANDRESSA MESSIAS DOS SANTOS SOARES",
+      "nome_fantasia": "61.805.706 ANDRESSA MESSIAS DOS SANTOS SOARES",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='61.805.706 ANDRESSA MESSIAS DOS SANTOS SOARES', fantasia='61.805.706 ANDRESSA MESSIAS DOS SANTOS SOARES')"
+    },
+    {
+      "razao_social": "CRISTIANO OURIQUE BENVEGNU LTDA",
+      "nome_fantasia": "BENVEGNU SUPLEMENTOS",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='CRISTIANO OURIQUE BENVEGNU LTDA', fantasia='BENVEGNU SUPLEMENTOS')"
+    },
+    {
+      "razao_social": "45.677.693 MARQUES PEIXOTO FERREIRA",
+      "nome_fantasia": "IMPACTO SAÚDE",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='45.677.693 MARQUES PEIXOTO FERREIRA', fantasia='IMPACTO SAÚDE')"
+    },
+    {
+      "razao_social": "FRUTEIRA ALEMAO LTDA",
+      "nome_fantasia": "FRUTEIRA ALEMAO LTDA",
+      "months_seen": 1,
+      "total_acessos": 1,
+      "reason": "No match in any lookup (razao='FRUTEIRA ALEMAO LTDA', fantasia='FRUTEIRA ALEMAO LTDA')"
+    }
+  ]
+}
