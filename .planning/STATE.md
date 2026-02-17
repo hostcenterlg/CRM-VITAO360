@@ -17,16 +17,16 @@ O objetivo FINAL de todo este trabalho NÃO é "ter uma planilha limpa". É GERA
 - Se a CARTEIRA não gerar essa inteligência de agenda diária, TODO O TRABALHO DAS 10 FASES NÃO SERVE PRA NADA
 - As regras, status, grupos de colunas do funil na CARTEIRA já foram DESENHADOS para isso — respeitar 100%
 
-**Current focus:** Phase 03 Timeline Mensal COMPLETE -- All plans done, TIME-01/02/03 PASS. Ready for Phase 04.
+**Current focus:** Phase 04 LOG Completo IN PROGRESS -- Plan 04-01 DONE, 3 remaining.
 
 ## Current Position
 
-Phase: 3 of 10 (Timeline Mensal) -- COMPLETE
-Plan: 2 of 2 in current phase -- COMPLETE (phase done)
-Status: Phase 03 COMPLETE -- All validation PASS (TIME-01/02/03), zero divergence, ABC consistent
-Last activity: 2026-02-17 -- Plan 03-02 executed (validation + ABC recalc + TIME requirements)
+Phase: 4 of 10 (LOG Completo)
+Plan: 1 of 4 in current phase -- 04-01 COMPLETE
+Status: Phase 04 IN PROGRESS -- CONTROLE_FUNIL ETL done (10,442 records), Plans 04-02..04 remaining
+Last activity: 2026-02-17 -- Plan 04-01 executed (CONTROLE_FUNIL ETL + _helpers.py)
 
-Progress: [████████░░] 29% (plans 01-01..03, 02-01..03, 03-01..02 of 28 total complete)
+Progress: [█████████░] 32% (plans 01-01..03, 02-01..03, 03-01..02, 04-01 of 28 total complete)
 
 ## DESCOBERTA CRITICA (16/FEV/2026)
 
@@ -49,7 +49,7 @@ As fórmulas da PROJEÇÃO **NÃO estão perdidas**:
 ### Estado real das fontes de dados para LOG
 | Fonte | Registros | Status |
 |-------|-----------|--------|
-| CONTROLE_FUNIL_JAN2026 | 10.483 | Disponível, não integrado |
+| CONTROLE_FUNIL_JAN2026 | 10.442 | **INTEGRADO (Plan 04-01)** |
 | DRAFT2_POPULADO_DADOS_REAIS | 6.775 | Disponível, não integrado |
 | Deskrio tickets (12 exports) | ~5.329 | Disponível, não integrado |
 | LOG no V12 | ~1 | Quase vazio |
@@ -58,9 +58,9 @@ As fórmulas da PROJEÇÃO **NÃO estão perdidas**:
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 8
-- Average duration: 9 min
-- Total execution time: 1.15 hours
+- Total plans completed: 9
+- Average duration: 8 min
+- Total execution time: 1.25 hours
 
 | Phase | Plan | Duration | Tasks | Files |
 |-------|------|----------|-------|-------|
@@ -72,6 +72,7 @@ As fórmulas da PROJEÇÃO **NÃO estão perdidas**:
 | 02-faturamento | 03 | 5 min | 2 | 2 |
 | 03-timeline-mensal | 01 | 25 min | 2 | 4 |
 | 03-timeline-mensal | 02 | 3 min | 1 | 3 |
+| 04-log-completo | 01 | 6 min | 2 | 4 |
 
 *Updated after each plan completion*
 
@@ -118,6 +119,11 @@ As fórmulas da PROJEÇÃO **NÃO estão perdidas**:
 - [17/02]: Phase 03 validation PASS: 537/537 cross-check match, 0 ABC mismatches, 10/10 derived fields, V13 19,224 formulas intact
 - [17/02]: TIME-01 PASS (vendas preenchidas), TIME-02 PASS (SAP+Mercos merge), TIME-03 PASS (ABC recalc 100% match)
 - [17/02]: CARTEIRA row 6088 cosmetic issue -- stale pre-existing row outside data range (4-557), not a real problem
+- [17/02]: 06_LOG_FUNIL.xlsx has pre-classified 'Interacoes' sheet (not raw 4-tab structure) -- alucinacoes already separated
+- [17/02]: RESULTADO normalization: VENDA->VENDA/PEDIDO, PERDA/NAO VENDA->PERDA/FECHOU LOJA, FOLLOW UP->FOLLOW UP 7
+- [17/02]: P8 accent stripping via bidirectional map: LOG stores sem-acento, motor_de_regras uses com-acento
+- [17/02]: 10,442 CONTROLE_FUNIL records processed (9,120 REAL + 1,322 SINTETICO), 558 alucinacoes documented
+- [17/02]: DAIANE STAVICKI canonical name (not CENTRAL - DAIANE), JULIO GADRET single spelling (1,814 records merged)
 
 ### Fase 1 Revisada
 
@@ -141,6 +147,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-17 04:03
-Stopped at: Completed 03-02-PLAN.md (Phase 03 validation complete, all TIME requirements PASS). Phase 03 DONE.
-Resume file: .planning/phases/03-timeline-mensal/03-02-SUMMARY.md
+Last session: 2026-02-17 06:12
+Stopped at: Completed 04-01-PLAN.md (CONTROLE_FUNIL ETL: 10,442 records to 20-col LOG JSON). Phase 04 Plan 1 of 4 done.
+Resume file: .planning/phases/04-log-completo/04-01-SUMMARY.md
