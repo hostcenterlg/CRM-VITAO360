@@ -1,0 +1,39 @@
+{
+  "total_formulas_expected": 19224,
+  "total_formulas_found": 19224,
+  "total_formulas_matched": 19224,
+  "total_mismatches": 0,
+  "mismatches": [],
+  "mismatches_truncated": false,
+  "blocks": {
+    "sinaleiro_FJ": {
+      "expected": 2670,
+      "matched": 2670
+    },
+    "realizado_Z": {
+      "expected": 534,
+      "matched": 534
+    },
+    "indicadores_AN_AQ": {
+      "expected": 2136,
+      "matched": 2136
+    },
+    "meta_igualitaria_BB_BN": {
+      "expected": 6942,
+      "matched": 6942
+    },
+    "meta_compensada_BP_CB": {
+      "expected": 6942,
+      "matched": 6942
+    }
+  },
+  "structure": {
+    "max_row": 537,
+    "max_column": 80,
+    "freeze_panes": "E30",
+    "cnpj_count": 534,
+    "redes_count": 12,
+    "separators_ok": 7,
+    "separators_total": 7
+  }
+}
