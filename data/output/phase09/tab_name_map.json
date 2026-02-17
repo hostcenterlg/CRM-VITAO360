@@ -1,0 +1,41 @@
+{
+  "v12_to_v13": {
+    "DRAFT 1": "DRAFT 1",
+    "DRAFT 2": "DRAFT 2",
+    "REGRAS": "REGRAS"
+  },
+  "v12_sheets": [
+    "SINALEIRO",
+    "PROJEÇÃO ",
+    "README",
+    "STATUS",
+    "DRAFT 1",
+    "DRAFT 2",
+    "DRAFT 3 ",
+    "_PROJEÇÃO_OLD",
+    "LOG",
+    "CARTEIRA",
+    "AGENDA",
+    "RNC",
+    "DASH",
+    "REGRAS",
+    "Claude Log"
+  ],
+  "v13_sheets": [
+    "PROJEÇÃO ",
+    "LOG",
+    "DASH",
+    "REDES_FRANQUIAS_v2",
+    "COMITE"
+  ],
+  "referenced_by_carteira": [
+    "DRAFT 1",
+    "DRAFT 2",
+    "REGRAS"
+  ],
+  "notes": [
+    "DRAFT 1 -> DRAFT 1 (NOT in V13 - MUST CREATE)",
+    "DRAFT 2 -> DRAFT 2 (NOT in V13 - MUST CREATE)",
+    "REGRAS -> REGRAS (NOT in V13 - MUST CREATE)"
+  ]
+}

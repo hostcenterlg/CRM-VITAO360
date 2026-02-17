@@ -1,0 +1,1517 @@
+{
+  "total_formula_columns": 114,
+  "total_static_columns": 149,
+  "pattern_types": {
+    "static_data": {
+      "count": 149,
+      "columns": [
+        {
+          "col_num": 1,
+          "col_letter": "A",
+          "header_r3": "NOME FANTASIA"
+        },
+        {
+          "col_num": 2,
+          "col_letter": "B",
+          "header_r3": "CNPJ"
+        },
+        {
+          "col_num": 10,
+          "col_letter": "J",
+          "header_r3": "TIPO CLIENTE"
+        },
+        {
+          "col_num": 14,
+          "col_letter": "N",
+          "header_r3": "SITUAÇÃO"
+        },
+        {
+          "col_num": 15,
+          "col_letter": "O",
+          "header_r3": "PRIORIDADE"
+        },
+        {
+          "col_num": 37,
+          "col_letter": "AK",
+          "header_r3": "TIPO CLIENTE"
+        },
+        {
+          "col_num": 43,
+          "col_letter": "AQ",
+          "header_r3": "MESES LISTA"
+        },
+        {
+          "col_num": 53,
+          "col_letter": "BA",
+          "header_r3": "ÚLTIMA RECOMPRA"
+        },
+        {
+          "col_num": 55,
+          "col_letter": "BC",
+          "header_r3": "DIAS ATÉ CONVERSÃO"
+        },
+        {
+          "col_num": 56,
+          "col_letter": "BD",
+          "header_r3": "DATA 1º CONTATO"
+        },
+        {
+          "col_num": 57,
+          "col_letter": "BE",
+          "header_r3": "DATA 1º ORÇAMENTO"
+        },
+        {
+          "col_num": 58,
+          "col_letter": "BF",
+          "header_r3": "DATA 1ª VENDA"
+        },
+        {
+          "col_num": 59,
+          "col_letter": "BG",
+          "header_r3": "TOTAL TENTATIVAS"
+        },
+        {
+          "col_num": 63,
+          "col_letter": "BK",
+          "header_r3": "CÓDIGO DO CLIENTE"
+        },
+        {
+          "col_num": 64,
+          "col_letter": "BL",
+          "header_r3": "CNPJ"
+        },
+        {
+          "col_num": 65,
+          "col_letter": "BM",
+          "header_r3": "RAZÃO SOCIAL"
+        },
+        {
+          "col_num": 66,
+          "col_letter": "BN",
+          "header_r3": "CADASTRO"
+        },
+        {
+          "col_num": 67,
+          "col_letter": "BO",
+          "header_r3": "ATENDIMENTO"
+        },
+        {
+          "col_num": 68,
+          "col_letter": "BP",
+          "header_r3": "BLOQUEIO"
+        },
+        {
+          "col_num": 69,
+          "col_letter": "BQ",
+          "header_r3": "DESCRIÇÃO GRUPO CLIENTE"
+        },
+        {
+          "col_num": 70,
+          "col_letter": "BR",
+          "header_r3": "ZP NOME GERENTE NACIONAL"
+        },
+        {
+          "col_num": 71,
+          "col_letter": "BS",
+          "header_r3": "ZR NOME REPRESENTANTE"
+        },
+        {
+          "col_num": 72,
+          "col_letter": "BT",
+          "header_r3": "ZV NOME VEND INTERNO"
+        },
+        {
+          "col_num": 73,
+          "col_letter": "BU",
+          "header_r3": "01 NOME DO CANAL"
+        },
+        {
+          "col_num": 74,
+          "col_letter": "BV",
+          "header_r3": "02 NOME TIPO CLIENTE"
+        },
+        {
+          "col_num": 75,
+          "col_letter": "BW",
+          "header_r3": "03 NOME MACROREGIÃO"
+        },
+        {
+          "col_num": 76,
+          "col_letter": "BX",
+          "header_r3": "04 NOME MICROREGIÃO"
+        },
+        {
+          "col_num": 77,
+          "col_letter": "BY",
+          "header_r3": "06 NOME GRUPO CHAVE"
+        },
+        {
+          "col_num": 78,
+          "col_letter": "BZ",
+          "header_r3": "VENDA"
+        },
+        {
+          "col_num": 81,
+          "col_letter": "CC",
+          "header_r3": "% YTD"
+        },
+        {
+          "col_num": 82,
+          "col_letter": "CD",
+          "header_r3": "META"
+        },
+        {
+          "col_num": 83,
+          "col_letter": "CE",
+          "header_r3": "REALIZADO"
+        },
+        {
+          "col_num": 84,
+          "col_letter": "CF",
+          "header_r3": "% TRI"
+        },
+        {
+          "col_num": 85,
+          "col_letter": "CG",
+          "header_r3": "META"
+        },
+        {
+          "col_num": 86,
+          "col_letter": "CH",
+          "header_r3": "REALIZADO"
+        },
+        {
+          "col_num": 87,
+          "col_letter": "CI",
+          "header_r3": "% MÊS"
+        },
+        {
+          "col_num": 88,
+          "col_letter": "CJ",
+          "header_r3": "META"
+        },
+        {
+          "col_num": 89,
+          "col_letter": "CK",
+          "header_r3": "REALIZADO"
+        },
+        {
+          "col_num": 90,
+          "col_letter": "CL",
+          "header_r3": "DATA PEDIDO"
+        },
+        {
+          "col_num": 96,
+          "col_letter": "CR",
+          "header_r3": "% YTD"
+        },
+        {
+          "col_num": 97,
+          "col_letter": "CS",
+          "header_r3": "META"
+        },
+        {
+          "col_num": 98,
+          "col_letter": "CT",
+          "header_r3": "REALIZADO"
+        },
+        {
+          "col_num": 99,
+          "col_letter": "CU",
+          "header_r3": "% TRI"
+        },
+        {
+          "col_num": 100,
+          "col_letter": "CV",
+          "header_r3": "META"
+        },
+        {
+          "col_num": 101,
+          "col_letter": "CW",
+          "header_r3": "REALIZADO"
+        },
+        {
+          "col_num": 102,
+          "col_letter": "CX",
+          "header_r3": "% MÊS"
+        },
+        {
+          "col_num": 103,
+          "col_letter": "CY",
+          "header_r3": "META"
+        },
+        {
+          "col_num": 104,
+          "col_letter": "CZ",
+          "header_r3": "REALIZADO"
+        },
+        {
+          "col_num": 105,
+          "col_letter": "DA",
+          "header_r3": "DATA PEDIDO"
+        },
+        {
+          "col_num": 111,
+          "col_letter": "DG",
+          "header_r3": "% YTD"
+        },
+        {
+          "col_num": 112,
+          "col_letter": "DH",
+          "header_r3": "META"
+        },
+        {
+          "col_num": 113,
+          "col_letter": "DI",
+          "header_r3": "REALIZADO"
+        },
+        {
+          "col_num": 114,
+          "col_letter": "DJ",
+          "header_r3": "% TRI"
+        },
+        {
+          "col_num": 115,
+          "col_letter": "DK",
+          "header_r3": "META"
+        },
+        {
+          "col_num": 116,
+          "col_letter": "DL",
+          "header_r3": "REALIZADO"
+        },
+        {
+          "col_num": 117,
+          "col_letter": "DM",
+          "header_r3": "% MÊS"
+        },
+        {
+          "col_num": 118,
+          "col_letter": "DN",
+          "header_r3": "META"
+        },
+        {
+          "col_num": 119,
+          "col_letter": "DO",
+          "header_r3": "REALIZADO"
+        },
+        {
+          "col_num": 120,
+          "col_letter": "DP",
+          "header_r3": "DATA PEDIDO"
+        },
+        {
+          "col_num": 127,
+          "col_letter": "DW",
+          "header_r3": "% YTD"
+        },
+        {
+          "col_num": 128,
+          "col_letter": "DX",
+          "header_r3": "META"
+        },
+        {
+          "col_num": 129,
+          "col_letter": "DY",
+          "header_r3": "REALIZADO"
+        },
+        {
+          "col_num": 130,
+          "col_letter": "DZ",
+          "header_r3": "% TRI"
+        },
+        {
+          "col_num": 131,
+          "col_letter": "EA",
+          "header_r3": "META"
+        },
+        {
+          "col_num": 132,
+          "col_letter": "EB",
+          "header_r3": "REALIZADO"
+        },
+        {
+          "col_num": 133,
+          "col_letter": "EC",
+          "header_r3": "% MÊS"
+        },
+        {
+          "col_num": 134,
+          "col_letter": "ED",
+          "header_r3": "META"
+        },
+        {
+          "col_num": 135,
+          "col_letter": "EE",
+          "header_r3": "REALIZADO"
+        },
+        {
+          "col_num": 136,
+          "col_letter": "EF",
+          "header_r3": "DATA PEDIDO"
+        },
+        {
+          "col_num": 142,
+          "col_letter": "EL",
+          "header_r3": "% YTD"
+        },
+        {
+          "col_num": 143,
+          "col_letter": "EM",
+          "header_r3": "META"
+        },
+        {
+          "col_num": 144,
+          "col_letter": "EN",
+          "header_r3": "REALIZADO"
+        },
+        {
+          "col_num": 145,
+          "col_letter": "EO",
+          "header_r3": "% TRI"
+        },
+        {
+          "col_num": 146,
+          "col_letter": "EP",
+          "header_r3": "META"
+        },
+        {
+          "col_num": 147,
+          "col_letter": "EQ",
+          "header_r3": "REALIZADO"
+        },
+        {
+          "col_num": 148,
+          "col_letter": "ER",
+          "header_r3": "% MÊS"
+        },
+        {
+          "col_num": 149,
+          "col_letter": "ES",
+          "header_r3": "META"
+        },
+        {
+          "col_num": 150,
+          "col_letter": "ET",
+          "header_r3": "REALIZADO"
+        },
+        {
+          "col_num": 151,
+          "col_letter": "EU",
+          "header_r3": "DATA PEDIDO"
+        },
+        {
+          "col_num": 157,
+          "col_letter": "FA",
+          "header_r3": "% YTD"
+        },
+        {
+          "col_num": 158,
+          "col_letter": "FB",
+          "header_r3": "META"
+        },
+        {
+          "col_num": 159,
+          "col_letter": "FC",
+          "header_r3": "REALIZADO"
+        },
+        {
+          "col_num": 160,
+          "col_letter": "FD",
+          "header_r3": "% TRI"
+        },
+        {
+          "col_num": 161,
+          "col_letter": "FE",
+          "header_r3": "META"
+        },
+        {
+          "col_num": 162,
+          "col_letter": "FF",
+          "header_r3": "REALIZADO"
+        },
+        {
+          "col_num": 163,
+          "col_letter": "FG",
+          "header_r3": "% MÊS"
+        },
+        {
+          "col_num": 164,
+          "col_letter": "FH",
+          "header_r3": "META"
+        },
+        {
+          "col_num": 165,
+          "col_letter": "FI",
+          "header_r3": "REALIZADO"
+        },
+        {
+          "col_num": 166,
+          "col_letter": "FJ",
+          "header_r3": "DATA PEDIDO"
+        },
+        {
+          "col_num": 173,
+          "col_letter": "FQ",
+          "header_r3": "% YTD"
+        },
+        {
+          "col_num": 174,
+          "col_letter": "FR",
+          "header_r3": "META"
+        },
+        {
+          "col_num": 175,
+          "col_letter": "FS",
+          "header_r3": "REALIZADO"
+        },
+        {
+          "col_num": 176,
+          "col_letter": "FT",
+          "header_r3": "% TRI"
+        },
+        {
+          "col_num": 177,
+          "col_letter": "FU",
+          "header_r3": "META"
+        },
+        {
+          "col_num": 178,
+          "col_letter": "FV",
+          "header_r3": "REALIZADO"
+        },
+        {
+          "col_num": 179,
+          "col_letter": "FW",
+          "header_r3": "% MÊS"
+        },
+        {
+          "col_num": 180,
+          "col_letter": "FX",
+          "header_r3": "META"
+        },
+        {
+          "col_num": 181,
+          "col_letter": "FY",
+          "header_r3": "REALIZADO"
+        },
+        {
+          "col_num": 182,
+          "col_letter": "FZ",
+          "header_r3": "DATA PEDIDO"
+        },
+        {
+          "col_num": 188,
+          "col_letter": "GF",
+          "header_r3": "% YTD"
+        },
+        {
+          "col_num": 189,
+          "col_letter": "GG",
+          "header_r3": "META"
+        },
+        {
+          "col_num": 190,
+          "col_letter": "GH",
+          "header_r3": "REALIZADO"
+        },
+        {
+          "col_num": 191,
+          "col_letter": "GI",
+          "header_r3": "% TRI"
+        },
+        {
+          "col_num": 192,
+          "col_letter": "GJ",
+          "header_r3": "META"
+        },
+        {
+          "col_num": 193,
+          "col_letter": "GK",
+          "header_r3": "REALIZADO"
+        },
+        {
+          "col_num": 194,
+          "col_letter": "GL",
+          "header_r3": "% MÊS"
+        },
+        {
+          "col_num": 195,
+          "col_letter": "GM",
+          "header_r3": "META"
+        },
+        {
+          "col_num": 196,
+          "col_letter": "GN",
+          "header_r3": "REALIZADO"
+        },
+        {
+          "col_num": 197,
+          "col_letter": "GO",
+          "header_r3": "DATA PEDIDO"
+        },
+        {
+          "col_num": 203,
+          "col_letter": "GU",
+          "header_r3": "% YTD"
+        },
+        {
+          "col_num": 204,
+          "col_letter": "GV",
+          "header_r3": "META"
+        },
+        {
+          "col_num": 205,
+          "col_letter": "GW",
+          "header_r3": "REALIZADO"
+        },
+        {
+          "col_num": 206,
+          "col_letter": "GX",
+          "header_r3": "% TRI"
+        },
+        {
+          "col_num": 207,
+          "col_letter": "GY",
+          "header_r3": "META"
+        },
+        {
+          "col_num": 208,
+          "col_letter": "GZ",
+          "header_r3": "REALIZADO"
+        },
+        {
+          "col_num": 209,
+          "col_letter": "HA",
+          "header_r3": "% MÊS"
+        },
+        {
+          "col_num": 210,
+          "col_letter": "HB",
+          "header_r3": "META"
+        },
+        {
+          "col_num": 211,
+          "col_letter": "HC",
+          "header_r3": "REALIZADO"
+        },
+        {
+          "col_num": 212,
+          "col_letter": "HD",
+          "header_r3": "DATA PEDIDO"
+        },
+        {
+          "col_num": 219,
+          "col_letter": "HK",
+          "header_r3": "% YTD"
+        },
+        {
+          "col_num": 220,
+          "col_letter": "HL",
+          "header_r3": "META"
+        },
+        {
+          "col_num": 221,
+          "col_letter": "HM",
+          "header_r3": "REALIZADO"
+        },
+        {
+          "col_num": 222,
+          "col_letter": "HN",
+          "header_r3": "% TRI"
+        },
+        {
+          "col_num": 223,
+          "col_letter": "HO",
+          "header_r3": "META"
+        },
+        {
+          "col_num": 224,
+          "col_letter": "HP",
+          "header_r3": "REALIZADO"
+        },
+        {
+          "col_num": 225,
+          "col_letter": "HQ",
+          "header_r3": "% MÊS"
+        },
+        {
+          "col_num": 226,
+          "col_letter": "HR",
+          "header_r3": "META"
+        },
+        {
+          "col_num": 227,
+          "col_letter": "HS",
+          "header_r3": "REALIZADO"
+        },
+        {
+          "col_num": 228,
+          "col_letter": "HT",
+          "header_r3": "DATA PEDIDO"
+        },
+        {
+          "col_num": 234,
+          "col_letter": "HZ",
+          "header_r3": "% YTD"
+        },
+        {
+          "col_num": 235,
+          "col_letter": "IA",
+          "header_r3": "META"
+        },
+        {
+          "col_num": 236,
+          "col_letter": "IB",
+          "header_r3": "REALIZADO"
+        },
+        {
+          "col_num": 237,
+          "col_letter": "IC",
+          "header_r3": "% TRI"
+        },
+        {
+          "col_num": 238,
+          "col_letter": "ID",
+          "header_r3": "META"
+        },
+        {
+          "col_num": 239,
+          "col_letter": "IE",
+          "header_r3": "REALIZADO"
+        },
+        {
+          "col_num": 240,
+          "col_letter": "IF",
+          "header_r3": "% MÊS"
+        },
+        {
+          "col_num": 241,
+          "col_letter": "IG",
+          "header_r3": "META"
+        },
+        {
+          "col_num": 242,
+          "col_letter": "IH",
+          "header_r3": "REALIZADO"
+        },
+        {
+          "col_num": 243,
+          "col_letter": "II",
+          "header_r3": "DATA PEDIDO"
+        },
+        {
+          "col_num": 249,
+          "col_letter": "IO",
+          "header_r3": "% YTD"
+        },
+        {
+          "col_num": 250,
+          "col_letter": "IP",
+          "header_r3": "META"
+        },
+        {
+          "col_num": 251,
+          "col_letter": "IQ",
+          "header_r3": "REALIZADO"
+        },
+        {
+          "col_num": 252,
+          "col_letter": "IR",
+          "header_r3": "% TRI"
+        },
+        {
+          "col_num": 253,
+          "col_letter": "IS",
+          "header_r3": "META"
+        },
+        {
+          "col_num": 254,
+          "col_letter": "IT",
+          "header_r3": "REALIZADO"
+        },
+        {
+          "col_num": 255,
+          "col_letter": "IU",
+          "header_r3": "% MÊS"
+        },
+        {
+          "col_num": 256,
+          "col_letter": "IV",
+          "header_r3": "META"
+        },
+        {
+          "col_num": 257,
+          "col_letter": "IW",
+          "header_r3": "REALIZADO"
+        },
+        {
+          "col_num": 258,
+          "col_letter": "IX",
+          "header_r3": "DATA PEDIDO"
+        }
+      ]
+    },
+    "index_match_draft1": {
+      "count": 35,
+      "columns": [
+        {
+          "col_num": 3,
+          "col_letter": "C",
+          "header_r3": "RAZÃO SOCIAL"
+        },
+        {
+          "col_num": 4,
+          "col_letter": "D",
+          "header_r3": "UF"
+        },
+        {
+          "col_num": 5,
+          "col_letter": "E",
+          "header_r3": "CIDADE"
+        },
+        {
+          "col_num": 6,
+          "col_letter": "F",
+          "header_r3": "EMAIL"
+        },
+        {
+          "col_num": 7,
+          "col_letter": "G",
+          "header_r3": "TELEFONE"
+        },
+        {
+          "col_num": 8,
+          "col_letter": "H",
+          "header_r3": "DATA CADASTRO"
+        },
+        {
+          "col_num": 9,
+          "col_letter": "I",
+          "header_r3": "REDE  REGIONAL"
+        },
+        {
+          "col_num": 11,
+          "col_letter": "K",
+          "header_r3": "ÚLT REGISTRO MERCOS"
+        },
+        {
+          "col_num": 12,
+          "col_letter": "L",
+          "header_r3": "CONSULTOR"
+        },
+        {
+          "col_num": 13,
+          "col_letter": "M",
+          "header_r3": "VENDEDOR ÚLTIMO PEDIDO"
+        },
+        {
+          "col_num": 16,
+          "col_letter": "P",
+          "header_r3": "DIAS SEM COMPRA"
+        },
+        {
+          "col_num": 17,
+          "col_letter": "Q",
+          "header_r3": "DATA ÚLTIMO PEDIDO"
+        },
+        {
+          "col_num": 18,
+          "col_letter": "R",
+          "header_r3": "VALOR ÚLTIMO PEDIDO"
+        },
+        {
+          "col_num": 19,
+          "col_letter": "S",
+          "header_r3": "CICLO MÉDIO"
+        },
+        {
+          "col_num": 20,
+          "col_letter": "T",
+          "header_r3": "ACESSO B2B"
+        },
+        {
+          "col_num": 21,
+          "col_letter": "U",
+          "header_r3": "ACESSOS PORTAL"
+        },
+        {
+          "col_num": 22,
+          "col_letter": "V",
+          "header_r3": "ITENS CARRINHO"
+        },
+        {
+          "col_num": 23,
+          "col_letter": "W",
+          "header_r3": "VALOR B2B"
+        },
+        {
+          "col_num": 24,
+          "col_letter": "X",
+          "header_r3": "OPORTUNIDADE"
+        },
+        {
+          "col_num": 26,
+          "col_letter": "Z",
+          "header_r3": "45717"
+        },
+        {
+          "col_num": 27,
+          "col_letter": "AA",
+          "header_r3": "45748"
+        },
+        {
+          "col_num": 28,
+          "col_letter": "AB",
+          "header_r3": "45778"
+        },
+        {
+          "col_num": 29,
+          "col_letter": "AC",
+          "header_r3": "45809"
+        },
+        {
+          "col_num": 30,
+          "col_letter": "AD",
+          "header_r3": "45839"
+        },
+        {
+          "col_num": 31,
+          "col_letter": "AE",
+          "header_r3": "45870"
+        },
+        {
+          "col_num": 32,
+          "col_letter": "AF",
+          "header_r3": "45901"
+        },
+        {
+          "col_num": 33,
+          "col_letter": "AG",
+          "header_r3": "45931"
+        },
+        {
+          "col_num": 34,
+          "col_letter": "AH",
+          "header_r3": "45962"
+        },
+        {
+          "col_num": 35,
+          "col_letter": "AI",
+          "header_r3": "45992"
+        },
+        {
+          "col_num": 36,
+          "col_letter": "AJ",
+          "header_r3": "46023"
+        },
+        {
+          "col_num": 38,
+          "col_letter": "AL",
+          "header_r3": "Nº COMPRAS"
+        },
+        {
+          "col_num": 39,
+          "col_letter": "AM",
+          "header_r3": "CURVA ABC"
+        },
+        {
+          "col_num": 40,
+          "col_letter": "AN",
+          "header_r3": "MESES POSITIVADO"
+        },
+        {
+          "col_num": 42,
+          "col_letter": "AP",
+          "header_r3": "TICKET MÉDIO"
+        },
+        {
+          "col_num": 50,
+          "col_letter": "AX",
+          "header_r3": "TIPO CLIENTE"
+        }
+      ]
+    },
+    "internal_calc": {
+      "count": 19,
+      "columns": [
+        {
+          "col_num": 25,
+          "col_letter": "Y",
+          "header_r3": "TOTAL PERÍODO"
+        },
+        {
+          "col_num": 41,
+          "col_letter": "AO",
+          "header_r3": "MÉDIA MENSAL"
+        },
+        {
+          "col_num": 79,
+          "col_letter": "CA",
+          "header_r3": "% ALCANÇADO"
+        },
+        {
+          "col_num": 80,
+          "col_letter": "CB",
+          "header_r3": "% Q1"
+        },
+        {
+          "col_num": 95,
+          "col_letter": "CQ",
+          "header_r3": "JUSTIFICATIVA MENSAL"
+        },
+        {
+          "col_num": 110,
+          "col_letter": "DF",
+          "header_r3": "JUSTIFICATIVA MENSAL"
+        },
+        {
+          "col_num": 125,
+          "col_letter": "DU",
+          "header_r3": "JUSTIFICATIVA MENSAL"
+        },
+        {
+          "col_num": 126,
+          "col_letter": "DV",
+          "header_r3": "% Q2"
+        },
+        {
+          "col_num": 141,
+          "col_letter": "EK",
+          "header_r3": "JUSTIFICATIVA MENSAL"
+        },
+        {
+          "col_num": 156,
+          "col_letter": "EZ",
+          "header_r3": "JUSTIFICATIVA MENSAL"
+        },
+        {
+          "col_num": 171,
+          "col_letter": "FO",
+          "header_r3": "JUSTIFICATIVA MENSAL"
+        },
+        {
+          "col_num": 172,
+          "col_letter": "FP",
+          "header_r3": "% Q3"
+        },
+        {
+          "col_num": 187,
+          "col_letter": "GE",
+          "header_r3": "JUSTIFICATIVA MENSAL"
+        },
+        {
+          "col_num": 202,
+          "col_letter": "GT",
+          "header_r3": "JUSTIFICATIVA MENSAL"
+        },
+        {
+          "col_num": 217,
+          "col_letter": "HI",
+          "header_r3": "JUSTIFICATIVA MENSAL"
+        },
+        {
+          "col_num": 218,
+          "col_letter": "HJ",
+          "header_r3": "% Q4"
+        },
+        {
+          "col_num": 233,
+          "col_letter": "HY",
+          "header_r3": "JUSTIFICATIVA MENSAL"
+        },
+        {
+          "col_num": 248,
+          "col_letter": "IN",
+          "header_r3": "JUSTIFICATIVA MENSAL"
+        },
+        {
+          "col_num": 263,
+          "col_letter": "JC",
+          "header_r3": "JUSTIFICATIVA MENSAL"
+        }
+      ]
+    },
+    "index_match_draft2_cse": {
+      "count": 10,
+      "columns": [
+        {
+          "col_num": 44,
+          "col_letter": "AR",
+          "header_r3": "ESTÁGIO FUNIL"
+        },
+        {
+          "col_num": 45,
+          "col_letter": "AS",
+          "header_r3": "PRÓX FOLLOWUP"
+        },
+        {
+          "col_num": 46,
+          "col_letter": "AT",
+          "header_r3": "DATA ÚLTATENDIMENTO"
+        },
+        {
+          "col_num": 47,
+          "col_letter": "AU",
+          "header_r3": "AÇÃO FUTURA"
+        },
+        {
+          "col_num": 48,
+          "col_letter": "AV",
+          "header_r3": "ÚLTIMO RESULTADO"
+        },
+        {
+          "col_num": 49,
+          "col_letter": "AW",
+          "header_r3": "MOTIVO"
+        },
+        {
+          "col_num": 51,
+          "col_letter": "AY",
+          "header_r3": "TENTATIVA"
+        },
+        {
+          "col_num": 52,
+          "col_letter": "AZ",
+          "header_r3": "FASE"
+        },
+        {
+          "col_num": 60,
+          "col_letter": "BH",
+          "header_r3": "PRÓX AÇÃO"
+        },
+        {
+          "col_num": 61,
+          "col_letter": "BI",
+          "header_r3": "AÇÃO DETALHADA"
+        }
+      ]
+    },
+    "index_match_regras": {
+      "count": 1,
+      "columns": [
+        {
+          "col_num": 54,
+          "col_letter": "BB",
+          "header_r3": " TEMPERATURA"
+        }
+      ]
+    },
+    "let_function": {
+      "count": 1,
+      "columns": [
+        {
+          "col_num": 62,
+          "col_letter": "BJ",
+          "header_r3": "🚦 SINALEIRO"
+        }
+      ]
+    },
+    "countifs_draft2": {
+      "count": 48,
+      "columns": [
+        {
+          "col_num": 91,
+          "col_letter": "CM",
+          "header_r3": "JUSTIFICATIVA SEMANA 1"
+        },
+        {
+          "col_num": 92,
+          "col_letter": "CN",
+          "header_r3": "JUSTIFICATIVA SEMANA 2"
+        },
+        {
+          "col_num": 93,
+          "col_letter": "CO",
+          "header_r3": "JUSTIFICATIVA SEMANA 3"
+        },
+        {
+          "col_num": 94,
+          "col_letter": "CP",
+          "header_r3": "JUSTIFICATIVA SEMANA 4"
+        },
+        {
+          "col_num": 106,
+          "col_letter": "DB",
+          "header_r3": "JUSTIFICATIVA SEMANA 1"
+        },
+        {
+          "col_num": 107,
+          "col_letter": "DC",
+          "header_r3": "JUSTIFICATIVA SEMANA 2"
+        },
+        {
+          "col_num": 108,
+          "col_letter": "DD",
+          "header_r3": "JUSTIFICATIVA SEMANA 3"
+        },
+        {
+          "col_num": 109,
+          "col_letter": "DE",
+          "header_r3": "JUSTIFICATIVA SEMANA 4"
+        },
+        {
+          "col_num": 121,
+          "col_letter": "DQ",
+          "header_r3": "JUSTIFICATIVA SEMANA 1"
+        },
+        {
+          "col_num": 122,
+          "col_letter": "DR",
+          "header_r3": "JUSTIFICATIVA SEMANA 2"
+        },
+        {
+          "col_num": 123,
+          "col_letter": "DS",
+          "header_r3": "JUSTIFICATIVA SEMANA 3"
+        },
+        {
+          "col_num": 124,
+          "col_letter": "DT",
+          "header_r3": "JUSTIFICATIVA SEMANA 4"
+        },
+        {
+          "col_num": 137,
+          "col_letter": "EG",
+          "header_r3": "JUSTIFICATIVA SEMANA 1"
+        },
+        {
+          "col_num": 138,
+          "col_letter": "EH",
+          "header_r3": "JUSTIFICATIVA SEMANA 2"
+        },
+        {
+          "col_num": 139,
+          "col_letter": "EI",
+          "header_r3": "JUSTIFICATIVA SEMANA 3"
+        },
+        {
+          "col_num": 140,
+          "col_letter": "EJ",
+          "header_r3": "JUSTIFICATIVA SEMANA 4"
+        },
+        {
+          "col_num": 152,
+          "col_letter": "EV",
+          "header_r3": "JUSTIFICATIVA SEMANA 1"
+        },
+        {
+          "col_num": 153,
+          "col_letter": "EW",
+          "header_r3": "JUSTIFICATIVA SEMANA 2"
+        },
+        {
+          "col_num": 154,
+          "col_letter": "EX",
+          "header_r3": "JUSTIFICATIVA SEMANA 3"
+        },
+        {
+          "col_num": 155,
+          "col_letter": "EY",
+          "header_r3": "JUSTIFICATIVA SEMANA 4"
+        },
+        {
+          "col_num": 167,
+          "col_letter": "FK",
+          "header_r3": "JUSTIFICATIVA SEMANA 1"
+        },
+        {
+          "col_num": 168,
+          "col_letter": "FL",
+          "header_r3": "JUSTIFICATIVA SEMANA 2"
+        },
+        {
+          "col_num": 169,
+          "col_letter": "FM",
+          "header_r3": "JUSTIFICATIVA SEMANA 3"
+        },
+        {
+          "col_num": 170,
+          "col_letter": "FN",
+          "header_r3": "JUSTIFICATIVA SEMANA 4"
+        },
+        {
+          "col_num": 183,
+          "col_letter": "GA",
+          "header_r3": "JUSTIFICATIVA SEMANA 1"
+        },
+        {
+          "col_num": 184,
+          "col_letter": "GB",
+          "header_r3": "JUSTIFICATIVA SEMANA 2"
+        },
+        {
+          "col_num": 185,
+          "col_letter": "GC",
+          "header_r3": "JUSTIFICATIVA SEMANA 3"
+        },
+        {
+          "col_num": 186,
+          "col_letter": "GD",
+          "header_r3": "JUSTIFICATIVA SEMANA 4"
+        },
+        {
+          "col_num": 198,
+          "col_letter": "GP",
+          "header_r3": "JUSTIFICATIVA SEMANA 1"
+        },
+        {
+          "col_num": 199,
+          "col_letter": "GQ",
+          "header_r3": "JUSTIFICATIVA SEMANA 2"
+        },
+        {
+          "col_num": 200,
+          "col_letter": "GR",
+          "header_r3": "JUSTIFICATIVA SEMANA 3"
+        },
+        {
+          "col_num": 201,
+          "col_letter": "GS",
+          "header_r3": "JUSTIFICATIVA SEMANA 4"
+        },
+        {
+          "col_num": 213,
+          "col_letter": "HE",
+          "header_r3": "JUSTIFICATIVA SEMANA 1"
+        },
+        {
+          "col_num": 214,
+          "col_letter": "HF",
+          "header_r3": "JUSTIFICATIVA SEMANA 2"
+        },
+        {
+          "col_num": 215,
+          "col_letter": "HG",
+          "header_r3": "JUSTIFICATIVA SEMANA 3"
+        },
+        {
+          "col_num": 216,
+          "col_letter": "HH",
+          "header_r3": "JUSTIFICATIVA SEMANA 4"
+        },
+        {
+          "col_num": 229,
+          "col_letter": "HU",
+          "header_r3": "JUSTIFICATIVA SEMANA 1"
+        },
+        {
+          "col_num": 230,
+          "col_letter": "HV",
+          "header_r3": "JUSTIFICATIVA SEMANA 2"
+        },
+        {
+          "col_num": 231,
+          "col_letter": "HW",
+          "header_r3": "JUSTIFICATIVA SEMANA 3"
+        },
+        {
+          "col_num": 232,
+          "col_letter": "HX",
+          "header_r3": "JUSTIFICATIVA SEMANA 4"
+        },
+        {
+          "col_num": 244,
+          "col_letter": "IJ",
+          "header_r3": "JUSTIFICATIVA SEMANA 1"
+        },
+        {
+          "col_num": 245,
+          "col_letter": "IK",
+          "header_r3": "JUSTIFICATIVA SEMANA 2"
+        },
+        {
+          "col_num": 246,
+          "col_letter": "IL",
+          "header_r3": "JUSTIFICATIVA SEMANA 3"
+        },
+        {
+          "col_num": 247,
+          "col_letter": "IM",
+          "header_r3": "JUSTIFICATIVA SEMANA 4"
+        },
+        {
+          "col_num": 259,
+          "col_letter": "IY",
+          "header_r3": "JUSTIFICATIVA SEMANA 1"
+        },
+        {
+          "col_num": 260,
+          "col_letter": "IZ",
+          "header_r3": "JUSTIFICATIVA SEMANA 2"
+        },
+        {
+          "col_num": 261,
+          "col_letter": "JA",
+          "header_r3": "JUSTIFICATIVA SEMANA 3"
+        },
+        {
+          "col_num": 262,
+          "col_letter": "JB",
+          "header_r3": "JUSTIFICATIVA SEMANA 4"
+        }
+      ]
+    }
+  },
+  "formula_patterns": {
+    "static_data": [],
+    "index_match_draft1": [
+      {
+        "col_letter": "C",
+        "col_num": 3,
+        "header_r3": "RAZÃO SOCIAL",
+        "template": "=IFERROR(INDEX('DRAFT 1'!$C:$C,MATCH($B{row},'DRAFT 1'!$B:$B,0)),\"\")"
+      },
+      {
+        "col_letter": "D",
+        "col_num": 4,
+        "header_r3": "UF",
+        "template": "=IFERROR(INDEX('DRAFT 1'!$D:$D,MATCH($B{row},'DRAFT 1'!$B:$B,0)),\"\")"
+      },
+      {
+        "col_letter": "E",
+        "col_num": 5,
+        "header_r3": "CIDADE",
+        "template": "=IFERROR(INDEX('DRAFT 1'!$E:$E,MATCH($B{row},'DRAFT 1'!$B:$B,0)),\"\")"
+      },
+      {
+        "col_letter": "F",
+        "col_num": 6,
+        "header_r3": "EMAIL",
+        "template": "=IFERROR(INDEX('DRAFT 1'!$F:$F,MATCH($B{row},'DRAFT 1'!$B:$B,0)),\"\")"
+      },
+      {
+        "col_letter": "G",
+        "col_num": 7,
+        "header_r3": "TELEFONE",
+        "template": "=IFERROR(INDEX('DRAFT 1'!$G:$G,MATCH($B{row},'DRAFT 1'!$B:$B,0)),\"\")"
+      }
+    ],
+    "internal_calc": [
+      {
+        "col_letter": "Y",
+        "col_num": 25,
+        "header_r3": "TOTAL PERÍODO",
+        "template": "=SUM(Z{row}:AJ{row})"
+      },
+      {
+        "col_letter": "AO",
+        "col_num": 41,
+        "header_r3": "MÉDIA MENSAL",
+        "template": "=IFERROR(Y{row}/AN{row},0)"
+      },
+      {
+        "col_letter": "CA",
+        "col_num": 79,
+        "header_r3": "% ALCANÇADO",
+        "template": "=CX{row}"
+      },
+      {
+        "col_letter": "CB",
+        "col_num": 80,
+        "header_r3": "% Q1",
+        "template": "=AVERAGE(CI{row},CX{row},DM{row})"
+      },
+      {
+        "col_letter": "CQ",
+        "col_num": 95,
+        "header_r3": "JUSTIFICATIVA MENSAL",
+        "template": "=SUM(CM{row}:CP{row})"
+      }
+    ],
+    "index_match_draft2_cse": [
+      {
+        "col_letter": "AR",
+        "col_num": 44,
+        "header_r3": "ESTÁGIO FUNIL",
+        "template": "=IFERROR(INDEX('DRAFT 2'!$I:$I,MATCH(1,INDEX(('DRAFT 2'!$D:$D=$B{row})*('DRAFT 2'!$A:$A=MAX(IF('DRAFT 2'!$D:$D=$B{row},'DRAFT 2'!$A:$A))),0,1),0)),\"\")"
+      },
+      {
+        "col_letter": "AS",
+        "col_num": 45,
+        "header_r3": "PRÓX FOLLOWUP",
+        "template": "=IFERROR(INDEX('DRAFT 2'!$T:$T,MATCH(1,INDEX(('DRAFT 2'!$D:$D=$B{row})*('DRAFT 2'!$A:$A=MAX(IF('DRAFT 2'!$D:$D=$B{row},'DRAFT 2'!$A:$A))),0,1),0)),\"\")"
+      },
+      {
+        "col_letter": "AT",
+        "col_num": 46,
+        "header_r3": "DATA ÚLTATENDIMENTO",
+        "template": "=IFERROR(MAX(IF('DRAFT 2'!$D:$D=$B{row},'DRAFT 2'!$A:$A)),\"\")"
+      },
+      {
+        "col_letter": "AU",
+        "col_num": 47,
+        "header_r3": "AÇÃO FUTURA",
+        "template": "=IFERROR(INDEX('DRAFT 2'!$U:$U,MATCH(1,INDEX(('DRAFT 2'!$D:$D=$B{row})*('DRAFT 2'!$A:$A=MAX(IF('DRAFT 2'!$D:$D=$B{row},'DRAFT 2'!$A:$A))),0,1),0)),\"\")"
+      },
+      {
+        "col_letter": "AV",
+        "col_num": 48,
+        "header_r3": "ÚLTIMO RESULTADO",
+        "template": "=IFERROR(INDEX('DRAFT 2'!$R:$R,MATCH(1,INDEX(('DRAFT 2'!$D:$D=$B{row})*('DRAFT 2'!$A:$A=MAX(IF('DRAFT 2'!$D:$D=$B{row},'DRAFT 2'!$A:$A))),0,1),0)),\"\")"
+      }
+    ],
+    "index_match_regras": [
+      {
+        "col_letter": "BB",
+        "col_num": 54,
+        "header_r3": " TEMPERATURA",
+        "template": "=IFERROR(INDEX(REGRAS!$G$220:$G$282,MATCH(N{row}&AQ{row},REGRAS!$A$220:$A$282&REGRAS!$B$220:$B$282,0)),\"\")"
+      }
+    ],
+    "let_function": [
+      {
+        "col_letter": "BJ",
+        "col_num": 62,
+        "header_r3": "🚦 SINALEIRO",
+        "template": "=IF(P{row}=\"\",\"\",IF(OR(N{row}=\"PROSPECT\",N{row}=\"LEAD\"),\"🟣\",IF(N{row}=\"NOVO\",\"🟢\",_xlfn.LET(_xlpm.ciclo,AK{row},_xlpm.dias,P{row},IF(_xlpm.ciclo=0,IF(_xlpm.dias<=50,\"🟢\",IF(_xlpm.dias<=90,\"🟡\",\"🔴\")),IF(_xlpm.dias<=_xlpm.ciclo,\"🟢\",IF(_xlpm.dias<=_xlpm.ciclo+30,\"🟡\",\"🔴\")))))))"
+      }
+    ],
+    "countifs_draft2": [
+      {
+        "col_letter": "CM",
+        "col_num": 91,
+        "header_r3": "JUSTIFICATIVA SEMANA 1",
+        "template": "=COUNTIFS('DRAFT 2'!$D:$D,$B{row},'DRAFT 2'!$A:$A,\">=\"&DATE(2026,1,1),'DRAFT 2'!$A:$A,\"<=\"&DATE(2026,1,7))"
+      },
+      {
+        "col_letter": "CN",
+        "col_num": 92,
+        "header_r3": "JUSTIFICATIVA SEMANA 2",
+        "template": "=COUNTIFS('DRAFT 2'!$D:$D,$B{row},'DRAFT 2'!$A:$A,\">=\"&DATE(2026,1,8),'DRAFT 2'!$A:$A,\"<=\"&DATE(2026,1,14))"
+      },
+      {
+        "col_letter": "CO",
+        "col_num": 93,
+        "header_r3": "JUSTIFICATIVA SEMANA 3",
+        "template": "=COUNTIFS('DRAFT 2'!$D:$D,$B{row},'DRAFT 2'!$A:$A,\">=\"&DATE(2026,1,15),'DRAFT 2'!$A:$A,\"<=\"&DATE(2026,1,21))"
+      },
+      {
+        "col_letter": "CP",
+        "col_num": 94,
+        "header_r3": "JUSTIFICATIVA SEMANA 4",
+        "template": "=COUNTIFS('DRAFT 2'!$D:$D,$B{row},'DRAFT 2'!$A:$A,\">=\"&DATE(2026,1,22),'DRAFT 2'!$A:$A,\"<\"&DATE(2026,2,1))"
+      },
+      {
+        "col_letter": "DB",
+        "col_num": 106,
+        "header_r3": "JUSTIFICATIVA SEMANA 1",
+        "template": "=COUNTIFS('DRAFT 2'!$D:$D,$B{row},'DRAFT 2'!$A:$A,\">=\"&DATE(2026,2,1),'DRAFT 2'!$A:$A,\"<=\"&DATE(2026,2,7))"
+      }
+    ]
+  },
+  "let_function_columns": [
+    {
+      "col_num": 62,
+      "col_letter": "BJ",
+      "header_r3": "🚦 SINALEIRO",
+      "sample_formula": "=IF(P4=\"\",\"\",IF(OR(N4=\"PROSPECT\",N4=\"LEAD\"),\"🟣\",IF(N4=\"NOVO\",\"🟢\",_xlfn.LET(_xlpm.ciclo,AK4,_xlpm.dias,P4,IF(_xlpm.ciclo=0,IF(_xlpm.dias<=50,\"🟢\",IF(_xlpm.dias<=90,\"🟡\",\"🔴\")),IF(_xlpm.dias<=_xlpm.ciclo,\"🟢\",IF(_xlpm.dias<=_xlpm.ciclo+30,\"🟡\",\"🔴\")))))))"
+    }
+  ],
+  "array_formula_columns": [],
+  "all_referenced_tabs": [
+    "DRAFT 1",
+    "DRAFT 2",
+    "REGRAS"
+  ]
+}
