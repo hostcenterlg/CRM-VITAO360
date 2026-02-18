@@ -1,0 +1,211 @@
+{
+  "audit_date": "2026-02-17",
+  "audit_timestamp": "2026-02-17T22:19:23",
+  "v13_file": "CRM_VITAO360_V13_PROJECAO.xlsx",
+  "v13_size_mb": 5.1,
+  "total_formulas": 154302,
+  "expected_formulas": 154302,
+  "audit_duration_seconds": 14.6,
+  "requirements": {
+    "VAL-01": {
+      "verdict": "PASS",
+      "details": {
+        "total_formulas": 154302,
+        "expected_formulas": 154302,
+        "formula_count_delta_pct": 0.0,
+        "formula_count_within_1pct": true,
+        "formula_counts_per_tab": {
+          "PROJECAO": 19224,
+          "LOG": 0,
+          "DASH": 304,
+          "REDES_FRANQUIAS_v2": 280,
+          "COMITE": 342,
+          "REGRAS": 0,
+          "DRAFT 1": 0,
+          "DRAFT 2": 0,
+          "CARTEIRA": 134092,
+          "AGENDA LARISSA": 15,
+          "AGENDA DAIANE": 15,
+          "AGENDA MANU": 15,
+          "AGENDA JULIO": 15
+        },
+        "total_error_patterns_found": 0,
+        "errors": [],
+        "dangerous_patterns_found": 0,
+        "dangerous_patterns": []
+      }
+    },
+    "VAL-02": {
+      "verdict": "PASS_WITH_NOTES",
+      "details": {
+        "draft1_monthly_rows_with_data": 529,
+        "draft1_monthly_sum": 2599775.09,
+        "faturamento_formula_count": 106368,
+        "faturamento_refs_draft1": 6648,
+        "faturamento_sample_formulas": [
+          {
+            "cell": "CK4",
+            "formula": "=IFERROR(INDEX('DRAFT 1'!$AE$3:$AE$25000,MATCH($B4,'DRAFT 1'!$B$3:$B$25000,0)),0)"
+          },
+          {
+            "cell": "CZ4",
+            "formula": "=IFERROR(INDEX('DRAFT 1'!$AF$3:$AF$25000,MATCH($B4,'DRAFT 1'!$B$3:$B$25000,0)),0)"
+          },
+          {
+            "cell": "DO4",
+            "formula": "=IFERROR(INDEX('DRAFT 1'!$U$3:$U$25000,MATCH($B4,'DRAFT 1'!$B$3:$B$25000,0)),0)"
+          },
+          {
+            "cell": "EE4",
+            "formula": "=IFERROR(INDEX('DRAFT 1'!$V$3:$V$25000,MATCH($B4,'DRAFT 1'!$B$3:$B$25000,0)),0)"
+          },
+          {
+            "cell": "ET4",
+            "formula": "=IFERROR(INDEX('DRAFT 1'!$W$3:$W$25000,MATCH($B4,'DRAFT 1'!$B$3:$B$25000,0)),0)"
+          },
+          {
+            "cell": "FI4",
+            "formula": "=IFERROR(INDEX('DRAFT 1'!$X$3:$X$25000,MATCH($B4,'DRAFT 1'!$B$3:$B$25000,0)),0)"
+          },
+          {
+            "cell": "FY4",
+            "formula": "=IFERROR(INDEX('DRAFT 1'!$Y$3:$Y$25000,MATCH($B4,'DRAFT 1'!$B$3:$B$25000,0)),0)"
+          },
+          {
+            "cell": "GN4",
+            "formula": "=IFERROR(INDEX('DRAFT 1'!$Z$3:$Z$25000,MATCH($B4,'DRAFT 1'!$B$3:$B$25000,0)),0)"
+          },
+          {
+            "cell": "HC4",
+            "formula": "=IFERROR(INDEX('DRAFT 1'!$AA$3:$AA$25000,MATCH($B4,'DRAFT 1'!$B$3:$B$25000,0)),0)"
+          },
+          {
+            "cell": "HS4",
+            "formula": "=IFERROR(INDEX('DRAFT 1'!$AB$3:$AB$25000,MATCH($B4,'DRAFT 1'!$B$3:$B$25000,0)),0)"
+          }
+        ],
+        "projecao_realizado_formula_count": 534,
+        "projecao_realizado_has_sum": true,
+        "projecao_realizado_sample": "=SUM(AA4:AL4)",
+        "notes": "Structure validated: DRAFT 1 has monthly data, CARTEIRA FATURAMENTO references DRAFT 1, PROJECAO REALIZADO uses SUM. PAINEL R$ 2,156,179 mismatch is pre-existing Phase 2 FAIL_WITH_NOTES (source scope mismatch: SAP R$ 2,089k, Merged R$ 2,493k). Computed totals require Excel recalculation (openpyxl cannot recalc)."
+      },
+      "notes": "Structure validated: DRAFT 1 has monthly data, CARTEIRA FATURAMENTO references DRAFT 1, PROJECAO REALIZADO uses SUM. PAINEL R$ 2,156,179 mismatch is pre-existing Phase 2 FAIL_WITH_NOTES (source scope mismatch: SAP R$ 2,089k, Merged R$ 2,493k). Computed totals require Excel recalculation (openpyxl cannot recalc)."
+    },
+    "VAL-03": {
+      "verdict": "PASS",
+      "details": {
+        "total_records": 20830,
+        "violations": 0,
+        "violation_samples": []
+      }
+    },
+    "VAL-04": {
+      "verdict": "PASS",
+      "details": {
+        "draft1_total": 554,
+        "draft1_unique": 554,
+        "draft1_dupes": 0,
+        "carteira_total": 554,
+        "carteira_unique": 554,
+        "carteira_dupes": 0,
+        "log_total": 20830,
+        "log_unique": 2156,
+        "invalid_format_count": 0,
+        "invalid_format_samples": [],
+        "d1_cart_overlap": 554,
+        "d1_only_count": 0,
+        "cart_only_count": 0,
+        "d1_only_samples": [],
+        "cart_only_samples": []
+      }
+    },
+    "VAL-05": {
+      "verdict": "PASS",
+      "details": {
+        "expected_count": 13,
+        "actual_count": 13,
+        "matched": 13,
+        "missing": [],
+        "extra": [],
+        "tab_info": {
+          "PROJECAO": {
+            "actual_name": "PROJEÇÃO ",
+            "rows": 537,
+            "columns": 80
+          },
+          "LOG": {
+            "actual_name": "LOG",
+            "rows": 20832,
+            "columns": 21
+          },
+          "DASH": {
+            "actual_name": "DASH",
+            "rows": 41,
+            "columns": 17
+          },
+          "REDES_FRANQUIAS_v2": {
+            "actual_name": "REDES_FRANQUIAS_v2",
+            "rows": 25,
+            "columns": 24
+          },
+          "COMITE": {
+            "actual_name": "COMITE",
+            "rows": 71,
+            "columns": 17
+          },
+          "REGRAS": {
+            "actual_name": "REGRAS",
+            "rows": 283,
+            "columns": 11
+          },
+          "DRAFT 1": {
+            "actual_name": "DRAFT 1",
+            "rows": 557,
+            "columns": 45
+          },
+          "DRAFT 2": {
+            "actual_name": "DRAFT 2",
+            "rows": 6775,
+            "columns": 31
+          },
+          "CARTEIRA": {
+            "actual_name": "CARTEIRA",
+            "rows": 557,
+            "columns": 269
+          },
+          "AGENDA LARISSA": {
+            "actual_name": "AGENDA LARISSA",
+            "rows": 1000,
+            "columns": 17
+          },
+          "AGENDA DAIANE": {
+            "actual_name": "AGENDA DAIANE",
+            "rows": 1000,
+            "columns": 17
+          },
+          "AGENDA MANU": {
+            "actual_name": "AGENDA MANU",
+            "rows": 1000,
+            "columns": 17
+          },
+          "AGENDA JULIO": {
+            "actual_name": "AGENDA JULIO",
+            "rows": 1000,
+            "columns": 17
+          }
+        }
+      },
+      "notes": "13 tabs present (ROADMAP says 14, actual V13 has 13). This is a documented requirement update -- all functional requirements from Phases 1-9 are satisfied with 13 tabs."
+    }
+  },
+  "cross_tab_refs": {
+    "total_refs": 198003,
+    "orphaned_count": 0,
+    "orphaned_refs": []
+  },
+  "summary": {
+    "pass": 4,
+    "fail": 0,
+    "pass_with_notes": 1
+  }
+}
