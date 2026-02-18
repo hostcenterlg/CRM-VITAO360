@@ -1,0 +1,12 @@
+{
+  "timestamp": "2026-02-17T22:25:02",
+  "fixes_applied": 0,
+  "fixes_detail": [],
+  "source_file": "CRM_VITAO360_V13_PROJECAO.xlsx",
+  "final_file": "CRM_VITAO360_V13_FINAL.xlsx",
+  "source_size_bytes": 5399741,
+  "final_size_bytes": 5399741,
+  "source_size_mb": 5.1,
+  "final_size_mb": 5.1,
+  "status": "CLEAN_COPY"
+}
