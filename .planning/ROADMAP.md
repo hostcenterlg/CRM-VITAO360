@@ -178,9 +178,9 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 10-01: Script de auditoria automática (fórmulas, CNPJ, Two-Base, totais)
-- [ ] 10-02: Corrigir todos os erros encontrados pela auditoria
-- [ ] 10-03: Teste final no Excel real e relatório de entrega
+- [ ] 10-01-PLAN.md — Comprehensive audit script: VAL-01 through VAL-05 (formulas, CNPJ, Two-Base, tabs, cross-refs)
+- [ ] 10-02-PLAN.md — Fix audit issues + generate delivery report (V13 FINAL file + project summary)
+- [ ] 10-03-PLAN.md — Excel real test checkpoint (VAL-06) + finalize project status
 
 ## Progress
 
