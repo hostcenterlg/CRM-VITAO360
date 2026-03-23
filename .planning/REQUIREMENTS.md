@@ -1,171 +1,93 @@
-# Requirements: CRM VITAO360
+# Requirements: CRM VITAO360 — Motor Operacional SaaS
 
-**Defined:** 2026-02-15
-**Core Value:** Cruzar dados de vendas, atendimentos e prospecção em CARTEIRA unificada com visibilidade total, sem fabricar dados ou duplicar valores financeiros.
+**Defined:** 2026-03-23
+**Core Value:** Motor Python funcional que roda localmente com dados reais, gerando agenda inteligente diária para cada consultor
 
-## v1 Requirements
+## v2.0 Requirements
 
-Requirements para o rebuild definitivo. Cada um mapeia para fases do roadmap.
+### Motor de Regras
+- [ ] **MOTOR-01**: Sistema aplica 92 combinações SITUAÇÃO × RESULTADO e retorna 9 dimensões
+- [ ] **MOTOR-02**: Tabela de regras é configurável (JSON/YAML, não hardcoded)
+- [ ] **MOTOR-03**: Dado um atendimento (CNPJ + RESULTADO), motor calcula Estágio Funil, Fase, Tipo Contato, Ação Futura, Temperatura
 
-### Projeção (CRÍTICO)
+### Score Ranking
+- [ ] **SCORE-01**: Cada cliente recebe score 0-100 com 6 fatores ponderados (URG 30%, VAL 25%, FU 20%, SIN 15%, TENT 5%, SIT 5%)
+- [ ] **SCORE-02**: Score gera Pirâmide P1-P7 automaticamente
+- [ ] **SCORE-03**: Pesos configuráveis (não hardcoded)
 
-- [ ] **PROJ-01**: Aba PROJEÇÃO contém 18.180 fórmulas dinâmicas recalculáveis
-- [ ] **PROJ-02**: Projeção mensal por cliente baseada em histórico de vendas real
-- [ ] **PROJ-03**: Projeção consolida por consultor, ABC, status e região
-- [ ] **PROJ-04**: Projeção 2026: R$ 5.7M projetado, 3.168 vendas, 3/dia/consultor
+### Sinaleiro
+- [ ] **SINAL-01**: Cada cliente recebe cor sinaleiro (ROXO/VERDE/AMARELO/LARANJA/VERMELHO) baseado em dias vs ciclo
+- [ ] **SINAL-02**: Cadência de contato derivada do sinaleiro
 
-### Faturamento
+### Agenda Inteligente
+- [ ] **AGENDA-01**: Gerar lista 40-60 atendimentos por consultor por dia, ordenada por Score desc
+- [ ] **AGENDA-02**: Prioridade P1 sempre no topo, depois P2, P3, depois Score
+- [ ] **AGENDA-03**: Filtro por consultor (LARISSA, MANU, JULIO, DAIANE)
+- [ ] **AGENDA-04**: Export da agenda para xlsx por consultor
 
-- [ ] **FAT-01**: Faturamento mensal Jan-Dez 2025 bate com PAINEL (R$ 2.156.179 total)
-- [ ] **FAT-02**: Divergência Mercos vs PAINEL ≤ 0.5% (gap atual: R$ 6.790 / 0.3%)
-- [ ] **FAT-03**: Relatórios Mercos processados com armadilhas tratadas (Abril=Abr+Mai, etc.)
-- [ ] **FAT-04**: Vendas por cliente mês a mês preenchidas na CARTEIRA (colunas Fat.Mensal)
+### Import de Dados
+- [ ] **IMPORT-01**: Importar planilha FINAL (40 abas) e extrair base de clientes
+- [ ] **IMPORT-02**: Normalizar CNPJ (14 dígitos, string, zero-padded)
+- [ ] **IMPORT-03**: Classificar dados como REAL/SINTÉTICO/ALUCINAÇÃO
+- [ ] **IMPORT-04**: Aplicar DE-PARA vendedores
 
-### Timeline Mensal
+### Projeção e Export
+- [ ] **PROJ-01**: Calcular realizado vs meta SAP por cliente por mês
+- [ ] **PROJ-02**: Calcular % alcançado (trimestral e anual)
+- [ ] **EXPORT-01**: Exportar base processada para xlsx
+- [ ] **EXPORT-02**: Gerar relatório resumo em terminal
 
-- [ ] **TIME-01**: Vendas mês a mês por cliente preenchidas (Jan-Dez 2025)
-- [ ] **TIME-02**: Dados cruzados entre Mercos (vendas) e SAP (mês a mês)
-- [ ] **TIME-03**: Classificação ABC recalculada com base na timeline completa
+## v3.0 Requirements (Futuro)
 
-### LOG
+### Integrações
+- **INTEG-01**: Scripts "Siga-me" para SAP
+- **INTEG-02**: Scripts "Siga-me" para Mercos
+- **INTEG-03**: API Deskrio (WhatsApp bidirecional)
+- **INTEG-04**: API Asana (leads do site)
 
-- [ ] **LOG-01**: LOG contém ≥ 11.758 registros (vs 1.581 atual = 13.4%)
-- [ ] **LOG-02**: 10.484 registros do CONTROLE_FUNIL integrados com classificação 3-tier
-- [ ] **LOG-03**: 5.329 tickets Deskrio integrados no LOG
-- [ ] **LOG-04**: 3.540 contatos históricos retroativos integrados
-- [ ] **LOG-05**: Two-Base Architecture respeitada: LOG sempre R$ 0.00
-- [ ] **LOG-06**: Chave composta DATA + CNPJ + RESULTADO para dedup
-- [ ] **LOG-07**: Julio Gadret presente no LOG (WhatsApp pessoal → dados manuais)
-
-### Dashboard
-
-- [ ] **DASH-01**: DASH redesenhada com 3 blocos compactos (~45 rows vs 164 atual)
-- [ ] **DASH-02**: Bloco 1: Visão executiva (faturamento, vendas, atendimentos)
-- [ ] **DASH-03**: Bloco 2: Performance por consultor
-- [ ] **DASH-04**: Bloco 3: Pipeline e funil
-- [ ] **DASH-05**: Fórmulas referenciam CARTEIRA e LOG corretamente
-
-### E-commerce
-
-- [ ] **ECOM-01**: Dados de e-commerce Mercos cruzados na CARTEIRA
-- [ ] **ECOM-02**: Colunas de e-commerce (4 colunas) populadas para todos os clientes
-- [ ] **ECOM-03**: Acesso ao e-commerce por mês (20 arquivos) processados
-
-### Redes e Franquias
-
-- [ ] **REDE-01**: REDE/REGIONAL preenchido para todos os 489 clientes
-- [ ] **REDE-02**: #REF! corrigidos nas REDES_FRANQUIAS_v2
-- [ ] **REDE-03**: Sinaleiro de penetração atualizado com dados 2025 completos
-- [ ] **REDE-04**: Metas 6M por rede operacionais
-
-### Comitê e Metas
-
-- [ ] **META-01**: Metas 2026 do SAP integradas na CARTEIRA
-- [ ] **META-02**: COMITÊ com visão consolidada por consultor vs meta
-- [ ] **META-03**: Capacidade de atendimento validada (máx 40-50/dia/consultor)
-
-### Blueprint v2
-
-- [ ] **BLUE-01**: CARTEIRA expandida para 81 colunas com 8 grupos [+]
-- [ ] **BLUE-02**: 10 colunas fixas (A-J) mantidas
-- [ ] **BLUE-03**: 46 colunas originais IMUTÁVEIS preservadas
-- [ ] **BLUE-04**: Grupos: Identificação, Vida Comercial, Timeline, Jornada, Ecommerce, SAP, Operacional, Comitê
-
-### Validação Final
-
-- [ ] **VAL-01**: 0 erros de fórmula (#REF!, #DIV/0!, #VALUE!, #NAME?) em todas as abas
-- [ ] **VAL-02**: Faturamento total bate com R$ 2.156.179
-- [ ] **VAL-03**: Two-Base Architecture respeitada em 100% dos registros
-- [ ] **VAL-04**: CNPJ sem duplicatas (14 dígitos, string, zfill)
-- [ ] **VAL-05**: 14 abas presentes e funcionais
-- [ ] **VAL-06**: Teste de abertura e recálculo no Excel real (não LibreOffice)
-
-## v2 Requirements
-
-Deferred para futuras versões. Trackeados mas não no roadmap atual.
-
-### Automação
-
-- **AUTO-01**: Script de import automático dos exports Mercos/SAP
-- **AUTO-02**: Geração automática de DRAFT 1/2/3 a partir de novos exports
-- **AUTO-03**: Atualização batch mensal do CRM via Python
-
-### Relatórios Avançados
-
-- **REL-01**: Relatório de performance temporal (trend analysis)
-- **REL-02**: Predição de churn baseada em padrões de inatividade
-- **REL-03**: Score de saúde do cliente
-
-### Integração Julio
-
-- **JUL-01**: Processo estruturado para Julio reportar via formulário/WhatsApp
-- **JUL-02**: Pipeline separado para RCA externo
+### IA
+- **IA-01**: Agente Priorizador
+- **IA-02**: Agente Preditor (churn)
+- **IA-03**: Agente CS automático
+- **IA-04**: Agente WhatsApp contextual
 
 ## Out of Scope
 
 | Feature | Reason |
 |---------|--------|
-| Migração para web/SaaS | Sistema permanece Excel — Leandro opera nele diariamente |
-| API integrations (Mercos/SAP) | Sem acesso a APIs — dados via export manual |
-| Dark mode | Decisão do Leandro: tema LIGHT exclusivamente |
-| App mobile | Consultores usam desktop |
-| Integração ExactSales | Sistema foi descontinuado Out/2024 |
-| Dados fabricados/alucinação | 558 registros já classificados como ALUCINAÇÃO — não integrar |
-| IA/ML para predições | Fora do escopo v1 — foco em dados corretos primeiro |
+| Frontend web | Motor Python primeiro |
+| API REST | Rodar local primeiro |
+| WhatsApp bot | Fase 3 — depende Deskrio API |
+| Dashboard web | Terminal primeiro |
+| Multi-tenant | Solo operator |
+| Dark mode | NUNCA — regra LIGHT |
 
 ## Traceability
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| PROJ-01 | Phase 1 | Pending |
-| PROJ-02 | Phase 1 | Pending |
-| PROJ-03 | Phase 1 | Pending |
-| PROJ-04 | Phase 1 | Pending |
-| FAT-01 | Phase 2 | Pending |
-| FAT-02 | Phase 2 | Pending |
-| FAT-03 | Phase 2 | Pending |
-| FAT-04 | Phase 2 | Pending |
-| TIME-01 | Phase 3 | Pending |
-| TIME-02 | Phase 3 | Pending |
-| TIME-03 | Phase 3 | Pending |
-| LOG-01 | Phase 4 | Pending |
-| LOG-02 | Phase 4 | Pending |
-| LOG-03 | Phase 4 | Pending |
-| LOG-04 | Phase 4 | Pending |
-| LOG-05 | Phase 4 | Pending |
-| LOG-06 | Phase 4 | Pending |
-| LOG-07 | Phase 4 | Pending |
-| DASH-01 | Phase 5 | Pending |
-| DASH-02 | Phase 5 | Pending |
-| DASH-03 | Phase 5 | Pending |
-| DASH-04 | Phase 5 | Pending |
-| DASH-05 | Phase 5 | Pending |
-| ECOM-01 | Phase 6 | Pending |
-| ECOM-02 | Phase 6 | Pending |
-| ECOM-03 | Phase 6 | Pending |
-| REDE-01 | Phase 7 | Pending |
-| REDE-02 | Phase 7 | Pending |
-| REDE-03 | Phase 7 | Pending |
-| REDE-04 | Phase 7 | Pending |
-| META-01 | Phase 8 | Pending |
-| META-02 | Phase 8 | Pending |
-| META-03 | Phase 8 | Pending |
-| BLUE-01 | Phase 9 | Pending |
-| BLUE-02 | Phase 9 | Pending |
-| BLUE-03 | Phase 9 | Pending |
-| BLUE-04 | Phase 9 | Pending |
-| VAL-01 | Phase 10 | Pending |
-| VAL-02 | Phase 10 | Pending |
-| VAL-03 | Phase 10 | Pending |
-| VAL-04 | Phase 10 | Pending |
-| VAL-05 | Phase 10 | Pending |
-| VAL-06 | Phase 10 | Pending |
+| IMPORT-01 | Phase 11 | Pending |
+| IMPORT-02 | Phase 11 | Pending |
+| IMPORT-03 | Phase 11 | Pending |
+| IMPORT-04 | Phase 11 | Pending |
+| MOTOR-01 | Phase 12 | Pending |
+| MOTOR-02 | Phase 12 | Pending |
+| MOTOR-03 | Phase 12 | Pending |
+| SCORE-01 | Phase 13 | Pending |
+| SCORE-02 | Phase 13 | Pending |
+| SCORE-03 | Phase 13 | Pending |
+| SINAL-01 | Phase 13 | Pending |
+| SINAL-02 | Phase 13 | Pending |
+| AGENDA-01 | Phase 14 | Pending |
+| AGENDA-02 | Phase 14 | Pending |
+| AGENDA-03 | Phase 14 | Pending |
+| AGENDA-04 | Phase 14 | Pending |
+| PROJ-01 | Phase 15 | Pending |
+| PROJ-02 | Phase 15 | Pending |
+| EXPORT-01 | Phase 15 | Pending |
+| EXPORT-02 | Phase 15 | Pending |
 
-**Coverage:**
-- v1 requirements: 43 total
-- Mapped to phases: 43
-- Unmapped: 0 ✓
+**Coverage:** 20 requirements, 20 mapped, 0 unmapped
 
 ---
-*Requirements defined: 2026-02-15*
-*Last updated: 2026-02-15 after initialization via DEUS-AIOS*
+*Requirements defined: 2026-03-23*
