@@ -11,11 +11,11 @@ See: .planning/PROJECT.md (updated 2026-03-23)
 ## Current Position
 
 Phase: 11 of 15 (Import Pipeline)
-Plan: 0 of ? in current phase (plans TBD)
-Status: Ready to plan
-Last activity: 2026-03-23 — Milestone v2.0 roadmap criado com 5 fases (11-15) e 20 requisitos mapeados
+Plan: 1 of 2 in current phase
+Status: Executing
+Last activity: 2026-03-23 — 11-01-PLAN.md completo (config + helpers + import pipeline)
 
-Progress: [##########░░░░░░░░░░░░░░░░░░░░] 0% (v2.0) | 100% (v1.0)
+Progress: [#####░░░░░░░░░░░░░░░░░░░░░░░░░] 10% (v2.0) | 100% (v1.0)
 
 ## Previous Milestone (v1.0 — Excel Rebuild)
 - 10 fases completas, 31 planos, 43 requisitos, 154.302 formulas
@@ -30,7 +30,11 @@ Progress: [##########░░░░░░░░░░░░░░░░░░░�
 - Average duration: 12 min
 - Total execution time: 6.30 hours
 
-*Metricas v2.0 serao atualizadas conforme planos forem completados*
+**Velocity (v2.0):**
+- Plans completed: 1
+- 11-01: 8 min (2 tasks, 4 files)
+
+*Metricas v2.0 atualizadas conforme planos sao completados*
 
 ## Accumulated Context
 
@@ -42,6 +46,10 @@ Progress: [##########░░░░░░░░░░░░░░░░░░░�
 - [v2.0]: Motor Python extrai inteligencia do Excel — nao substitui a planilha
 - [v2.0]: Regras configuraveis (JSON/YAML), nao hardcoded
 - [v2.0]: Pesos do Score configuraveis externamente
+- [11-01]: Tab names usam nomes exatos da radiografia com acentos e espacos trailing
+- [11-01]: Header rows variam por aba (CARTEIRA=3, OPERACIONAL=2, SINALEIRO=4)
+- [11-01]: CNPJ normalizado com NaN->None explicito para prevenir float leakage
+- [11-01]: HELDER BRUNKOW (41 clientes) -> DESCONHECIDO (nao esta no DE-PARA)
 
 ### Pending Todos
 
@@ -49,13 +57,13 @@ None yet.
 
 ### Blockers/Concerns
 
-- Planilha FINAL (40 abas) eh a fonte de dados — precisa estar acessivel e validada
-- 558 registros ALUCINACAO devem ser excluidos no import (R8 do projeto)
-- openpyxl data_only=True pode nao retornar valores calculados — considerar alternativas
-- DE-PARA vendedores tem alias complexos (Rodrigo -> LARISSA, Manu Ditzel vs Hemanuele)
+- Planilha FINAL (40 abas) eh a fonte de dados — VALIDADA, acessivel, lida em ~7s
+- 558 registros ALUCINACAO devem ser excluidos no import (R8 do projeto) — PENDENTE para 11-02
+- openpyxl data_only=True: DRAFT 2 e RNC retornam 0 rows (formulas nao cached). Se necessario, re-salvar no Excel primeiro.
+- DE-PARA vendedores: RESOLVIDO, todos alias mapeados. HELDER BRUNKOW (41) = DESCONHECIDO.
 
 ## Session Continuity
 
 Last session: 2026-03-23
-Stopped at: Roadmap v2.0 criado com 5 fases (11-15), pronto para plan-phase 11
-Resume file: None
+Stopped at: Completed 11-01-PLAN.md (config + helpers + import pipeline). Proximo: 11-02-PLAN.md
+Resume file: .planning/phases/11-import-pipeline/11-01-SUMMARY.md
