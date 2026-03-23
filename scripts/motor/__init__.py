@@ -21,6 +21,10 @@ __all__ = [
     "normalizar_vendedor",
     "safe_read_sheet",
     "importar_planilha",
+    "classificar_registros",
+    "filtrar_alucinacao",
+    "unificar_base",
+    "validar_base",
 ]
 
 
@@ -29,6 +33,9 @@ def __getattr__(name):
     if name == "importar_planilha":
         from scripts.motor.import_pipeline import importar_planilha
         return importar_planilha
+    if name in ("classificar_registros", "filtrar_alucinacao", "unificar_base", "validar_base"):
+        from scripts.motor import classify
+        return getattr(classify, name)
     raise AttributeError(f"module 'scripts.motor' has no attribute {name!r}")
 
 __version__ = "2.0.0"
