@@ -17,16 +17,39 @@ O objetivo FINAL de todo este trabalho NÃO é "ter uma planilha limpa". É GERA
 - Se a CARTEIRA não gerar essa inteligência de agenda diária, TODO O TRABALHO DAS 10 FASES NÃO SERVE PRA NADA
 - As regras, status, grupos de colunas do funil na CARTEIRA já foram DESENHADOS para isso — respeitar 100%
 
-**Current focus:** Phase 10 Validacao Final IN PROGRESS -- Plans 01-02 COMPLETE. V13 FINAL produced (CLEAN_COPY). Delivery report generated. Next: Plan 10-03 (Excel real test).
+**Current focus:** Phase 10 Validacao Final — V16 tem formulas mas CARTEIRA aparece vazia (openpyxl nao calcula). Script V17 PRONTO para executar: pre-popula CARTEIRA com valores reais.
 
 ## Current Position
 
-Phase: 10 of 10 (Validacao Final) -- IN PROGRESS
-Plan: 2 of 3 in current phase (10-01 COMPLETE Audit, 10-02 COMPLETE V13 FINAL + Delivery Report)
-Status: V13 FINAL produced (CLEAN_COPY, 5.1 MB) -- delivery report generated covering 10 phases, 40 requirements
-Last activity: 2026-02-17 -- Plan 10-02 executed (Issue Remediation + Delivery Report)
+Phase: Not started (defining requirements)
+Plan: —
+Status: Milestone v2.0 iniciado — Motor Operacional SaaS
+Last activity: 2026-03-23 — Milestone v2.0 started, methodology aligned with us-county-radar
 
-Progress: [██████████████████████████████] 97% (plans 01-01..03, 02-01..03, 03-01..02, 04-01..04, 05-01..03, 06-01..02, 07-01..03, 08-01..02, 09-01..06, 10-01..02 of 33 total complete)
+Progress: [░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░] 0%
+
+## Previous Milestone (v1.0 — Excel Rebuild)
+- 10 fases completas, 32 planos, 154.302 fórmulas
+- V13→V43 iterações, planilha FINAL com 40 abas e 210K+ fórmulas
+- Velocidade média: 12 min/plano, 6.3h total
+
+## V16 UNIFICADO — Changelog (18/FEV/2026)
+
+### O que mudou V15→V16:
+1. **DRAFT 2 UNIFICADO**: Merge LOG (20.832 rows) + DRAFT 2 antigo (6.775 rows) = 21.516 registros unicos
+   - 4 formulas AUTO por row: SINALEIRO, TENTATIVA, GRUPO DASH, TIPO ACAO (86.064 formulas)
+   - 71.820 celulas preenchidas do V31 para gaps (SITUACAO, DIAS, ESTAGIO, TIPO CLI, etc.)
+   - Dedup por CNPJ+DATA+CONSULTOR, ordenado por DATA desc
+   - 2.360 CNPJs unicos (vs 554 na CARTEIRA)
+2. **LOG REMOVIDO**: DRAFT 2 eh a fonte unica de atendimentos
+3. **DRAFT 3 (SAP)**: Copiado do V31 (1.526 rows x 16 cols)
+4. **SINALEIRO**: Copiado do V31 (539 rows x 26 cols)
+5. **4 AGENDA tabs reconstruidas**: 32 colunas (layout V31 com SCORE + PRIORIDADE)
+   - SORTBY(FILTER()) puxando da CARTEIRA por consultor
+   - SCORE = ranking 6 fatores ponderados
+   - PRIORIDADE = 🔴 URGENTE / 🟡 ALTO / 🟢 MÉDIO / ⚪ BAIXO
+6. **CARTEIRA**: Layout corrigido (216 larguras, headers alinhados, freeze=BX4)
+7. **14 abas totais** na ordem V31: SINALEIRO, PROJECAO, DASH, REDES, COMITE, REGRAS, DRAFT 1-3, CARTEIRA, AGENDA x4
 
 ## DESCOBERTA CRITICA (16/FEV/2026)
 
@@ -243,7 +266,12 @@ As fórmulas da PROJEÇÃO **NÃO estão perdidas**:
 - [17/02]: CNPJ perfect 1:1 match: DRAFT 1 = CARTEIRA = 554, LOG = 20,830 records (2,156 unique), 0 format errors
 - [17/02]: V13 FINAL produced as CLEAN_COPY (0 fixes needed) -- byte-identical to V13 PROJECAO (5,399,741 bytes)
 - [17/02]: Delivery report generated: 10 phases, 40 requirements, 154,302 formulas, REGRA PRINCIPAL satisfied
-- [17/02]: VAL-06 PENDING -- requires opening CRM_VITAO360_V13_FINAL.xlsx in Excel 365 for real test
+- [17/02]: VAL-06 V13 FAILED -- user reported broken layout (CARTEIRA columns, AGENDA tabs, freeze_panes)
+- [17/02]: V14 FINAL generated with 15 corrections: 6 freeze_panes fixes, 2 auto_filter, 7 sheets column widths from V31
+- [17/02]: V13 vs V31 data confrontation: V31 has 5,460 CNPJs (10x more), V13 has 554 (zero duplicates, cleaner)
+- [17/02]: 470 CNPJs in common (85% of V13), 84 exclusive V13, 4,990 exclusive V31
+- [17/02]: V13 built from filtered dataset (SAP+Mercos merge), V31 imported full Mercos extract
+- [17/02]: V14 = V13 base + V31 layout fixes (freeze_panes, column widths, outline levels, auto_filter)
 
 ### Fase 1 Revisada
 
@@ -267,7 +295,35 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-17
-Stopped at: Completed 10-02-PLAN.md (V13 FINAL produced as CLEAN_COPY + Delivery Report generated)
-Resume file: .planning/phases/10-validacao-final/10-02-SUMMARY.md
-Next step: /gsd:execute-phase 10-validacao-final plan 03 (Excel real test -- VAL-06 checklist)
+Last session: 2026-02-18
+Stopped at: Script build_v17_prepopulado.py CRIADO mas NAO executado ainda. Usuario pediu para salvar e reiniciar o note.
+Resume file: .planning/phases/10-validacao-final/ (scripts em scripts/phase10_validacao_final/)
+
+### PROXIMO PASSO (executar ao retomar):
+1. Executar: `python3 scripts/phase10_validacao_final/build_v17_prepopulado.py`
+2. O script vai:
+   - Copiar V16 como base
+   - Ler DRAFT 1 (554 clientes estaticos) e indexar por CNPJ
+   - Ler DRAFT 2 (21K registros) e pegar ultimo atendimento por CNPJ
+   - Ler V31 CARTEIRA e DRAFT 2 (valores calculados) como fallback
+   - Para cada row da CARTEIRA: escrever VALORES REAIS (nao formulas) nas colunas:
+     - L (CONSULTOR) ← DRAFT 1
+     - AR (ESTAGIO FUNIL) ← DRAFT 2 ultimo
+     - AS (PROX FOLLOWUP) ← DRAFT 2
+     - AT (DATA ULT ATEND) ← DRAFT 2
+     - AU (ACAO FUTURA) ← DRAFT 2
+     - AV (ULTIMO RESULTADO) ← DRAFT 2
+     - AW (MOTIVO) ← DRAFT 2
+     - AX (TIPO CLIENTE) ← DRAFT 1
+     - AY (TENTATIVA) ← contagem Python
+     - AZ (FASE) ← DRAFT 2
+     - BH (PROX ACAO) ← DRAFT 2
+     - BI (ACAO DETALHADA) ← DRAFT 2
+     - BJ (SINALEIRO) ← calculado Python
+     - N (SITUACAO), P (DIAS SEM COMPRA) ← DRAFT 1/D2
+     - Todas as colunas vazias preenchidas do V31 CARTEIRA como fallback
+3. Salvar como V17 e verificar
+4. Se tudo OK, usuario abre no Excel e ve dados IMEDIATAMENTE (sem Ctrl+Alt+F9)
+
+### PROBLEMA RAIZ:
+openpyxl escreve formulas mas NAO calcula valores cached. O Excel mostra celulas vazias ate recalcular manualmente. Solucao: escrever VALORES em vez de formulas nas colunas que o usuario precisa ver.

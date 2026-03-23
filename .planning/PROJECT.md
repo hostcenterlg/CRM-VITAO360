@@ -4,6 +4,19 @@
 
 Sistema CRM completo em Excel para a VITAO Alimentos, distribuidora B2B de alimentos naturais sediada em Curitiba/PR. O CRM gerencia 489 clientes, 4 consultores comerciais, 8 redes de franquias (923 lojas), e integra dados de 3 sistemas externos (Mercos, SAP, Deskrio). Este é o rebuild definitivo de 16 meses de trabalho incremental que nunca atingiu 100% devido a limitações de contexto.
 
+## Current Milestone: v2.0 Motor Operacional SaaS
+
+**Goal:** Extrair toda inteligência do Excel (92 regras, Score, Sinaleiro, Agenda) para Python funcional que roda local com dados reais.
+
+**Target features:**
+- Motor de Regras Python (92 combinações SITUAÇÃO × RESULTADO → 9 dimensões)
+- Score Ranking (6 fatores ponderados → 0-100 + Pirâmide P1-P7)
+- Sinaleiro (saúde do cliente: dias sem compra vs ciclo médio)
+- Agenda Inteligente (40-60 atendimentos/consultor/dia priorizados por Score)
+- Import de dados (xlsx → base unificada Python)
+- Export (base processada → xlsx atualizado)
+- Projeção vs Meta (SAP + igualitária por cliente/mês)
+
 ## Core Value
 
 O CRM deve cruzar dados de vendas, atendimentos e prospecção de múltiplas fontes em uma CARTEIRA unificada que permite aos consultores comerciais operar com visibilidade total — sem fabricar dados, sem duplicar valores financeiros, sem perder histórico.
