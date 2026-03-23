@@ -219,7 +219,11 @@ Plans:
   3. Cada registro tem classificacao 3-tier (REAL/SINTETICO/ALUCINACAO) e os 558 registros ALUCINACAO sao excluidos automaticamente
   4. Nomes de vendedores estao canonicalizados pelo DE-PARA (Manu Vitao -> MANU, Larissa Vitao -> LARISSA, etc.) sem nenhum alias solto
   5. Base unificada eh salva em formato intermediario (JSON/Parquet) para consumo pelas fases seguintes
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 11-01-PLAN.md — Config + helpers + import pipeline (ler xlsx FINAL, normalizar CNPJs, DE-PARA vendedores)
+- [ ] 11-02-PLAN.md — Classificacao 3-tier, unificacao de base, export JSON, validacao humana
 
 ### Phase 12: Motor de Regras
 **Goal**: As 92 combinacoes de SITUACAO x RESULTADO do CRM produzem automaticamente as 9 dimensoes de saida (Estagio Funil, Fase, Tipo Contato, Acao Futura, Temperatura, etc.) via motor Python configuravel.
@@ -284,7 +288,7 @@ Fases 11-15 executam sequencialmente: 11 -> 12 -> 13 -> 14 -> 15
 | 8. Comite e Metas | v1.0 | 2/2 | Complete | 2026-02-17 |
 | 9. Blueprint v2 | v1.0 | 6/6 | Complete | 2026-02-17 |
 | 10. Validacao Final | v1.0 | 3/3 | Complete (V14 FINAL) | 2026-02-17 |
-| 11. Import Pipeline | v2.0 | 0/? | Not started | - |
+| 11. Import Pipeline | v2.0 | 0/2 | Planned | - |
 | 12. Motor de Regras | v2.0 | 0/? | Not started | - |
 | 13. Score + Sinaleiro | v2.0 | 0/? | Not started | - |
 | 14. Agenda Inteligente | v2.0 | 0/? | Not started | - |
