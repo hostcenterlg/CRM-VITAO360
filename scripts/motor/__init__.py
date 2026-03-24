@@ -10,6 +10,7 @@ Pipeline completo:
         -> calcular SITUACAO -> aplicar MOTOR (92 regras)
         -> calcular SCORE (6 fatores) -> gerar P1-P7
         -> calcular SINALEIRO -> gerar CADENCIA
+        -> calcular PROJECAO (realizado vs meta SAP)
         -> gerar AGENDA (40-60/consultor, Score desc)
         -> exportar xlsx
 """
@@ -25,6 +26,10 @@ __all__ = [
     "filtrar_alucinacao",
     "unificar_base",
     "validar_base",
+    "carregar_metas_sap",
+    "calcular_projecao",
+    "consolidar_projecao",
+    "gerar_dashboard_terminal",
 ]
 
 
@@ -36,6 +41,9 @@ def __getattr__(name):
     if name in ("classificar_registros", "filtrar_alucinacao", "unificar_base", "validar_base"):
         from scripts.motor import classify
         return getattr(classify, name)
+    if name in ("carregar_metas_sap", "calcular_projecao", "consolidar_projecao", "gerar_dashboard_terminal"):
+        from scripts.motor import projecao_engine
+        return getattr(projecao_engine, name)
     raise AttributeError(f"module 'scripts.motor' has no attribute {name!r}")
 
 __version__ = "2.0.0"

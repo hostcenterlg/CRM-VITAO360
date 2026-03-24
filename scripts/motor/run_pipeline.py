@@ -8,8 +8,9 @@ Encadeia todos os modulos do Motor Operacional em sequencia:
   Stage 3: MOTOR     -- aplica 92 regras (7 SITUACAO x 14 RESULTADO)
   Stage 4: SINALEIRO -- calcula sinaleiro, tipo_cliente, curva_abc, tentativas
   Stage 5: SCORE     -- score ponderado (0-100) + prioridade P0-P7
-  Stage 6: AGENDA    -- gera agendas diarias por consultor
-  Stage 7: EXPORT    -- salva JSONs de saida e stats
+  Stage 6: PROJECAO  -- realizado vs meta SAP, % alcancado, dashboard
+  Stage 7: AGENDA    -- gera agendas diarias por consultor
+  Stage 8: EXPORT    -- salva JSONs de saida e stats
 
 Uso:
     python -m scripts.motor.run_pipeline
@@ -66,7 +67,10 @@ if not sys.stdout.isatty():
 logger = logging.getLogger("motor.pipeline")
 
 # Mapeamento de stages a partir de --stage
-_STAGE_ORDER = ["import", "classify", "motor", "sinaleiro", "score", "agenda", "export"]
+_STAGE_ORDER = ["import", "classify", "motor", "sinaleiro", "score", "projecao", "agenda", "export"]
+
+# DataFrames brutos do import (preservados para stages que precisam de dados nao-unificados)
+_cached_dfs: dict[str, "pd.DataFrame"] = {}
 
 
 # ---------------------------------------------------------------------------
@@ -288,7 +292,7 @@ def stage_import(verbose: bool = False) -> tuple[pd.DataFrame, StageResult]:
         Tupla (base_df, StageResult).
     """
     resultado = StageResult("IMPORT")
-    t0 = _log_stage_start(1, 7, "IMPORT -- Lendo planilha FINAL")
+    t0 = _log_stage_start(1, 8, "IMPORT -- Lendo planilha FINAL")
 
     try:
         from scripts.motor.import_pipeline import importar_planilha
@@ -302,13 +306,17 @@ def stage_import(verbose: bool = False) -> tuple[pd.DataFrame, StageResult]:
         dfs = importar_planilha()
         logger.info("Importacao: %d abas lidas", len(dfs))
 
-        # 1b. Classificar 3-tier
+        # 1b. Preservar DataFrames brutos para stages posteriores (projecao)
+        _cached_dfs.clear()
+        _cached_dfs.update(dfs)
+
+        # 1c. Classificar 3-tier
         dfs_class = classificar_registros(dfs)
 
-        # 1c. Filtrar ALUCINACAO
+        # 1d. Filtrar ALUCINACAO
         dfs_filtrado = filtrar_alucinacao(dfs_class)
 
-        # 1d. Unificar base (CARTEIRA como fonte primaria)
+        # 1e. Unificar base (CARTEIRA como fonte primaria)
         base = unificar_base(dfs_filtrado)
 
         resultado.registros = len(base)
@@ -342,7 +350,7 @@ def stage_classify(base: pd.DataFrame) -> tuple[pd.DataFrame, StageResult]:
         Tupla (base_enriquecida, StageResult).
     """
     resultado = StageResult("CLASSIFY")
-    t0 = _log_stage_start(2, 7, "CLASSIFY -- Validando classificacao 3-tier")
+    t0 = _log_stage_start(2, 8, "CLASSIFY -- Validando classificacao 3-tier")
 
     try:
         from scripts.motor.classify import validar_base
@@ -406,7 +414,7 @@ def stage_motor(base: pd.DataFrame) -> tuple[pd.DataFrame, StageResult]:
         Tupla (base_enriquecida, StageResult).
     """
     resultado = StageResult("MOTOR")
-    t0 = _log_stage_start(3, 7, "MOTOR DE REGRAS -- Aplicando 92 regras")
+    t0 = _log_stage_start(3, 8, "MOTOR DE REGRAS -- Aplicando 92 regras")
 
     try:
         from scripts.motor.motor_regras import aplicar_regras_batch, CAMPOS_OUTPUT
@@ -502,7 +510,7 @@ def stage_sinaleiro(base: pd.DataFrame) -> tuple[pd.DataFrame, StageResult]:
         Tupla (base_com_sinaleiro, StageResult).
     """
     resultado = StageResult("SINALEIRO")
-    t0 = _log_stage_start(4, 7, "SINALEIRO -- Calculando saude dos clientes")
+    t0 = _log_stage_start(4, 8, "SINALEIRO -- Calculando saude dos clientes")
 
     try:
         from scripts.motor.sinaleiro_engine import (
@@ -635,7 +643,7 @@ def stage_score(base: pd.DataFrame) -> tuple[pd.DataFrame, StageResult]:
         Tupla (base_com_score, StageResult).
     """
     resultado = StageResult("SCORE")
-    t0 = _log_stage_start(5, 7, "SCORE + PRIORIDADE -- Calculando P0-P7")
+    t0 = _log_stage_start(5, 8, "SCORE + PRIORIDADE -- Calculando P0-P7")
 
     try:
         from scripts.motor.score_engine import calcular_score_batch
@@ -694,11 +702,78 @@ def stage_score(base: pd.DataFrame) -> tuple[pd.DataFrame, StageResult]:
 
 
 # ---------------------------------------------------------------------------
-# Stage 6: AGENDA
+# Stage 6: PROJECAO
+# ---------------------------------------------------------------------------
+
+def stage_projecao(base: pd.DataFrame) -> tuple[pd.DataFrame, StageResult]:
+    """Stage 6: calcula realizado vs meta SAP e enriquece base.
+
+    Usa DataFrames brutos do import (_cached_dfs) para extrair metas
+    e vendas mensais. Adiciona colunas de projecao ao base.
+
+    Args:
+        base: DataFrame com clientes enriquecidos (pos-score).
+
+    Returns:
+        Tupla (base_enriquecida, StageResult).
+    """
+    resultado = StageResult("PROJECAO")
+    t0 = _log_stage_start(6, 8, "PROJECAO -- Realizado vs Meta SAP")
+
+    try:
+        from scripts.motor.projecao_engine import (
+            carregar_metas_sap,
+            calcular_projecao,
+            consolidar_projecao,
+            gerar_dashboard_terminal,
+        )
+
+        # 6a. Carregar metas (usa dfs brutos do import)
+        if _cached_dfs:
+            metas = carregar_metas_sap(_cached_dfs)
+        else:
+            # Fallback: se pipeline rodou com --skip-import, sem dfs
+            logger.warning("Sem DataFrames brutos -- projecao com dados limitados")
+            metas = pd.DataFrame()
+
+        if metas.empty:
+            resultado.elapsed = _log_stage_ok(
+                t0, "Sem metas SAP disponíveis — projeção parcial"
+            )
+            resultado.registros = len(base)
+            return base, resultado
+
+        # 6b. Calcular projecao
+        base = calcular_projecao(base, metas)
+
+        # 6c. Consolidar e gerar dashboard
+        consolidado = consolidar_projecao(base)
+        dashboard = gerar_dashboard_terminal(base, consolidado)
+
+        # Imprimir dashboard
+        print(dashboard)
+
+        n_com_meta = base["meta_anual"].notna().sum() if "meta_anual" in base.columns else 0
+        resultado.registros = len(base)
+        resultado.elapsed = _log_stage_ok(
+            t0,
+            f"{len(base)} registros, {n_com_meta} com meta SAP",
+        )
+        return base, resultado
+
+    except Exception as exc:
+        resultado.elapsed = _log_stage_fail(t0, str(exc))
+        resultado.fail(str(exc))
+        logger.exception("Stage PROJECAO falhou")
+        return base, resultado
+
+
+# ---------------------------------------------------------------------------
+# Stage 7: AGENDA
 # ---------------------------------------------------------------------------
 
 def stage_agenda(base: pd.DataFrame) -> tuple[dict[str, pd.DataFrame], StageResult]:
-    """Stage 6: gera agendas diarias por consultor.
+    """Stage 7: gera agendas diarias por consultor.
 
     Utiliza agenda_engine.gerar_agenda() que internamente:
       - filtra por consultor (DE-PARA aplicado)
@@ -715,7 +790,7 @@ def stage_agenda(base: pd.DataFrame) -> tuple[dict[str, pd.DataFrame], StageResu
         Tupla (dict{consultor: DataFrame_agenda}, StageResult).
     """
     resultado = StageResult("AGENDA")
-    t0 = _log_stage_start(6, 7, "AGENDA -- Gerando agendas por consultor")
+    t0 = _log_stage_start(7, 8, "AGENDA -- Gerando agendas por consultor")
 
     try:
         from scripts.motor.agenda_engine import gerar_agenda
@@ -787,7 +862,7 @@ def stage_export(
         StageResult do stage EXPORT.
     """
     resultado = StageResult("EXPORT")
-    t0 = _log_stage_start(7, 7, "EXPORT -- Salvando outputs")
+    t0 = _log_stage_start(8, 8, "EXPORT -- Salvando outputs")
 
     if dry_run:
         print(f"      {_YELLOW}DRY RUN{_RESET} -- nenhum arquivo salvo")
@@ -1003,7 +1078,7 @@ def run_pipeline(
 ) -> dict[str, Any]:
     """Executa o pipeline completo CRM VITAO360.
 
-    Encadeia todos os 7 stages em ordem, com degradacao gracista:
+    Encadeia todos os 8 stages em ordem, com degradacao gracista:
     se um stage falhar, o pipeline tenta continuar com o proximo
     usando o DataFrame disponivel.
 
@@ -1061,7 +1136,7 @@ def run_pipeline(
         if skip_import:
             # Carregar do JSON
             t0_json = time.time()
-            print(f"\n{_CYAN}[1/7] IMPORT (skip) -- Carregando base_unificada.json...{_RESET}")
+            print(f"\n{_CYAN}[1/8] IMPORT (skip) -- Carregando base_unificada.json...{_RESET}")
             try:
                 base = _carregar_base_json(_BASE_UNIFICADA_JSON)
                 elapsed_json = time.time() - t0_json
@@ -1139,7 +1214,18 @@ def run_pipeline(
     resultados.append(sr_score)
 
     # -----------------------------------------------------------------------
-    # Stage 6: AGENDA
+    # Stage 6: PROJECAO
+    # -----------------------------------------------------------------------
+    sr_projecao = StageResult("PROJECAO")
+    if not _deve_executar("projecao"):
+        _log_stage_skip("PROJECAO")
+        sr_projecao.skip()
+    else:
+        base, sr_projecao = stage_projecao(base)
+    resultados.append(sr_projecao)
+
+    # -----------------------------------------------------------------------
+    # Stage 7: AGENDA
     # -----------------------------------------------------------------------
     sr_agenda = StageResult("AGENDA")
     if not _deve_executar("agenda"):
@@ -1150,7 +1236,7 @@ def run_pipeline(
     resultados.append(sr_agenda)
 
     # -----------------------------------------------------------------------
-    # Stage 7: EXPORT
+    # Stage 8: EXPORT
     # -----------------------------------------------------------------------
     sr_export = StageResult("EXPORT")
     if not _deve_executar("export"):
