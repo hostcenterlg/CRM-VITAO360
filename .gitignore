@@ -25,11 +25,18 @@ desktop.ini
 # Node
 node_modules/
 
-# Dados grandes (não versionar binários Excel no git)
-# Descomentar se quiser excluir do git:
-# data/sources/**/*.xlsx
-# data/sources/**/*.xls
-# data/output/**/*.xlsx
+# Cache runtime
+.cache/
+
+# Backup directories
+data/desktop_backup/
+
+# Phase 10 intermediate xlsx (30 builds, generated output)
+data/output/phase10/*.xlsx
+
+# Backup xlsx files
+data/output/*BACKUP*.xlsx
+data/output/test_grouping.xlsx
 
 # NotebookLM (dados muito grandes)
 data/sources/deskrio/tickets/Notebooklm/
