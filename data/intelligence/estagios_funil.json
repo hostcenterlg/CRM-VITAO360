@@ -1,0 +1,138 @@
+{
+  "meta": {
+    "titulo": "14 ESTAGIOS DO FUNIL — Kanban sequencial (1 posicao por vez)",
+    "total_estagios": 14,
+    "tipos_estagio": [
+      "ATIVO",
+      "CICLICO",
+      "ESTRATEGICO",
+      "MANUTENCAO",
+      "MARCO",
+      "OPERACIONAL",
+      "PASSIVO",
+      "REATIVO"
+    ]
+  },
+  "estagios": [
+    {
+      "numero": 1,
+      "estagio": "INICIO CONTATO",
+      "descricao": "Primeiro contato sendo feito",
+      "tipo": "ATIVO",
+      "quando_acontece": "Consultor inicia contato",
+      "saida": "Respondeu? → EM ATENDIMENTO. Nao? → TENTATIVA"
+    },
+    {
+      "numero": 2,
+      "estagio": "TENTATIVA",
+      "descricao": "Tentando falar, ainda sem resposta",
+      "tipo": "ATIVO",
+      "quando_acontece": "T1-T4 em andamento",
+      "saida": "Respondeu? → EM ATENDIMENTO. T4? → NUTRICAO"
+    },
+    {
+      "numero": 3,
+      "estagio": "PROSPECÇÃO",
+      "descricao": "Nao respondeu, continuamos tentando",
+      "tipo": "ATIVO",
+      "quando_acontece": "Cliente nao deu retorno",
+      "saida": "Respondeu? → EM ATENDIMENTO"
+    },
+    {
+      "numero": 4,
+      "estagio": "EM ATENDIMENTO",
+      "descricao": "Respondeu, conversa ativa (2 pessoas falando)",
+      "tipo": "ATIVO",
+      "quando_acontece": "Cliente respondeu/interagiu",
+      "saida": "Resultado do atendimento define proximo estagio"
+    },
+    {
+      "numero": 5,
+      "estagio": "CADASTRO",
+      "descricao": "Fazendo cadastro (prospect ou novo)",
+      "tipo": "ATIVO",
+      "quando_acontece": "Prospect deu abertura pra cadastrar",
+      "saida": "Cadastrado → ORCAMENTO"
+    },
+    {
+      "numero": 6,
+      "estagio": "ORCAMENTO",
+      "descricao": "Proposta/orcamento enviado",
+      "tipo": "ATIVO",
+      "quando_acontece": "Cliente pediu preco/condições",
+      "saida": "Aprovou → PEDIDO. Nao → FOLLOW-UP"
+    },
+    {
+      "numero": 7,
+      "estagio": "PEDIDO",
+      "descricao": "Pedido fechado, venda realizada",
+      "tipo": "MARCO",
+      "quando_acontece": "Cliente confirmou compra",
+      "saida": "Automatico → ACOMP POS-VENDA D+4"
+    },
+    {
+      "numero": 8,
+      "estagio": "ACOMP POS-VENDA",
+      "descricao": "D+4: Faturou? Saiu da expedicao? Transportadora?",
+      "tipo": "OPERACIONAL",
+      "quando_acontece": "4 dias apos PEDIDO",
+      "saida": "Confirmado → POS-VENDA D+15"
+    },
+    {
+      "numero": 9,
+      "estagio": "POS-VENDA",
+      "descricao": "D+15: Recebeu? Chegou bem? Algum problema?",
+      "tipo": "OPERACIONAL",
+      "quando_acontece": "15 dias apos PEDIDO",
+      "saida": "OK → CS D+30"
+    },
+    {
+      "numero": 10,
+      "estagio": "CS",
+      "descricao": "D+30: Tentativa de recompra. MKT, kit visual, acao comercial.",
+      "tipo": "ESTRATEGICO",
+      "quando_acontece": "30 dias apos PEDIDO",
+      "saida": "Vendeu → PEDIDO. Nao vendeu → FOLLOW-UP"
+    },
+    {
+      "numero": 11,
+      "estagio": "FOLLOW-UP",
+      "descricao": "Loop D+15 ou D+30 apos CS. Persistencia comercial.",
+      "tipo": "CICLICO",
+      "quando_acontece": "CS nao converteu",
+      "saida": "Vendeu → PEDIDO. Nao → novo FOLLOW-UP ou NUTRICAO"
+    },
+    {
+      "numero": 12,
+      "estagio": "SUPORTE",
+      "descricao": "Problema a resolver (entrega, qualidade, NF, etc)",
+      "tipo": "REATIVO",
+      "quando_acontece": "Cliente reportou problema",
+      "saida": "Resolvido → volta ao estagio anterior"
+    },
+    {
+      "numero": 13,
+      "estagio": "RELACIONAMENTO",
+      "descricao": "Manutencao de cliente ativo sem demanda especifica",
+      "tipo": "MANUTENCAO",
+      "quando_acontece": "Cliente estavel, sem acao urgente",
+      "saida": "Novo ciclo → RECOMPRA/CS"
+    },
+    {
+      "numero": 14,
+      "estagio": "NUTRICAO",
+      "descricao": "T4+ sem resposta. Campanha 1x/mes.",
+      "tipo": "PASSIVO",
+      "quando_acontece": "Esgotou tentativas T1-T4",
+      "saida": "Respondeu → RESET → volta INICIO CONTATO"
+    }
+  ],
+  "fluxo_sequencial": [
+    "JORNADA PRE-VENDA: INICIO CONTATO → TENTATIVA → [respondeu?] SIM→EM ATENDIMENTO | NAO→PROSPECÇÃO",
+    "JORNADA VENDA: EM ATENDIMENTO → CADASTRO → ORCAMENTO → PEDIDO",
+    "JORNADA POS-VENDA: PEDIDO → ACOMP POS-VENDA(D+4) → POS-VENDA(D+15) → CS(D+30)",
+    "LOOP FOLLOW-UP: CS nao vendeu → FOLLOW-UP(D+15/D+30) → nao vendeu → FOLLOW-UP → ... → NUTRICAO",
+    "AUXILIARES: SUPORTE (problema) | RELACIONAMENTO (manutencao) | NUTRICAO (esgotou)",
+    "RESET: Qualquer estagio + cliente responde → volta INICIO CONTATO com T1"
+  ]
+}

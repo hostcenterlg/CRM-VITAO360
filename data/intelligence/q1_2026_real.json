@@ -1,0 +1,162 @@
+{
+  "_fonte": "VITAO360_ULTRA_FINAL (5).xlsx | 5. Q1 2026 REAL",
+  "_auditoria": "SAP Vendas Jan-Mar 2026 | 2.758 itens SAP | 178 clientes F2B",
+  "nota_marco_parcial": "* Março parcial (13 de 22 dias úteis). Projeção linear não recomendada — FACILITIES distorce.",
+  "faturamento_real": [
+    {
+      "mes": "Janeiro",
+      "faturamento": 108253,
+      "clientes": 64,
+      "pedidos": 81,
+      "ticket_medio": 1569,
+      "novos": 64,
+      "recompra": 0,
+      "obs": null
+    },
+    {
+      "mes": "Fevereiro",
+      "faturamento": 109531,
+      "clientes": 68,
+      "pedidos": 94,
+      "ticket_medio": 1165,
+      "novos": 57,
+      "recompra": 11,
+      "obs": "11 recompraram"
+    },
+    {
+      "mes": "Março*",
+      "faturamento": 241682,
+      "clientes": 78,
+      "pedidos": 102,
+      "ticket_medio": 2912,
+      "novos": 56,
+      "recompra": 22,
+      "obs": "Parcial 18/03. FACILITIES=R$133k (55%)"
+    },
+    {
+      "mes": "TOTAL Q1",
+      "faturamento": 459465,
+      "clientes": 178,
+      "pedidos": 277,
+      "ticket_medio": 1659,
+      "novos": 178,
+      "recompra": 32,
+      "obs": "*Março parcial — não extrapolar"
+    }
+  ],
+  "validacao_modelo": [
+    {
+      "indicador": "2.758 itens SAP  |  178 clientes F2B  |  Março parcial até 18/03  |  FACILITIES = 29% do Q1",
+      "modelo": null,
+      "real": null,
+      "variacao": null,
+      "status": null,
+      "observacao": null
+    },
+    {
+      "indicador": "FATURAMENTO REAL Q1 2026 (SAP VENDAS INTERNAS)",
+      "modelo": null,
+      "real": null,
+      "variacao": null,
+      "status": null,
+      "observacao": null
+    },
+    {
+      "indicador": "Mês",
+      "modelo": "Faturamento",
+      "real": "Clientes",
+      "variacao": "Pedidos",
+      "status": "Ticket Médio",
+      "observacao": "Novos"
+    },
+    {
+      "indicador": "Janeiro",
+      "modelo": 108253,
+      "real": 64,
+      "variacao": 81,
+      "status": 1569,
+      "observacao": 64
+    },
+    {
+      "indicador": "Fevereiro",
+      "modelo": 109531,
+      "real": 68,
+      "variacao": 94,
+      "status": 1165,
+      "observacao": 57
+    },
+    {
+      "indicador": "Março*",
+      "modelo": 241682,
+      "real": 78,
+      "variacao": 102,
+      "status": 2912,
+      "observacao": 56
+    },
+    {
+      "indicador": "TOTAL Q1",
+      "modelo": 459465,
+      "real": 178,
+      "variacao": 277,
+      "status": 1659,
+      "observacao": 178
+    },
+    {
+      "indicador": "* Março parcial (13 de 22 dias úteis). Projeção linear não recomendada — FACILITIES distorce.",
+      "modelo": null,
+      "real": null,
+      "variacao": null,
+      "status": null,
+      "observacao": null
+    },
+    {
+      "indicador": "Ticket Médio/Pedido",
+      "modelo": "R$ 1.500",
+      "real": "R$ 1.569",
+      "variacao": "+4,6%",
+      "status": "✓ CONFIRMADO",
+      "observacao": "Modelo conservador — ok"
+    },
+    {
+      "indicador": "Churn 1ª compra",
+      "modelo": "80%",
+      "real": "83%",
+      "variacao": "+3pp",
+      "status": "✓ CONFIRMADO",
+      "observacao": "Próximo da premissa"
+    },
+    {
+      "indicador": "Novos clientes/mês",
+      "modelo": "22",
+      "real": "59",
+      "variacao": "+168%",
+      "status": "★ SUPERADO",
+      "observacao": "59 SEM vendedora estruturada"
+    },
+    {
+      "indicador": "Recompra Q1",
+      "modelo": "~10 cli",
+      "real": "30 cli",
+      "variacao": "+200%",
+      "status": "★ SUPERADO",
+      "observacao": "Ciclo menor que esperado"
+    },
+    {
+      "indicador": "Fat. base sem equipe",
+      "modelo": "R$100K/mês",
+      "real": "R$109K/mês",
+      "variacao": "+9%",
+      "status": "✓ CONFIRMADO",
+      "observacao": "Base orgânica sólida"
+    },
+    {
+      "indicador": "Fat. Q1 total",
+      "modelo": "R$ 503K",
+      "real": "R$ 459K*",
+      "variacao": "−8,7%",
+      "status": "⚠ PARCIAL",
+      "observacao": "Março 13 de 22 dias úteis"
+    }
+  ],
+  "veredito": "VEREDITO: Modelo CONSERVADOR — 4 de 5 premissas confirmadas ou superadas. 59 novos/mês já acontecem SEM equipe. Com equipe: modelo projeta R$3,16M (+58%)."
+}

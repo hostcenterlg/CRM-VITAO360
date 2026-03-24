@@ -1,0 +1,65 @@
+{
+  "meta": {
+    "titulo": "6 FASES ESTRATEGICAS — Ciclo de vida comercial",
+    "total_fases": 6,
+    "scores": {
+      "PROSPECÇÃO": 30,
+      "NEGOCIAÇÃO": 80,
+      "RECOMPRA": 100,
+      "SALVAMENTO": 60,
+      "RECUPERAÇÃO": 40,
+      "NUTRIÇÃO": 10
+    }
+  },
+  "fases": [
+    {
+      "numero": 1,
+      "fase": "PROSPECÇÃO",
+      "descricao": "Nunca comprou. Tentando conquistar.",
+      "quando_gerar": "SITUACAO=PROSPECT",
+      "situacao_tipica": "Prospect + T1-T4",
+      "score": 30
+    },
+    {
+      "numero": 2,
+      "fase": "NEGOCIAÇÃO",
+      "descricao": "Ativo, em conversa. Namoro novo.",
+      "quando_gerar": "EM ATENDIMENTO + deu abertura",
+      "situacao_tipica": "Ativo + EM ATENDIMENTO/ORCAMENTO",
+      "score": 80
+    },
+    {
+      "numero": 3,
+      "fase": "RECOMPRA",
+      "descricao": "Ativo, no ciclo de recompra. Cultivar.",
+      "quando_gerar": "ATIVO + dentro do ciclo medio",
+      "situacao_tipica": "Recorrente/Fidelizado + SINALEIRO VERDE/AMARELO",
+      "score": 100
+    },
+    {
+      "numero": 4,
+      "fase": "SALVAMENTO",
+      "descricao": "Inativo recente. Salvar antes que piore.",
+      "quando_gerar": "SITUACAO=INAT.REC",
+      "situacao_tipica": "Era ativo, parou. SINALEIRO VERMELHO",
+      "score": 60
+    },
+    {
+      "numero": 5,
+      "fase": "RECUPERAÇÃO",
+      "descricao": "Inativo antigo. Trazer de volta.",
+      "quando_gerar": "SITUACAO=INAT.ANT",
+      "situacao_tipica": "Sumiu ha meses. SINALEIRO ROXO",
+      "score": 40
+    },
+    {
+      "numero": 6,
+      "fase": "NUTRIÇÃO",
+      "descricao": "Esgotou tentativas. Campanha 1x/mes.",
+      "quando_gerar": "T4+ sem resposta",
+      "situacao_tipica": "Qualquer situacao + nao responde ha muito tempo",
+      "score": 10
+    }
+  ],
+  "filosofia": "FILOSOFIA: CULTIVAR(recompra) > CONQUISTAR(prospecção/negociação) > RECUPERAR(salvamento/recuperação) > NUTRIR"
+}

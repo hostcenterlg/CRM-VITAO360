@@ -1,0 +1,2417 @@
+{
+  "metadata": {
+    "version": "1.0",
+    "extracted_by": "@data-engineer — CRM VITAO360",
+    "source_file": "CRM_VITAO360  INTELIGENTE   FINAL OK .xlsx",
+    "sheet_name": "CARTEIRA",
+    "description": "CARTEIRA sheet column architecture — groups, subgroups, column names, formula patterns, and stats"
+  },
+  "stats": {
+    "total_columns": 144,
+    "total_formulas": 180477,
+    "total_data_rows": 1590,
+    "grupos_count": 14,
+    "columns_with_formula_samples": 114,
+    "formula_header_columns": 36,
+    "source_file": "CRM_VITAO360  INTELIGENTE   FINAL OK .xlsx",
+    "sheet_name": "CARTEIRA",
+    "max_row": 1593
+  },
+  "groups_summary": [
+    {
+      "grupo_nome": "🟣 MERCOS",
+      "col_range": "A-AA",
+      "col_start": 1,
+      "col_end": 27,
+      "num_columns": 27,
+      "subgrupos": [
+        "ANCORA",
+        "IDENTIDADE",
+        "REDE",
+        "EQUIPE",
+        "STATUS",
+        "COMPRA",
+        "ECOMMERCE",
+        "ATENDIMENTO MERCOS"
+      ]
+    },
+    {
+      "grupo_nome": "VENDAS 2025",
+      "col_range": "AB-AN",
+      "col_start": 28,
+      "col_end": 40,
+      "num_columns": 13,
+      "subgrupos": [
+        "TOTAL 2025",
+        "2025-01",
+        "2025-02",
+        "2025-03",
+        "2025-04",
+        "2025-05",
+        "2025-06",
+        "2025-07",
+        "2025-08",
+        "2025-09",
+        "2025-10",
+        "2025-11",
+        "2025-12"
+      ]
+    },
+    {
+      "grupo_nome": "VENDAS 2026",
+      "col_range": "AO-BA",
+      "col_start": 41,
+      "col_end": 53,
+      "num_columns": 13,
+      "subgrupos": [
+        "TOTAL 2026",
+        "2026-01",
+        "2026-02",
+        "2026-03",
+        "2026-04",
+        "2026-05",
+        "2026-06",
+        "2026-07",
+        "2026-08",
+        "2026-09",
+        "2026-10",
+        "2026-11",
+        "2026-12"
+      ]
+    },
+    {
+      "grupo_nome": "VENDAS",
+      "col_range": "BB-BI",
+      "col_start": 54,
+      "col_end": 61,
+      "num_columns": 8,
+      "subgrupos": [
+        "RECORRÊNCIA",
+        "TIPO CLIENTE"
+      ]
+    },
+    {
+      "grupo_nome": "🔵 FUNIL",
+      "col_range": "BJ-CB",
+      "col_start": 62,
+      "col_end": 80,
+      "num_columns": 19,
+      "subgrupos": [
+        "ANCORA",
+        "PIPELINE",
+        "PERFIL",
+        "MATURIDADE",
+        "CONVERSÃO",
+        "AÇÃO",
+        "SINAL"
+      ]
+    },
+    {
+      "grupo_nome": "SAP",
+      "col_range": "CC-CE",
+      "col_start": 81,
+      "col_end": 83,
+      "num_columns": 3,
+      "subgrupos": [
+        "CÓDIGO DO CLIENTE",
+        "CNPJ",
+        "RAZÃO SOCIAL"
+      ]
+    },
+    {
+      "grupo_nome": "🚦 STATUS SAP",
+      "col_range": "CF-CH",
+      "col_start": 84,
+      "col_end": 86,
+      "num_columns": 3,
+      "subgrupos": [
+        "CADASTRO",
+        "ATENDIMENTO",
+        "BLOQUEIO"
+      ]
+    },
+    {
+      "grupo_nome": "⚫ DADOS CADASTRAIS SAP",
+      "col_range": "CI-CQ",
+      "col_start": 87,
+      "col_end": 95,
+      "num_columns": 9,
+      "subgrupos": [
+        "DESCRIÇÃO GRUPO CLIENTE",
+        "ZP NOME GERENTE NACIONAL",
+        "ZR NOME REPRESENTANTE",
+        "ZV NOME VEND INTERNO",
+        "01 NOME DO CANAL",
+        "02 NOME TIPO CLIENTE",
+        "03 NOME MACROREGIÃO",
+        "04 NOME MICROREGIÃO",
+        "06 NOME GRUPO CHAVE"
+      ]
+    },
+    {
+      "grupo_nome": "📊 ANUAL",
+      "col_range": "CR-CT",
+      "col_start": 96,
+      "col_end": 98,
+      "num_columns": 3,
+      "subgrupos": [
+        "META",
+        "REALIZADO",
+        "% ALCANÇADO"
+      ]
+    },
+    {
+      "grupo_nome": "Q1",
+      "col_range": "CU-CW",
+      "col_start": 99,
+      "col_end": 101,
+      "num_columns": 3,
+      "subgrupos": [
+        "META SAP TRI",
+        "META IGUALIT. TRI",
+        "% ALCANÇADO TRI"
+      ]
+    },
+    {
+      "grupo_nome": "JANEIRO",
+      "col_range": "CX-DH",
+      "col_start": 102,
+      "col_end": 112,
+      "num_columns": 11,
+      "subgrupos": [
+        "META SAP",
+        "META IGUALIT.",
+        "DATA PEDIDO",
+        "JUSTIFICATIVA",
+        "REALIZADO",
+        "% SAP"
+      ]
+    },
+    {
+      "grupo_nome": "FEVEREIRO",
+      "col_range": "DI-DS",
+      "col_start": 113,
+      "col_end": 123,
+      "num_columns": 11,
+      "subgrupos": [
+        "META SAP",
+        "META IGUALIT.",
+        "% IGUALIT.",
+        "DATA PEDIDO",
+        "JUSTIFICATIVA",
+        "REALIZADO",
+        "% SAP"
+      ]
+    },
+    {
+      "grupo_nome": "MARÇO",
+      "col_range": "DT-ED",
+      "col_start": 124,
+      "col_end": 134,
+      "num_columns": 11,
+      "subgrupos": [
+        "META SAP",
+        "META IGUALIT.",
+        "% IGUALIT.",
+        "DATA PEDIDO",
+        "JUSTIFICATIVA",
+        "REALIZADO",
+        "% SAP"
+      ]
+    },
+    {
+      "grupo_nome": "Q1 ⚓",
+      "col_range": "EE-EN",
+      "col_start": 135,
+      "col_end": 144,
+      "num_columns": 10,
+      "subgrupos": [
+        "REALIZADO TRI",
+        "% TRI SAP",
+        "⭐ SCORE & PRIORIDADE v2"
+      ]
+    }
+  ],
+  "column_map": [
+    {
+      "col_number": 1,
+      "col_letter": "A",
+      "grupo": "🟣 MERCOS",
+      "subgrupo": "ANCORA",
+      "nome_coluna": "NOME FANTASIA",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 2,
+      "col_letter": "B",
+      "grupo": "🟣 MERCOS",
+      "subgrupo": "IDENTIDADE",
+      "nome_coluna": "CNPJ",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 3,
+      "col_letter": "C",
+      "grupo": "🟣 MERCOS",
+      "subgrupo": "IDENTIDADE",
+      "nome_coluna": "RAZÃO SOCIAL",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 4,
+      "col_letter": "D",
+      "grupo": "🟣 MERCOS",
+      "subgrupo": "IDENTIDADE",
+      "nome_coluna": "UF",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 5,
+      "col_letter": "E",
+      "grupo": "🟣 MERCOS",
+      "subgrupo": "IDENTIDADE",
+      "nome_coluna": "CIDADE",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 6,
+      "col_letter": "F",
+      "grupo": "🟣 MERCOS",
+      "subgrupo": "IDENTIDADE",
+      "nome_coluna": "EMAIL",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 7,
+      "col_letter": "G",
+      "grupo": "🟣 MERCOS",
+      "subgrupo": "IDENTIDADE",
+      "nome_coluna": "TELEFONE",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 8,
+      "col_letter": "H",
+      "grupo": "🟣 MERCOS",
+      "subgrupo": "IDENTIDADE",
+      "nome_coluna": "DATA CADASTRO",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 9,
+      "col_letter": "I",
+      "grupo": "🟣 MERCOS",
+      "subgrupo": "REDE",
+      "nome_coluna": "REDE REGIONAL",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 10,
+      "col_letter": "J",
+      "grupo": "🟣 MERCOS",
+      "subgrupo": "REDE",
+      "nome_coluna": "ÚLT REGISTRO MERCOS",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 11,
+      "col_letter": "K",
+      "grupo": "🟣 MERCOS",
+      "subgrupo": "EQUIPE",
+      "nome_coluna": "CONSULTOR",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 12,
+      "col_letter": "L",
+      "grupo": "🟣 MERCOS",
+      "subgrupo": "EQUIPE",
+      "nome_coluna": "VENDEDOR ÚLTIMO PEDIDO",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 13,
+      "col_letter": "M",
+      "grupo": "🟣 MERCOS",
+      "subgrupo": "STATUS",
+      "nome_coluna": "SITUAÇÃO",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 14,
+      "col_letter": "N",
+      "grupo": "🟣 MERCOS",
+      "subgrupo": "STATUS",
+      "nome_coluna": "PRIORIDADE",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 15,
+      "col_letter": "O",
+      "grupo": "🟣 MERCOS",
+      "subgrupo": "COMPRA",
+      "nome_coluna": "DIAS SEM COMPRA",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 16,
+      "col_letter": "P",
+      "grupo": "🟣 MERCOS",
+      "subgrupo": "COMPRA",
+      "nome_coluna": "DATA ÚLTIMO PEDIDO",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 17,
+      "col_letter": "Q",
+      "grupo": "🟣 MERCOS",
+      "subgrupo": "COMPRA",
+      "nome_coluna": "VALOR ÚLTIMO PEDIDO",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 18,
+      "col_letter": "R",
+      "grupo": "🟣 MERCOS",
+      "subgrupo": "COMPRA",
+      "nome_coluna": "CICLO MÉDIO",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 19,
+      "col_letter": "S",
+      "grupo": "🟣 MERCOS",
+      "subgrupo": "ECOMMERCE",
+      "nome_coluna": "ACESSO B2B",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 20,
+      "col_letter": "T",
+      "grupo": "🟣 MERCOS",
+      "subgrupo": "ECOMMERCE",
+      "nome_coluna": "ACESSOS PORTAL",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 21,
+      "col_letter": "U",
+      "grupo": "🟣 MERCOS",
+      "subgrupo": "ECOMMERCE",
+      "nome_coluna": "ITENS CARRINHO",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 22,
+      "col_letter": "V",
+      "grupo": "🟣 MERCOS",
+      "subgrupo": "ECOMMERCE",
+      "nome_coluna": "VALOR B2B",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 23,
+      "col_letter": "W",
+      "grupo": "🟣 MERCOS",
+      "subgrupo": "ECOMMERCE",
+      "nome_coluna": "OPORTUNIDADE",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 24,
+      "col_letter": "X",
+      "grupo": "🟣 MERCOS",
+      "subgrupo": "ATENDIMENTO MERCOS",
+      "nome_coluna": "TIPO CONTATO",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 25,
+      "col_letter": "Y",
+      "grupo": "🟣 MERCOS",
+      "subgrupo": "ATENDIMENTO MERCOS",
+      "nome_coluna": "RESULTADO",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 26,
+      "col_letter": "Z",
+      "grupo": "🟣 MERCOS",
+      "subgrupo": "ATENDIMENTO MERCOS",
+      "nome_coluna": "MOTIVO",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 27,
+      "col_letter": "AA",
+      "grupo": "🟣 MERCOS",
+      "subgrupo": "ATENDIMENTO MERCOS",
+      "nome_coluna": "DESCRIÇÃO",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 28,
+      "col_letter": "AB",
+      "grupo": "VENDAS 2025",
+      "subgrupo": "TOTAL 2025",
+      "nome_coluna": "[FORMULA: =SUM(AC3:AN3)]",
+      "is_formula_header": true
+    },
+    {
+      "col_number": 29,
+      "col_letter": "AC",
+      "grupo": "VENDAS 2025",
+      "subgrupo": "2025-01",
+      "nome_coluna": "[FORMULA: ='RESUMO META'!C3]",
+      "is_formula_header": true
+    },
+    {
+      "col_number": 30,
+      "col_letter": "AD",
+      "grupo": "VENDAS 2025",
+      "subgrupo": "2025-02",
+      "nome_coluna": "[FORMULA: ='RESUMO META'!D3]",
+      "is_formula_header": true
+    },
+    {
+      "col_number": 31,
+      "col_letter": "AE",
+      "grupo": "VENDAS 2025",
+      "subgrupo": "2025-03",
+      "nome_coluna": "[FORMULA: ='RESUMO META'!E3]",
+      "is_formula_header": true
+    },
+    {
+      "col_number": 32,
+      "col_letter": "AF",
+      "grupo": "VENDAS 2025",
+      "subgrupo": "2025-04",
+      "nome_coluna": "[FORMULA: ='RESUMO META'!F3]",
+      "is_formula_header": true
+    },
+    {
+      "col_number": 33,
+      "col_letter": "AG",
+      "grupo": "VENDAS 2025",
+      "subgrupo": "2025-05",
+      "nome_coluna": "[FORMULA: ='RESUMO META'!G3]",
+      "is_formula_header": true
+    },
+    {
+      "col_number": 34,
+      "col_letter": "AH",
+      "grupo": "VENDAS 2025",
+      "subgrupo": "2025-06",
+      "nome_coluna": "[FORMULA: ='RESUMO META'!H3]",
+      "is_formula_header": true
+    },
+    {
+      "col_number": 35,
+      "col_letter": "AI",
+      "grupo": "VENDAS 2025",
+      "subgrupo": "2025-07",
+      "nome_coluna": "[FORMULA: ='RESUMO META'!I3]",
+      "is_formula_header": true
+    },
+    {
+      "col_number": 36,
+      "col_letter": "AJ",
+      "grupo": "VENDAS 2025",
+      "subgrupo": "2025-08",
+      "nome_coluna": "[FORMULA: ='RESUMO META'!J3]",
+      "is_formula_header": true
+    },
+    {
+      "col_number": 37,
+      "col_letter": "AK",
+      "grupo": "VENDAS 2025",
+      "subgrupo": "2025-09",
+      "nome_coluna": "[FORMULA: ='RESUMO META'!K3]",
+      "is_formula_header": true
+    },
+    {
+      "col_number": 38,
+      "col_letter": "AL",
+      "grupo": "VENDAS 2025",
+      "subgrupo": "2025-10",
+      "nome_coluna": "[FORMULA: ='RESUMO META'!L3]",
+      "is_formula_header": true
+    },
+    {
+      "col_number": 39,
+      "col_letter": "AM",
+      "grupo": "VENDAS 2025",
+      "subgrupo": "2025-11",
+      "nome_coluna": "[FORMULA: =SUMIF('Venda Mês a Mês'!A:A,\">0\",'Venda Mês a Mês'!AU:AU)]",
+      "is_formula_header": true
+    },
+    {
+      "col_number": 40,
+      "col_letter": "AN",
+      "grupo": "VENDAS 2025",
+      "subgrupo": "2025-12",
+      "nome_coluna": "[FORMULA: =SUMIF('Venda Mês a Mês'!A:A,\">0\",'Venda Mês a Mês'!AY:AY)]",
+      "is_formula_header": true
+    },
+    {
+      "col_number": 41,
+      "col_letter": "AO",
+      "grupo": "VENDAS 2026",
+      "subgrupo": "TOTAL 2026",
+      "nome_coluna": "202511.78",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 42,
+      "col_letter": "AP",
+      "grupo": "VENDAS 2026",
+      "subgrupo": "2026-01",
+      "nome_coluna": "105470.51",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 43,
+      "col_letter": "AQ",
+      "grupo": "VENDAS 2026",
+      "subgrupo": "2026-02",
+      "nome_coluna": "97041.27",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 44,
+      "col_letter": "AR",
+      "grupo": "VENDAS 2026",
+      "subgrupo": "2026-03",
+      "nome_coluna": "0",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 45,
+      "col_letter": "AS",
+      "grupo": "VENDAS 2026",
+      "subgrupo": "2026-04",
+      "nome_coluna": "0",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 46,
+      "col_letter": "AT",
+      "grupo": "VENDAS 2026",
+      "subgrupo": "2026-05",
+      "nome_coluna": "0",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 47,
+      "col_letter": "AU",
+      "grupo": "VENDAS 2026",
+      "subgrupo": "2026-06",
+      "nome_coluna": "0",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 48,
+      "col_letter": "AV",
+      "grupo": "VENDAS 2026",
+      "subgrupo": "2026-07",
+      "nome_coluna": "0",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 49,
+      "col_letter": "AW",
+      "grupo": "VENDAS 2026",
+      "subgrupo": "2026-08",
+      "nome_coluna": "0",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 50,
+      "col_letter": "AX",
+      "grupo": "VENDAS 2026",
+      "subgrupo": "2026-09",
+      "nome_coluna": "0",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 51,
+      "col_letter": "AY",
+      "grupo": "VENDAS 2026",
+      "subgrupo": "2026-10",
+      "nome_coluna": "0",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 52,
+      "col_letter": "AZ",
+      "grupo": "VENDAS 2026",
+      "subgrupo": "2026-11",
+      "nome_coluna": "0",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 53,
+      "col_letter": "BA",
+      "grupo": "VENDAS 2026",
+      "subgrupo": "2026-12",
+      "nome_coluna": "0",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 54,
+      "col_letter": "BB",
+      "grupo": "VENDAS",
+      "subgrupo": "RECORRÊNCIA",
+      "nome_coluna": "TICKET MÉDIO",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 55,
+      "col_letter": "BC",
+      "grupo": "VENDAS",
+      "subgrupo": "TIPO CLIENTE",
+      "nome_coluna": "",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 56,
+      "col_letter": "BD",
+      "grupo": "VENDAS",
+      "subgrupo": "RECORRÊNCIA",
+      "nome_coluna": "Nº COMPRAS",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 57,
+      "col_letter": "BE",
+      "grupo": "VENDAS",
+      "subgrupo": "RECORRÊNCIA",
+      "nome_coluna": "CURVA ABC",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 58,
+      "col_letter": "BF",
+      "grupo": "VENDAS",
+      "subgrupo": "RECORRÊNCIA",
+      "nome_coluna": "MESES POSITIVADO",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 59,
+      "col_letter": "BG",
+      "grupo": "VENDAS",
+      "subgrupo": "RECORRÊNCIA",
+      "nome_coluna": "MÉDIA MENSAL",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 60,
+      "col_letter": "BH",
+      "grupo": "VENDAS",
+      "subgrupo": "RECORRÊNCIA",
+      "nome_coluna": "TICKET MÉDIO",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 61,
+      "col_letter": "BI",
+      "grupo": "VENDAS",
+      "subgrupo": "RECORRÊNCIA",
+      "nome_coluna": "MESES LISTA",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 62,
+      "col_letter": "BJ",
+      "grupo": "🔵 FUNIL",
+      "subgrupo": "ANCORA",
+      "nome_coluna": "ESTÁGIO FUNIL",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 63,
+      "col_letter": "BK",
+      "grupo": "🔵 FUNIL",
+      "subgrupo": "PIPELINE",
+      "nome_coluna": "PRÓX FOLLOWUP",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 64,
+      "col_letter": "BL",
+      "grupo": "🔵 FUNIL",
+      "subgrupo": "PIPELINE",
+      "nome_coluna": "DATA ÚLTATENDIMENTO",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 65,
+      "col_letter": "BM",
+      "grupo": "🔵 FUNIL",
+      "subgrupo": "",
+      "nome_coluna": "AÇÃO FUTURA",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 66,
+      "col_letter": "BN",
+      "grupo": "🔵 FUNIL",
+      "subgrupo": "PIPELINE",
+      "nome_coluna": "ÚLTIMO RESULTADO",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 67,
+      "col_letter": "BO",
+      "grupo": "🔵 FUNIL",
+      "subgrupo": "PIPELINE",
+      "nome_coluna": "MOTIVO",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 68,
+      "col_letter": "BP",
+      "grupo": "🔵 FUNIL",
+      "subgrupo": "PERFIL",
+      "nome_coluna": "TIPO CLIENTE",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 69,
+      "col_letter": "BQ",
+      "grupo": "🔵 FUNIL",
+      "subgrupo": "PERFIL",
+      "nome_coluna": "TENTATIVA",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 70,
+      "col_letter": "BR",
+      "grupo": "🔵 FUNIL",
+      "subgrupo": "MATURIDADE",
+      "nome_coluna": "FASE",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 71,
+      "col_letter": "BS",
+      "grupo": "🔵 FUNIL",
+      "subgrupo": "MATURIDADE",
+      "nome_coluna": "ÚLTIMA RECOMPRA",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 72,
+      "col_letter": "BT",
+      "grupo": "🔵 FUNIL",
+      "subgrupo": "CONVERSÃO",
+      "nome_coluna": "TEMPERATURA",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 73,
+      "col_letter": "BU",
+      "grupo": "🔵 FUNIL",
+      "subgrupo": "CONVERSÃO",
+      "nome_coluna": "DIAS ATÉ CONVERSÃO",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 74,
+      "col_letter": "BV",
+      "grupo": "🔵 FUNIL",
+      "subgrupo": "CONVERSÃO",
+      "nome_coluna": "DATA 1º CONTATO",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 75,
+      "col_letter": "BW",
+      "grupo": "🔵 FUNIL",
+      "subgrupo": "CONVERSÃO",
+      "nome_coluna": "DATA 1º ORÇAMENTO",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 76,
+      "col_letter": "BX",
+      "grupo": "🔵 FUNIL",
+      "subgrupo": "CONVERSÃO",
+      "nome_coluna": "DATA 1ª VENDA",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 77,
+      "col_letter": "BY",
+      "grupo": "🔵 FUNIL",
+      "subgrupo": "CONVERSÃO",
+      "nome_coluna": "TOTAL TENTATIVAS",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 78,
+      "col_letter": "BZ",
+      "grupo": "🔵 FUNIL",
+      "subgrupo": "AÇÃO",
+      "nome_coluna": "PRÓX AÇÃO",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 79,
+      "col_letter": "CA",
+      "grupo": "🔵 FUNIL",
+      "subgrupo": "AÇÃO",
+      "nome_coluna": "AÇÃO DETALHADA",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 80,
+      "col_letter": "CB",
+      "grupo": "🔵 FUNIL",
+      "subgrupo": "SINAL",
+      "nome_coluna": "SINALEIRO",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 81,
+      "col_letter": "CC",
+      "grupo": "SAP",
+      "subgrupo": "CÓDIGO DO CLIENTE",
+      "nome_coluna": "CÓDIGO DO CLIENTE",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 82,
+      "col_letter": "CD",
+      "grupo": "SAP",
+      "subgrupo": "CNPJ",
+      "nome_coluna": "CNPJ",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 83,
+      "col_letter": "CE",
+      "grupo": "SAP",
+      "subgrupo": "RAZÃO SOCIAL",
+      "nome_coluna": "RAZÃO SOCIAL",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 84,
+      "col_letter": "CF",
+      "grupo": "🚦 STATUS SAP",
+      "subgrupo": "CADASTRO",
+      "nome_coluna": "CADASTRO",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 85,
+      "col_letter": "CG",
+      "grupo": "🚦 STATUS SAP",
+      "subgrupo": "ATENDIMENTO",
+      "nome_coluna": "ATENDIMENTO",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 86,
+      "col_letter": "CH",
+      "grupo": "🚦 STATUS SAP",
+      "subgrupo": "BLOQUEIO",
+      "nome_coluna": "BLOQUEIO",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 87,
+      "col_letter": "CI",
+      "grupo": "⚫ DADOS CADASTRAIS SAP",
+      "subgrupo": "DESCRIÇÃO GRUPO CLIENTE",
+      "nome_coluna": "DESCRIÇÃO GRUPO CLIENTE",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 88,
+      "col_letter": "CJ",
+      "grupo": "⚫ DADOS CADASTRAIS SAP",
+      "subgrupo": "ZP NOME GERENTE NACIONAL",
+      "nome_coluna": "ZP NOME GERENTE NACIONAL",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 89,
+      "col_letter": "CK",
+      "grupo": "⚫ DADOS CADASTRAIS SAP",
+      "subgrupo": "ZR NOME REPRESENTANTE",
+      "nome_coluna": "ZR NOME REPRESENTANTE",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 90,
+      "col_letter": "CL",
+      "grupo": "⚫ DADOS CADASTRAIS SAP",
+      "subgrupo": "ZV NOME VEND INTERNO",
+      "nome_coluna": "ZV NOME VEND INTERNO",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 91,
+      "col_letter": "CM",
+      "grupo": "⚫ DADOS CADASTRAIS SAP",
+      "subgrupo": "01 NOME DO CANAL",
+      "nome_coluna": "01 NOME DO CANAL",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 92,
+      "col_letter": "CN",
+      "grupo": "⚫ DADOS CADASTRAIS SAP",
+      "subgrupo": "02 NOME TIPO CLIENTE",
+      "nome_coluna": "02 NOME TIPO CLIENTE",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 93,
+      "col_letter": "CO",
+      "grupo": "⚫ DADOS CADASTRAIS SAP",
+      "subgrupo": "03 NOME MACROREGIÃO",
+      "nome_coluna": "03 NOME MACROREGIÃO",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 94,
+      "col_letter": "CP",
+      "grupo": "⚫ DADOS CADASTRAIS SAP",
+      "subgrupo": "04 NOME MICROREGIÃO",
+      "nome_coluna": "04 NOME MICROREGIÃO",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 95,
+      "col_letter": "CQ",
+      "grupo": "⚫ DADOS CADASTRAIS SAP",
+      "subgrupo": "06 NOME GRUPO CHAVE",
+      "nome_coluna": "06 NOME GRUPO CHAVE",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 96,
+      "col_letter": "CR",
+      "grupo": "📊 ANUAL",
+      "subgrupo": "META",
+      "nome_coluna": "[FORMULA: =SUM(CR4:CR1585)]",
+      "is_formula_header": true
+    },
+    {
+      "col_number": 97,
+      "col_letter": "CS",
+      "grupo": "📊 ANUAL",
+      "subgrupo": "REALIZADO",
+      "nome_coluna": "[FORMULA: =SUM(CS4:CS1585)]",
+      "is_formula_header": true
+    },
+    {
+      "col_number": 98,
+      "col_letter": "CT",
+      "grupo": "📊 ANUAL",
+      "subgrupo": "% ALCANÇADO",
+      "nome_coluna": "[FORMULA: =IFERROR(CS3/CR3,0)]",
+      "is_formula_header": true
+    },
+    {
+      "col_number": 99,
+      "col_letter": "CU",
+      "grupo": "Q1",
+      "subgrupo": "META SAP TRI",
+      "nome_coluna": "[FORMULA: =SUM(CU4:CU1585)]",
+      "is_formula_header": true
+    },
+    {
+      "col_number": 100,
+      "col_letter": "CV",
+      "grupo": "Q1",
+      "subgrupo": "META IGUALIT. TRI",
+      "nome_coluna": "[FORMULA: =SUM(CV4:CV1585)]",
+      "is_formula_header": true
+    },
+    {
+      "col_number": 101,
+      "col_letter": "CW",
+      "grupo": "Q1",
+      "subgrupo": "% ALCANÇADO TRI",
+      "nome_coluna": "[FORMULA: =IFERROR(EE3/CU3,\"\")]",
+      "is_formula_header": true
+    },
+    {
+      "col_number": 102,
+      "col_letter": "CX",
+      "grupo": "JANEIRO",
+      "subgrupo": "META SAP",
+      "nome_coluna": "[FORMULA: =SUBTOTAL(109,CX4:CX1585)]",
+      "is_formula_header": true
+    },
+    {
+      "col_number": 103,
+      "col_letter": "CY",
+      "grupo": "JANEIRO",
+      "subgrupo": "META IGUALIT.",
+      "nome_coluna": "[FORMULA: =SUBTOTAL(109,CY4:CY1585)]",
+      "is_formula_header": true
+    },
+    {
+      "col_number": 104,
+      "col_letter": "CZ",
+      "grupo": "JANEIRO",
+      "subgrupo": "",
+      "nome_coluna": "[FORMULA: =IFERROR(DG3/CY3,\"\")]",
+      "is_formula_header": true
+    },
+    {
+      "col_number": 105,
+      "col_letter": "DA",
+      "grupo": "JANEIRO",
+      "subgrupo": "DATA PEDIDO",
+      "nome_coluna": "",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 106,
+      "col_letter": "DB",
+      "grupo": "JANEIRO",
+      "subgrupo": "JUSTIFICATIVA",
+      "nome_coluna": "SEM 1",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 107,
+      "col_letter": "DC",
+      "grupo": "JANEIRO",
+      "subgrupo": "",
+      "nome_coluna": "SEM 2",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 108,
+      "col_letter": "DD",
+      "grupo": "JANEIRO",
+      "subgrupo": "",
+      "nome_coluna": "SEM 3",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 109,
+      "col_letter": "DE",
+      "grupo": "JANEIRO",
+      "subgrupo": "",
+      "nome_coluna": "SEM 4",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 110,
+      "col_letter": "DF",
+      "grupo": "JANEIRO",
+      "subgrupo": "",
+      "nome_coluna": "SEM 5",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 111,
+      "col_letter": "DG",
+      "grupo": "JANEIRO",
+      "subgrupo": "REALIZADO",
+      "nome_coluna": "[FORMULA: =SUBTOTAL(109,DG4:DG1585)]",
+      "is_formula_header": true
+    },
+    {
+      "col_number": 112,
+      "col_letter": "DH",
+      "grupo": "JANEIRO",
+      "subgrupo": "% SAP",
+      "nome_coluna": "[FORMULA: =IFERROR(DG3/CX3,\"\")]",
+      "is_formula_header": true
+    },
+    {
+      "col_number": 113,
+      "col_letter": "DI",
+      "grupo": "FEVEREIRO",
+      "subgrupo": "META SAP",
+      "nome_coluna": "[FORMULA: =SUBTOTAL(109,DI4:DI1585)]",
+      "is_formula_header": true
+    },
+    {
+      "col_number": 114,
+      "col_letter": "DJ",
+      "grupo": "FEVEREIRO",
+      "subgrupo": "META IGUALIT.",
+      "nome_coluna": "[FORMULA: =SUBTOTAL(109,DJ4:DJ1585)]",
+      "is_formula_header": true
+    },
+    {
+      "col_number": 115,
+      "col_letter": "DK",
+      "grupo": "FEVEREIRO",
+      "subgrupo": "% IGUALIT.",
+      "nome_coluna": "[FORMULA: =IFERROR(DR3/DJ3,\"\")]",
+      "is_formula_header": true
+    },
+    {
+      "col_number": 116,
+      "col_letter": "DL",
+      "grupo": "FEVEREIRO",
+      "subgrupo": "DATA PEDIDO",
+      "nome_coluna": "",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 117,
+      "col_letter": "DM",
+      "grupo": "FEVEREIRO",
+      "subgrupo": "JUSTIFICATIVA",
+      "nome_coluna": "SEM 1",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 118,
+      "col_letter": "DN",
+      "grupo": "FEVEREIRO",
+      "subgrupo": "",
+      "nome_coluna": "SEM 2",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 119,
+      "col_letter": "DO",
+      "grupo": "FEVEREIRO",
+      "subgrupo": "",
+      "nome_coluna": "SEM 3",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 120,
+      "col_letter": "DP",
+      "grupo": "FEVEREIRO",
+      "subgrupo": "",
+      "nome_coluna": "SEM 4",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 121,
+      "col_letter": "DQ",
+      "grupo": "FEVEREIRO",
+      "subgrupo": "",
+      "nome_coluna": "SEM 5",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 122,
+      "col_letter": "DR",
+      "grupo": "FEVEREIRO",
+      "subgrupo": "REALIZADO",
+      "nome_coluna": "[FORMULA: =SUBTOTAL(109,DR4:DR1585)]",
+      "is_formula_header": true
+    },
+    {
+      "col_number": 123,
+      "col_letter": "DS",
+      "grupo": "FEVEREIRO",
+      "subgrupo": "% SAP",
+      "nome_coluna": "[FORMULA: =IFERROR(DR3/DI3,\"\")]",
+      "is_formula_header": true
+    },
+    {
+      "col_number": 124,
+      "col_letter": "DT",
+      "grupo": "MARÇO",
+      "subgrupo": "META SAP",
+      "nome_coluna": "[FORMULA: =SUBTOTAL(109,DT4:DT1585)]",
+      "is_formula_header": true
+    },
+    {
+      "col_number": 125,
+      "col_letter": "DU",
+      "grupo": "MARÇO",
+      "subgrupo": "META IGUALIT.",
+      "nome_coluna": "[FORMULA: =SUBTOTAL(109,DU4:DU1585)]",
+      "is_formula_header": true
+    },
+    {
+      "col_number": 126,
+      "col_letter": "DV",
+      "grupo": "MARÇO",
+      "subgrupo": "% IGUALIT.",
+      "nome_coluna": "[FORMULA: =IFERROR(EC3/DU3,\"\")]",
+      "is_formula_header": true
+    },
+    {
+      "col_number": 127,
+      "col_letter": "DW",
+      "grupo": "MARÇO",
+      "subgrupo": "DATA PEDIDO",
+      "nome_coluna": "",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 128,
+      "col_letter": "DX",
+      "grupo": "MARÇO",
+      "subgrupo": "JUSTIFICATIVA",
+      "nome_coluna": "SEM 1",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 129,
+      "col_letter": "DY",
+      "grupo": "MARÇO",
+      "subgrupo": "",
+      "nome_coluna": "SEM 2",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 130,
+      "col_letter": "DZ",
+      "grupo": "MARÇO",
+      "subgrupo": "",
+      "nome_coluna": "SEM 3",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 131,
+      "col_letter": "EA",
+      "grupo": "MARÇO",
+      "subgrupo": "",
+      "nome_coluna": "SEM 4",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 132,
+      "col_letter": "EB",
+      "grupo": "MARÇO",
+      "subgrupo": "",
+      "nome_coluna": "SEM 5",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 133,
+      "col_letter": "EC",
+      "grupo": "MARÇO",
+      "subgrupo": "REALIZADO",
+      "nome_coluna": "[FORMULA: =SUBTOTAL(109,EC4:EC1585)]",
+      "is_formula_header": true
+    },
+    {
+      "col_number": 134,
+      "col_letter": "ED",
+      "grupo": "MARÇO",
+      "subgrupo": "% SAP",
+      "nome_coluna": "[FORMULA: =IFERROR(EC3/DT3,\"\")]",
+      "is_formula_header": true
+    },
+    {
+      "col_number": 135,
+      "col_letter": "EE",
+      "grupo": "Q1 ⚓",
+      "subgrupo": "REALIZADO TRI",
+      "nome_coluna": "[FORMULA: =DG3+DR3+EC3]",
+      "is_formula_header": true
+    },
+    {
+      "col_number": 136,
+      "col_letter": "EF",
+      "grupo": "Q1 ⚓",
+      "subgrupo": "% TRI SAP",
+      "nome_coluna": "[FORMULA: =IFERROR(EE3/CU3,\"\")]",
+      "is_formula_header": true
+    },
+    {
+      "col_number": 137,
+      "col_letter": "EG",
+      "grupo": "Q1 ⚓",
+      "subgrupo": "⭐ SCORE & PRIORIDADE v2",
+      "nome_coluna": "URGÊNCIA (30%)",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 138,
+      "col_letter": "EH",
+      "grupo": "Q1 ⚓",
+      "subgrupo": "",
+      "nome_coluna": "VALOR (25%)",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 139,
+      "col_letter": "EI",
+      "grupo": "Q1 ⚓",
+      "subgrupo": "",
+      "nome_coluna": "FOLLOW-UP (20%)",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 140,
+      "col_letter": "EJ",
+      "grupo": "Q1 ⚓",
+      "subgrupo": "",
+      "nome_coluna": "SINAL (15%)",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 141,
+      "col_letter": "EK",
+      "grupo": "Q1 ⚓",
+      "subgrupo": "",
+      "nome_coluna": "TENTATIVA (5%)",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 142,
+      "col_letter": "EL",
+      "grupo": "Q1 ⚓",
+      "subgrupo": "",
+      "nome_coluna": "SITUAÇÃO (5%)",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 143,
+      "col_letter": "EM",
+      "grupo": "Q1 ⚓",
+      "subgrupo": "",
+      "nome_coluna": "SCORE",
+      "is_formula_header": false
+    },
+    {
+      "col_number": 144,
+      "col_letter": "EN",
+      "grupo": "Q1 ⚓",
+      "subgrupo": "",
+      "nome_coluna": "PRIORIDADE v2",
+      "is_formula_header": false
+    }
+  ],
+  "formula_patterns": [
+    {
+      "col_letter": "A",
+      "col_number": 1,
+      "nome_coluna": "NOME FANTASIA",
+      "grupo": "🟣 MERCOS",
+      "subgrupo": "ANCORA",
+      "formula_row4": "=IFERROR(INDEX('DRAFT 1'!$A$4:$A$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),IFERROR(INDEX('DRAFT 3 '!$C$4:$C$1528,MATCH($B4,'DRAFT 3 '!$R$4:$R$1528,0)),IFERROR(INDEX(OPERACIONAL!$B$3:$B$663,MATCH($B4,OPERACIONAL!$W$3:$W$663,0)),\"\")))",
+      "formula_row5": "=IFERROR(INDEX('DRAFT 1'!$A$4:$A$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),IFERROR(INDEX('DRAFT 3 '!$C$4:$C$1528,MATCH($B5,'DRAFT 3 '!$R$4:$R$1528,0)),IFERROR(INDEX(OPERACIONAL!$B$3:$B$663,MATCH($B5,OPERACIONAL!$W$3:$W$663,0)),\"\")))"
+    },
+    {
+      "col_letter": "B",
+      "col_number": 2,
+      "nome_coluna": "CNPJ",
+      "grupo": "🟣 MERCOS",
+      "subgrupo": "IDENTIDADE",
+      "formula_row4": "=IF(CD4=\"\",\"\",SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(CD4&\"\",\".\",\"\"),\"/\",\"\"),\"-\",\"\"))",
+      "formula_row5": "=IF(CD5=\"\",\"\",SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(CD5&\"\",\".\",\"\"),\"/\",\"\"),\"-\",\"\"))"
+    },
+    {
+      "col_letter": "C",
+      "col_number": 3,
+      "nome_coluna": "RAZÃO SOCIAL",
+      "grupo": "🟣 MERCOS",
+      "subgrupo": "IDENTIDADE",
+      "formula_row4": "=IFERROR(INDEX('DRAFT 1'!$C$4:$C$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),IFERROR(INDEX('DRAFT 3 '!$C$4:$C$1528,MATCH($B4,'DRAFT 3 '!$R$4:$R$1528,0)),IFERROR(INDEX(OPERACIONAL!$B$3:$B$663,MATCH($B4,OPERACIONAL!$W$3:$W$663,0)),\"\")))",
+      "formula_row5": "=IF(IFERROR(INDEX('DRAFT 1'!$C$4:$C$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),IFERROR(INDEX('DRAFT 3 '!$C$4:$C$1528,MATCH($B5,'DRAFT 3 '!$R$4:$R$1528,0)),IFERROR(INDEX(OPERACIONAL!$B$3:$B$663,MATCH($B5,OPERACIONAL!$W$3:$W$663,0)),\"\")))=0,\"\",IFERROR(INDEX('DRAFT 1'!$C$4:$C$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),IFERROR(INDEX('DRAFT 3 '!$C$4:$C$1528,MATCH($B5,'DRAFT 3 '!$R$4:$R$1528,0)),IFERROR(INDEX(OPERACIONAL!$B$3:$B$663,MATCH($B5,OPERACIONAL!$W$3:$W$663,0)),\"\"))))"
+    },
+    {
+      "col_letter": "D",
+      "col_number": 4,
+      "nome_coluna": "UF",
+      "grupo": "🟣 MERCOS",
+      "subgrupo": "IDENTIDADE",
+      "formula_row4": "=IFERROR(INDEX('DRAFT 1'!$D$4:$D$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),IFERROR(INDEX(OPERACIONAL!$I$3:$I$663,MATCH($B4,OPERACIONAL!$W$3:$W$663,0)),IFERROR(IF(MID(INDEX('DRAFT 3 '!$N$4:$N$1528,MATCH($B4,'DRAFT 3 '!$R$4:$R$1528,0)),6,2)=\"NA\",\"\",MID(INDEX('DRAFT 3 '!$N$4:$N$1528,MATCH($B4,'DRAFT 3 '!$R$4:$R$1528,0)),6,2)),\"\")))",
+      "formula_row5": "=IF(IFERROR(INDEX('DRAFT 1'!$D$4:$D$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),IFERROR(INDEX(OPERACIONAL!$I$3:$I$663,MATCH($B5,OPERACIONAL!$W$3:$W$663,0)),IFERROR(IF(MID(INDEX('DRAFT 3 '!$N$4:$N$1528,MATCH($B5,'DRAFT 3 '!$R$4:$R$1528,0)),6,2)=\"NA\",\"\",MID(INDEX('DRAFT 3 '!$N$4:$N$1528,MATCH($B5,'DRAFT 3 '!$R$4:$R$1528,0)),6,2)),\"\")))=0,\"\",IFERROR(INDEX('DRAFT 1'!$D$4:$D$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),IFERROR(INDEX(OPERACIONAL!$I$3:$I$663,MATCH($B5,OPERACIONAL!$W$3:$W$663,0)),IFERROR(IF(MID(INDEX('DRAFT 3 '!$N$4:$N$1528,MATCH($B5,'DRAFT 3 '!$R$4:$R$1528,0)),6,2)=\"NA\",\"\",MID(INDEX('DRAFT 3 '!$N$4:$N$1528,MATCH($B5,'DRAFT 3 '!$R$4:$R$1528,0)),6,2)),\"\"))))"
+    },
+    {
+      "col_letter": "E",
+      "col_number": 5,
+      "nome_coluna": "CIDADE",
+      "grupo": "🟣 MERCOS",
+      "subgrupo": "IDENTIDADE",
+      "formula_row4": "=IFERROR(INDEX('DRAFT 1'!$E$4:$E$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")",
+      "formula_row5": "=IF(IFERROR(INDEX('DRAFT 1'!$E$4:$E$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$E$4:$E$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))"
+    },
+    {
+      "col_letter": "F",
+      "col_number": 6,
+      "nome_coluna": "EMAIL",
+      "grupo": "🟣 MERCOS",
+      "subgrupo": "IDENTIDADE",
+      "formula_row4": "=IF(IFERROR(INDEX('DRAFT 1'!$F$4:$F$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$F$4:$F$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))",
+      "formula_row5": "=IF(IFERROR(INDEX('DRAFT 1'!$F$4:$F$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$F$4:$F$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))"
+    },
+    {
+      "col_letter": "G",
+      "col_number": 7,
+      "nome_coluna": "TELEFONE",
+      "grupo": "🟣 MERCOS",
+      "subgrupo": "IDENTIDADE",
+      "formula_row4": "=IF(IFERROR(INDEX('DRAFT 1'!$G$4:$G$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$G$4:$G$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))",
+      "formula_row5": "=IF(IFERROR(INDEX('DRAFT 1'!$G$4:$G$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$G$4:$G$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))"
+    },
+    {
+      "col_letter": "H",
+      "col_number": 8,
+      "nome_coluna": "DATA CADASTRO",
+      "grupo": "🟣 MERCOS",
+      "subgrupo": "IDENTIDADE",
+      "formula_row4": "=IF(IFERROR(INDEX('DRAFT 1'!$H$4:$H$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$H$4:$H$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))",
+      "formula_row5": "=IF(IFERROR(INDEX('DRAFT 1'!$H$4:$H$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$H$4:$H$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))"
+    },
+    {
+      "col_letter": "I",
+      "col_number": 9,
+      "nome_coluna": "REDE REGIONAL",
+      "grupo": "🟣 MERCOS",
+      "subgrupo": "REDE",
+      "formula_row4": "=IF(IFERROR(INDEX('DRAFT 1'!$I$4:$I$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$I$4:$I$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),IFERROR(INDEX('DRAFT 3 '!$O$4:$O$1528,MATCH($B4,'DRAFT 3 '!$R$4:$R$1528,0)),IFERROR(INDEX(OPERACIONAL!$L$3:$L$663,MATCH($B4,OPERACIONAL!$W$3:$W$663,0)),\"\"))))",
+      "formula_row5": "=IF(IFERROR(INDEX('DRAFT 1'!$I$4:$I$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$I$4:$I$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),IFERROR(INDEX('DRAFT 3 '!$O$4:$O$1528,MATCH($B5,'DRAFT 3 '!$R$4:$R$1528,0)),IFERROR(INDEX(OPERACIONAL!$L$3:$L$663,MATCH($B5,OPERACIONAL!$W$3:$W$663,0)),\"\"))))"
+    },
+    {
+      "col_letter": "J",
+      "col_number": 10,
+      "nome_coluna": "ÚLT REGISTRO MERCOS",
+      "grupo": "🟣 MERCOS",
+      "subgrupo": "REDE",
+      "formula_row4": "=IFERROR(INDEX('DRAFT 1'!$AX$4:$AX$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")",
+      "formula_row5": "=IF(IFERROR(INDEX('DRAFT 1'!$AX$4:$AX$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$AX$4:$AX$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))"
+    },
+    {
+      "col_letter": "K",
+      "col_number": 11,
+      "nome_coluna": "CONSULTOR",
+      "grupo": "🟣 MERCOS",
+      "subgrupo": "EQUIPE",
+      "formula_row4": "=IFERROR(INDEX('DRAFT 1'!$J$4:$J$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),IFERROR(INDEX('DRAFT 3 '!$H$4:$H$1528,MATCH($B4,'DRAFT 3 '!$R$4:$R$1528,0)),IFERROR(INDEX(OPERACIONAL!$R$3:$R$663,MATCH($B4,OPERACIONAL!$W$3:$W$663,0)),\"\")))",
+      "formula_row5": "=IF(IFERROR(INDEX('DRAFT 1'!$J$4:$J$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),IFERROR(INDEX('DRAFT 3 '!$H$4:$H$1528,MATCH($B5,'DRAFT 3 '!$R$4:$R$1528,0)),IFERROR(INDEX(OPERACIONAL!$R$3:$R$663,MATCH($B5,OPERACIONAL!$W$3:$W$663,0)),\"\")))=0,\"\",IFERROR(INDEX('DRAFT 1'!$J$4:$J$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),IFERROR(INDEX('DRAFT 3 '!$H$4:$H$1528,MATCH($B5,'DRAFT 3 '!$R$4:$R$1528,0)),IFERROR(INDEX(OPERACIONAL!$R$3:$R$663,MATCH($B5,OPERACIONAL!$W$3:$W$663,0)),\"\"))))"
+    },
+    {
+      "col_letter": "L",
+      "col_number": 12,
+      "nome_coluna": "VENDEDOR ÚLTIMO PEDIDO",
+      "grupo": "🟣 MERCOS",
+      "subgrupo": "EQUIPE",
+      "formula_row4": "=IF(IFERROR(INDEX('DRAFT 1'!$K$4:$K$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),IFERROR(INDEX('DRAFT 3 '!$I$4:$I$1528,MATCH($B4,'DRAFT 3 '!$R$4:$R$1528,0)),\"\"))=0,\"\",IFERROR(INDEX('DRAFT 1'!$K$4:$K$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),IFERROR(INDEX('DRAFT 3 '!$I$4:$I$1528,MATCH($B4,'DRAFT 3 '!$R$4:$R$1528,0)),\"\")))",
+      "formula_row5": "=IF(IFERROR(INDEX('DRAFT 1'!$K$4:$K$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),IFERROR(INDEX('DRAFT 3 '!$I$4:$I$1528,MATCH($B5,'DRAFT 3 '!$R$4:$R$1528,0)),\"\"))=0,\"\",IFERROR(INDEX('DRAFT 1'!$K$4:$K$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),IFERROR(INDEX('DRAFT 3 '!$I$4:$I$1528,MATCH($B5,'DRAFT 3 '!$R$4:$R$1528,0)),\"\")))"
+    },
+    {
+      "col_letter": "M",
+      "col_number": 13,
+      "nome_coluna": "SITUAÇÃO",
+      "grupo": "🟣 MERCOS",
+      "subgrupo": "STATUS",
+      "formula_row4": "=IF(B4=\"\",\"\",IF(OR(BD4=\"\",BD4=0),\"PROSPECT\",IF(OR(O4=\"\",O4=0),\"ATIVO\",IF(O4<=50,\"ATIVO\",IF(O4<=60,\"EM RISCO\",IF(O4<=90,\"INAT.REC\",\"INAT.ANT\"))))))",
+      "formula_row5": "=IF(B5=\"\",\"\",IF(OR(BD5=\"\",BD5=0),\"PROSPECT\",IF(OR(O5=\"\",O5=0),\"ATIVO\",IF(O5<=50,\"ATIVO\",IF(O5<=60,\"EM RISCO\",IF(O5<=90,\"INAT.REC\",\"INAT.ANT\"))))))"
+    },
+    {
+      "col_letter": "N",
+      "col_number": 14,
+      "nome_coluna": "PRIORIDADE",
+      "grupo": "🟣 MERCOS",
+      "subgrupo": "STATUS",
+      "formula_row4": "=IF(B4=\"\",\"\",IF(EN4=\"\",\"\",IF(EN4=\"P1 — NAMORO NOVO\",\"CRÍTICO\",IF(EN4=\"P2 — NEGOCIAÇÃO ATIVA\",\"URGENTE\",IF(EN4=\"P3 — PROBLEMA\",\"URGENTE\",IF(EN4=\"P4 — MOMENTO OURO\",\"ALTA\",IF(EN4=\"P5 — INAT. RECENTE\",\"MÉDIA\",IF(EN4=\"P6 — INAT. ANTIGO\",\"BAIXA\",\"PROSPECÇÃO\"))))))))",
+      "formula_row5": "=IF(B5=\"\",\"\",IF(EN5=\"\",\"\",IF(EN5=\"P1 — NAMORO NOVO\",\"CRÍTICO\",IF(EN5=\"P2 — NEGOCIAÇÃO ATIVA\",\"URGENTE\",IF(EN5=\"P3 — PROBLEMA\",\"URGENTE\",IF(EN5=\"P4 — MOMENTO OURO\",\"ALTA\",IF(EN5=\"P5 — INAT. RECENTE\",\"MÉDIA\",IF(EN5=\"P6 — INAT. ANTIGO\",\"BAIXA\",\"PROSPECÇÃO\"))))))))"
+    },
+    {
+      "col_letter": "O",
+      "col_number": 15,
+      "nome_coluna": "DIAS SEM COMPRA",
+      "grupo": "🟣 MERCOS",
+      "subgrupo": "COMPRA",
+      "formula_row4": "=IF(IFERROR(INDEX('DRAFT 1'!$L$4:$L$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$L$4:$L$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))",
+      "formula_row5": "=IF(IFERROR(INDEX('DRAFT 1'!$L$4:$L$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$L$4:$L$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))"
+    },
+    {
+      "col_letter": "P",
+      "col_number": 16,
+      "nome_coluna": "DATA ÚLTIMO PEDIDO",
+      "grupo": "🟣 MERCOS",
+      "subgrupo": "COMPRA",
+      "formula_row4": "=IF(IFERROR(INDEX('DRAFT 1'!$M$4:$M$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$M$4:$M$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))",
+      "formula_row5": "=IF(IFERROR(INDEX('DRAFT 1'!$M$4:$M$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$M$4:$M$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))"
+    },
+    {
+      "col_letter": "Q",
+      "col_number": 17,
+      "nome_coluna": "VALOR ÚLTIMO PEDIDO",
+      "grupo": "🟣 MERCOS",
+      "subgrupo": "COMPRA",
+      "formula_row4": "=IF(IFERROR(INDEX('DRAFT 1'!$N$4:$N$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$N$4:$N$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))",
+      "formula_row5": "=IF(IFERROR(INDEX('DRAFT 1'!$N$4:$N$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$N$4:$N$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))"
+    },
+    {
+      "col_letter": "R",
+      "col_number": 18,
+      "nome_coluna": "CICLO MÉDIO",
+      "grupo": "🟣 MERCOS",
+      "subgrupo": "COMPRA",
+      "formula_row4": "=IF(IFERROR(INDEX('DRAFT 1'!$AS$4:$AS$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$AS$4:$AS$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))",
+      "formula_row5": "=IF(IFERROR(INDEX('DRAFT 1'!$AS$4:$AS$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$AS$4:$AS$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))"
+    },
+    {
+      "col_letter": "S",
+      "col_number": 19,
+      "nome_coluna": "ACESSO B2B",
+      "grupo": "🟣 MERCOS",
+      "subgrupo": "ECOMMERCE",
+      "formula_row4": "=IFERROR(IF(INDEX('DRAFT 1'!$P$4:$P$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0))=\"\",\"Não\",INDEX('DRAFT 1'!$P$4:$P$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0))),\"Não\")",
+      "formula_row5": "=IFERROR(IF(INDEX('DRAFT 1'!$P$4:$P$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0))=\"\",\"Não\",INDEX('DRAFT 1'!$P$4:$P$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0))),\"Não\")"
+    },
+    {
+      "col_letter": "T",
+      "col_number": 20,
+      "nome_coluna": "ACESSOS PORTAL",
+      "grupo": "🟣 MERCOS",
+      "subgrupo": "ECOMMERCE",
+      "formula_row4": "=IF(IFERROR(INDEX('DRAFT 1'!$Q$4:$Q$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$Q$4:$Q$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))",
+      "formula_row5": "=IF(IFERROR(INDEX('DRAFT 1'!$Q$4:$Q$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$Q$4:$Q$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))"
+    },
+    {
+      "col_letter": "U",
+      "col_number": 21,
+      "nome_coluna": "ITENS CARRINHO",
+      "grupo": "🟣 MERCOS",
+      "subgrupo": "ECOMMERCE",
+      "formula_row4": "=IF(IFERROR(INDEX('DRAFT 1'!$R$4:$R$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$R$4:$R$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))",
+      "formula_row5": "=IF(IFERROR(INDEX('DRAFT 1'!$R$4:$R$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$R$4:$R$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))"
+    },
+    {
+      "col_letter": "V",
+      "col_number": 22,
+      "nome_coluna": "VALOR B2B",
+      "grupo": "🟣 MERCOS",
+      "subgrupo": "ECOMMERCE",
+      "formula_row4": "=IF(IFERROR(INDEX('DRAFT 1'!$S$4:$S$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$S$4:$S$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))",
+      "formula_row5": "=IF(IFERROR(INDEX('DRAFT 1'!$S$4:$S$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$S$4:$S$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))"
+    },
+    {
+      "col_letter": "W",
+      "col_number": 23,
+      "nome_coluna": "OPORTUNIDADE",
+      "grupo": "🟣 MERCOS",
+      "subgrupo": "ECOMMERCE",
+      "formula_row4": "=IFERROR(IF(INDEX('DRAFT 1'!$T$4:$T$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0))=\"\",\"NÃO\",INDEX('DRAFT 1'!$T$4:$T$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0))),\"NÃO\")",
+      "formula_row5": "=IFERROR(IF(INDEX('DRAFT 1'!$T$4:$T$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0))=\"\",\"NÃO\",INDEX('DRAFT 1'!$T$4:$T$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0))),\"NÃO\")"
+    },
+    {
+      "col_letter": "X",
+      "col_number": 24,
+      "nome_coluna": "TIPO CONTATO",
+      "grupo": "🟣 MERCOS",
+      "subgrupo": "ATENDIMENTO MERCOS",
+      "formula_row4": "",
+      "formula_row5": "=IFERROR(IF(INDEX('DRAFT 1'!$AZ$4:$AZ$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0))=0,\"\",INDEX('DRAFT 1'!$AZ$4:$AZ$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0))),\"\")"
+    },
+    {
+      "col_letter": "Y",
+      "col_number": 25,
+      "nome_coluna": "RESULTADO",
+      "grupo": "🟣 MERCOS",
+      "subgrupo": "ATENDIMENTO MERCOS",
+      "formula_row4": "=IFERROR(IF(INDEX('DRAFT 1'!$BB$4:$BB$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0))=0,\"\",INDEX('DRAFT 1'!$BB$4:$BB$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0))),\"\")",
+      "formula_row5": "=IFERROR(IF(INDEX('DRAFT 1'!$BB$4:$BB$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0))=0,\"\",INDEX('DRAFT 1'!$BB$4:$BB$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0))),\"\")"
+    },
+    {
+      "col_letter": "Z",
+      "col_number": 26,
+      "nome_coluna": "MOTIVO",
+      "grupo": "🟣 MERCOS",
+      "subgrupo": "ATENDIMENTO MERCOS",
+      "formula_row4": "=IFERROR(IF(INDEX('DRAFT 1'!$BC$4:$BC$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0))=0,\"\",INDEX('DRAFT 1'!$BC$4:$BC$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0))),\"\")",
+      "formula_row5": "=IFERROR(IF(INDEX('DRAFT 1'!$BC$4:$BC$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0))=0,\"\",INDEX('DRAFT 1'!$BC$4:$BC$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0))),\"\")"
+    },
+    {
+      "col_letter": "AA",
+      "col_number": 27,
+      "nome_coluna": "DESCRIÇÃO",
+      "grupo": "🟣 MERCOS",
+      "subgrupo": "ATENDIMENTO MERCOS",
+      "formula_row4": "=IFERROR(IF(INDEX('DRAFT 1'!$BA$4:$BA$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0))=0,\"\",INDEX('DRAFT 1'!$BA$4:$BA$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0))),\"\")",
+      "formula_row5": "=IFERROR(IF(INDEX('DRAFT 1'!$BA$4:$BA$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0))=0,\"\",INDEX('DRAFT 1'!$BA$4:$BA$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0))),\"\")"
+    },
+    {
+      "col_letter": "AB",
+      "col_number": 28,
+      "nome_coluna": "[FORMULA: =SUM(AC3:AN3)]",
+      "grupo": "VENDAS 2025",
+      "subgrupo": "TOTAL 2025",
+      "formula_row4": "=IF($B4=\"\",\"\",SUM(AC4:AN4))",
+      "formula_row5": "=IF($B5=\"\",\"\",SUM(AC5:AN5))"
+    },
+    {
+      "col_letter": "AC",
+      "col_number": 29,
+      "nome_coluna": "[FORMULA: ='RESUMO META'!C3]",
+      "grupo": "VENDAS 2025",
+      "subgrupo": "2025-01",
+      "formula_row4": "=IFERROR(INDEX('DRAFT 1'!$U$4:$U$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")",
+      "formula_row5": "=IF(IFERROR(INDEX('DRAFT 1'!$U$4:$U$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$U$4:$U$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))"
+    },
+    {
+      "col_letter": "AD",
+      "col_number": 30,
+      "nome_coluna": "[FORMULA: ='RESUMO META'!D3]",
+      "grupo": "VENDAS 2025",
+      "subgrupo": "2025-02",
+      "formula_row4": "=IFERROR(INDEX('DRAFT 1'!$V$4:$V$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")",
+      "formula_row5": "=IF(IFERROR(INDEX('DRAFT 1'!$V$4:$V$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$V$4:$V$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))"
+    },
+    {
+      "col_letter": "AE",
+      "col_number": 31,
+      "nome_coluna": "[FORMULA: ='RESUMO META'!E3]",
+      "grupo": "VENDAS 2025",
+      "subgrupo": "2025-03",
+      "formula_row4": "=IFERROR(INDEX('DRAFT 1'!$W$4:$W$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")",
+      "formula_row5": "=IFERROR(INDEX('DRAFT 1'!$W$4:$W$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")"
+    },
+    {
+      "col_letter": "AF",
+      "col_number": 32,
+      "nome_coluna": "[FORMULA: ='RESUMO META'!F3]",
+      "grupo": "VENDAS 2025",
+      "subgrupo": "2025-04",
+      "formula_row4": "=IFERROR(INDEX('DRAFT 1'!$X$4:$X$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")",
+      "formula_row5": "=IF(IFERROR(INDEX('DRAFT 1'!$X$4:$X$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$X$4:$X$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))"
+    },
+    {
+      "col_letter": "AG",
+      "col_number": 33,
+      "nome_coluna": "[FORMULA: ='RESUMO META'!G3]",
+      "grupo": "VENDAS 2025",
+      "subgrupo": "2025-05",
+      "formula_row4": "=IF(IFERROR(INDEX('DRAFT 1'!$Y$4:$Y$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$Y$4:$Y$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))",
+      "formula_row5": "=IF(IFERROR(INDEX('DRAFT 1'!$Y$4:$Y$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$Y$4:$Y$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))"
+    },
+    {
+      "col_letter": "AH",
+      "col_number": 34,
+      "nome_coluna": "[FORMULA: ='RESUMO META'!H3]",
+      "grupo": "VENDAS 2025",
+      "subgrupo": "2025-06",
+      "formula_row4": "=IF(IFERROR(INDEX('DRAFT 1'!$Z$4:$Z$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$Z$4:$Z$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))",
+      "formula_row5": "=IF(IFERROR(INDEX('DRAFT 1'!$Z$4:$Z$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$Z$4:$Z$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))"
+    },
+    {
+      "col_letter": "AI",
+      "col_number": 35,
+      "nome_coluna": "[FORMULA: ='RESUMO META'!I3]",
+      "grupo": "VENDAS 2025",
+      "subgrupo": "2025-07",
+      "formula_row4": "=IF(IFERROR(INDEX('DRAFT 1'!$AA$4:$AA$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$AA$4:$AA$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))",
+      "formula_row5": "=IF(IFERROR(INDEX('DRAFT 1'!$AA$4:$AA$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$AA$4:$AA$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))"
+    },
+    {
+      "col_letter": "AJ",
+      "col_number": 36,
+      "nome_coluna": "[FORMULA: ='RESUMO META'!J3]",
+      "grupo": "VENDAS 2025",
+      "subgrupo": "2025-08",
+      "formula_row4": "=IF(IFERROR(INDEX('DRAFT 1'!$AB$4:$AB$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$AB$4:$AB$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))",
+      "formula_row5": "=IF(IFERROR(INDEX('DRAFT 1'!$AB$4:$AB$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$AB$4:$AB$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))"
+    },
+    {
+      "col_letter": "AK",
+      "col_number": 37,
+      "nome_coluna": "[FORMULA: ='RESUMO META'!K3]",
+      "grupo": "VENDAS 2025",
+      "subgrupo": "2025-09",
+      "formula_row4": "=IF(IFERROR(INDEX('DRAFT 1'!$AC$4:$AC$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$AC$4:$AC$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))",
+      "formula_row5": "=IF(IFERROR(INDEX('DRAFT 1'!$AC$4:$AC$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$AC$4:$AC$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))"
+    },
+    {
+      "col_letter": "AL",
+      "col_number": 38,
+      "nome_coluna": "[FORMULA: ='RESUMO META'!L3]",
+      "grupo": "VENDAS 2025",
+      "subgrupo": "2025-10",
+      "formula_row4": "=IF(IFERROR(INDEX('DRAFT 1'!$AD$4:$AD$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$AD$4:$AD$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))",
+      "formula_row5": "=IF(IFERROR(INDEX('DRAFT 1'!$AD$4:$AD$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$AD$4:$AD$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))"
+    },
+    {
+      "col_letter": "AM",
+      "col_number": 39,
+      "nome_coluna": "[FORMULA: =SUMIF('Venda Mês a Mês'!A:A,\">0\",'Venda Mês a Mês'!AU:AU)]",
+      "grupo": "VENDAS 2025",
+      "subgrupo": "2025-11",
+      "formula_row4": "=IF(IFERROR(INDEX('DRAFT 1'!$AE$4:$AE$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$AE$4:$AE$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))",
+      "formula_row5": "=IF(IFERROR(INDEX('DRAFT 1'!$AE$4:$AE$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$AE$4:$AE$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))"
+    },
+    {
+      "col_letter": "AN",
+      "col_number": 40,
+      "nome_coluna": "[FORMULA: =SUMIF('Venda Mês a Mês'!A:A,\">0\",'Venda Mês a Mês'!AY:AY)]",
+      "grupo": "VENDAS 2025",
+      "subgrupo": "2025-12",
+      "formula_row4": "=IF(IFERROR(INDEX('DRAFT 1'!$AF$4:$AF$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$AF$4:$AF$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))",
+      "formula_row5": "=IF(IFERROR(INDEX('DRAFT 1'!$AF$4:$AF$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$AF$4:$AF$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))"
+    },
+    {
+      "col_letter": "AO",
+      "col_number": 41,
+      "nome_coluna": "202511.78",
+      "grupo": "VENDAS 2026",
+      "subgrupo": "TOTAL 2026",
+      "formula_row4": "=IF($B4=\"\",\"\",SUM(AP4:BA4))",
+      "formula_row5": "=IF($B5=\"\",\"\",SUM(AP5:BA5))"
+    },
+    {
+      "col_letter": "AP",
+      "col_number": 42,
+      "nome_coluna": "105470.51",
+      "grupo": "VENDAS 2026",
+      "subgrupo": "2026-01",
+      "formula_row4": "=IF(IFERROR(INDEX('DRAFT 1'!$AG$4:$AG$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$AG$4:$AG$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))",
+      "formula_row5": "=IF(IFERROR(INDEX('DRAFT 1'!$AG$4:$AG$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$AG$4:$AG$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))"
+    },
+    {
+      "col_letter": "AQ",
+      "col_number": 43,
+      "nome_coluna": "97041.27",
+      "grupo": "VENDAS 2026",
+      "subgrupo": "2026-02",
+      "formula_row4": "=IF(IFERROR(INDEX('DRAFT 1'!$AH$4:$AH$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$AH$4:$AH$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))",
+      "formula_row5": "=IF(IFERROR(INDEX('DRAFT 1'!$AH$4:$AH$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$AH$4:$AH$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))"
+    },
+    {
+      "col_letter": "AR",
+      "col_number": 44,
+      "nome_coluna": "0",
+      "grupo": "VENDAS 2026",
+      "subgrupo": "2026-03",
+      "formula_row4": "=IF(IFERROR(INDEX('DRAFT 1'!$AI$4:$AI$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$AI$4:$AI$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))",
+      "formula_row5": "=IF(IFERROR(INDEX('DRAFT 1'!$AI$4:$AI$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$AI$4:$AI$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))"
+    },
+    {
+      "col_letter": "AS",
+      "col_number": 45,
+      "nome_coluna": "0",
+      "grupo": "VENDAS 2026",
+      "subgrupo": "2026-04",
+      "formula_row4": "=IF(IFERROR(INDEX('DRAFT 1'!$AJ$4:$AJ$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$AJ$4:$AJ$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))",
+      "formula_row5": "=IF(IFERROR(INDEX('DRAFT 1'!$AJ$4:$AJ$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$AJ$4:$AJ$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))"
+    },
+    {
+      "col_letter": "AT",
+      "col_number": 46,
+      "nome_coluna": "0",
+      "grupo": "VENDAS 2026",
+      "subgrupo": "2026-05",
+      "formula_row4": "=IF(IFERROR(INDEX('DRAFT 1'!$AK$4:$AK$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$AK$4:$AK$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))",
+      "formula_row5": "=IF(IFERROR(INDEX('DRAFT 1'!$AK$4:$AK$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$AK$4:$AK$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))"
+    },
+    {
+      "col_letter": "AU",
+      "col_number": 47,
+      "nome_coluna": "0",
+      "grupo": "VENDAS 2026",
+      "subgrupo": "2026-06",
+      "formula_row4": "=IF(IFERROR(INDEX('DRAFT 1'!$AL$4:$AL$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$AL$4:$AL$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))",
+      "formula_row5": "=IF(IFERROR(INDEX('DRAFT 1'!$AL$4:$AL$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$AL$4:$AL$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))"
+    },
+    {
+      "col_letter": "AV",
+      "col_number": 48,
+      "nome_coluna": "0",
+      "grupo": "VENDAS 2026",
+      "subgrupo": "2026-07",
+      "formula_row4": "=IF(IFERROR(INDEX('DRAFT 1'!$AM$4:$AM$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$AM$4:$AM$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))",
+      "formula_row5": "=IF(IFERROR(INDEX('DRAFT 1'!$AM$4:$AM$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$AM$4:$AM$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))"
+    },
+    {
+      "col_letter": "AW",
+      "col_number": 49,
+      "nome_coluna": "0",
+      "grupo": "VENDAS 2026",
+      "subgrupo": "2026-08",
+      "formula_row4": "=IF(IFERROR(INDEX('DRAFT 1'!$AN$4:$AN$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$AN$4:$AN$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))",
+      "formula_row5": "=IF(IFERROR(INDEX('DRAFT 1'!$AN$4:$AN$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$AN$4:$AN$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))"
+    },
+    {
+      "col_letter": "AX",
+      "col_number": 50,
+      "nome_coluna": "0",
+      "grupo": "VENDAS 2026",
+      "subgrupo": "2026-09",
+      "formula_row4": "=IF(IFERROR(INDEX('DRAFT 1'!$AO$4:$AO$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$AO$4:$AO$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))",
+      "formula_row5": "=IF(IFERROR(INDEX('DRAFT 1'!$AO$4:$AO$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$AO$4:$AO$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))"
+    },
+    {
+      "col_letter": "AY",
+      "col_number": 51,
+      "nome_coluna": "0",
+      "grupo": "VENDAS 2026",
+      "subgrupo": "2026-10",
+      "formula_row4": "=IF(IFERROR(INDEX('DRAFT 1'!$AP$4:$AP$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$AP$4:$AP$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))",
+      "formula_row5": "=IF(IFERROR(INDEX('DRAFT 1'!$AP$4:$AP$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$AP$4:$AP$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))"
+    },
+    {
+      "col_letter": "AZ",
+      "col_number": 52,
+      "nome_coluna": "0",
+      "grupo": "VENDAS 2026",
+      "subgrupo": "2026-11",
+      "formula_row4": "=IF(IFERROR(INDEX('DRAFT 1'!$AQ$4:$AQ$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$AQ$4:$AQ$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))",
+      "formula_row5": "=IF(IFERROR(INDEX('DRAFT 1'!$AQ$4:$AQ$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$AQ$4:$AQ$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))"
+    },
+    {
+      "col_letter": "BA",
+      "col_number": 53,
+      "nome_coluna": "0",
+      "grupo": "VENDAS 2026",
+      "subgrupo": "2026-12",
+      "formula_row4": "=IF(IFERROR(INDEX('DRAFT 1'!$AR$4:$AR$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$AR$4:$AR$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))",
+      "formula_row5": "=IF(IFERROR(INDEX('DRAFT 1'!$AR$4:$AR$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$AR$4:$AR$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))"
+    },
+    {
+      "col_letter": "BC",
+      "col_number": 55,
+      "nome_coluna": "",
+      "grupo": "VENDAS",
+      "subgrupo": "TIPO CLIENTE",
+      "formula_row4": "=IFERROR(INDEX('DRAFT 1'!$BD$4:$BD$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")",
+      "formula_row5": "=IF(IFERROR(INDEX('DRAFT 1'!$BD$4:$BD$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$BD$4:$BD$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))"
+    },
+    {
+      "col_letter": "BD",
+      "col_number": 56,
+      "nome_coluna": "Nº COMPRAS",
+      "grupo": "VENDAS",
+      "subgrupo": "RECORRÊNCIA",
+      "formula_row4": "=IFERROR(INDEX('DRAFT 1'!$AT$4:$AT$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")",
+      "formula_row5": "=IF(IFERROR(INDEX('DRAFT 1'!$AT$4:$AT$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$AT$4:$AT$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))"
+    },
+    {
+      "col_letter": "BE",
+      "col_number": 57,
+      "nome_coluna": "CURVA ABC",
+      "grupo": "VENDAS",
+      "subgrupo": "RECORRÊNCIA",
+      "formula_row4": "=IFERROR(IF(INDEX('DRAFT 1'!$AU$4:$AU$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0))=0,\"\",INDEX('DRAFT 1'!$AU$4:$AU$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0))),\"\")",
+      "formula_row5": "=IFERROR(IF(INDEX('DRAFT 1'!$AU$4:$AU$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0))=0,\"\",INDEX('DRAFT 1'!$AU$4:$AU$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0))),\"\")"
+    },
+    {
+      "col_letter": "BF",
+      "col_number": 58,
+      "nome_coluna": "MESES POSITIVADO",
+      "grupo": "VENDAS",
+      "subgrupo": "RECORRÊNCIA",
+      "formula_row4": "=IFERROR(INDEX('DRAFT 1'!$AV$4:$AV$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")",
+      "formula_row5": "=IF(IFERROR(INDEX('DRAFT 1'!$AV$4:$AV$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$AV$4:$AV$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))"
+    },
+    {
+      "col_letter": "BG",
+      "col_number": 59,
+      "nome_coluna": "MÉDIA MENSAL",
+      "grupo": "VENDAS",
+      "subgrupo": "RECORRÊNCIA",
+      "formula_row4": "=IFERROR(INDEX('DRAFT 1'!$BE$4:$BE$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")",
+      "formula_row5": "=IF(IFERROR(INDEX('DRAFT 1'!$BE$4:$BE$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$BE$4:$BE$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))"
+    },
+    {
+      "col_letter": "BH",
+      "col_number": 60,
+      "nome_coluna": "TICKET MÉDIO",
+      "grupo": "VENDAS",
+      "subgrupo": "RECORRÊNCIA",
+      "formula_row4": "=IF(IFERROR(INDEX('DRAFT 1'!$AW$4:$AW$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$AW$4:$AW$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))",
+      "formula_row5": "=IF(IFERROR(INDEX('DRAFT 1'!$AW$4:$AW$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$AW$4:$AW$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))"
+    },
+    {
+      "col_letter": "BK",
+      "col_number": 63,
+      "nome_coluna": "PRÓX FOLLOWUP",
+      "grupo": "🔵 FUNIL",
+      "subgrupo": "PIPELINE",
+      "formula_row4": "=IFERROR(_xlfn.XLOOKUP($B4,'DRAFT 2'!$AN$2:$AN$4403,'DRAFT 2'!$V$2:$V$4403,\"\",0,-1),\"\")",
+      "formula_row5": "=IFERROR(_xlfn.XLOOKUP($B5,'DRAFT 2'!$AN$2:$AN$4403,'DRAFT 2'!$V$2:$V$4403,\"\",0,-1),\"\")"
+    },
+    {
+      "col_letter": "BL",
+      "col_number": 64,
+      "nome_coluna": "DATA ÚLTATENDIMENTO",
+      "grupo": "🔵 FUNIL",
+      "subgrupo": "PIPELINE",
+      "formula_row4": "=IFERROR(_xlfn.XLOOKUP($B4,'DRAFT 2'!$AN$2:$AN$4403,'DRAFT 2'!$A$2:$A$4403,\"\",0,-1),\"\")",
+      "formula_row5": "=IFERROR(_xlfn.XLOOKUP($B5,'DRAFT 2'!$AN$2:$AN$4403,'DRAFT 2'!$A$2:$A$4403,\"\",0,-1),\"\")"
+    },
+    {
+      "col_letter": "BN",
+      "col_number": 66,
+      "nome_coluna": "ÚLTIMO RESULTADO",
+      "grupo": "🔵 FUNIL",
+      "subgrupo": "PIPELINE",
+      "formula_row4": "=IFERROR(_xlfn.XLOOKUP($B4,'DRAFT 2'!$AN$2:$AN$4403,'DRAFT 2'!$T$2:$T$4403,\"\",0,-1),\"\")",
+      "formula_row5": "=IFERROR(_xlfn.XLOOKUP($B5,'DRAFT 2'!$AN$2:$AN$4403,'DRAFT 2'!$T$2:$T$4403,\"\",0,-1),\"\")"
+    },
+    {
+      "col_letter": "BO",
+      "col_number": 67,
+      "nome_coluna": "MOTIVO",
+      "grupo": "🔵 FUNIL",
+      "subgrupo": "PIPELINE",
+      "formula_row4": "=IFERROR(_xlfn.XLOOKUP($B4,'DRAFT 2'!$AN$2:$AN$4403,'DRAFT 2'!$U$2:$U$4403,\"\",0,-1),\"\")",
+      "formula_row5": "=IFERROR(_xlfn.XLOOKUP($B5,'DRAFT 2'!$AN$2:$AN$4403,'DRAFT 2'!$U$2:$U$4403,\"\",0,-1),\"\")"
+    },
+    {
+      "col_letter": "BP",
+      "col_number": 68,
+      "nome_coluna": "TIPO CLIENTE",
+      "grupo": "🔵 FUNIL",
+      "subgrupo": "PERFIL",
+      "formula_row4": "=IFERROR(INDEX('DRAFT 1'!$BD$4:$BD$566,MATCH($B4,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")",
+      "formula_row5": "=IF(IFERROR(INDEX('DRAFT 1'!$BD$4:$BD$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\")=0,\"\",IFERROR(INDEX('DRAFT 1'!$BD$4:$BD$566,MATCH($B5,'DRAFT 1'!$BH$4:$BH$566,0)),\"\"))"
+    },
+    {
+      "col_letter": "BQ",
+      "col_number": 69,
+      "nome_coluna": "TENTATIVA",
+      "grupo": "🔵 FUNIL",
+      "subgrupo": "PERFIL",
+      "formula_row4": "=IFERROR(_xlfn.XLOOKUP($B4,'DRAFT 2'!$AN$2:$AN$4403,'DRAFT 2'!$N$2:$N$4403,\"\",0,-1),\"\")",
+      "formula_row5": "=IFERROR(_xlfn.XLOOKUP($B5,'DRAFT 2'!$AN$2:$AN$4403,'DRAFT 2'!$N$2:$N$4403,\"\",0,-1),\"\")"
+    },
+    {
+      "col_letter": "BU",
+      "col_number": 73,
+      "nome_coluna": "DIAS ATÉ CONVERSÃO",
+      "grupo": "🔵 FUNIL",
+      "subgrupo": "CONVERSÃO",
+      "formula_row4": "=IF(OR(BX4=\"\",BV4=\"\"),\"\",BX4-BV4)",
+      "formula_row5": "=IF(OR(BX5=\"\",BV5=\"\"),\"\",BX5-BV5)"
+    },
+    {
+      "col_letter": "BV",
+      "col_number": 74,
+      "nome_coluna": "DATA 1º CONTATO",
+      "grupo": "🔵 FUNIL",
+      "subgrupo": "CONVERSÃO",
+      "formula_row4": "=IFERROR(INDEX('DRAFT 2'!$A$2:$A$4403,MATCH($B4,'DRAFT 2'!$AN$2:$AN$4403,0)),\"\")",
+      "formula_row5": "=IFERROR(INDEX('DRAFT 2'!$A$2:$A$4403,MATCH($B5,'DRAFT 2'!$AN$2:$AN$4403,0)),\"\")"
+    },
+    {
+      "col_letter": "CA",
+      "col_number": 79,
+      "nome_coluna": "AÇÃO DETALHADA",
+      "grupo": "🔵 FUNIL",
+      "subgrupo": "AÇÃO",
+      "formula_row4": "=IFERROR(_xlfn.XLOOKUP($B4,#REF!,#REF!,\"\",0,-1),\"\")",
+      "formula_row5": "=IFERROR(_xlfn.XLOOKUP($B5,#REF!,#REF!,\"\",0,-1),\"\")"
+    },
+    {
+      "col_letter": "CB",
+      "col_number": 80,
+      "nome_coluna": "SINALEIRO",
+      "grupo": "🔵 FUNIL",
+      "subgrupo": "SINAL",
+      "formula_row4": "=IF(B4=\"\",\"\",IF(OR(M4=\"PROSPECT\",M4=\"LEAD\"),\"ROXO\",IF(M4=\"NOVO\",\"VERDE\",IF(OR(O4=\"\",O4=0),IF(M4=\"ATIVO\",\"VERDE\",IF(M4=\"EM RISCO\",\"AMARELO\",IF(M4=\"INAT.REC\",\"AMARELO\",\"VERMELHO\"))),_xlfn.LET(_xlpm.ciclo,R4,_xlpm.dias,O4,IF(_xlpm.ciclo=0,IF(_xlpm.dias<=50,\"VERDE\",IF(_xlpm.dias<=90,\"AMARELO\",\"VERMELHO\")),IF(_xlpm.dias<=_xlpm.ciclo,\"VERDE\",IF(_xlpm.dias<=_xlpm.ciclo+30,\"AMARELO\",\"VERMELHO\"))))))))",
+      "formula_row5": "=IF(B5=\"\",\"\",IF(OR(M5=\"PROSPECT\",M5=\"LEAD\"),\"ROXO\",IF(M5=\"NOVO\",\"VERDE\",IF(OR(O5=\"\",O5=0),IF(M5=\"ATIVO\",\"VERDE\",IF(M5=\"EM RISCO\",\"AMARELO\",IF(M5=\"INAT.REC\",\"AMARELO\",\"VERMELHO\"))),_xlfn.LET(_xlpm.ciclo,R5,_xlpm.dias,O5,IF(_xlpm.ciclo=0,IF(_xlpm.dias<=50,\"VERDE\",IF(_xlpm.dias<=90,\"AMARELO\",\"VERMELHO\")),IF(_xlpm.dias<=_xlpm.ciclo,\"VERDE\",IF(_xlpm.dias<=_xlpm.ciclo+30,\"AMARELO\",\"VERMELHO\"))))))))"
+    },
+    {
+      "col_letter": "CC",
+      "col_number": 81,
+      "nome_coluna": "CÓDIGO DO CLIENTE",
+      "grupo": "SAP",
+      "subgrupo": "CÓDIGO DO CLIENTE",
+      "formula_row4": "=IFERROR(INDEX('DRAFT 3 '!$A$4:$A$1528,MATCH($B4,'DRAFT 3 '!$R$4:$R$1528,0)),\"\")",
+      "formula_row5": "=IFERROR(INDEX('DRAFT 3 '!$A$4:$A$1528,MATCH($B5,'DRAFT 3 '!$R$4:$R$1528,0)),\"\")"
+    },
+    {
+      "col_letter": "CE",
+      "col_number": 83,
+      "nome_coluna": "RAZÃO SOCIAL",
+      "grupo": "SAP",
+      "subgrupo": "RAZÃO SOCIAL",
+      "formula_row4": "=IFERROR(INDEX('DRAFT 3 '!$C$4:$C$1528,MATCH($B4,'DRAFT 3 '!$R$4:$R$1528,0)),\"\")",
+      "formula_row5": "=IFERROR(INDEX('DRAFT 3 '!$C$4:$C$1528,MATCH($B5,'DRAFT 3 '!$R$4:$R$1528,0)),\"\")"
+    },
+    {
+      "col_letter": "CF",
+      "col_number": 84,
+      "nome_coluna": "CADASTRO",
+      "grupo": "🚦 STATUS SAP",
+      "subgrupo": "CADASTRO",
+      "formula_row4": "=IFERROR(INDEX('DRAFT 3 '!$D$4:$D$1528,MATCH($B4,'DRAFT 3 '!$R$4:$R$1528,0)),\"\")",
+      "formula_row5": "=IFERROR(INDEX('DRAFT 3 '!$D$4:$D$1528,MATCH($B5,'DRAFT 3 '!$R$4:$R$1528,0)),\"\")"
+    },
+    {
+      "col_letter": "CG",
+      "col_number": 85,
+      "nome_coluna": "ATENDIMENTO",
+      "grupo": "🚦 STATUS SAP",
+      "subgrupo": "ATENDIMENTO",
+      "formula_row4": "=IFERROR(INDEX('DRAFT 3 '!$E$4:$E$1528,MATCH($B4,'DRAFT 3 '!$R$4:$R$1528,0)),\"\")",
+      "formula_row5": "=IFERROR(INDEX('DRAFT 3 '!$E$4:$E$1528,MATCH($B5,'DRAFT 3 '!$R$4:$R$1528,0)),\"\")"
+    },
+    {
+      "col_letter": "CH",
+      "col_number": 86,
+      "nome_coluna": "BLOQUEIO",
+      "grupo": "🚦 STATUS SAP",
+      "subgrupo": "BLOQUEIO",
+      "formula_row4": "=IFERROR(INDEX('DRAFT 3 '!$F$4:$F$1528,MATCH($B4,'DRAFT 3 '!$R$4:$R$1528,0)),\"\")",
+      "formula_row5": "=IFERROR(INDEX('DRAFT 3 '!$F$4:$F$1528,MATCH($B5,'DRAFT 3 '!$R$4:$R$1528,0)),\"\")"
+    },
+    {
+      "col_letter": "CI",
+      "col_number": 87,
+      "nome_coluna": "DESCRIÇÃO GRUPO CLIENTE",
+      "grupo": "⚫ DADOS CADASTRAIS SAP",
+      "subgrupo": "DESCRIÇÃO GRUPO CLIENTE",
+      "formula_row4": "=IFERROR(INDEX('DRAFT 3 '!$G$4:$G$1528,MATCH($B4,'DRAFT 3 '!$R$4:$R$1528,0)),\"\")",
+      "formula_row5": "=IFERROR(INDEX('DRAFT 3 '!$G$4:$G$1528,MATCH($B5,'DRAFT 3 '!$R$4:$R$1528,0)),\"\")"
+    },
+    {
+      "col_letter": "CJ",
+      "col_number": 88,
+      "nome_coluna": "ZP NOME GERENTE NACIONAL",
+      "grupo": "⚫ DADOS CADASTRAIS SAP",
+      "subgrupo": "ZP NOME GERENTE NACIONAL",
+      "formula_row4": "=IFERROR(INDEX('DRAFT 3 '!$H$4:$H$1528,MATCH($B4,'DRAFT 3 '!$R$4:$R$1528,0)),\"\")",
+      "formula_row5": "=IFERROR(INDEX('DRAFT 3 '!$H$4:$H$1528,MATCH($B5,'DRAFT 3 '!$R$4:$R$1528,0)),\"\")"
+    },
+    {
+      "col_letter": "CK",
+      "col_number": 89,
+      "nome_coluna": "ZR NOME REPRESENTANTE",
+      "grupo": "⚫ DADOS CADASTRAIS SAP",
+      "subgrupo": "ZR NOME REPRESENTANTE",
+      "formula_row4": "=IFERROR(INDEX('DRAFT 3 '!$I$4:$I$1528,MATCH($B4,'DRAFT 3 '!$R$4:$R$1528,0)),\"\")",
+      "formula_row5": "=IFERROR(INDEX('DRAFT 3 '!$I$4:$I$1528,MATCH($B5,'DRAFT 3 '!$R$4:$R$1528,0)),\"\")"
+    },
+    {
+      "col_letter": "CL",
+      "col_number": 90,
+      "nome_coluna": "ZV NOME VEND INTERNO",
+      "grupo": "⚫ DADOS CADASTRAIS SAP",
+      "subgrupo": "ZV NOME VEND INTERNO",
+      "formula_row4": "=IFERROR(INDEX('DRAFT 3 '!$J$4:$J$1528,MATCH($B4,'DRAFT 3 '!$R$4:$R$1528,0)),\"\")",
+      "formula_row5": "=IFERROR(INDEX('DRAFT 3 '!$J$4:$J$1528,MATCH($B5,'DRAFT 3 '!$R$4:$R$1528,0)),\"\")"
+    },
+    {
+      "col_letter": "CM",
+      "col_number": 91,
+      "nome_coluna": "01 NOME DO CANAL",
+      "grupo": "⚫ DADOS CADASTRAIS SAP",
+      "subgrupo": "01 NOME DO CANAL",
+      "formula_row4": "=IFERROR(INDEX('DRAFT 3 '!$K$4:$K$1528,MATCH($B4,'DRAFT 3 '!$R$4:$R$1528,0)),\"\")",
+      "formula_row5": "=IFERROR(INDEX('DRAFT 3 '!$K$4:$K$1528,MATCH($B5,'DRAFT 3 '!$R$4:$R$1528,0)),\"\")"
+    },
+    {
+      "col_letter": "CN",
+      "col_number": 92,
+      "nome_coluna": "02 NOME TIPO CLIENTE",
+      "grupo": "⚫ DADOS CADASTRAIS SAP",
+      "subgrupo": "02 NOME TIPO CLIENTE",
+      "formula_row4": "=IFERROR(INDEX('DRAFT 3 '!$L$4:$L$1528,MATCH($B4,'DRAFT 3 '!$R$4:$R$1528,0)),\"\")",
+      "formula_row5": "=IFERROR(INDEX('DRAFT 3 '!$L$4:$L$1528,MATCH($B5,'DRAFT 3 '!$R$4:$R$1528,0)),\"\")"
+    },
+    {
+      "col_letter": "CO",
+      "col_number": 93,
+      "nome_coluna": "03 NOME MACROREGIÃO",
+      "grupo": "⚫ DADOS CADASTRAIS SAP",
+      "subgrupo": "03 NOME MACROREGIÃO",
+      "formula_row4": "=IFERROR(INDEX('DRAFT 3 '!$M$4:$M$1528,MATCH($B4,'DRAFT 3 '!$R$4:$R$1528,0)),\"\")",
+      "formula_row5": "=IFERROR(INDEX('DRAFT 3 '!$M$4:$M$1528,MATCH($B5,'DRAFT 3 '!$R$4:$R$1528,0)),\"\")"
+    },
+    {
+      "col_letter": "CP",
+      "col_number": 94,
+      "nome_coluna": "04 NOME MICROREGIÃO",
+      "grupo": "⚫ DADOS CADASTRAIS SAP",
+      "subgrupo": "04 NOME MICROREGIÃO",
+      "formula_row4": "=IFERROR(INDEX('DRAFT 3 '!$N$4:$N$1528,MATCH($B4,'DRAFT 3 '!$R$4:$R$1528,0)),\"\")",
+      "formula_row5": "=IFERROR(INDEX('DRAFT 3 '!$N$4:$N$1528,MATCH($B5,'DRAFT 3 '!$R$4:$R$1528,0)),\"\")"
+    },
+    {
+      "col_letter": "CQ",
+      "col_number": 95,
+      "nome_coluna": "06 NOME GRUPO CHAVE",
+      "grupo": "⚫ DADOS CADASTRAIS SAP",
+      "subgrupo": "06 NOME GRUPO CHAVE",
+      "formula_row4": "=IFERROR(INDEX('DRAFT 3 '!$O$4:$O$1528,MATCH($B4,'DRAFT 3 '!$R$4:$R$1528,0)),\"\")",
+      "formula_row5": "=IFERROR(INDEX('DRAFT 3 '!$O$4:$O$1528,MATCH($B5,'DRAFT 3 '!$R$4:$R$1528,0)),\"\")"
+    },
+    {
+      "col_letter": "CR",
+      "col_number": 96,
+      "nome_coluna": "[FORMULA: =SUM(CR4:CR1585)]",
+      "grupo": "📊 ANUAL",
+      "subgrupo": "META",
+      "formula_row4": "=IFERROR(_xlfn.XLOOKUP(VALUE($B4),'PROJEÇÃO '!$A$4:$A$662,'PROJEÇÃO '!$L$4:$L$662),0)",
+      "formula_row5": "=IFERROR(_xlfn.XLOOKUP(VALUE($B5),'PROJEÇÃO '!$A$4:$A$662,'PROJEÇÃO '!$L$4:$L$662),0)"
+    },
+    {
+      "col_letter": "CS",
+      "col_number": 97,
+      "nome_coluna": "[FORMULA: =SUM(CS4:CS1585)]",
+      "grupo": "📊 ANUAL",
+      "subgrupo": "REALIZADO",
+      "formula_row4": "=IFERROR(SUM($AP4:$BA4),\"\")",
+      "formula_row5": "=IFERROR(SUM($AP5:$BA5),\"\")"
+    },
+    {
+      "col_letter": "CT",
+      "col_number": 98,
+      "nome_coluna": "[FORMULA: =IFERROR(CS3/CR3,0)]",
+      "grupo": "📊 ANUAL",
+      "subgrupo": "% ALCANÇADO",
+      "formula_row4": "=IFERROR(IF(OR(CR4=0,CR4=\"\"),IF(OR(CV4=0,CV4=\"\"),CS4/(2078.4*4),CS4/(CV4*4)),CS4/CR4),\"\")",
+      "formula_row5": "=IFERROR(IF(OR(CR5=0,CR5=\"\"),IF(OR(CV5=0,CV5=\"\"),CS5/(2078.4*4),CS5/(CV5*4)),CS5/CR5),\"\")"
+    },
+    {
+      "col_letter": "CU",
+      "col_number": 99,
+      "nome_coluna": "[FORMULA: =SUM(CU4:CU1585)]",
+      "grupo": "Q1",
+      "subgrupo": "META SAP TRI",
+      "formula_row4": "=IFERROR(_xlfn.XLOOKUP(VALUE($B4),'PROJEÇÃO '!$A$4:$A$662,'PROJEÇÃO '!$M$4:$M$662)+_xlfn.XLOOKUP(VALUE($B4),'PROJEÇÃO '!$A$4:$A$662,'PROJEÇÃO '!$N$4:$N$662)+_xlfn.XLOOKUP(VALUE($B4),'PROJEÇÃO '!$A$4:$A$662,'PROJEÇÃO '!$O$4:$O$662),0)",
+      "formula_row5": "=IFERROR(_xlfn.XLOOKUP(VALUE($B5),'PROJEÇÃO '!$A$4:$A$662,'PROJEÇÃO '!$M$4:$M$662)+_xlfn.XLOOKUP(VALUE($B5),'PROJEÇÃO '!$A$4:$A$662,'PROJEÇÃO '!$N$4:$N$662)+_xlfn.XLOOKUP(VALUE($B5),'PROJEÇÃO '!$A$4:$A$662,'PROJEÇÃO '!$O$4:$O$662),0)"
+    },
+    {
+      "col_letter": "CV",
+      "col_number": 100,
+      "nome_coluna": "[FORMULA: =SUM(CV4:CV1585)]",
+      "grupo": "Q1",
+      "subgrupo": "META IGUALIT. TRI",
+      "formula_row4": "=IFERROR(_xlfn.XLOOKUP(VALUE($B4),'PROJEÇÃO '!$A$4:$A$662,'PROJEÇÃO '!$BC$4:$BC$662)+_xlfn.XLOOKUP(VALUE($B4),'PROJEÇÃO '!$A$4:$A$662,'PROJEÇÃO '!$BD$4:$BD$662)+_xlfn.XLOOKUP(VALUE($B4),'PROJEÇÃO '!$A$4:$A$662,'PROJEÇÃO '!$BE$4:$BE$662),0)",
+      "formula_row5": "=IFERROR(_xlfn.XLOOKUP(VALUE($B5),'PROJEÇÃO '!$A$4:$A$662,'PROJEÇÃO '!$BC$4:$BC$662)+_xlfn.XLOOKUP(VALUE($B5),'PROJEÇÃO '!$A$4:$A$662,'PROJEÇÃO '!$BD$4:$BD$662)+_xlfn.XLOOKUP(VALUE($B5),'PROJEÇÃO '!$A$4:$A$662,'PROJEÇÃO '!$BE$4:$BE$662),0)"
+    },
+    {
+      "col_letter": "CW",
+      "col_number": 101,
+      "nome_coluna": "[FORMULA: =IFERROR(EE3/CU3,\"\")]",
+      "grupo": "Q1",
+      "subgrupo": "% ALCANÇADO TRI",
+      "formula_row4": "=IFERROR(IF(OR(CU4=0,CU4=\"\"),IF(OR(CV4=0,CV4=\"\"),EE4/2078.4,EE4/CV4),EE4/CU4),\"\")",
+      "formula_row5": "=IFERROR(IF(OR(CU5=0,CU5=\"\"),IF(OR(CV5=0,CV5=\"\"),EE5/2078.4,EE5/CV5),EE5/CU5),\"\")"
+    },
+    {
+      "col_letter": "CX",
+      "col_number": 102,
+      "nome_coluna": "[FORMULA: =SUBTOTAL(109,CX4:CX1585)]",
+      "grupo": "JANEIRO",
+      "subgrupo": "META SAP",
+      "formula_row4": "=IFERROR(_xlfn.XLOOKUP(VALUE($B4),'PROJEÇÃO '!$A$4:$A$662,'PROJEÇÃO '!$M$4:$M$662),0)",
+      "formula_row5": "=IFERROR(_xlfn.XLOOKUP(VALUE($B5),'PROJEÇÃO '!$A$4:$A$662,'PROJEÇÃO '!$M$4:$M$662),0)"
+    },
+    {
+      "col_letter": "CY",
+      "col_number": 103,
+      "nome_coluna": "[FORMULA: =SUBTOTAL(109,CY4:CY1585)]",
+      "grupo": "JANEIRO",
+      "subgrupo": "META IGUALIT.",
+      "formula_row4": "=IFERROR(_xlfn.XLOOKUP(VALUE($B4),'PROJEÇÃO '!$A$4:$A$662,'PROJEÇÃO '!$BC$4:$BC$662),0)",
+      "formula_row5": "=IFERROR(_xlfn.XLOOKUP(VALUE($B5),'PROJEÇÃO '!$A$4:$A$662,'PROJEÇÃO '!$BC$4:$BC$662),0)"
+    },
+    {
+      "col_letter": "CZ",
+      "col_number": 104,
+      "nome_coluna": "[FORMULA: =IFERROR(DG3/CY3,\"\")]",
+      "grupo": "JANEIRO",
+      "subgrupo": "",
+      "formula_row4": "=IFERROR(IF(CY4=0,\"\",DG4/CY4),\"\")",
+      "formula_row5": "=IFERROR(IF(CY5=0,\"\",DG5/CY5),\"\")"
+    },
+    {
+      "col_letter": "DG",
+      "col_number": 111,
+      "nome_coluna": "[FORMULA: =SUBTOTAL(109,DG4:DG1585)]",
+      "grupo": "JANEIRO",
+      "subgrupo": "REALIZADO",
+      "formula_row4": "=IFERROR(IF($AP4=\"\",\"\",$AP4),\"\")",
+      "formula_row5": "=IFERROR(IF($AP5=\"\",\"\",$AP5),\"\")"
+    },
+    {
+      "col_letter": "DH",
+      "col_number": 112,
+      "nome_coluna": "[FORMULA: =IFERROR(DG3/CX3,\"\")]",
+      "grupo": "JANEIRO",
+      "subgrupo": "% SAP",
+      "formula_row4": "=IFERROR(IF(CX4=0,\"\",DG4/CX4),\"\")",
+      "formula_row5": "=IFERROR(IF(CX5=0,\"\",DG5/CX5),\"\")"
+    },
+    {
+      "col_letter": "DI",
+      "col_number": 113,
+      "nome_coluna": "[FORMULA: =SUBTOTAL(109,DI4:DI1585)]",
+      "grupo": "FEVEREIRO",
+      "subgrupo": "META SAP",
+      "formula_row4": "=IFERROR(_xlfn.XLOOKUP(VALUE($B4),'PROJEÇÃO '!$A$4:$A$662,'PROJEÇÃO '!$N$4:$N$662),0)",
+      "formula_row5": "=IFERROR(_xlfn.XLOOKUP(VALUE($B5),'PROJEÇÃO '!$A$4:$A$662,'PROJEÇÃO '!$N$4:$N$662),0)"
+    },
+    {
+      "col_letter": "DJ",
+      "col_number": 114,
+      "nome_coluna": "[FORMULA: =SUBTOTAL(109,DJ4:DJ1585)]",
+      "grupo": "FEVEREIRO",
+      "subgrupo": "META IGUALIT.",
+      "formula_row4": "=IFERROR(_xlfn.XLOOKUP(VALUE($B4),'PROJEÇÃO '!$A$4:$A$662,'PROJEÇÃO '!$BD$4:$BD$662),0)",
+      "formula_row5": "=IFERROR(_xlfn.XLOOKUP(VALUE($B5),'PROJEÇÃO '!$A$4:$A$662,'PROJEÇÃO '!$BD$4:$BD$662),0)"
+    },
+    {
+      "col_letter": "DK",
+      "col_number": 115,
+      "nome_coluna": "[FORMULA: =IFERROR(DR3/DJ3,\"\")]",
+      "grupo": "FEVEREIRO",
+      "subgrupo": "% IGUALIT.",
+      "formula_row4": "=IFERROR(IF(DJ4=0,\"\",DR4/DJ4),\"\")",
+      "formula_row5": "=IFERROR(IF(DJ5=0,\"\",DR5/DJ5),\"\")"
+    },
+    {
+      "col_letter": "DR",
+      "col_number": 122,
+      "nome_coluna": "[FORMULA: =SUBTOTAL(109,DR4:DR1585)]",
+      "grupo": "FEVEREIRO",
+      "subgrupo": "REALIZADO",
+      "formula_row4": "=IFERROR(IF($AQ4=\"\",\"\",$AQ4),\"\")",
+      "formula_row5": "=IFERROR(IF($AQ5=\"\",\"\",$AQ5),\"\")"
+    },
+    {
+      "col_letter": "DS",
+      "col_number": 123,
+      "nome_coluna": "[FORMULA: =IFERROR(DR3/DI3,\"\")]",
+      "grupo": "FEVEREIRO",
+      "subgrupo": "% SAP",
+      "formula_row4": "=IFERROR(IF(DI4=0,\"\",DR4/DI4),\"\")",
+      "formula_row5": "=IFERROR(IF(DI5=0,\"\",DR5/DI5),\"\")"
+    },
+    {
+      "col_letter": "DT",
+      "col_number": 124,
+      "nome_coluna": "[FORMULA: =SUBTOTAL(109,DT4:DT1585)]",
+      "grupo": "MARÇO",
+      "subgrupo": "META SAP",
+      "formula_row4": "=IFERROR(_xlfn.XLOOKUP(VALUE($B4),'PROJEÇÃO '!$A$4:$A$662,'PROJEÇÃO '!$O$4:$O$662),0)",
+      "formula_row5": "=IFERROR(_xlfn.XLOOKUP(VALUE($B5),'PROJEÇÃO '!$A$4:$A$662,'PROJEÇÃO '!$O$4:$O$662),0)"
+    },
+    {
+      "col_letter": "DU",
+      "col_number": 125,
+      "nome_coluna": "[FORMULA: =SUBTOTAL(109,DU4:DU1585)]",
+      "grupo": "MARÇO",
+      "subgrupo": "META IGUALIT.",
+      "formula_row4": "=IFERROR(_xlfn.XLOOKUP(VALUE($B4),'PROJEÇÃO '!$A$4:$A$662,'PROJEÇÃO '!$BE$4:$BE$662),0)",
+      "formula_row5": "=IFERROR(_xlfn.XLOOKUP(VALUE($B5),'PROJEÇÃO '!$A$4:$A$662,'PROJEÇÃO '!$BE$4:$BE$662),0)"
+    },
+    {
+      "col_letter": "DV",
+      "col_number": 126,
+      "nome_coluna": "[FORMULA: =IFERROR(EC3/DU3,\"\")]",
+      "grupo": "MARÇO",
+      "subgrupo": "% IGUALIT.",
+      "formula_row4": "=IFERROR(IF(DU4=0,\"\",EC4/DU4),\"\")",
+      "formula_row5": "=IFERROR(IF(DU5=0,\"\",EC5/DU5),\"\")"
+    },
+    {
+      "col_letter": "EC",
+      "col_number": 133,
+      "nome_coluna": "[FORMULA: =SUBTOTAL(109,EC4:EC1585)]",
+      "grupo": "MARÇO",
+      "subgrupo": "REALIZADO",
+      "formula_row4": "=IFERROR(IF($AR4=\"\",\"\",$AR4),\"\")",
+      "formula_row5": "=IFERROR(IF($AR5=\"\",\"\",$AR5),\"\")"
+    },
+    {
+      "col_letter": "ED",
+      "col_number": 134,
+      "nome_coluna": "[FORMULA: =IFERROR(EC3/DT3,\"\")]",
+      "grupo": "MARÇO",
+      "subgrupo": "% SAP",
+      "formula_row4": "=IFERROR(IF(DT4=0,\"\",EC4/DT4),\"\")",
+      "formula_row5": "=IFERROR(IF(DT5=0,\"\",EC5/DT5),\"\")"
+    },
+    {
+      "col_letter": "EE",
+      "col_number": 135,
+      "nome_coluna": "[FORMULA: =DG3+DR3+EC3]",
+      "grupo": "Q1 ⚓",
+      "subgrupo": "REALIZADO TRI",
+      "formula_row4": "=IFERROR(SUM(DG4,DR4,EC4),\"\")",
+      "formula_row5": "=IFERROR(SUM(DG5,DR5,EC5),\"\")"
+    },
+    {
+      "col_letter": "EF",
+      "col_number": 136,
+      "nome_coluna": "[FORMULA: =IFERROR(EE3/CU3,\"\")]",
+      "grupo": "Q1 ⚓",
+      "subgrupo": "% TRI SAP",
+      "formula_row4": "=IFERROR(IF(CU4=0,\"\",EE4/CU4),\"\")",
+      "formula_row5": "=IFERROR(IF(CU5=0,\"\",EE5/CU5),\"\")"
+    },
+    {
+      "col_letter": "EG",
+      "col_number": 137,
+      "nome_coluna": "URGÊNCIA (30%)",
+      "grupo": "Q1 ⚓",
+      "subgrupo": "⭐ SCORE & PRIORIDADE v2",
+      "formula_row4": "=IF(B4=\"\",\"\",IF(M4=\"INAT.ANT\",100,IF(M4=\"INAT.REC\",90,IF(M4=\"EM RISCO\",70,IF(M4=\"PROSPECT\",10,IF(M4=\"LEAD\",10,IF(OR(R4=0,R4=\"\"),IF(O4>50,60,30),IF(O4/R4>=1.5,100,IF(O4/R4>=1,60,IF(O4/R4>=0.7,40,20))))))))))",
+      "formula_row5": "=IF(B5=\"\",\"\",IF(M5=\"INAT.ANT\",100,IF(M5=\"INAT.REC\",90,IF(M5=\"EM RISCO\",70,IF(M5=\"PROSPECT\",10,IF(M5=\"LEAD\",10,IF(OR(R5=0,R5=\"\"),IF(O5>50,60,30),IF(O5/R5>=1.5,100,IF(O5/R5>=1,60,IF(O5/R5>=0.7,40,20))))))))))"
+    },
+    {
+      "col_letter": "EH",
+      "col_number": 138,
+      "nome_coluna": "VALOR (25%)",
+      "grupo": "Q1 ⚓",
+      "subgrupo": "",
+      "formula_row4": "=IF(B4=\"\",\"\",IF(AND(BE4=\"A\",OR(BP4=\"FIDELIZADO\",BP4=\"MADURO\")),100,IF(BE4=\"A\",80,IF(AND(BE4=\"B\",OR(BP4=\"RECORRENTE\",BP4=\"FIDELIZADO\")),60,IF(BE4=\"B\",50,IF(BE4=\"C\",20,IF(OR(BP4=\"FIDELIZADO\",BP4=\"MADURO\"),60,IF(BP4=\"RECORRENTE\",40,IF(BP4=\"EM DESENVOLVIMENTO\",20,10)))))))))",
+      "formula_row5": "=IF(B5=\"\",\"\",IF(AND(BE5=\"A\",OR(BP5=\"FIDELIZADO\",BP5=\"MADURO\")),100,IF(BE5=\"A\",80,IF(AND(BE5=\"B\",OR(BP5=\"RECORRENTE\",BP5=\"FIDELIZADO\")),60,IF(BE5=\"B\",50,IF(BE5=\"C\",20,IF(OR(BP5=\"FIDELIZADO\",BP5=\"MADURO\"),60,IF(BP5=\"RECORRENTE\",40,IF(BP5=\"EM DESENVOLVIMENTO\",20,10)))))))))"
+    },
+    {
+      "col_letter": "EI",
+      "col_number": 139,
+      "nome_coluna": "FOLLOW-UP (20%)",
+      "grupo": "Q1 ⚓",
+      "subgrupo": "",
+      "formula_row4": "=IF(B4=\"\",\"\",IF(OR(BK4=\"\",BK4=0),50,IFERROR(_xlfn.LET(_xlpm.diasAtraso,TODAY()-BK4,IF(_xlpm.diasAtraso>=7,100,IF(_xlpm.diasAtraso>=3,80,IF(_xlpm.diasAtraso>=1,70,IF(_xlpm.diasAtraso=0,60,IF(_xlpm.diasAtraso>=-3,40,20)))))),50)))",
+      "formula_row5": "=IF(B5=\"\",\"\",IF(OR(BK5=\"\",BK5=0),50,IFERROR(_xlfn.LET(_xlpm.diasAtraso,TODAY()-BK5,IF(_xlpm.diasAtraso>=7,100,IF(_xlpm.diasAtraso>=3,80,IF(_xlpm.diasAtraso>=1,70,IF(_xlpm.diasAtraso=0,60,IF(_xlpm.diasAtraso>=-3,40,20)))))),50)))"
+    },
+    {
+      "col_letter": "EJ",
+      "col_number": 140,
+      "nome_coluna": "SINAL (15%)",
+      "grupo": "Q1 ⚓",
+      "subgrupo": "",
+      "formula_row4": "=IF(B4=\"\",\"\",IF(BT4=\"CRÍTICO\",90,IF(AND(BT4=\"QUENTE\",U4>0),100,IF(BT4=\"QUENTE\",80,IF(AND(BT4=\"MORNO\",OR(S4=\"SIM\",S4=\"Sim\"),U4>0),70,IF(AND(BT4=\"MORNO\",OR(S4=\"SIM\",S4=\"Sim\")),60,IF(BT4=\"MORNO\",40,IF(BT4=\"FRIO\",10,0))))))))",
+      "formula_row5": "=IF(B5=\"\",\"\",IF(BT5=\"CRÍTICO\",90,IF(AND(BT5=\"QUENTE\",U5>0),100,IF(BT5=\"QUENTE\",80,IF(AND(BT5=\"MORNO\",OR(S5=\"SIM\",S5=\"Sim\"),U5>0),70,IF(AND(BT5=\"MORNO\",OR(S5=\"SIM\",S5=\"Sim\")),60,IF(BT5=\"MORNO\",40,IF(BT5=\"FRIO\",10,0))))))))"
+    },
+    {
+      "col_letter": "EK",
+      "col_number": 141,
+      "nome_coluna": "TENTATIVA (5%)",
+      "grupo": "Q1 ⚓",
+      "subgrupo": "",
+      "formula_row4": "=IF(B4=\"\",\"\",IF(OR(BQ4=\"\",BQ4=0),10,IF(OR(BQ4=\"T4\",LEFT(BQ4,2)=\"T4\",VALUE(IFERROR(MID(BQ4,2,2),\"0\"))>=4),100,IF(BQ4=\"T3\",50,IF(BQ4=\"T2\",30,IF(BQ4=\"T1\",10,IF(BQ4=\"NUTRIÇÃO\",5,10)))))))",
+      "formula_row5": "=IF(B5=\"\",\"\",IF(OR(BQ5=\"\",BQ5=0),10,IF(OR(BQ5=\"T4\",LEFT(BQ5,2)=\"T4\",VALUE(IFERROR(MID(BQ5,2,2),\"0\"))>=4),100,IF(BQ5=\"T3\",50,IF(BQ5=\"T2\",30,IF(BQ5=\"T1\",10,IF(BQ5=\"NUTRIÇÃO\",5,10)))))))"
+    },
+    {
+      "col_letter": "EL",
+      "col_number": 142,
+      "nome_coluna": "SITUAÇÃO (5%)",
+      "grupo": "Q1 ⚓",
+      "subgrupo": "",
+      "formula_row4": "=IF(B4=\"\",\"\",IF(M4=\"EM RISCO\",80,IF(M4=\"ATIVO\",40,IF(OR(M4=\"INAT.REC\",M4=\"INAT.ANT\"),20,10))))",
+      "formula_row5": "=IF(B5=\"\",\"\",IF(M5=\"EM RISCO\",80,IF(M5=\"ATIVO\",40,IF(OR(M5=\"INAT.REC\",M5=\"INAT.ANT\"),20,10))))"
+    },
+    {
+      "col_letter": "EM",
+      "col_number": 143,
+      "nome_coluna": "SCORE",
+      "grupo": "Q1 ⚓",
+      "subgrupo": "",
+      "formula_row4": "=IF(B4=\"\",\"\",ROUND((IFERROR(EG4,0)*0.3)+(IFERROR(EH4,0)*0.25)+(IFERROR(EI4,50)*0.2)+(IFERROR(EJ4,0)*0.15)+(IFERROR(EK4,10)*0.05)+(IFERROR(EL4,10)*0.05),0))",
+      "formula_row5": "=IF(B5=\"\",\"\",ROUND((IFERROR(EG5,0)*0.3)+(IFERROR(EH5,0)*0.25)+(IFERROR(EI5,50)*0.2)+(IFERROR(EJ5,0)*0.15)+(IFERROR(EK5,10)*0.05)+(IFERROR(EL5,10)*0.05),0))"
+    },
+    {
+      "col_letter": "EN",
+      "col_number": 144,
+      "nome_coluna": "PRIORIDADE v2",
+      "grupo": "Q1 ⚓",
+      "subgrupo": "",
+      "formula_row4": "=IF(B4=\"\",\"\",IF(BN4=\"SUPORTE\",\"P3 — PROBLEMA\",IF(AND(OR(BJ4=\"PÓS-VENDA\",BJ4=\"CS / RECOMPRA\"),OR(M4=\"NOVO\",M4=\"ATIVO\"),IFERROR(EM4,0)>=70),\"P1 — NAMORO NOVO\",IF(OR(BJ4=\"ORÇAMENTO\",BJ4=\"EM ATENDIMENTO\",BJ4=\"CADASTRO\"),\"P2 — NEGOCIAÇÃO ATIVA\",IF(M4=\"INAT.REC\",IF(IFERROR(EM4,0)>=75,\"P4 — MOMENTO OURO\",\"P5 — INAT. RECENTE\"),IF(M4=\"INAT.ANT\",IF(IFERROR(EM4,0)>=80,\"P5 — INAT. RECENTE\",\"P6 — INAT. ANTIGO\"),IF(OR(M4=\"PROSPECT\",M4=\"LEAD\"),\"P7 — PROSPECÇÃO\",IF(M4=\"NOVO\",\"P4 — MOMENTO OURO\",IF(IFERROR(EM4,0)>=50,\"P4 — MOMENTO OURO\",\"P5 — INAT. RECENTE\")))))))))",
+      "formula_row5": "=IF(B5=\"\",\"\",IF(BN5=\"SUPORTE\",\"P3 — PROBLEMA\",IF(AND(OR(BJ5=\"PÓS-VENDA\",BJ5=\"CS / RECOMPRA\"),OR(M5=\"NOVO\",M5=\"ATIVO\"),IFERROR(EM5,0)>=70),\"P1 — NAMORO NOVO\",IF(OR(BJ5=\"ORÇAMENTO\",BJ5=\"EM ATENDIMENTO\",BJ5=\"CADASTRO\"),\"P2 — NEGOCIAÇÃO ATIVA\",IF(M5=\"INAT.REC\",IF(IFERROR(EM5,0)>=75,\"P4 — MOMENTO OURO\",\"P5 — INAT. RECENTE\"),IF(M5=\"INAT.ANT\",IF(IFERROR(EM5,0)>=80,\"P5 — INAT. RECENTE\",\"P6 — INAT. ANTIGO\"),IF(OR(M5=\"PROSPECT\",M5=\"LEAD\"),\"P7 — PROSPECÇÃO\",IF(M5=\"NOVO\",\"P4 — MOMENTO OURO\",IF(IFERROR(EM5,0)>=50,\"P4 — MOMENTO OURO\",\"P5 — INAT. RECENTE\")))))))))"
+    }
+  ]
+}

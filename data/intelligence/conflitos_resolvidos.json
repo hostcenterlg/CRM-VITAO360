@@ -1,0 +1,92 @@
+{
+  "_fonte": "VITAO360_ULTRA_FINAL (5).xlsx | 7. CONFLITOS RESOLVIDOS",
+  "_auditoria": "Auditoria forense 68 arquivos - decisao documentada",
+  "conflitos": [
+    {
+      "tema": "Receita 2025",
+      "valor_a": "R$2.091M",
+      "valor_b": "R$2.101M / R$1.997M",
+      "decisao": "R$2.091M",
+      "justificativa": "Valor das abas executivas de diagnóstico. Outros são sub-conjuntos ou totais parciais."
+    },
+    {
+      "tema": "Receita 2026",
+      "valor_a": "R$3.354M",
+      "valor_b": "R$3.377M",
+      "decisao": "R$3.377M",
+      "justificativa": "PAINEL_CEO_DEFINITIVO tem motor mês a mês completo com fórmulas. Mais preciso."
+    },
+    {
+      "tema": "Ativos P12",
+      "valor_a": "207",
+      "valor_b": "546",
+      "decisao": "207",
+      "justificativa": "Motor conservador com churn 80% real. 546 seria churn zero — irreal para o modelo."
+    },
+    {
+      "tema": "ROI 2026",
+      "valor_a": "2,9× / 10,2× / 11,3×",
+      "valor_b": "—",
+      "decisao": "7,4× (nova eq.)",
+      "justificativa": "Nova estrutura de equipe: R$375K investimento. Fórmula: Sobra / Investimento."
+    },
+    {
+      "tema": "Churn/Retenção 2026",
+      "valor_a": "52%/48%",
+      "valor_b": "65%/35%",
+      "decisao": "50%/50%",
+      "justificativa": "Meta do pós-venda Q3. Real Q1 já indica 83% — PV reduz para 50% em 90 dias."
+    },
+    {
+      "tema": "DRAFT 2 sintético",
+      "valor_a": "V12 fabricado",
+      "valor_b": "V_FINAL_OK real",
+      "decisao": "V_FINAL_OK",
+      "justificativa": "V12_1 e V12_2 com CNPJs inválidos e nomes fictícios. Descartados na auditoria."
+    },
+    {
+      "tema": "Duplicatas (MD5)",
+      "valor_a": "8 pares idênticos",
+      "valor_b": "—",
+      "decisao": "1 cópia deletada",
+      "justificativa": "PROJECAO_534, SINALEIRO_INTERNO, VITAO360_534, PROJECAO_1566."
+    },
+    {
+      "tema": "Custo equipe 2026",
+      "valor_a": "R$300K (modelo orig.)",
+      "valor_b": "R$375K (equipe real)",
+      "decisao": "R$375K",
+      "justificativa": "Estrutura real: Q1=R$22K, Q2=R$29K, Q3=R$34K, Q4=R$40K × 3 meses cada."
+    }
+  ],
+  "premissas_pendentes": [
+    {
+      "premissa": "Custo mensal equipe",
+      "valor_usado": "~R$27.200/mês (est.)",
+      "status": "PENDENTE RH",
+      "se_errado": "CAC e ROI mudam proporcionalmente",
+      "acao": "Confirmar folha real com RH até Abr/2026"
+    },
+    {
+      "premissa": "Food Channel Daiane",
+      "valor_usado": "Não modelado",
+      "status": "PENDENTE Daiane",
+      "se_errado": "Revenue incremental puro",
+      "acao": "Reunião Daiane: ticket, pipeline, metas"
+    },
+    {
+      "premissa": "Ramp Nova Rep Q2",
+      "valor_usado": "2 meses para plena capac.",
+      "status": "PREMISSA",
+      "se_errado": "Se >2m: Q2 menor que projetado",
+      "acao": "Monitorar semana 4-6 da nova contratação"
+    },
+    {
+      "premissa": "Churn com PV = 50%",
+      "valor_usado": "Meta Q3 em 90 dias",
+      "status": "PREMISSA",
+      "se_errado": "Se 60%: sobra cai ~R$200K",
+      "acao": "KPI semanal pós-contratação PV"
+    }
+  ]
+}

@@ -1,0 +1,258 @@
+{
+  "_fonte": "VITAO360_ULTRA_FINAL (5).xlsx | 1. DIAGNOSTICO 2025",
+  "_auditoria": "CRM + SAP - auditoria forense 68 arquivos",
+  "kpis_reais": [
+    {
+      "kpi": "Receita anual",
+      "valor_real": 2091000,
+      "unidade": "R$",
+      "fonte": "PAINEL_CEO_DEFINITIVO auditado",
+      "observacao": null
+    },
+    {
+      "kpi": "Melhor mês (Nov/25)",
+      "valor_real": 277673,
+      "unidade": "R$",
+      "fonte": "Mês a mês auditado",
+      "observacao": "Pico não sustentado sem estrutura"
+    },
+    {
+      "kpi": "Clientes com compra",
+      "valor_real": 488,
+      "unidade": "clientes",
+      "fonte": "CRM: 661 total (incl. prospects)",
+      "observacao": "488 realizaram ao menos 1 pedido"
+    },
+    {
+      "kpi": "Ticket médio anual",
+      "valor_real": 4285,
+      "unidade": "R$/cli",
+      "fonte": "2.091k / 488 clientes",
+      "observacao": null
+    },
+    {
+      "kpi": "Ativos médio/mês",
+      "valor_real": 78,
+      "unidade": "clientes",
+      "fonte": "Média Jan(32)→Ago(117)",
+      "observacao": "Pico Ago, queda posterior"
+    },
+    {
+      "kpi": "Churn mensal",
+      "valor_real": 0.8,
+      "unidade": "%",
+      "fonte": "Observado real CRM + SAP",
+      "observacao": "Confirmado Q1 2026: 83%"
+    },
+    {
+      "kpi": "Retenção mensal",
+      "valor_real": 0.2,
+      "unidade": "%",
+      "fonte": "Inverso do churn",
+      "observacao": null
+    },
+    {
+      "kpi": "LTV estimado",
+      "valor_real": 2792,
+      "unidade": "R$",
+      "fonte": "1,9 meses × ticket médio mensal",
+      "observacao": null
+    },
+    {
+      "kpi": "Compraram 1× só",
+      "valor_real": 0.572,
+      "unidade": "%",
+      "fonte": "279 de 488 clientes",
+      "observacao": "Maior problema estrutural"
+    },
+    {
+      "kpi": "Devoluções",
+      "valor_real": 0.023,
+      "unidade": "%",
+      "fonte": "Aceitável para segmento B2B",
+      "observacao": null
+    }
+  ],
+  "mes_a_mes": [
+    {
+      "mes": "Jan",
+      "faturamento": 43265,
+      "clientes_ativos": 32,
+      "novos": 32,
+      "retidos": 0,
+      "churned": 0,
+      "retencao": 0,
+      "fat_acumulado": 43265
+    },
+    {
+      "mes": "Fev",
+      "faturamento": 38004,
+      "clientes_ativos": 26,
+      "novos": 23,
+      "retidos": 3,
+      "churned": -29,
+      "retencao": 0.094,
+      "fat_acumulado": 81269
+    },
+    {
+      "mes": "Mar",
+      "faturamento": 112452,
+      "clientes_ativos": 53,
+      "novos": 49,
+      "retidos": 4,
+      "churned": -22,
+      "retencao": 0.154,
+      "fat_acumulado": 193721
+    },
+    {
+      "mes": "Abr",
+      "faturamento": 170967,
+      "clientes_ativos": 63,
+      "novos": 51,
+      "retidos": 12,
+      "churned": -41,
+      "retencao": 0.226,
+      "fat_acumulado": 364688
+    },
+    {
+      "mes": "Mai",
+      "faturamento": 180112,
+      "clientes_ativos": 77,
+      "novos": 65,
+      "retidos": 12,
+      "churned": -51,
+      "retencao": 0.19,
+      "fat_acumulado": 544800
+    },
+    {
+      "mes": "Jun",
+      "faturamento": 221940,
+      "clientes_ativos": 101,
+      "novos": 87,
+      "retidos": 14,
+      "churned": -63,
+      "retencao": 0.182,
+      "fat_acumulado": 766740
+    },
+    {
+      "mes": "Jul",
+      "faturamento": 160606,
+      "clientes_ativos": 77,
+      "novos": 57,
+      "retidos": 20,
+      "churned": -81,
+      "retencao": 0.259,
+      "fat_acumulado": 927346
+    },
+    {
+      "mes": "Ago",
+      "faturamento": 219364,
+      "clientes_ativos": 117,
+      "novos": 92,
+      "retidos": 25,
+      "churned": -52,
+      "retencao": 0.213,
+      "fat_acumulado": 1146710
+    },
+    {
+      "mes": "Set",
+      "faturamento": 201625,
+      "clientes_ativos": 93,
+      "novos": 66,
+      "retidos": 27,
+      "churned": -90,
+      "retencao": 0.231,
+      "fat_acumulado": 1348335
+    },
+    {
+      "mes": "Out",
+      "faturamento": 275016,
+      "clientes_ativos": 113,
+      "novos": 88,
+      "retidos": 25,
+      "churned": -68,
+      "retencao": 0.15,
+      "fat_acumulado": 1623351
+    },
+    {
+      "mes": "Nov",
+      "faturamento": 277673,
+      "clientes_ativos": 91,
+      "novos": 74,
+      "retidos": 17,
+      "churned": -96,
+      "retencao": 0.13,
+      "fat_acumulado": 1901024
+    },
+    {
+      "mes": "Dez",
+      "faturamento": 189970,
+      "clientes_ativos": 88,
+      "novos": 76,
+      "retidos": 12,
+      "churned": -79,
+      "retencao": 0.116,
+      "fat_acumulado": 2090994
+    },
+    {
+      "mes": "TOTAL",
+      "faturamento": 2091000,
+      "clientes_ativos": "-",
+      "novos": 760,
+      "retidos": 171,
+      "churned": -672,
+      "retencao": "Avg 20%",
+      "fat_acumulado": 2091000
+    }
+  ],
+  "frequencia_compra": [
+    {
+      "meses_ativo": "Meses Ativo",
+      "clientes": "Clientes",
+      "pct_total": "% Total",
+      "interpretacao": "Interpretação"
+    },
+    {
+      "meses_ativo": "0m",
+      "clientes": 4,
+      "pct_total": 0.0082,
+      "interpretacao": "Zero pedidos — teste ou prospect puro"
+    },
+    {
+      "meses_ativo": "1m",
+      "clientes": 279,
+      "pct_total": 0.5717,
+      "interpretacao": "CRÍTICO: 57% comprou 1× só. Churn estrutural."
+    },
+    {
+      "meses_ativo": "2m",
+      "clientes": 101,
+      "pct_total": 0.207,
+      "interpretacao": "2 compras — ciclo ainda curto"
+    },
+    {
+      "meses_ativo": "3m",
+      "clientes": 47,
+      "pct_total": 0.0963,
+      "interpretacao": "3 compras — em fidelização"
+    },
+    {
+      "meses_ativo": "4m",
+      "clientes": 22,
+      "pct_total": 0.0451,
+      "interpretacao": "4+ meses — RECORRENTE (meta)"
+    },
+    {
+      "meses_ativo": "5m",
+      "clientes": 25,
+      "pct_total": 0.0512,
+      "interpretacao": "Recorrente consolidado"
+    },
+    {
+      "meses_ativo": "6m",
+      "clientes": 5,
+      "pct_total": 0.0102,
+      "interpretacao": "Alta fidelização"
+    }
+  ]
+}

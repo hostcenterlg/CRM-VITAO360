@@ -1,0 +1,238 @@
+{
+  "_fonte": "VITAO360_ULTRA_FINAL (5).xlsx | 4. EQUIPE 2026",
+  "_auditoria": "Organograma + roadmap contratacoes + funil diario",
+  "alerta_manu": "⚠  HEMANUELE (MANU): Licença maternidade Q2/2026  |  165 clientes / R$778k fat. 2025 / SC+PR+RS  |  AÇÃO: contratar Nova Rep Q2 + transferir carteira em 4-6 semanas",
+  "organograma": [
+    {
+      "pessoa": "LARISSA",
+      "cargo": "Representante PDV",
+      "territorio": "Brasil Interior",
+      "status": "ATIVA",
+      "meta": "22 novos/mês",
+      "atividade_dia": "22 cont→1 fecham./dia",
+      "obs": "Veterana — carteira consolidada"
+    },
+    {
+      "pessoa": "JULIO",
+      "cargo": "Representante PDV",
+      "territorio": "Cia Saúde+Fitland",
+      "status": "ATIVO",
+      "meta": "22 novos/mês",
+      "atividade_dia": "22 cont→1 fecham./dia",
+      "obs": "Veterano — foco redes regionais"
+    },
+    {
+      "pessoa": "DAIANE",
+      "cargo": "Gerente Redes+Food",
+      "territorio": "Redes Nacionais + Food",
+      "status": "NOVA ATRIB.",
+      "meta": "8 redes/mês",
+      "atividade_dia": "2-3 decisores/dia",
+      "obs": "Novo canal food = upside não modelado"
+    },
+    {
+      "pessoa": "NOVA REP",
+      "cargo": "Representante PDV",
+      "territorio": "A definir",
+      "status": "CONTRATAR Q2",
+      "meta": "22 novos/mês",
+      "atividade_dia": "Ramp 2m: 11→22/dia",
+      "obs": "Substitui Manu — carteira SC+PR+RS"
+    },
+    {
+      "pessoa": "PÓS-VENDA",
+      "cargo": "CS + Suporte",
+      "territorio": "Todos 661 clientes",
+      "status": "CONTRATAR Q3",
+      "meta": "Churn 75%→50%",
+      "atividade_dia": "12 follow-ups D+4/dia",
+      "obs": "Fecha o ralo — LTV R$2.850→R$7.200"
+    }
+  ],
+  "roadmap_contratacoes": [
+    {
+      "trimestre": "Q1 Jan-Mar",
+      "acao": "Operação atual",
+      "equipe": "Larissa+Julio+Daiane",
+      "custo_mes": "R$22.000",
+      "gatilho": "Q1 real=R$459K",
+      "porque": "Base validada pelo SAP real",
+      "fat_estimado": "R$603K"
+    },
+    {
+      "trimestre": "Q2 Abr-Jun",
+      "acao": "Substituir Manu",
+      "equipe": "3 Reps+Daiane",
+      "custo_mes": "R$29.000",
+      "gatilho": "Manu em licença",
+      "porque": "Carteira não pode ficar descoberta",
+      "fat_estimado": "R$748K"
+    },
+    {
+      "trimestre": "Q3 Jul-Set",
+      "acao": "PRIORIDADE: Pós-Venda",
+      "equipe": "3 Reps+Daiane+PV",
+      "custo_mes": "R$34.000",
+      "gatilho": "Fat>R$180K",
+      "porque": "Sem PV=balde furado. Cohort +55%",
+      "fat_estimado": "R$839K"
+    },
+    {
+      "trimestre": "Q4 Out-Dez",
+      "acao": "4ª Rep (aceleração)",
+      "equipe": "4 Reps+Daiane+PV",
+      "custo_mes": "R$40.000",
+      "gatilho": "Fat>R$300K",
+      "porque": "Com PV rodando, cada novo fica 2x mais",
+      "fat_estimado": "R$967K"
+    }
+  ],
+  "funil_diario": [
+    {
+      "etapa": "Contatos (WA+Tel+Email)",
+      "meta_mensal": "489/rep/mês",
+      "por_dia": "22/dia",
+      "taxa": "100% base",
+      "quem": "Cada Representante",
+      "ferramenta": "WhatsApp Business + CRM",
+      "obs": "1 contato = 1 tentativa de agendar"
+    },
+    {
+      "etapa": "Visitas (agendadas)",
+      "meta_mensal": "147/rep/mês",
+      "por_dia": "7/dia",
+      "taxa": "30% dos contatos",
+      "quem": "Cada Representante",
+      "ferramenta": "Agenda integrada CRM",
+      "obs": "Presencial ou videochamada"
+    },
+    {
+      "etapa": "Propostas enviadas",
+      "meta_mensal": "73/rep/mês",
+      "por_dia": "3/dia",
+      "taxa": "50% das visitas",
+      "quem": "Cada Representante",
+      "ferramenta": "Mercos + CRM",
+      "obs": "Proposta formal ou amostras"
+    },
+    {
+      "etapa": "Fechamentos (novos cli.)",
+      "meta_mensal": "22/rep/mês",
+      "por_dia": "1/dia",
+      "taxa": "30% propostas",
+      "quem": "Cada Representante",
+      "ferramenta": "Mercos pedido",
+      "obs": "Protocolo: contato → visita → proposta → pedido"
+    },
+    {
+      "etapa": "Follow-up D+4 (PV)",
+      "meta_mensal": "100% pedidos",
+      "por_dia": "12-15/dia",
+      "taxa": "—",
+      "quem": "Pós-Venda/CS (Q3)",
+      "ferramenta": "CRM alertas automáticos",
+      "obs": "D+4 = confirmar entrega + satisfação"
+    },
+    {
+      "etapa": "Recompra (PDV)",
+      "meta_mensal": "ciclo 60 dias",
+      "por_dia": "alertas D+45",
+      "taxa": "—",
+      "quem": "PV + Rep",
+      "ferramenta": "CRM motor de regras",
+      "obs": "Antes do ciclo fechar → reagendar"
+    },
+    {
+      "etapa": "Decisores redes (Daiane)",
+      "meta_mensal": "8 redes/mês",
+      "por_dia": "2-3/dia",
+      "taxa": "20% conv.",
+      "quem": "Daiane (Gerente)",
+      "ferramenta": "Visita presencial + WhatsApp",
+      "obs": "Franqueador = múltiplas lojas"
+    }
+  ],
+  "metas_por_funcao": [
+    {
+      "funcao": "Representante PDV",
+      "kpi": "Aquisição",
+      "meta": 22,
+      "unidade": "novos/mês",
+      "periodo": "Mensal",
+      "acao_se_nao_atingir": "Revisar funil — ver contatos/dia",
+      "referencia": "Conv. 4,5% auditada"
+    },
+    {
+      "funcao": "Representante PDV",
+      "kpi": "Positivação",
+      "meta": 22,
+      "unidade": "PDVs/mês",
+      "periodo": "Mensal",
+      "acao_se_nao_atingir": "Verificar proposta e perfil do cliente",
+      "referencia": "1 fechamento/dia"
+    },
+    {
+      "funcao": "Representante PDV",
+      "kpi": "Ticket 1ª compra",
+      "meta": "≥R$1.500",
+      "unidade": "R$/pedido",
+      "periodo": "Por pedido",
+      "acao_se_nao_atingir": "Mix de produto — evitar só granel",
+      "referencia": "Real Q1: R$1.569 ✓"
+    },
+    {
+      "funcao": "Representante PDV",
+      "kpi": "Recompra T+60",
+      "meta": "D+45 alertar",
+      "unidade": "%",
+      "periodo": "Ciclo",
+      "acao_se_nao_atingir": "CRM alerta automático D+45",
+      "referencia": "Ciclo 1,9m observado"
+    },
+    {
+      "funcao": "Gerente Redes",
+      "kpi": "Redes ativas",
+      "meta": 8,
+      "unidade": "redes/mês",
+      "periodo": "Mensal",
+      "acao_se_nao_atingir": "Contatar franqueador + visita",
+      "referencia": "Q1: 5 | Q2+: 8"
+    },
+    {
+      "funcao": "Gerente Redes",
+      "kpi": "Food Channel",
+      "meta": "pipeline",
+      "unidade": "—",
+      "periodo": "Trimestral",
+      "acao_se_nao_atingir": "Reunião Daiane — modelar separado",
+      "referencia": "Upside não capturado"
+    },
+    {
+      "funcao": "Pós-Venda/CS",
+      "kpi": "Follow-up D+4",
+      "meta": "100%",
+      "unidade": "% pedidos",
+      "periodo": "D+4 do pedido",
+      "acao_se_nao_atingir": "Zero tolerância — alerta crítico",
+      "referencia": "Protocolo D+4 obrigatório"
+    },
+    {
+      "funcao": "Pós-Venda/CS",
+      "kpi": "Churn",
+      "meta": "≤50%",
+      "unidade": "% mensal",
+      "periodo": "Q3 (90 dias)",
+      "acao_se_nao_atingir": "Revisar protocolo PV",
+      "referencia": "Meta: 75%→50% em 90d"
+    },
+    {
+      "funcao": "Pós-Venda/CS",
+      "kpi": "Fidelização VERDE",
+      "meta": "20 clientes",
+      "unidade": "JBP ativos",
+      "periodo": "Trimestral",
+      "acao_se_nao_atingir": "CS individual — visita mensal",
+      "referencia": "Ticket R$3.000"
+    }
+  ]
+}

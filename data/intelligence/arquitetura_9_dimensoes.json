@@ -1,0 +1,197 @@
+{
+  "meta": {
+    "titulo": "VITAO 360 — ARQUITETURA FINAL 9 DIMENSOES",
+    "data": "27/02/2026",
+    "total_dimensoes": 9,
+    "total_prioridades": 8,
+    "output_final": "PRIORIDADE (P0-P7) — Resultado do cruzamento das 9 dimensoes"
+  },
+  "dimensoes": [
+    {
+      "numero": 1,
+      "nome": "SITUACAO",
+      "descricao": "Status do cliente no Mercos. Read-only.",
+      "qtd_valores": "4",
+      "quem_preenche": "Mercos (automatico)",
+      "valores": "ATIVO | INAT.REC | INAT.ANT | PROSPECT",
+      "regra": "CRM le do Mercos, nao altera"
+    },
+    {
+      "numero": 2,
+      "nome": "ESTAGIO FUNIL",
+      "descricao": "Posicao no Kanban de atendimento. Sequencial, 1 por vez.",
+      "qtd_valores": "14",
+      "quem_preenche": "Motor sugere + Consultor move",
+      "valores": "(ver aba ESTAGIOS)",
+      "regra": "Fluxo: Inicio→Tentativa→Prospecção/Atendimento→...→CS→Follow-up loop"
+    },
+    {
+      "numero": 3,
+      "nome": "RESULTADO",
+      "descricao": "O que aconteceu no atendimento. Unico por contato.",
+      "qtd_valores": "9",
+      "quem_preenche": "Consultor (dropdown)",
+      "valores": "VENDA, ORCAMENTO, EM ATENDIMENTO, NAO RESPONDE, NAO ATENDE, RECUSOU, SUPORTE, CS, POS-VENDA",
+      "regra": "Um so por atendimento"
+    },
+    {
+      "numero": 4,
+      "nome": "TIPO CLIENTE",
+      "descricao": "Maturidade na carteira. Muda devagar (meses).",
+      "qtd_valores": "7",
+      "quem_preenche": "Motor calcula (historico compras)",
+      "valores": "PROSPECT | LEAD | NOVO | EM DESENV | RECORRENTE | FIDELIZADO | MADURO",
+      "regra": "Baseado em qtd pedidos + tempo + recorrencia"
+    },
+    {
+      "numero": 5,
+      "nome": "FASE",
+      "descricao": "Estrategia comercial do momento. Muda rapido.",
+      "qtd_valores": "6",
+      "quem_preenche": "Motor gera (SITUACAO x TIPO CLIENTE)",
+      "valores": "PROSPECÇÃO | NEGOCIAÇÃO | RECOMPRA | SALVAMENTO | RECUPERAÇÃO | NUTRIÇÃO",
+      "regra": "Ex: RECORRENTE+INAT.REC=SALVAMENTO"
+    },
+    {
+      "numero": 6,
+      "nome": "CURVA ABC",
+      "descricao": "Classificacao por faturamento.",
+      "qtd_valores": "3",
+      "quem_preenche": "Motor calcula (faturamento)",
+      "valores": "A (top 20%) | B (prox 30%) | C (50% rest)",
+      "regra": "Criterio formal PENDENTE definir"
+    },
+    {
+      "numero": 7,
+      "nome": "TEMPERATURA",
+      "descricao": "Sinal de engajamento. Motor gera.",
+      "qtd_valores": "5",
+      "quem_preenche": "Motor gera (RESULTADO)",
+      "valores": "QUENTE | MORNO | FRIO | CRITICO | PERDIDO",
+      "regra": "Motor prevalece, sem dropdown manual"
+    },
+    {
+      "numero": 8,
+      "nome": "SINALEIRO",
+      "descricao": "Saude do cliente (dias sem comprar vs ciclo).",
+      "qtd_valores": "4",
+      "quem_preenche": "Motor calcula",
+      "valores": "VERDE | AMARELO | VERMELHO | ROXO",
+      "regra": "DIAS <= CICLO=VERDE, <=CICLOx1.5=AMARELO, >CICLOx1.5=VERMELHO, INATIVO=ROXO"
+    },
+    {
+      "numero": 9,
+      "nome": "TENTATIVAS",
+      "descricao": "Sequencia de contato do consultor.",
+      "qtd_valores": "6",
+      "quem_preenche": "Motor incrementa",
+      "valores": "T1 | T2 | T3 | T4 | NUTRICAO | RESET",
+      "regra": "T1→T2→T3→T4→NUTRICAO. Reset apos resposta."
+    }
+  ],
+  "prioridades": [
+    {
+      "label": "P0",
+      "nome": "IMEDIATA",
+      "como_gera": "BLOQUEIO: SUPORTE com problema aberto",
+      "score": "N/A",
+      "distribuicao": "Pula fila",
+      "regra": "Automatico — cliente com problema = risco de perder"
+    },
+    {
+      "label": "P1",
+      "nome": "URGENTE",
+      "como_gera": "BLOQUEIO: EM ATENDIMENTO + FU vencido + CS no prazo",
+      "score": "N/A",
+      "distribuicao": "Ate 15/dia",
+      "regra": "Namoro novo nao pode esfriar + promessa cumprida"
+    },
+    {
+      "label": "P2",
+      "nome": "ALTA",
+      "como_gera": "Score ponderado 80-100",
+      "score": "80-100",
+      "distribuicao": "15-20/dia",
+      "regra": "Top da lista apos bloqueios"
+    },
+    {
+      "label": "P3",
+      "nome": "MEDIA-ALTA",
+      "como_gera": "Score ponderado 60-79",
+      "score": "60-79",
+      "distribuicao": "15-20/dia",
+      "regra": "Segundo bloco"
+    },
+    {
+      "label": "P4",
+      "nome": "MEDIA",
+      "como_gera": "Score ponderado 45-59",
+      "score": "45-59",
+      "distribuicao": "5-10/dia",
+      "regra": "Corpo da agenda"
+    },
+    {
+      "label": "P5",
+      "nome": "MEDIA-BAIXA",
+      "como_gera": "Score ponderado 30-44",
+      "score": "30-44",
+      "distribuicao": "5-10/dia",
+      "regra": "Se sobrar tempo"
+    },
+    {
+      "label": "P6",
+      "nome": "BAIXA",
+      "como_gera": "Score ponderado 15-29",
+      "score": "15-29",
+      "distribuicao": "0-5/dia",
+      "regra": "Ultima prioridade"
+    },
+    {
+      "label": "P7",
+      "nome": "NUTRICAO",
+      "como_gera": "Score 0-14. Campanha mensal.",
+      "score": "0-14",
+      "distribuicao": "0 (campanha)",
+      "regra": "Nunca entra nos 40/dia"
+    }
+  ],
+  "score_ponderado": [
+    {
+      "dimensao": "FASE",
+      "peso": "25%",
+      "logica_score": "RECOMPRA(100) > NEGOCIAÇÃO(80) > SALVAMENTO(60) > RECUPERAÇÃO(40) > PROSPECÇÃO(30) > NUTRIÇÃO(10)"
+    },
+    {
+      "dimensao": "SINALEIRO",
+      "peso": "20%",
+      "logica_score": "VERMELHO(100) > AMARELO(60) > VERDE(30) > ROXO(0)"
+    },
+    {
+      "dimensao": "CURVA ABC",
+      "peso": "20%",
+      "logica_score": "A(100) > B(60) > C(30)"
+    },
+    {
+      "dimensao": "TEMPERATURA",
+      "peso": "15%",
+      "logica_score": "QUENTE(100) > MORNO(60) > FRIO(30) > CRITICO(20) > PERDIDO(0)"
+    },
+    {
+      "dimensao": "TIPO CLIENTE",
+      "peso": "10%",
+      "logica_score": "MADURO(100) > FIDELIZADO(85) > RECORRENTE(70) > EM DESENV(50) > NOVO(30) > LEAD(15) > PROSPECT(10)"
+    },
+    {
+      "dimensao": "TENTATIVAS",
+      "peso": "10%",
+      "logica_score": "T1(100) > T2(70) > T3(40) > T4(10) > NUTRICAO(5)"
+    }
+  ],
+  "desempate": [
+    "1. CURVA ABC (A primeiro)",
+    "2. TICKET MEDIO (maior primeiro)",
+    "3. TIPO CLIENTE (mais maduro primeiro)",
+    "4. FOLLOW-UP mais vencido primeiro"
+  ],
+  "meta_balance": "META BALANCE: Se P2-P5 nao cobrem 80% meta mensal, PROSPECÇÃO sobe forcado"
+}

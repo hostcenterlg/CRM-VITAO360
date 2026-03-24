@@ -1,0 +1,413 @@
+{
+  "meta": {
+    "titulo": "MOTOR DE REGRAS — ESPECIFICACAO PARA RECONSTRUCAO",
+    "descricao": "36 combinações (4 SITUACOES x 9 RESULTADOS)",
+    "total_combinacoes": 36,
+    "situacoes_unicas": [
+      "ATIVO",
+      "INAT.ANT",
+      "INAT.REC",
+      "PROSPECT"
+    ],
+    "resultados_unicos": [
+      "CS",
+      "EM ATENDIMENTO",
+      "NAO ATENDE",
+      "NAO RESPONDE",
+      "ORCAMENTO",
+      "POS-VENDA",
+      "RECUSOU",
+      "SUPORTE",
+      "VENDA"
+    ],
+    "estagios_gerados": [
+      "CS",
+      "EM ATENDIMENTO",
+      "NUTRICAO",
+      "ORCAMENTO",
+      "PEDIDO",
+      "POS-VENDA",
+      "PROSPECÇÃO",
+      "SUPORTE",
+      "TENTATIVA"
+    ],
+    "fases_geradas": [
+      "NEGOCIAÇÃO",
+      "NUTRIÇÃO",
+      "PROSPECÇÃO",
+      "RECOMPRA",
+      "RECUPERAÇÃO",
+      "SALVAMENTO"
+    ],
+    "temperaturas": [
+      "CRITICO",
+      "FRIO",
+      "MORNO",
+      "PERDIDO",
+      "QUENTE"
+    ],
+    "nota_rodape": "TOTAL: 36 COMBINACOES (4 SITUACOES x 9 RESULTADOS = 36 combos base)"
+  },
+  "combinacoes": [
+    {
+      "numero": 1,
+      "situacao": "ATIVO",
+      "resultado": "VENDA",
+      "estagio_gerado": "PEDIDO",
+      "fase_gerada": "RECOMPRA",
+      "tipo_contato": "RECEPTIVO",
+      "acao_futura": "Acomp pos-venda D+4: faturou? expediu?",
+      "temperatura": "QUENTE"
+    },
+    {
+      "numero": 2,
+      "situacao": "ATIVO",
+      "resultado": "ORCAMENTO",
+      "estagio_gerado": "ORCAMENTO",
+      "fase_gerada": "NEGOCIAÇÃO",
+      "tipo_contato": "ATIVO",
+      "acao_futura": "Acompanhar proposta. Fechar venda.",
+      "temperatura": "QUENTE"
+    },
+    {
+      "numero": 3,
+      "situacao": "ATIVO",
+      "resultado": "EM ATENDIMENTO",
+      "estagio_gerado": "EM ATENDIMENTO",
+      "fase_gerada": "NEGOCIAÇÃO",
+      "tipo_contato": "ATIVO",
+      "acao_futura": "Continuar conversa. Identificar necessidade.",
+      "temperatura": "MORNO"
+    },
+    {
+      "numero": 4,
+      "situacao": "ATIVO",
+      "resultado": "CS",
+      "estagio_gerado": "CS",
+      "fase_gerada": "RECOMPRA",
+      "tipo_contato": "ATIVO",
+      "acao_futura": "D+30: Enviar MKT, kit visual, acao comercial.",
+      "temperatura": "MORNO"
+    },
+    {
+      "numero": 5,
+      "situacao": "ATIVO",
+      "resultado": "POS-VENDA",
+      "estagio_gerado": "POS-VENDA",
+      "fase_gerada": "RECOMPRA",
+      "tipo_contato": "ATIVO",
+      "acao_futura": "D+15: Recebeu? Tudo certo?",
+      "temperatura": "MORNO"
+    },
+    {
+      "numero": 6,
+      "situacao": "ATIVO",
+      "resultado": "NAO RESPONDE",
+      "estagio_gerado": "PROSPECÇÃO",
+      "fase_gerada": "RECOMPRA",
+      "tipo_contato": "ATIVO",
+      "acao_futura": "Proxima tentativa. Verificar canal alternativo.",
+      "temperatura": "FRIO"
+    },
+    {
+      "numero": 7,
+      "situacao": "ATIVO",
+      "resultado": "NAO ATENDE",
+      "estagio_gerado": "PROSPECÇÃO",
+      "fase_gerada": "RECOMPRA",
+      "tipo_contato": "ATIVO",
+      "acao_futura": "Reagendar ligacao. Tentar WhatsApp.",
+      "temperatura": "FRIO"
+    },
+    {
+      "numero": 8,
+      "situacao": "ATIVO",
+      "resultado": "RECUSOU",
+      "estagio_gerado": "NUTRICAO",
+      "fase_gerada": "NUTRIÇÃO",
+      "tipo_contato": "ATIVO",
+      "acao_futura": "Registrar motivo. Campanha mensal.",
+      "temperatura": "PERDIDO"
+    },
+    {
+      "numero": 9,
+      "situacao": "ATIVO",
+      "resultado": "SUPORTE",
+      "estagio_gerado": "SUPORTE",
+      "fase_gerada": "RECOMPRA",
+      "tipo_contato": "RECEPTIVO",
+      "acao_futura": "Resolver problema. Prioridade P0.",
+      "temperatura": "CRITICO"
+    },
+    {
+      "numero": 10,
+      "situacao": "INAT.REC",
+      "resultado": "VENDA",
+      "estagio_gerado": "PEDIDO",
+      "fase_gerada": "SALVAMENTO",
+      "tipo_contato": "RECEPTIVO",
+      "acao_futura": "Acomp pos-venda D+4. Cliente reativado!",
+      "temperatura": "QUENTE"
+    },
+    {
+      "numero": 11,
+      "situacao": "INAT.REC",
+      "resultado": "ORCAMENTO",
+      "estagio_gerado": "ORCAMENTO",
+      "fase_gerada": "SALVAMENTO",
+      "tipo_contato": "ATIVO",
+      "acao_futura": "Fechar rapido. Janela de salvamento.",
+      "temperatura": "QUENTE"
+    },
+    {
+      "numero": 12,
+      "situacao": "INAT.REC",
+      "resultado": "EM ATENDIMENTO",
+      "estagio_gerado": "EM ATENDIMENTO",
+      "fase_gerada": "SALVAMENTO",
+      "tipo_contato": "ATIVO",
+      "acao_futura": "Oportunidade de salvar. Oferecer condicao especial.",
+      "temperatura": "MORNO"
+    },
+    {
+      "numero": 13,
+      "situacao": "INAT.REC",
+      "resultado": "CS",
+      "estagio_gerado": "CS",
+      "fase_gerada": "SALVAMENTO",
+      "tipo_contato": "ATIVO",
+      "acao_futura": "Tentativa de recompra. Verificar motivo inatividade.",
+      "temperatura": "MORNO"
+    },
+    {
+      "numero": 14,
+      "situacao": "INAT.REC",
+      "resultado": "POS-VENDA",
+      "estagio_gerado": "POS-VENDA",
+      "fase_gerada": "SALVAMENTO",
+      "tipo_contato": "ATIVO",
+      "acao_futura": "Acompanhar entrega do reativado.",
+      "temperatura": "MORNO"
+    },
+    {
+      "numero": 15,
+      "situacao": "INAT.REC",
+      "resultado": "NAO RESPONDE",
+      "estagio_gerado": "TENTATIVA",
+      "fase_gerada": "SALVAMENTO",
+      "tipo_contato": "ATIVO",
+      "acao_futura": "Insistir — risco de virar INAT.ANT.",
+      "temperatura": "FRIO"
+    },
+    {
+      "numero": 16,
+      "situacao": "INAT.REC",
+      "resultado": "NAO ATENDE",
+      "estagio_gerado": "TENTATIVA",
+      "fase_gerada": "SALVAMENTO",
+      "tipo_contato": "ATIVO",
+      "acao_futura": "Tentar horario diferente. WhatsApp.",
+      "temperatura": "FRIO"
+    },
+    {
+      "numero": 17,
+      "situacao": "INAT.REC",
+      "resultado": "RECUSOU",
+      "estagio_gerado": "NUTRICAO",
+      "fase_gerada": "NUTRIÇÃO",
+      "tipo_contato": "ATIVO",
+      "acao_futura": "Registrar motivo. Campanha mensal.",
+      "temperatura": "PERDIDO"
+    },
+    {
+      "numero": 18,
+      "situacao": "INAT.REC",
+      "resultado": "SUPORTE",
+      "estagio_gerado": "SUPORTE",
+      "fase_gerada": "SALVAMENTO",
+      "tipo_contato": "RECEPTIVO",
+      "acao_futura": "Resolver URGENTE. Pode ser motivo da inatividade.",
+      "temperatura": "CRITICO"
+    },
+    {
+      "numero": 19,
+      "situacao": "INAT.ANT",
+      "resultado": "VENDA",
+      "estagio_gerado": "PEDIDO",
+      "fase_gerada": "RECUPERAÇÃO",
+      "tipo_contato": "RECEPTIVO",
+      "acao_futura": "Cliente recuperado! Acomp pos-venda D+4.",
+      "temperatura": "QUENTE"
+    },
+    {
+      "numero": 20,
+      "situacao": "INAT.ANT",
+      "resultado": "ORCAMENTO",
+      "estagio_gerado": "ORCAMENTO",
+      "fase_gerada": "RECUPERAÇÃO",
+      "tipo_contato": "ATIVO",
+      "acao_futura": "Raro. Fechar rapido antes de esfriar.",
+      "temperatura": "QUENTE"
+    },
+    {
+      "numero": 21,
+      "situacao": "INAT.ANT",
+      "resultado": "EM ATENDIMENTO",
+      "estagio_gerado": "EM ATENDIMENTO",
+      "fase_gerada": "RECUPERAÇÃO",
+      "tipo_contato": "ATIVO",
+      "acao_futura": "Oportunidade rara. Tratar como prioridade.",
+      "temperatura": "MORNO"
+    },
+    {
+      "numero": 22,
+      "situacao": "INAT.ANT",
+      "resultado": "CS",
+      "estagio_gerado": "CS",
+      "fase_gerada": "RECUPERAÇÃO",
+      "tipo_contato": "ATIVO",
+      "acao_futura": "Tentativa de reativar. Condicao especial.",
+      "temperatura": "MORNO"
+    },
+    {
+      "numero": 23,
+      "situacao": "INAT.ANT",
+      "resultado": "POS-VENDA",
+      "estagio_gerado": "POS-VENDA",
+      "fase_gerada": "RECUPERAÇÃO",
+      "tipo_contato": "ATIVO",
+      "acao_futura": "Acompanhar entrega do recuperado.",
+      "temperatura": "MORNO"
+    },
+    {
+      "numero": 24,
+      "situacao": "INAT.ANT",
+      "resultado": "NAO RESPONDE",
+      "estagio_gerado": "TENTATIVA",
+      "fase_gerada": "RECUPERAÇÃO",
+      "tipo_contato": "ATIVO",
+      "acao_futura": "Expectativa baixa. Mas tentar.",
+      "temperatura": "FRIO"
+    },
+    {
+      "numero": 25,
+      "situacao": "INAT.ANT",
+      "resultado": "NAO ATENDE",
+      "estagio_gerado": "TENTATIVA",
+      "fase_gerada": "RECUPERAÇÃO",
+      "tipo_contato": "ATIVO",
+      "acao_futura": "Tentar canais alternativos.",
+      "temperatura": "FRIO"
+    },
+    {
+      "numero": 26,
+      "situacao": "INAT.ANT",
+      "resultado": "RECUSOU",
+      "estagio_gerado": "NUTRICAO",
+      "fase_gerada": "NUTRIÇÃO",
+      "tipo_contato": "ATIVO",
+      "acao_futura": "Registrar. So campanha mensal.",
+      "temperatura": "PERDIDO"
+    },
+    {
+      "numero": 27,
+      "situacao": "INAT.ANT",
+      "resultado": "SUPORTE",
+      "estagio_gerado": "SUPORTE",
+      "fase_gerada": "RECUPERAÇÃO",
+      "tipo_contato": "RECEPTIVO",
+      "acao_futura": "Resolver. Pode ser porta de reativacao.",
+      "temperatura": "CRITICO"
+    },
+    {
+      "numero": 28,
+      "situacao": "PROSPECT",
+      "resultado": "VENDA",
+      "estagio_gerado": "PEDIDO",
+      "fase_gerada": "PROSPECÇÃO",
+      "tipo_contato": "RECEPTIVO",
+      "acao_futura": "Primeiro pedido! Ativar jornada pos-venda.",
+      "temperatura": "QUENTE"
+    },
+    {
+      "numero": 29,
+      "situacao": "PROSPECT",
+      "resultado": "ORCAMENTO",
+      "estagio_gerado": "ORCAMENTO",
+      "fase_gerada": "PROSPECÇÃO",
+      "tipo_contato": "ATIVO",
+      "acao_futura": "Prospect pediu preco. Fechar!",
+      "temperatura": "QUENTE"
+    },
+    {
+      "numero": 30,
+      "situacao": "PROSPECT",
+      "resultado": "EM ATENDIMENTO",
+      "estagio_gerado": "EM ATENDIMENTO",
+      "fase_gerada": "PROSPECÇÃO",
+      "tipo_contato": "ATIVO",
+      "acao_futura": "Prospect deu abertura. Cadastrar.",
+      "temperatura": "MORNO"
+    },
+    {
+      "numero": 31,
+      "situacao": "PROSPECT",
+      "resultado": "CS",
+      "estagio_gerado": "PROSPECÇÃO",
+      "fase_gerada": "PROSPECÇÃO",
+      "tipo_contato": "ATIVO",
+      "acao_futura": "Prospect sem compra anterior. Nutrir.",
+      "temperatura": "MORNO"
+    },
+    {
+      "numero": 32,
+      "situacao": "PROSPECT",
+      "resultado": "POS-VENDA",
+      "estagio_gerado": "PROSPECÇÃO",
+      "fase_gerada": "PROSPECÇÃO",
+      "tipo_contato": "ATIVO",
+      "acao_futura": "N/A para prospect sem compra.",
+      "temperatura": "MORNO"
+    },
+    {
+      "numero": 33,
+      "situacao": "PROSPECT",
+      "resultado": "NAO RESPONDE",
+      "estagio_gerado": "PROSPECÇÃO",
+      "fase_gerada": "PROSPECÇÃO",
+      "tipo_contato": "ATIVO",
+      "acao_futura": "Normal para prospect. Continuar.",
+      "temperatura": "FRIO"
+    },
+    {
+      "numero": 34,
+      "situacao": "PROSPECT",
+      "resultado": "NAO ATENDE",
+      "estagio_gerado": "PROSPECÇÃO",
+      "fase_gerada": "PROSPECÇÃO",
+      "tipo_contato": "ATIVO",
+      "acao_futura": "Normal. Tentar novamente.",
+      "temperatura": "FRIO"
+    },
+    {
+      "numero": 35,
+      "situacao": "PROSPECT",
+      "resultado": "RECUSOU",
+      "estagio_gerado": "NUTRICAO",
+      "fase_gerada": "NUTRIÇÃO",
+      "tipo_contato": "ATIVO",
+      "acao_futura": "Registrar motivo. Campanha mensal.",
+      "temperatura": "PERDIDO"
+    },
+    {
+      "numero": 36,
+      "situacao": "PROSPECT",
+      "resultado": "SUPORTE",
+      "estagio_gerado": "SUPORTE",
+      "fase_gerada": "PROSPECÇÃO",
+      "tipo_contato": "RECEPTIVO",
+      "acao_futura": "Prospect com duvida = interesse. Priorizar!",
+      "temperatura": "MORNO"
+    }
+  ]
+}

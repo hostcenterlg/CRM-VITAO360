@@ -1,0 +1,178 @@
+{
+  "_fonte": "VITAO360_ULTRA_FINAL (5).xlsx | 2. PREMISSAS",
+  "_auditoria": "Azul=editavel | 100% fundamentadas | REAL/CALCULADO/PREMISSA",
+  "base_existente": [
+    {
+      "parametro": "Faturamento base 2025",
+      "valor": 2091000,
+      "unidade": "R$",
+      "fonte_nota": "PAINEL_CEO_DEFINITIVO auditado",
+      "tipo": "REAL"
+    },
+    {
+      "parametro": "Média mensal 2025",
+      "valor": "B7/12",
+      "unidade": "R$/mês",
+      "fonte_nota": "Calculado",
+      "tipo": "CALCULADO"
+    },
+    {
+      "parametro": "Base orgânica P1",
+      "valor": 120000,
+      "unidade": "R$/mês",
+      "fonte_nota": "Conservador −31% vs média (sazonalidade Jan)",
+      "tipo": "PREMISSA"
+    },
+    {
+      "parametro": "Ticket VERDE/JBP",
+      "valor": 3611,
+      "unidade": "R$/cli",
+      "fonte_nota": "SINALEIRO — 422 client-months / 12 meses",
+      "tipo": "REAL"
+    },
+    {
+      "parametro": "Ticket AMARELO",
+      "valor": 1464,
+      "unidade": "R$/cli",
+      "fonte_nota": "SINALEIRO — 127 client-months",
+      "tipo": "REAL"
+    },
+    {
+      "parametro": "Ticket VERMELHO",
+      "valor": 1012,
+      "unidade": "R$/cli",
+      "fonte_nota": "SINALEIRO — 375 client-months",
+      "tipo": "REAL"
+    },
+    {
+      "parametro": "Ticket ROXO",
+      "valor": 0,
+      "unidade": "R$/cli",
+      "fonte_nota": "Prospect — nunca compraram",
+      "tipo": "REAL"
+    },
+    {
+      "parametro": "Ticket Redes/Franquias",
+      "valor": 2500,
+      "unidade": "R$/cli",
+      "fonte_nota": "FITLAND + CIA + VIDA LEVE + DIVINA",
+      "tipo": "REAL"
+    },
+    {
+      "parametro": "PRODUÇÃO EQUIPE NOVA (VALIDADAS POR Q1 2026)",
+      "valor": null,
+      "unidade": null,
+      "fonte_nota": null,
+      "tipo": null
+    }
+  ],
+  "producao_equipe": [
+    {
+      "parametro": "Novos PDVs/vendedora/mês",
+      "valor": 22,
+      "unidade": "cli",
+      "justificativa": "1 fechamento/dia × 22 dias úteis",
+      "validacao_q1": "Real Q1: 59/mês SEM vendedora (+168%)"
+    },
+    {
+      "parametro": "Novos Redes/gerente/mês",
+      "valor": 5,
+      "unidade": "cli",
+      "justificativa": "F1:5 · F2:8 · F3-F4:10",
+      "validacao_q1": "Premissa conservadora"
+    },
+    {
+      "parametro": "Ticket 1ª compra PDV",
+      "valor": 1500,
+      "unidade": "R$",
+      "justificativa": "Média CRM embalados — sem granel 2026",
+      "validacao_q1": "Real Q1: R$1.569 (+4,6%)"
+    },
+    {
+      "parametro": "Ticket recompra PDV",
+      "valor": 1800,
+      "unidade": "R$",
+      "justificativa": "Mix expandido pós-fidelização",
+      "validacao_q1": "—"
+    },
+    {
+      "parametro": "Ticket rede/franquia",
+      "valor": 2500,
+      "unidade": "R$",
+      "justificativa": "Média redes CRM",
+      "validacao_q1": "—"
+    },
+    {
+      "parametro": "Churn novos PDV",
+      "valor": "75%",
+      "unidade": "—",
+      "justificativa": "CRM real 80% — modelo conservador",
+      "validacao_q1": "Real Q1: 83% ≈ confirmado"
+    },
+    {
+      "parametro": "Churn novos Rede",
+      "valor": "30%",
+      "unidade": "—",
+      "justificativa": "Redes têm contrato/compromisso",
+      "validacao_q1": "—"
+    },
+    {
+      "parametro": "Ciclo recompra PDV",
+      "valor": 60,
+      "unidade": "dias",
+      "justificativa": "Prazo médio entre pedidos",
+      "validacao_q1": "—"
+    },
+    {
+      "parametro": "Ciclo recompra Rede",
+      "valor": 90,
+      "unidade": "dias",
+      "justificativa": "Prazo médio entre pedidos",
+      "validacao_q1": "—"
+    },
+    {
+      "parametro": "Conversão contato→venda",
+      "valor": "4,5%",
+      "unidade": "—",
+      "justificativa": "30%×50%×30% — funil auditado",
+      "validacao_q1": "Real Q1 confirmado"
+    }
+  ],
+  "fases_rampup": [
+    {
+      "fase": "FASES DE RAMP-UP — NOVA ESTRUTURA DE EQUIPE 2026",
+      "periodos": null,
+      "equipe": null,
+      "custo_mes": null,
+      "gatilho": null
+    },
+    {
+      "fase": "Fase",
+      "periodos": "Períodos",
+      "equipe": "Equipe",
+      "custo_mes": "Custo/Mês",
+      "gatilho": "Gatilho de Entrada"
+    },
+    {
+      "fase": "F1",
+      "periodos": "P1-P3 (Q1)",
+      "equipe": "2 Reps (Larissa+Julio) + Daiane",
+      "custo_mes": "R$ 22.000",
+      "gatilho": "Operação atual — Q1 real confirmado"
+    },
+    {
+      "fase": "F2",
+      "periodos": "P4-P6 (Q2)",
+      "equipe": "3 Reps + Daiane (Nova Rep ramp 2m)",
+      "custo_mes": "R$ 29.000",
+      "gatilho": "Substituição Manu + Fat > R$80k/mês"
+    },
+    {
+      "fase": "F3",
+      "periodos": "P7-P9 (Q3)",
+      "equipe": "3 Reps + Daiane + Pós-Venda",
+      "custo_mes": "R$ 34.000",
+      "gatilho": "Fat > R$180k/mês + churn 75%→50%"
+    }
+  ]
+}
