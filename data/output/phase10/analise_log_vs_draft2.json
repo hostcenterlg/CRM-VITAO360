@@ -1,0 +1,1186 @@
+{
+  "v15_log": {
+    "rows": 20832,
+    "cols": 21,
+    "headers": {
+      "1": {
+        "A": "LOG — Arquivo de Atendimentos (append-only)"
+      },
+      "2": {
+        "A": "DATA",
+        "B": "CONSULTOR",
+        "C": "NOME FANTASIA",
+        "D": "CNPJ",
+        "E": "UF",
+        "F": "REDE/REGIONAL",
+        "G": "SITUACAO",
+        "H": "WHATSAPP",
+        "I": "LIGACAO",
+        "J": "LIGACAO ATENDIDA",
+        "K": "TIPO ACAO",
+        "L": "TIPO DO CONTATO",
+        "M": "RESULTADO",
+        "N": "MOTIVO",
+        "O": "FOLLOW-UP",
+        "P": "ACAO",
+        "Q": "MERCOS ATUALIZADO",
+        "R": "FASE",
+        "S": "TENTATIVA",
+        "T": "NOTA DO DIA",
+        "U": "ORIGEM_DADO"
+      },
+      "3": {
+        "A": "2025-01-24 00:00:00",
+        "B": "LARISSA PADILHA",
+        "C": "FITLAND LOJA 06 - PENHA SC - MAIARA",
+        "D": "53111830000233",
+        "F": "DEMAIS CLIENTES",
+        "H": "SIM",
+        "I": "NAO",
+        "J": "N/A",
+        "K": "ATIVO",
+        "L": "ATEND. CLIENTES ATIVOS",
+        "M": "EM ATENDIMENTO",
+        "O": "2025-01-28 00:00:00",
+        "P": "ATENDIMENTO",
+        "Q": "SIM",
+        "R": "EM ATENDIMENTO",
+        "T": "Enviei pesquisa rapida de satisfacao via WA",
+        "U": "SINTETICO"
+      },
+      "4": {
+        "A": "2025-01-28 00:00:00",
+        "B": "LARISSA PADILHA",
+        "C": "FITLAND LOJA 06 - PENHA SC - MAIARA",
+        "D": "53111830000233",
+        "F": "DEMAIS CLIENTES",
+        "H": "SIM",
+        "I": "SIM",
+        "J": "NAO",
+        "K": "ATIVO",
+        "L": "ATEND. CLIENTES ATIVOS",
+        "M": "EM ATENDIMENTO",
+        "O": "2025-01-30 00:00:00",
+        "P": "ATENDIMENTO",
+        "Q": "SIM",
+        "R": "EM ATENDIMENTO",
+        "T": "Retorno agendado: reuniao com comprador quarta as 14h",
+        "U": "SINTETICO"
+      }
+    },
+    "fill_summary": {
+      "A": {
+        "header": "DATA",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "B": {
+        "header": "CONSULTOR",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "C": {
+        "header": "NOME FANTASIA",
+        "pct": 90.0,
+        "type": "DADOS"
+      },
+      "D": {
+        "header": "CNPJ",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "E": {
+        "header": "UF",
+        "pct": 69.0,
+        "type": "DADOS"
+      },
+      "F": {
+        "header": "REDE/REGIONAL",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "G": {
+        "header": "SITUACAO",
+        "pct": 73.0,
+        "type": "DADOS"
+      },
+      "H": {
+        "header": "WHATSAPP",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "I": {
+        "header": "LIGACAO",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "J": {
+        "header": "LIGACAO ATENDIDA",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "K": {
+        "header": "TIPO ACAO",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "L": {
+        "header": "TIPO DO CONTATO",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "M": {
+        "header": "RESULTADO",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "O": {
+        "header": "FOLLOW-UP",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "P": {
+        "header": "ACAO",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "Q": {
+        "header": "MERCOS ATUALIZADO",
+        "pct": 99.0,
+        "type": "DADOS"
+      },
+      "R": {
+        "header": "FASE",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "S": {
+        "header": "TENTATIVA",
+        "pct": 12.0,
+        "type": "DADOS"
+      },
+      "T": {
+        "header": "NOTA DO DIA",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "U": {
+        "header": "ORIGEM_DADO",
+        "pct": 101.0,
+        "type": "DADOS"
+      }
+    }
+  },
+  "v15_draft2": {
+    "rows": 6775,
+    "cols": 31,
+    "headers": {
+      "1": {
+        "A": "📋 IDENTIFICAÇÃO",
+        "I": "⚙️ MOTOR DE REGRAS (AUTO)",
+        "N": "📞 CONTATO",
+        "Q": "📊 RESULTADO",
+        "T": "📅 FOLLOW-UP (AUTO)",
+        "W": "📝 REGISTRO",
+        "Y": "🔥 ANÁLISE (AUTO)",
+        "AC": "📋 CLASSIFICAÇÃO"
+      },
+      "2": {
+        "A": "DATA",
+        "B": "CONSULTOR",
+        "C": "NOME FANTASIA",
+        "D": "CNPJ",
+        "E": "UF",
+        "F": "REDE / REGIONAL",
+        "G": "SITUAÇÃO",
+        "H": "DIAS SEM COMPRA",
+        "I": "ESTÁGIO FUNIL",
+        "J": "TIPO CLIENTE",
+        "K": "FASE",
+        "L": "SINALEIRO",
+        "M": "TENTATIVA",
+        "N": "WHATSAPP",
+        "O": "LIGAÇÃO",
+        "P": "LIGAÇÃO ATENDIDA",
+        "Q": "TIPO DO CONTATO",
+        "R": "RESULTADO",
+        "S": "MOTIVO",
+        "T": "FOLLOW-UP",
+        "U": "AÇÃO FUTURA",
+        "V": "AÇÃO DETALHADA",
+        "W": "MERCOS ATUALIZADO",
+        "X": "NOTA DO DIA",
+        "Y": "TEMPERATURA",
+        "Z": "GRUPO DASH",
+        "AA": "SINALEIRO META",
+        "AB": "TIPO AÇÃO",
+        "AC": "TIPO PROBLEMA",
+        "AD": "DEMANDA",
+        "AE": "TIPO ATENDIMENTO"
+      },
+      "3": {
+        "A": "MANUAL",
+        "B": "MANUAL",
+        "C": "MANUAL",
+        "D": "MANUAL",
+        "E": "MANUAL",
+        "F": "MANUAL",
+        "G": "MANUAL",
+        "H": "MANUAL",
+        "I": "AUTO",
+        "J": "AUTO",
+        "K": "AUTO",
+        "L": "AUTO",
+        "M": "AUTO",
+        "N": "MANUAL",
+        "O": "MANUAL",
+        "P": "MANUAL",
+        "Q": "MANUAL",
+        "R": "MANUAL",
+        "S": "MANUAL",
+        "T": "AUTO",
+        "U": "AUTO",
+        "V": "MANUAL",
+        "W": "MANUAL",
+        "X": "MANUAL",
+        "Y": "AUTO",
+        "Z": "AUTO",
+        "AA": "MANUAL",
+        "AB": "AUTO",
+        "AC": "MANUAL",
+        "AD": "MANUAL",
+        "AE": "MANUAL"
+      },
+      "4": {
+        "A": "2025-01-16 14:56:00",
+        "B": "LARISSA PADILHA",
+        "C": "50.853.004 JESSICA CAROLINE PANDOLFO TOSIN",
+        "D": "50853004000190",
+        "E": "PR",
+        "I": "QUALIFICAÇÃO",
+        "J": "CLIENTE",
+        "K": "ONBOARDING",
+        "M": "T1",
+        "N": "SIM",
+        "O": "NÃO",
+        "P": "N/A",
+        "Q": "PROSPECÇÃO",
+        "R": "CADASTRO",
+        "T": "2025-01-18 14:56:00",
+        "U": "ACOMPANHAR PRIMEIRO PEDIDO",
+        "W": "SIM",
+        "X": "Login: granodifelicita@gmail.com\nSenha: 507846",
+        "Y": "MORNO",
+        "Z": "COMERCIAL",
+        "AB": "ATIVO",
+        "AE": "ATIVO"
+      }
+    },
+    "fill_summary": {
+      "A": {
+        "header": "DATA",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "B": {
+        "header": "CONSULTOR",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "C": {
+        "header": "NOME FANTASIA",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "D": {
+        "header": "CNPJ",
+        "pct": 91.0,
+        "type": "DADOS"
+      },
+      "E": {
+        "header": "UF",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "F": {
+        "header": "REDE / REGIONAL",
+        "pct": 2.0,
+        "type": "DADOS"
+      },
+      "G": {
+        "header": "SITUAÇÃO",
+        "pct": 8.0,
+        "type": "DADOS"
+      },
+      "H": {
+        "header": "DIAS SEM COMPRA",
+        "pct": 8.0,
+        "type": "DADOS"
+      },
+      "I": {
+        "header": "ESTÁGIO FUNIL",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "J": {
+        "header": "TIPO CLIENTE",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "K": {
+        "header": "FASE",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "L": {
+        "header": "SINALEIRO",
+        "pct": 8.0,
+        "type": "DADOS"
+      },
+      "M": {
+        "header": "TENTATIVA",
+        "pct": 91.0,
+        "type": "DADOS"
+      },
+      "N": {
+        "header": "WHATSAPP",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "O": {
+        "header": "LIGAÇÃO",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "P": {
+        "header": "LIGAÇÃO ATENDIDA",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "Q": {
+        "header": "TIPO DO CONTATO",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "R": {
+        "header": "RESULTADO",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "T": {
+        "header": "FOLLOW-UP",
+        "pct": 100.0,
+        "type": "DADOS"
+      },
+      "U": {
+        "header": "AÇÃO FUTURA",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "V": {
+        "header": "AÇÃO DETALHADA",
+        "pct": 8.0,
+        "type": "DADOS"
+      },
+      "W": {
+        "header": "MERCOS ATUALIZADO",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "X": {
+        "header": "NOTA DO DIA",
+        "pct": 10.0,
+        "type": "DADOS"
+      },
+      "Y": {
+        "header": "TEMPERATURA",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "Z": {
+        "header": "GRUPO DASH",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "AB": {
+        "header": "TIPO AÇÃO",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "AC": {
+        "header": "TIPO PROBLEMA",
+        "pct": 2.0,
+        "type": "DADOS"
+      },
+      "AD": {
+        "header": "DEMANDA",
+        "pct": 8.0,
+        "type": "DADOS"
+      },
+      "AE": {
+        "header": "TIPO ATENDIMENTO",
+        "pct": 101.0,
+        "type": "DADOS"
+      }
+    }
+  },
+  "v31_log": {
+    "rows": 13183,
+    "cols": 24,
+    "headers": {
+      "1": {
+        "A": "DATA",
+        "B": "CONSULTOR",
+        "C": "NOME FANTASIA",
+        "D": "CNPJ",
+        "E": "UF",
+        "F": "REDE / REGIONAL",
+        "G": "SITUAÇÃO",
+        "H": "DIAS SEM COMPRA",
+        "I": "ESTÁGIO FUNIL",
+        "J": "TIPO CLIENTE",
+        "K": "FASE",
+        "L": "SINALEIRO",
+        "M": "TENTATIVA",
+        "N": "WHATSAPP",
+        "O": "LIGAÇÃO",
+        "P": "LIGAÇÃO ATENDIDA",
+        "Q": "TIPO DO CONTATO",
+        "R": "RESULTADO",
+        "S": "MOTIVO",
+        "T": "FOLLOW-UP",
+        "U": "AÇÃO FUTURA",
+        "V": "AÇÃO DETALHADA",
+        "W": "MERCOS ATUALIZADO",
+        "X": "NOTA DO DIA"
+      },
+      "2": {
+        "A": "2025-10-17 00:00:00",
+        "B": "MANU DITZEL",
+        "C": "SOLAR PORTO DE GALINHAS",
+        "D": "8895369000111",
+        "E": "PE",
+        "G": "PROSPECT",
+        "H": "97",
+        "I": "PROSPECÇÃO",
+        "J": "EM DESENVOLVIMENTO",
+        "K": "PROSPECÇÃO",
+        "L": "🟣",
+        "M": "T1",
+        "N": "SIM",
+        "O": "SIM",
+        "P": "NÃO",
+        "Q": "PROSPECÇÃO",
+        "R": "EM ATENDIMENTO",
+        "T": "45949",
+        "U": "FECHAR NEGOCIAÇÃO EM ANDAMENTO",
+        "V": "Negociação ativa - avaliando proposta",
+        "W": "NÃO",
+        "X": "Cliente receptivo, demonstrou interesse em novas linhas"
+      },
+      "3": {
+        "A": "2025-10-17 00:00:00",
+        "B": "MANU DITZEL",
+        "C": "NATURVIDA",
+        "D": "9185428000120",
+        "E": "RS",
+        "G": "INAT.REC",
+        "H": "83",
+        "I": "EM ATENDIMENTO",
+        "J": "PROSPECT",
+        "K": "SALVAMENTO",
+        "L": "🟡",
+        "M": "T1",
+        "N": "SIM",
+        "O": "SIM",
+        "P": "NÃO",
+        "Q": "ATEND. CLIENTES INATIVOS",
+        "R": "EM ATENDIMENTO",
+        "T": "45949",
+        "U": "FECHAR NEGOCIAÇÃO EM ANDAMENTO",
+        "V": "Negociação ativa - avaliando proposta",
+        "W": "NÃO",
+        "X": "Boa interação, rapport fortalecido"
+      },
+      "4": {
+        "A": "2025-10-17 00:00:00",
+        "B": "MANU DITZEL",
+        "C": "NATURALIS PRODUTOS NATURAIS",
+        "D": "31545180000110",
+        "E": "SC",
+        "F": "SUL",
+        "G": "PROSPECT",
+        "H": "80",
+        "I": "PROSPECÇÃO",
+        "J": "EM DESENVOLVIMENTO",
+        "K": "PROSPECÇÃO",
+        "L": "🟣",
+        "M": "T1",
+        "N": "SIM",
+        "O": "SIM",
+        "P": "NÃO",
+        "Q": "PROSPECÇÃO",
+        "R": "EM ATENDIMENTO",
+        "T": "45949",
+        "U": "FECHAR NEGOCIAÇÃO EM ANDAMENTO",
+        "V": "Discussão sobre volume e pagamento",
+        "W": "NÃO",
+        "X": "Relacionamento consolidado, cliente fiel"
+      }
+    },
+    "fill_summary": {
+      "A": {
+        "header": "2025-10-17 00:00:00",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "B": {
+        "header": "MANU DITZEL",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "C": {
+        "header": "SOLAR PORTO DE GALINHAS",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "D": {
+        "header": "8895369000111",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "E": {
+        "header": "PE",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "F": {
+        "header": "REDE / REGIONAL",
+        "pct": 79.0,
+        "type": "DADOS"
+      },
+      "G": {
+        "header": "PROSPECT",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "H": {
+        "header": "97",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "I": {
+        "header": "PROSPECÇÃO",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "J": {
+        "header": "EM DESENVOLVIMENTO",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "K": {
+        "header": "PROSPECÇÃO",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "L": {
+        "header": "🟣",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "M": {
+        "header": "T1",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "N": {
+        "header": "SIM",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "O": {
+        "header": "SIM",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "P": {
+        "header": "NÃO",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "Q": {
+        "header": "PROSPECÇÃO",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "R": {
+        "header": "EM ATENDIMENTO",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "S": {
+        "header": "MOTIVO",
+        "pct": 35.0,
+        "type": "DADOS"
+      },
+      "T": {
+        "header": "45949",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "U": {
+        "header": "FECHAR NEGOCIAÇÃO EM ANDAMENTO",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "V": {
+        "header": "Negociação ativa - avaliando p",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "W": {
+        "header": "NÃO",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "X": {
+        "header": "Cliente receptivo, demonstrou ",
+        "pct": 101.0,
+        "type": "DADOS"
+      }
+    }
+  },
+  "v31_draft2": {
+    "rows": 13184,
+    "cols": 31,
+    "headers": {
+      "1": {
+        "A": "DRAFT 2 — LOG DE ATENDIMENTOS (CRESCE INFINITO ↓)"
+      },
+      "2": {
+        "A": "DATA",
+        "B": "CONSULTOR",
+        "C": "NOME FANTASIA",
+        "D": "CNPJ",
+        "E": "UF",
+        "F": "REDE / REGIONAL",
+        "G": "SITUAÇÃO",
+        "H": "DIAS SEM COMPRA",
+        "I": "ESTÁGIO FUNIL",
+        "J": "TIPO CLIENTE",
+        "K": "FASE",
+        "L": "SINALEIRO",
+        "M": "TENTATIVA",
+        "N": "WHATSAPP",
+        "O": "LIGAÇÃO",
+        "P": "LIGAÇÃO ATENDIDA",
+        "Q": "TIPO DO CONTATO",
+        "R": "RESULTADO",
+        "S": "MOTIVO",
+        "T": "FOLLOW-UP",
+        "U": "AÇÃO FUTURA",
+        "V": "AÇÃO DETALHADA",
+        "W": "MERCOS ATUALIZADO",
+        "X": "NOTA DO DIA",
+        "Y": "TEMPERATURA",
+        "Z": "GRUPO DASH",
+        "AA": "SINALEIRO META",
+        "AB": "TIPO AÇÃO",
+        "AC": "TIPO PROBLEMA",
+        "AD": "DEMANDA",
+        "AE": "TIPO ATENDIMENTO"
+      },
+      "3": {
+        "A": "2025-10-17 00:00:00",
+        "B": "MANU DITZEL",
+        "C": "SOLAR PORTO DE GALINHAS",
+        "D": "8895369000111",
+        "E": "PE",
+        "G": "PROSPECT",
+        "H": "97",
+        "I": "PROSPECÇÃO",
+        "J": "EM DESENVOLVIMENTO",
+        "K": "PROSPECÇÃO",
+        "L": "=IF(OR(G3=\"PROSPECT\",G3=\"LEAD\"),\"🟣\",IF(H3=\"\",\"\",IF(H3<=50,\"🟢\",IF(H3<=90,\"🟡\",\"🔴\"))))",
+        "M": "=\"T\"&COUNTIF($D$3:D3,D3)",
+        "N": "SIM",
+        "O": "SIM",
+        "P": "NÃO",
+        "Q": "PROSPECÇÃO",
+        "R": "EM ATENDIMENTO",
+        "T": "2025-10-19 00:00:00",
+        "U": "FECHAR NEGOCIAÇÃO EM ANDAMENTO",
+        "V": "Negociação ativa - avaliando proposta",
+        "W": "NÃO",
+        "X": "Cliente receptivo, demonstrou interesse em novas linhas",
+        "Y": "🟡 MORNO",
+        "Z": "=IFERROR(VLOOKUP(R3,REGRAS!$B$6:$D$20,3,FALSE),\"\")",
+        "AB": "=IF(R3=\"\",\"\",IF(OR(R3=\"VENDA / PEDIDO\"),\"VENDA\",IF(OR(R3=\"PÓS-VENDA\",R3=\"CS (SUCESSO DO CLIENTE)\",R3=\"RELACIONAMENTO\",R3=\"NUTRIÇÃO\"),\"PÓS-VENDA\",IF(R3=\"SUPORTE\",\"RESOLUÇÃO DE PROBLEMA\",IF(OR(G3=\"PROSPECT\",G3=\"LEAD\"),\"PROSPECÇÃO\",IF(R3=\"PERDA / FECHOU LOJA\",\"PRÉ-VENDA\",IF(OR(R3=\"ORÇAMENTO\",R3=\"CADASTRO\",R3=\"EM ATENDIMENTO\",R3=\"FOLLOW UP 7\",R3=\"FOLLOW UP 15\",R3=\"NÃO ATENDE\",R3=\"NÃO RESPONDE\",R3=\"RECUSOU LIGAÇÃO\"),\"PRÉ-VENDA\",\"PRÉ-VENDA\")))))))",
+        "AD": "LIGAÇÕES DA BASE",
+        "AE": "ATIVO"
+      },
+      "4": {
+        "A": "2025-10-17 00:00:00",
+        "B": "MANU DITZEL",
+        "C": "NATURVIDA",
+        "D": "9185428000120",
+        "E": "RS",
+        "G": "INAT.REC",
+        "H": "83",
+        "I": "EM ATENDIMENTO",
+        "J": "PROSPECT",
+        "K": "SALVAMENTO",
+        "L": "=IF(OR(G4=\"PROSPECT\",G4=\"LEAD\"),\"🟣\",IF(H4=\"\",\"\",IF(H4<=50,\"🟢\",IF(H4<=90,\"🟡\",\"🔴\"))))",
+        "M": "=\"T\"&COUNTIF($D$3:D4,D4)",
+        "N": "SIM",
+        "O": "SIM",
+        "P": "NÃO",
+        "Q": "ATEND. CLIENTES INATIVOS",
+        "R": "EM ATENDIMENTO",
+        "T": "2025-10-19 00:00:00",
+        "U": "FECHAR NEGOCIAÇÃO EM ANDAMENTO",
+        "V": "Negociação ativa - avaliando proposta",
+        "W": "NÃO",
+        "X": "Boa interação, rapport fortalecido",
+        "Y": "🟡 MORNO",
+        "Z": "=IFERROR(VLOOKUP(R4,REGRAS!$B$6:$D$20,3,FALSE),\"\")",
+        "AB": "=IF(R4=\"\",\"\",IF(OR(R4=\"VENDA / PEDIDO\"),\"VENDA\",IF(OR(R4=\"PÓS-VENDA\",R4=\"CS (SUCESSO DO CLIENTE)\",R4=\"RELACIONAMENTO\",R4=\"NUTRIÇÃO\"),\"PÓS-VENDA\",IF(R4=\"SUPORTE\",\"RESOLUÇÃO DE PROBLEMA\",IF(OR(G4=\"PROSPECT\",G4=\"LEAD\"),\"PROSPECÇÃO\",IF(R4=\"PERDA / FECHOU LOJA\",\"PRÉ-VENDA\",IF(OR(R4=\"ORÇAMENTO\",R4=\"CADASTRO\",R4=\"EM ATENDIMENTO\",R4=\"FOLLOW UP 7\",R4=\"FOLLOW UP 15\",R4=\"NÃO ATENDE\",R4=\"NÃO RESPONDE\",R4=\"RECUSOU LIGAÇÃO\"),\"PRÉ-VENDA\",\"PRÉ-VENDA\")))))))",
+        "AD": "ATENDIMENTO ATIVOS/INATIVOS",
+        "AE": "ATIVO"
+      }
+    },
+    "fill_summary": {
+      "A": {
+        "header": "DATA",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "B": {
+        "header": "CONSULTOR",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "C": {
+        "header": "NOME FANTASIA",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "D": {
+        "header": "CNPJ",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "E": {
+        "header": "UF",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "F": {
+        "header": "REDE / REGIONAL",
+        "pct": 79.0,
+        "type": "DADOS"
+      },
+      "G": {
+        "header": "SITUAÇÃO",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "H": {
+        "header": "DIAS SEM COMPRA",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "I": {
+        "header": "ESTÁGIO FUNIL",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "J": {
+        "header": "TIPO CLIENTE",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "K": {
+        "header": "FASE",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "L": {
+        "header": "SINALEIRO",
+        "pct": 101.0,
+        "type": "FORMULA"
+      },
+      "M": {
+        "header": "TENTATIVA",
+        "pct": 101.0,
+        "type": "FORMULA"
+      },
+      "N": {
+        "header": "WHATSAPP",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "O": {
+        "header": "LIGAÇÃO",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "P": {
+        "header": "LIGAÇÃO ATENDIDA",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "Q": {
+        "header": "TIPO DO CONTATO",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "R": {
+        "header": "RESULTADO",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "S": {
+        "header": "MOTIVO",
+        "pct": 35.0,
+        "type": "DADOS"
+      },
+      "T": {
+        "header": "FOLLOW-UP",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "U": {
+        "header": "AÇÃO FUTURA",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "V": {
+        "header": "AÇÃO DETALHADA",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "W": {
+        "header": "MERCOS ATUALIZADO",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "X": {
+        "header": "NOTA DO DIA",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "Y": {
+        "header": "TEMPERATURA",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "Z": {
+        "header": "GRUPO DASH",
+        "pct": 101.0,
+        "type": "FORMULA"
+      },
+      "AB": {
+        "header": "TIPO AÇÃO",
+        "pct": 101.0,
+        "type": "FORMULA"
+      },
+      "AD": {
+        "header": "DEMANDA",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "AE": {
+        "header": "TIPO ATENDIMENTO",
+        "pct": 101.0,
+        "type": "DADOS"
+      }
+    }
+  },
+  "v31_agenda": {
+    "rows": 13186,
+    "cols": 39,
+    "headers": {
+      "1": {
+        "A": "📅 DATA",
+        "B": "NOME FANTASIA",
+        "C": "CNPJ",
+        "D": "UF",
+        "E": "REDE / REGIONAL",
+        "F": "DIAS SEM COMPRA",
+        "G": "SITUAÇÃO",
+        "H": "ESTÁGIO FUNIL",
+        "I": "TIPO CLIENTE",
+        "J": "FASE",
+        "K": "🔥 TEMPERATURA",
+        "L": "🚦 SINALEIRO",
+        "M": "PRÓX. AÇÃO",
+        "N": "TENTATIVA",
+        "O": "TIPO ATENDIMENTO",
+        "P": "WHATSAPP",
+        "Q": "LIGAÇÃO",
+        "R": "LIGAÇÃO ATENDIDA",
+        "S": "TIPO DO CONTATO",
+        "T": "RESULTADO",
+        "U": "MOTIVO",
+        "V": "FOLLOW-UP",
+        "W": "💡 AÇÃO SUGERIDA",
+        "X": "AÇÃO FUTURA",
+        "Y": "AÇÃO DETALHADA",
+        "Z": "MERCOS ATUALIZADO",
+        "AA": "NOTA DO DIA",
+        "AB": "TIPO AÇÃO",
+        "AC": "TIPO PROBLEMA",
+        "AD": "TAREFA/DEMANDA",
+        "AE": "⭐ SCORE",
+        "AF": "🏅 PRIORIDADE"
+      },
+      "2": {
+        "A": "2025-10-17 00:00:00",
+        "B": "SOLAR PORTO DE GALINHAS",
+        "C": "8895369000111",
+        "D": "PE",
+        "F": "97",
+        "G": "INAT.ANT",
+        "H": "<openpyxl.worksheet.formula.ArrayFormula object at 0x000001D29A189700>",
+        "I": "EM DESENVOLVIMENTO",
+        "J": "<openpyxl.worksheet.formula.ArrayFormula object at 0x000001D29A156270>",
+        "K": "<openpyxl.worksheet.formula.ArrayFormula object at 0x000001D29A156240>",
+        "L": "=IF(OR(G2=\"PROSPECT\",G2=\"LEAD\"),\"🟣\",IF(F2=\"\",\"\",IF(F2<=50,\"🟢\",IF(F2<=90,\"🟡\",\"🔴\"))))",
+        "M": "FECHAR NEGOCIAÇÃO EM ANDAMENTO",
+        "N": "=\"T\"&COUNTIF($C$2:C2,C2)",
+        "O": "ATIVO",
+        "P": "SIM",
+        "Q": "SIM",
+        "R": "NÃO",
+        "S": "ATEND. CLIENTES INATIVOS",
+        "T": "EM ATENDIMENTO",
+        "V": "=IFERROR(IF(VLOOKUP(T2,REGRAS!$B$6:$C$20,2,FALSE)=0,\"SEM\",TODAY()+VLOOKUP(T2,REGRAS!$B$6:$C$20,2,FALSE)),\"\")",
+        "W": "<openpyxl.worksheet.formula.ArrayFormula object at 0x000001D29A179280>",
+        "X": "FECHAR NEGOCIAÇÃO EM ANDAMENTO",
+        "Y": "Tentativa de retomar conversa - aguardando resposta",
+        "Z": "NÃO",
+        "AA": "Tentativa de retomar conversa - aguardando resposta",
+        "AB": "=IF(T2=\"\",\"\",IF(OR(T2=\"VENDA / PEDIDO\"),\"VENDA\",IF(OR(T2=\"ORÇAMENTO\",T2=\"CADASTRO\",T2=\"EM ATENDIMENTO\",T2=\"FOLLOW UP 7\",T2=\"FOLLOW UP 15\",T2=\"NÃO ATENDE\",T2=\"NÃO RESPONDE\",T2=\"RECUSOU LIGAÇÃO\"),\"PRÉ-VENDA\",IF(OR(T2=\"PÓS-VENDA\",T2=\"CS (SUCESSO DO CLIENTE)\",T2=\"RELACIONAMENTO\",T2=\"NUTRIÇÃO\"),\"PÓS-VENDA\",IF(T2=\"SUPORTE\",\"RESOLUÇÃO DE PROBLEMA\",IF(T2=\"PERDA / FECHOU LOJA\",\"PRÉ-VENDA\",IF(OR(G2=\"PROSPECT\",G2=\"LEAD\"),\"PROSPECÇÃO\",\"PRÉ-VENDA\")))))))",
+        "AD": "LIGAÇÕES DA BASE",
+        "AE": "<openpyxl.worksheet.formula.ArrayFormula object at 0x000001D29A156210>",
+        "AF": "=IF(AE2=\"\",\"\",IF(AE2>=70,\"🔴 URGENTE\",IF(AE2>=50,\"🟡 ALTO\",IF(AE2>=30,\"🟢 MÉDIO\",\"⚪ BAIXO\"))))"
+      },
+      "3": {
+        "A": "2025-10-17 00:00:00",
+        "B": "NATURVIDA",
+        "C": "9185428000120",
+        "D": "RS",
+        "F": "83",
+        "G": "INAT.REC",
+        "H": "<openpyxl.worksheet.formula.ArrayFormula object at 0x000001D29A1AB8C0>",
+        "I": "EM DESENVOLVIMENTO",
+        "J": "<openpyxl.worksheet.formula.ArrayFormula object at 0x000001D29A17B7A0>",
+        "K": "<openpyxl.worksheet.formula.ArrayFormula object at 0x000001D29A17B770>",
+        "L": "=IF(OR(G3=\"PROSPECT\",G3=\"LEAD\"),\"🟣\",IF(F3=\"\",\"\",IF(F3<=50,\"🟢\",IF(F3<=90,\"🟡\",\"🔴\"))))",
+        "M": "FECHAR NEGOCIAÇÃO EM ANDAMENTO",
+        "N": "=\"T\"&COUNTIF($C$2:C3,C3)",
+        "O": "ATIVO",
+        "P": "SIM",
+        "Q": "SIM",
+        "R": "NÃO",
+        "S": "ATEND. CLIENTES INATIVOS",
+        "T": "EM ATENDIMENTO",
+        "V": "=IFERROR(IF(VLOOKUP(T3,REGRAS!$B$6:$C$20,2,FALSE)=0,\"SEM\",TODAY()+VLOOKUP(T3,REGRAS!$B$6:$C$20,2,FALSE)),\"\")",
+        "W": "<openpyxl.worksheet.formula.ArrayFormula object at 0x000001D29A324E90>",
+        "X": "FECHAR NEGOCIAÇÃO EM ANDAMENTO",
+        "Y": "Retomada de contato - envio de condições comerciais",
+        "Z": "NÃO",
+        "AA": "Retomada de contato - envio de condições comerciais",
+        "AB": "=IF(T3=\"\",\"\",IF(OR(T3=\"VENDA / PEDIDO\"),\"VENDA\",IF(OR(T3=\"ORÇAMENTO\",T3=\"CADASTRO\",T3=\"EM ATENDIMENTO\",T3=\"FOLLOW UP 7\",T3=\"FOLLOW UP 15\",T3=\"NÃO ATENDE\",T3=\"NÃO RESPONDE\",T3=\"RECUSOU LIGAÇÃO\"),\"PRÉ-VENDA\",IF(OR(T3=\"PÓS-VENDA\",T3=\"CS (SUCESSO DO CLIENTE)\",T3=\"RELACIONAMENTO\",T3=\"NUTRIÇÃO\"),\"PÓS-VENDA\",IF(T3=\"SUPORTE\",\"RESOLUÇÃO DE PROBLEMA\",IF(T3=\"PERDA / FECHOU LOJA\",\"PRÉ-VENDA\",IF(OR(G3=\"PROSPECT\",G3=\"LEAD\"),\"PROSPECÇÃO\",\"PRÉ-VENDA\")))))))",
+        "AD": "ATENDIMENTO ATIVOS/INATIVOS",
+        "AE": "<openpyxl.worksheet.formula.ArrayFormula object at 0x000001D29A18A960>",
+        "AF": "=IF(AE3=\"\",\"\",IF(AE3>=70,\"🔴 URGENTE\",IF(AE3>=50,\"🟡 ALTO\",IF(AE3>=30,\"🟢 MÉDIO\",\"⚪ BAIXO\"))))"
+      },
+      "4": {
+        "A": "2025-10-17 00:00:00",
+        "B": "NATURALIS PRODUTOS NATURAIS",
+        "C": "31545180000110",
+        "D": "SC",
+        "F": "80",
+        "G": "INAT.REC",
+        "H": "<openpyxl.worksheet.formula.ArrayFormula object at 0x000001D29A1CEC30>",
+        "I": "EM DESENVOLVIMENTO",
+        "J": "<openpyxl.worksheet.formula.ArrayFormula object at 0x000001D29A326480>",
+        "K": "<openpyxl.worksheet.formula.ArrayFormula object at 0x000001D29A3264B0>",
+        "L": "=IF(OR(G4=\"PROSPECT\",G4=\"LEAD\"),\"🟣\",IF(F4=\"\",\"\",IF(F4<=50,\"🟢\",IF(F4<=90,\"🟡\",\"🔴\"))))",
+        "M": "FECHAR NEGOCIAÇÃO EM ANDAMENTO",
+        "N": "=\"T\"&COUNTIF($C$2:C4,C4)",
+        "O": "ATIVO",
+        "P": "SIM",
+        "Q": "SIM",
+        "R": "NÃO",
+        "S": "ATEND. CLIENTES INATIVOS",
+        "T": "EM ATENDIMENTO",
+        "V": "=IFERROR(IF(VLOOKUP(T4,REGRAS!$B$6:$C$20,2,FALSE)=0,\"SEM\",TODAY()+VLOOKUP(T4,REGRAS!$B$6:$C$20,2,FALSE)),\"\")",
+        "W": "<openpyxl.worksheet.formula.ArrayFormula object at 0x000001D2A4A5B260>",
+        "X": "FECHAR NEGOCIAÇÃO EM ANDAMENTO",
+        "Y": "Verificação de interesse em promoção vigente",
+        "Z": "NÃO",
+        "AA": "Verificação de interesse em promoção vigente",
+        "AB": "=IF(T4=\"\",\"\",IF(OR(T4=\"VENDA / PEDIDO\"),\"VENDA\",IF(OR(T4=\"PÓS-VENDA\",T4=\"CS (SUCESSO DO CLIENTE)\",T4=\"RELACIONAMENTO\",T4=\"NUTRIÇÃO\"),\"PÓS-VENDA\",IF(T4=\"SUPORTE\",\"RESOLUÇÃO DE PROBLEMA\",IF(OR(G4=\"PROSPECT\",G4=\"LEAD\"),\"PROSPECÇÃO\",IF(T4=\"PERDA / FECHOU LOJA\",\"PRÉ-VENDA\",IF(OR(T4=\"ORÇAMENTO\",T4=\"CADASTRO\",T4=\"EM ATENDIMENTO\",T4=\"FOLLOW UP 7\",T4=\"FOLLOW UP 15\",T4=\"NÃO ATENDE\",T4=\"NÃO RESPONDE\",T4=\"RECUSOU LIGAÇÃO\"),\"PRÉ-VENDA\",\"PRÉ-VENDA\")))))))",
+        "AD": "ATENDIMENTO ATIVOS/INATIVOS",
+        "AE": "<openpyxl.worksheet.formula.ArrayFormula object at 0x000001D29A327CB0>",
+        "AF": "=IF(AE4=\"\",\"\",IF(AE4>=70,\"🔴 URGENTE\",IF(AE4>=50,\"🟡 ALTO\",IF(AE4>=30,\"🟢 MÉDIO\",\"⚪ BAIXO\"))))"
+      }
+    },
+    "fill_summary": {
+      "A": {
+        "header": "2025-10-17 00:00:00",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "B": {
+        "header": "SOLAR PORTO DE GALINHAS",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "C": {
+        "header": "8895369000111",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "D": {
+        "header": "PE",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "E": {
+        "header": "REDE / REGIONAL",
+        "pct": 17.0,
+        "type": "DADOS"
+      },
+      "F": {
+        "header": "97",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "G": {
+        "header": "INAT.ANT",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "H": {
+        "header": "<openpyxl.worksheet.formula.Ar",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "I": {
+        "header": "EM DESENVOLVIMENTO",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "J": {
+        "header": "<openpyxl.worksheet.formula.Ar",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "K": {
+        "header": "<openpyxl.worksheet.formula.Ar",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "L": {
+        "header": "=IF(OR(G2=\"PROSPECT\",G2=\"LEAD\"",
+        "pct": 101.0,
+        "type": "FORMULA"
+      },
+      "M": {
+        "header": "FECHAR NEGOCIAÇÃO EM ANDAMENTO",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "N": {
+        "header": "=\"T\"&COUNTIF($C$2:C2,C2)",
+        "pct": 101.0,
+        "type": "FORMULA"
+      },
+      "O": {
+        "header": "ATIVO",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "P": {
+        "header": "SIM",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "Q": {
+        "header": "SIM",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "R": {
+        "header": "NÃO",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "S": {
+        "header": "ATEND. CLIENTES INATIVOS",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "T": {
+        "header": "EM ATENDIMENTO",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "V": {
+        "header": "=IFERROR(IF(VLOOKUP(T2,REGRAS!",
+        "pct": 101.0,
+        "type": "FORMULA"
+      },
+      "W": {
+        "header": "<openpyxl.worksheet.formula.Ar",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "X": {
+        "header": "FECHAR NEGOCIAÇÃO EM ANDAMENTO",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "Y": {
+        "header": "Tentativa de retomar conversa ",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "Z": {
+        "header": "NÃO",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "AA": {
+        "header": "Tentativa de retomar conversa ",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "AB": {
+        "header": "=IF(T2=\"\",\"\",IF(OR(T2=\"VENDA /",
+        "pct": 101.0,
+        "type": "FORMULA"
+      },
+      "AD": {
+        "header": "LIGAÇÕES DA BASE",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "AE": {
+        "header": "<openpyxl.worksheet.formula.Ar",
+        "pct": 101.0,
+        "type": "DADOS"
+      },
+      "AF": {
+        "header": "=IF(AE2=\"\",\"\",IF(AE2>=70,\"🔴 UR",
+        "pct": 101.0,
+        "type": "FORMULA"
+      }
+    }
+  }
+}

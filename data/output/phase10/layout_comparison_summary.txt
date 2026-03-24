@@ -1,0 +1,272 @@
+====================================================================================================
+ANÁLISE COMPARATIVA DE LAYOUT: V31 vs V13
+====================================================================================================
+Data: 2026-02-17 23:37:28
+
+INFORMAÇÕES BÁSICAS
+----------------------------------------------------------------------------------------------------
+V31 (Referência):
+  • Caminho: c:/Users/User/OneDrive/Área de Trabalho/auditoria conversas sobre agenda atendimento draft 2/CRM_V12_POPULADO_V31 (1).xlsx edição update.xlsx
+  • Tamanho: 13.18 MB
+  • Total de abas: 17
+  • Abas: SINALEIRO, PROJEÇÃO , README, STATUS, DRAFT 1, DRAFT 2, DRAFT 3 , _PROJEÇÃO_OLD, LOG, CARTEIRA
+             AGENDA, RNC, DASH, REGRAS, REGRAS 2 , Claude Log, Planilha3
+
+V13 (Oficial):
+  • Caminho: c:/Users/User/OneDrive/Documentos/GitHub/CRM-VITAO360/data/output/phase10/CRM_VITAO360_V13_FINAL.xlsx
+  • Tamanho: 5.15 MB
+  • Total de abas: 13
+  • Abas: PROJEÇÃO , LOG, DASH, REDES_FRANQUIAS_v2, COMITE, REGRAS, DRAFT 1, DRAFT 2, CARTEIRA, AGENDA LARISSA
+             AGENDA DAIANE, AGENDA MANU, AGENDA JULIO
+
+
+DIFERENÇAS DE ESTRUTURA
+----------------------------------------------------------------------------------------------------
+Abas em V31 MAS NÃO em V13 (10): 
+  → SINALEIRO
+  → README
+  → STATUS
+  → DRAFT 3 
+  → _PROJEÇÃO_OLD
+  → AGENDA
+  → RNC
+  → REGRAS 2 
+  → Claude Log
+  → Planilha3
+
+Abas em V13 MAS NÃO em V31 (6): 
+  → REDES_FRANQUIAS_v2
+  → COMITE
+  → AGENDA LARISSA
+  → AGENDA DAIANE
+  → AGENDA MANU
+  → AGENDA JULIO
+
+
+ANÁLISE DE FREEZE PANES
+----------------------------------------------------------------------------------------------------
+Encontradas 6 diferenças de freeze_panes:
+
+  • CARTEIRA
+    V31: BX66
+    V13: AR6
+  • DRAFT 1
+    V31: AN4
+    V13: None
+  • DRAFT 2
+    V31: A13070
+    V13: None
+  • LOG
+    V31: A2
+    V13: A3
+  • PROJEÇÃO 
+    V31: C4
+    V13: E30
+  • REGRAS
+    V31: A41
+    V13: None
+
+
+ANÁLISE DE AUTO_FILTER
+----------------------------------------------------------------------------------------------------
+Encontradas 3 diferenças de auto_filter:
+
+  • CARTEIRA
+    V31: A3:JE1863
+    V13: A3:JC557
+  • LOG
+    V31: None
+    V13: A2:U20832
+  • PROJEÇÃO 
+    V31: A3:CB537
+    V13: None
+
+
+ANÁLISE DE COLUMN WIDTHS
+----------------------------------------------------------------------------------------------------
+
+  ► CARTEIRA:
+    Colunas em V31 mas não em V13 (2): 
+      JD: 8.6640625
+      JE: 8.6640625
+    Colunas com widths diferentes (205): 
+      A: V31=41.109375 vs V13=41.11
+      AK: V31=18.21875 vs V13=18.22
+      AM: V31=14.33203125 vs V13=14.33
+      AN: V31=14.5546875 vs V13=14.55
+      AO: V31=16.77734375 vs V13=16.78
+      AP: V31=15.77734375 vs V13=15.78
+      AQ: V31=0.33203125 vs V13=0.33
+      AR: V31=18.109375 vs V13=18.11
+      AS: V31=14.88671875 vs V13=14.89
+      AT: V31=15.44140625 vs V13=15.44
+      ... e mais 195
+
+  ► DASH:
+    Colunas em V31 mas não em V13 (1): 
+      R: 9.0
+    Colunas em V13 mas não em V31 (10): 
+      C: 13.0
+      D: 13.0
+      E: 13.0
+      F: 13.0
+      G: 13.0
+      J: 13.0
+      K: 13.0
+      L: 2.0
+      M: 13.0
+      N: 13.0
+    Colunas com widths diferentes (6): 
+      B: V31=8.0 vs V13=13.0
+      H: V31=6.88671875 vs V13=2.0
+      I: V31=8.0 vs V13=13.0
+      O: V31=20.0 vs V13=2.0
+      P: V31=7.44140625 vs V13=13.0
+      Q: V31=7.0 vs V13=13.0
+
+  ► DRAFT 1:
+    Colunas em V31 mas não em V13 (2): 
+      AT: 8.88671875
+      AU: 8.88671875
+    Colunas em V13 mas não em V31 (7): 
+      AB: 14.0
+      AC: 14.0
+      AD: 14.0
+      AE: 14.0
+      W: 14.0
+      X: 14.0
+      Z: 14.0
+    Colunas com widths diferentes (38): 
+      A: V31=45.0 vs V13=40.0
+      AA: V31=14.109375 vs V13=14.0
+      AF: V31=8.88671875 vs V13=14.0
+      AG: V31=16.33203125 vs V13=14.0
+      AH: V31=11.5546875 vs V13=14.0
+      AI: V31=11.109375 vs V13=14.0
+      AJ: V31=12.21875 vs V13=14.0
+      AK: V31=19.0 vs V13=14.0
+      AL: V31=22.21875 vs V13=14.0
+      AM: V31=21.88671875 vs V13=14.0
+      ... e mais 28
+
+  ► DRAFT 2:
+    Colunas em V31 mas não em V13 (1): 
+      AF: 16.0
+    Colunas em V13 mas não em V31 (2): 
+      N: 10.0
+      O: 10.0
+    Colunas com widths diferentes (20): 
+      A: V31=12.0 vs V13=18.0
+      AB: V31=18.0 vs V13=14.0
+      AC: V31=32.0 vs V13=14.0
+      AD: V31=38.0 vs V13=14.0
+      B: V31=18.0 vs V13=20.0
+      C: V31=25.0 vs V13=35.0
+      D: V31=21.44140625 vs V13=18.0
+      E: V31=7.77734375 vs V13=6.0
+      F: V31=21.21875 vs V13=18.0
+      G: V31=11.33203125 vs V13=14.0
+      ... e mais 10
+
+  ► LOG:
+    Colunas em V13 mas não em V31 (4): 
+      I: 10.0
+      Q: 16.0
+      R: 16.0
+      U: 14.0
+    Colunas com widths diferentes (11): 
+      A: V31=12.0 vs V13=14.0
+      B: V31=18.0 vs V13=20.0
+      C: V31=22.0 vs V13=25.0
+      G: V31=12.0 vs V13=14.0
+      K: V31=10.0 vs V13=12.0
+      L: V31=28.0 vs V13=18.0
+      N: V31=30.0 vs V13=28.0
+      O: V31=12.0 vs V13=14.0
+      P: V31=14.0 vs V13=16.0
+      S: V31=10.0 vs V13=12.0
+      ... e mais 1
+
+  ► PROJEÇÃO :
+    Colunas em V13 mas não em V31 (21): 
+      AA: 12.77734375
+      AB: 10.21875
+      AO: 7.109375
+      AP: 16.33203125
+      AQ: 9.33203125
+      AT: 18.21875
+      AU: 21.21875
+      AV: 17.6640625
+      AW: 13.44140625
+      AX: 34.6640625
+      ... e mais 11
+    Colunas com widths diferentes (17): 
+      A: V31=16.0 vs V13=20.6640625
+      AM: V31=2.0 vs V13=3.0
+      AN: V31=10.0 vs V13=14.0
+      AR: V31=2.0 vs V13=3.21875
+      AS: V31=14.0 vs V13=24.21875
+      B: V31=30.0 vs V13=40.0
+      BA: V31=2.0 vs V13=3.0
+      BB: V31=11.0 vs V13=17.88671875
+      BO: V31=2.0 vs V13=3.21875
+      BP: V31=11.0 vs V13=16.77734375
+      ... e mais 7
+
+  ► REGRAS:
+    Colunas com widths diferentes (12): 
+      A: V31=6.0 vs V13=22.0
+      B: V31=34.0 vs V13=35.0
+      C: V31=20.0 vs V13=28.0
+      E: V31=28.0 vs V13=32.0
+      F: V31=20.0 vs V13=45.0
+      G: V31=16.0 vs V13=18.0
+      H: V31=4.0 vs V13=15.0
+      I: V31=6.0 vs V13=15.0
+      J: V31=34.0 vs V13=22.0
+      K: V31=20.0 vs V13=22.0
+      ... e mais 2
+
+✗ 7 abas com diferenças de column widths
+
+
+ANÁLISE DE OUTLINE LEVELS (GROUPING)
+----------------------------------------------------------------------------------------------------
+
+  ► CARTEIRA:
+    V31 - Colunas max_level: 3, Grupos: 210
+    V13 - Colunas max_level: 3, Grupos: 210
+    V31 - Linhas max_level: 0, Grupos: 0
+    V13 - Linhas max_level: 0, Grupos: 0
+    Colunas ocultas em V31 (via grouping): ['B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'AK', 'AL', 'AM', 'AN', 'AO', 'AP', 'AQ', 'AS', 'AT', 'AU', 'AV', 'AW', 'AX', 'AY', 'AZ', 'BA', 'BB', 'BC', 'BD', 'BE', 'BF', 'BG', 'BH', 'BI', 'CB', 'CC', 'CD', 'CE', 'CF', 'CG', 'CH', 'CI', 'CJ', 'CK', 'CL', 'CM', 'CR', 'CS', 'CT', 'CU', 'CV', 'CW', 'CX', 'CY', 'CZ', 'DA', 'DB', 'DF', 'DG', 'DH', 'DI', 'DJ', 'DK', 'DL', 'DM', 'DN', 'DO', 'DP', 'DQ', 'DU', 'DV', 'DW', 'DX', 'DY', 'DZ', 'EA', 'EB', 'EC', 'ED', 'EE', 'EF', 'EG', 'EK', 'EL', 'EM', 'EN', 'EO', 'EP', 'EQ', 'ER', 'ES', 'ET', 'EU', 'EV', 'EZ', 'FA', 'FB', 'FC', 'FD', 'FE', 'FF', 'FG', 'FH', 'FI', 'FJ', 'FK', 'FO', 'FP', 'FQ', 'FR', 'FS', 'FT', 'FU', 'FV', 'FW', 'FX', 'FY', 'FZ', 'GA', 'GE', 'GF', 'GG', 'GH', 'GI', 'GJ', 'GK', 'GL', 'GM', 'GN', 'GO', 'GP', 'GT', 'GU', 'GV', 'GW', 'GX', 'GY', 'GZ', 'HA', 'HB', 'HC', 'HD', 'HE', 'HI', 'HJ', 'HK', 'HL', 'HM', 'HN', 'HO', 'HP', 'HQ', 'HR', 'HS', 'HT', 'HU', 'HY', 'HZ', 'IA', 'IB', 'IC', 'ID', 'IE', 'IF', 'IG', 'IH', 'II', 'IJ', 'IN', 'IO', 'IP', 'IQ', 'IR', 'IS', 'IT', 'IU', 'IV', 'IW', 'IX', 'IY', 'JC']
+    Colunas ocultas em V13 (via grouping): ['B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'AK', 'AL', 'AM', 'AN', 'AO', 'AP', 'AQ', 'BL', 'BM', 'BN', 'BO', 'BQ', 'BR', 'BS', 'BT', 'BU', 'BW', 'BX', 'BY', 'BZ', 'CB', 'CC', 'CD', 'CE', 'CF', 'CG', 'CH', 'CI', 'CJ', 'CK', 'CL', 'CM', 'CR', 'CS', 'CT', 'CU', 'CV', 'CW', 'CX', 'CY', 'CZ', 'DA', 'DB', 'DF', 'DG', 'DH', 'DI', 'DJ', 'DK', 'DL', 'DM', 'DN', 'DO', 'DP', 'DQ', 'DU', 'DV', 'DW', 'DX', 'DY', 'DZ', 'EA', 'EB', 'EC', 'ED', 'EE', 'EF', 'EG', 'EK', 'EL', 'EM', 'EN', 'EO', 'EP', 'EQ', 'ER', 'ES', 'ET', 'EU', 'EV', 'EZ', 'FA', 'FB', 'FC', 'FD', 'FE', 'FF', 'FG', 'FH', 'FI', 'FJ', 'FK', 'FO', 'FP', 'FQ', 'FR', 'FS', 'FT', 'FU', 'FV', 'FW', 'FX', 'FY', 'FZ', 'GA', 'GE', 'GF', 'GG', 'GH', 'GI', 'GJ', 'GK', 'GL', 'GM', 'GN', 'GO', 'GP', 'GT', 'GU', 'GV', 'GW', 'GX', 'GY', 'GZ', 'HA', 'HB', 'HC', 'HD', 'HE', 'HI', 'HJ', 'HK', 'HL', 'HM', 'HN', 'HO', 'HP', 'HQ', 'HR', 'HS', 'HT', 'HU', 'HY', 'HZ', 'IA', 'IB', 'IC', 'ID', 'IE', 'IF', 'IG', 'IH', 'II', 'IJ', 'IN', 'IO', 'IP', 'IQ', 'IR', 'IS', 'IT', 'IU', 'IV', 'IW', 'IX', 'IY', 'JC']
+
+✗ 1 abas com diferenças de outline levels
+
+
+ANÁLISE ESPECIAL - CARTEIRA
+----------------------------------------------------------------------------------------------------
+Abas CARTEIRA em V31: ['CARTEIRA']
+Abas CARTEIRA em V13: ['CARTEIRA']
+
+  ► CARTEIRA:
+    V31: 263 colunas
+    V13: 269 colunas
+    Status: ✗ Headers DIFERENTES
+    V31 primeiros headers: ['🟣 MERCOS', '[EMPTY-2]', '[EMPTY-3]', '[EMPTY-4]', '[EMPTY-5]']
+    V13 primeiros headers: ['🟣 MERCOS', '[EMPTY-2]', '[EMPTY-3]', '[EMPTY-4]', '[EMPTY-5]']
+
+
+RESUMO DE PROBLEMAS ENCONTRADOS
+----------------------------------------------------------------------------------------------------
+• 10 abas em V31 não existem em V13 (ex: SINALEIRO)
+• 6 abas em V13 não existem em V31
+• 6 abas com freeze_panes diferentes
+• 3 abas com auto_filter diferentes
+• 7 abas com column_widths diferentes
+• 1 abas com outline_levels diferentes
+
+
+====================================================================================================
+FIM DO RELATÓRIO
+====================================================================================================
