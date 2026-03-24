@@ -221,9 +221,11 @@ Plans:
   5. Base unificada eh salva em formato intermediario (JSON/Parquet) para consumo pelas fases seguintes
 **Plans**: 2 plans
 
+**Plans**: 2/2 COMPLETE
+
 Plans:
-- [ ] 11-01-PLAN.md — Config + helpers + import pipeline (ler xlsx FINAL, normalizar CNPJs, DE-PARA vendedores)
-- [ ] 11-02-PLAN.md — Classificacao 3-tier, unificacao de base, export JSON, validacao humana
+- [x] 11-01-PLAN.md — Config + helpers + import pipeline (ler xlsx FINAL, normalizar CNPJs, DE-PARA vendedores)
+- [x] 11-02-PLAN.md — Classificacao 3-tier, unificacao de base, export JSON, validacao humana
 
 ### Phase 12: Motor de Regras
 **Goal**: As 92 combinacoes de SITUACAO x RESULTADO do CRM produzem automaticamente as 9 dimensoes de saida (Estagio Funil, Fase, Tipo Contato, Acao Futura, Temperatura, etc.) via motor Python configuravel.
@@ -234,7 +236,10 @@ Plans:
   2. As 92 combinacoes (7 SITUACAO x 14 RESULTADO) estao 100% cobertas e batem com a aba REGRAS da planilha FINAL
   3. A tabela de regras vive em arquivo configuravel (JSON ou YAML), nao hardcoded no codigo Python
   4. Dado um atendimento (CNPJ + RESULTADO), o motor calcula e atribui: Estagio Funil, Fase, Tipo Contato, Acao Futura, Temperatura
-**Plans**: TBD
+**Plans**: 1/1 COMPLETE (built in session 23/Mar, committed 24/Mar)
+
+Plans:
+- [x] motor_regras.py — 92 combinacoes carregadas de JSON, 9 dimensoes, 99.2% match
 
 ### Phase 13: Score + Sinaleiro
 **Goal**: Cada cliente recebe um score numerico (0-100) baseado em 6 fatores ponderados que gera Piramide P1-P7, e um sinaleiro de saude (cor) baseado em dias sem compra vs ciclo medio, com cadencia de contato derivada.
@@ -246,7 +251,10 @@ Plans:
   3. Pesos dos 6 fatores sao configuraveis (arquivo externo), nao hardcoded
   4. Cada cliente recebe cor sinaleiro (ROXO/VERDE/AMARELO/LARANJA/VERMELHO) derivada de dias sem compra vs ciclo medio de compra
   5. Cada cor gera cadencia de contato recomendada (ex: ROXO = nunca comprou -> contato diario, VERMELHO = muito atrasado -> contato urgente)
-**Plans**: TBD
+**Plans**: 1/1 COMPLETE (built in session 23/Mar, committed 24/Mar)
+
+Plans:
+- [x] score_engine.py + sinaleiro_engine.py — Score 6 dim + P0-P7 + ABC + tipo_cliente + sinaleiro cores
 
 ### Phase 14: Agenda Inteligente
 **Goal**: Cada consultor recebe uma lista diaria de 40-60 atendimentos priorizados por Score descending, filtravel por consultor, com export xlsx pronto para operar.
@@ -257,7 +265,10 @@ Plans:
   2. Clientes P1 (URGENTE) aparecem sempre no topo, depois P2, P3, depois por Score dentro de cada faixa
   3. Operador filtra a agenda por consultor (LARISSA, MANU, JULIO, DAIANE) e ve apenas os clientes daquele territorio
   4. Export gera um arquivo xlsx por consultor com a agenda do dia, pronto para enviar via WhatsApp/email
-**Plans**: TBD
+**Plans**: 1/1 COMPLETE (built in session 23/Mar, committed 24/Mar)
+
+Plans:
+- [x] agenda_engine.py + excel_builder.py + run_pipeline.py + test_pipeline.py — Agenda 40-60/dia + xlsx 8 abas + 69 testes
 
 ### Phase 15: Projecao + Export
 **Goal**: O sistema calcula realizado vs meta SAP por cliente e por mes, gera % alcancado trimestral e anual, exporta base processada para xlsx, e mostra resumo executivo no terminal.
@@ -288,13 +299,14 @@ Fases 11-15 executam sequencialmente: 11 -> 12 -> 13 -> 14 -> 15
 | 8. Comite e Metas | v1.0 | 2/2 | Complete | 2026-02-17 |
 | 9. Blueprint v2 | v1.0 | 6/6 | Complete | 2026-02-17 |
 | 10. Validacao Final | v1.0 | 3/3 | Complete (V14 FINAL) | 2026-02-17 |
-| 11. Import Pipeline | v2.0 | 0/2 | Planned | - |
-| 12. Motor de Regras | v2.0 | 0/? | Not started | - |
-| 13. Score + Sinaleiro | v2.0 | 0/? | Not started | - |
-| 14. Agenda Inteligente | v2.0 | 0/? | Not started | - |
+| 11. Import Pipeline | v2.0 | 2/2 | Complete | 2026-03-23 |
+| 12. Motor de Regras | v2.0 | 1/1 | Complete | 2026-03-23 |
+| 13. Score + Sinaleiro | v2.0 | 1/1 | Complete | 2026-03-23 |
+| 14. Agenda Inteligente | v2.0 | 1/1 | Complete | 2026-03-23 |
 | 15. Projecao + Export | v2.0 | 0/? | Not started | - |
 
 ---
 *Roadmap created: 2026-02-15 via DEUS-AIOS*
 *v1.0 complete: 10 phases, 31 plans, 43 requirements (2026-02-17)*
 *v2.0 added: 2026-03-23 — 5 phases, 20 requirements*
+*v2.0 phases 11-14 complete: 2026-03-23 (built) + 2026-03-24 (audited, committed)*
