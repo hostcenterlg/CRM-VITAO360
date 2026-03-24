@@ -517,8 +517,8 @@ def validar_base(base: pd.DataFrame) -> dict[str, Any]:
     # CNPJ duplicados
     cnpj_duplicados = 0
     if "cnpj_normalizado" in base.columns:
-        cnpj_validos = base["cnpj_normalizado"].dropna()
-        cnpj_duplicados = int(cnpj_validos.duplicated().sum())
+        valid_docs = base["cnpj_normalizado"].dropna()
+        cnpj_duplicados = int(valid_docs.duplicated().sum())
     resultado["cnpj_duplicados"] = cnpj_duplicados
 
     # CNPJ nulos

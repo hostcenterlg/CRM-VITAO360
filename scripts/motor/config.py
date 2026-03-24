@@ -15,11 +15,16 @@ CAMINHO_PLANILHA = Path(
     r"\CRM_VITAO360  INTELIGENTE   FINAL OK .xlsx"
 )
 
-if not CAMINHO_PLANILHA.exists():
-    raise FileNotFoundError(
-        f"Planilha FINAL nao encontrada em: {CAMINHO_PLANILHA}\n"
-        "Verifique se o arquivo esta no Desktop e o OneDrive esta sincronizado."
-    )
+
+def validar_caminho_planilha(caminho: Path | None = None) -> Path:
+    """Valida que a planilha FINAL existe. Chamar em runtime, nao no import."""
+    p = caminho or CAMINHO_PLANILHA
+    if not p.exists():
+        raise FileNotFoundError(
+            f"Planilha FINAL nao encontrada em: {p}\n"
+            "Verifique se o arquivo esta no Desktop e o OneDrive esta sincronizado."
+        )
+    return p
 
 # ---------------------------------------------------------------------------
 # DE-PARA Vendedores (5 grupos canonicos + alias)

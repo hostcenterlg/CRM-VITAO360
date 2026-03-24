@@ -207,7 +207,8 @@ def run_pipeline(
     # ------------------------------------------------------------------
     # 6. Exportar JSON
     # ------------------------------------------------------------------
-    output_path = Path("data/output/motor/base_unificada.json")
+    _ROOT = Path(__file__).resolve().parents[2]
+    output_path = _ROOT / "data" / "output" / "motor" / "base_unificada.json"
     file_size_mb = 0.0
 
     if dry_run:

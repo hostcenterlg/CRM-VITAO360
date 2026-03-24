@@ -21,6 +21,7 @@ from scripts.motor.config import (
     ABAS_CONSULTOR,
     ABAS_RELEVANTES,
     CAMINHO_PLANILHA,
+    validar_caminho_planilha,
 )
 from scripts.motor.helpers import normalizar_cnpj, normalizar_vendedor, safe_read_sheet
 
@@ -239,9 +240,7 @@ def importar_planilha(caminho: Optional[Path] = None) -> dict[str, pd.DataFrame]
     Returns:
         Dict[str, pd.DataFrame] com chaves = nomes logicos das abas
     """
-    caminho = caminho or CAMINHO_PLANILHA
-    if not caminho.exists():
-        raise FileNotFoundError(f"Planilha nao encontrada: {caminho}")
+    caminho = validar_caminho_planilha(caminho)
 
     t_total = time.time()
     print(f"=== IMPORT PIPELINE: Abrindo {caminho.name} ===")
@@ -253,53 +252,54 @@ def importar_planilha(caminho: Optional[Path] = None) -> dict[str, pd.DataFrame]
 
     result: dict[str, pd.DataFrame] = {}
 
-    # 2. Processar abas relevantes
-    print("\n--- Abas relevantes ---")
-    for nome_logico, nome_real in ABAS_RELEVANTES.items():
-        ws = safe_read_sheet(wb, nome_real)
-        if ws is None:
-            print(f"  SKIP: {nome_logico} (aba '{nome_real}' nao encontrada)")
-            continue
+    try:
+        # 2. Processar abas relevantes
+        print("\n--- Abas relevantes ---")
+        for nome_logico, nome_real in ABAS_RELEVANTES.items():
+            ws = safe_read_sheet(wb, nome_real)
+            if ws is None:
+                print(f"  SKIP: {nome_logico} (aba '{nome_real}' nao encontrada)")
+                continue
 
-        # Determinar config de header
-        if nome_real in _HEADER_CONFIG:
-            header_row, data_start = _HEADER_CONFIG[nome_real]
-        else:
-            header_row, data_start = 1, 2
+            # Determinar config de header
+            if nome_real in _HEADER_CONFIG:
+                header_row, data_start = _HEADER_CONFIG[nome_real]
+            else:
+                header_row, data_start = 1, 2
 
-        df = _ws_to_dataframe(ws, nome_real, header_row, data_start)
+            df = _ws_to_dataframe(ws, nome_real, header_row, data_start)
 
-        # Normalizar CNPJ se aplicavel
-        if nome_real in _CNPJ_COLUMNS:
-            df = _normalizar_cnpjs_df(df, nome_real, _CNPJ_COLUMNS[nome_real])
+            # Normalizar CNPJ se aplicavel
+            if nome_real in _CNPJ_COLUMNS:
+                df = _normalizar_cnpjs_df(df, nome_real, _CNPJ_COLUMNS[nome_real])
 
-        # Normalizar vendedores na CARTEIRA
-        if nome_real == "CARTEIRA":
-            df = _normalizar_vendedores_df(df)
+            # Normalizar vendedores na CARTEIRA
+            if nome_real == "CARTEIRA":
+                df = _normalizar_vendedores_df(df)
 
-        result[nome_logico] = df
-        print(f"  OK: {nome_logico} = {len(df)} rows x {len(df.columns)} cols")
+            result[nome_logico] = df
+            print(f"  OK: {nome_logico} = {len(df)} rows x {len(df.columns)} cols")
 
-    # 3. Processar abas consultor
-    print("\n--- Abas consultor ---")
-    for consultor, nome_aba in ABAS_CONSULTOR.items():
-        ws = safe_read_sheet(wb, nome_aba)
-        if ws is None:
-            print(f"  SKIP: {consultor} (aba '{nome_aba}' nao encontrada)")
-            continue
+        # 3. Processar abas consultor
+        print("\n--- Abas consultor ---")
+        for consultor, nome_aba in ABAS_CONSULTOR.items():
+            ws = safe_read_sheet(wb, nome_aba)
+            if ws is None:
+                print(f"  SKIP: {consultor} (aba '{nome_aba}' nao encontrada)")
+                continue
 
-        # Consultor tabs: header na row 1, dados na row 2
-        df = _ws_to_dataframe(ws, nome_aba, header_row=1, data_start_row=2)
+            # Consultor tabs: header na row 1, dados na row 2
+            df = _ws_to_dataframe(ws, nome_aba, header_row=1, data_start_row=2)
 
-        # Normalizar CNPJ
-        if nome_aba in _CNPJ_COLUMNS:
-            df = _normalizar_cnpjs_df(df, nome_aba, _CNPJ_COLUMNS[nome_aba])
+            # Normalizar CNPJ
+            if nome_aba in _CNPJ_COLUMNS:
+                df = _normalizar_cnpjs_df(df, nome_aba, _CNPJ_COLUMNS[nome_aba])
 
-        result[f"consultor_{consultor.lower()}"] = df
-        print(f"  OK: consultor_{consultor.lower()} = {len(df)} rows x {len(df.columns)} cols")
-
-    # 4. Fechar workbook
-    wb.close()
+            result[f"consultor_{consultor.lower()}"] = df
+            print(f"  OK: consultor_{consultor.lower()} = {len(df)} rows x {len(df.columns)} cols")
+    finally:
+        # 4. Fechar workbook (garante close mesmo com excecao)
+        wb.close()
 
     # 5. Resumo
     elapsed_total = time.time() - t_total
