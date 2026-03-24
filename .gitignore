@@ -25,6 +25,37 @@ desktop.ini
 # Node
 node_modules/
 
+# Frontend (Next.js)
+frontend/.next/
+frontend/out/
+frontend/.vercel/
+frontend/.env.local
+frontend/.env*.local
+frontend/next-env.d.ts
+frontend/tsconfig.tsbuildinfo
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/.pnp
+frontend/.pnp.js
+frontend/.yarn/install-state.gz
+frontend/coverage/
+
+# Backend (Python/FastAPI)
+backend/**/__pycache__/
+backend/*.egg-info/
+backend/dist/
+backend/build/
+backend/.env
+backend/.env.local
+backend/.env*.local
+backend/.venv/
+backend/venv/
+backend/.pytest_cache/
+backend/htmlcov/
+backend/.coverage
+backend/coverage.xml
+
 # Cache runtime
 .cache/
 
