@@ -195,7 +195,10 @@ def main():
         print("\n[6] Faturamento baseline...")
         fat_issues = []
         # Verificar se R$ 2.091.000 é usado (não o antigo R$ 2.156.179)
+        # Exclui worktrees (cópias temporárias de agentes, não são docs do projeto)
         for f in (ROOT / ".claude").rglob("*.md"):
+            if "worktrees" in f.parts:
+                continue
             try:
                 content = f.read_text(encoding="utf-8", errors="ignore")
                 if "2.156.179" in content and "SUPERSEDED" not in content and "ANTERIOR" not in content and "CORRIGIDO" not in content:
