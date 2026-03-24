@@ -64,6 +64,24 @@ CAMPOS_OUTPUT: tuple[str, ...] = (
     "tipo_acao",
 )
 
+# Situacoes conhecidas do dominio CRM VITAO360 (7 situacoes x 14 resultados = 92 combinacoes)
+# LEAD   = prospect no funil, nunca comprou; objetivo: qualificar e converter em 1a venda
+# NOVO   = cliente com 1a compra recente; objetivo: onboarding e gerar 2a compra
+# ATIVO  = cliente com compras recentes (<=50 dias)
+# EM RISCO = cliente proximo do limite de inatividade (51-60 dias)
+# INAT.REC = cliente inativo recente (61-90 dias); cadencia de salvamento
+# INAT.ANT = cliente inativo antigo (>90 dias); cadencia de reativacao
+# PROSPECT = contato sem nenhuma compra nem funil ativo
+SITUACOES_CONHECIDAS: tuple[str, ...] = (
+    "ATIVO",
+    "EM RISCO",
+    "INAT.ANT",
+    "INAT.REC",
+    "LEAD",
+    "NOVO",
+    "PROSPECT",
+)
+
 # ---------------------------------------------------------------------------
 # Tabela de regras: (SITUACAO, RESULTADO) -> dict com 8 dimensoes de output
 # Populada em _carregar_regras() ao importar o modulo.
@@ -505,11 +523,15 @@ def _imprimir_sumario() -> None:
 
 
 def _smoke_test() -> None:
-    """Testa 3 combinacoes conhecidas para validar o carregamento."""
+    """Testa 5 combinacoes conhecidas para validar o carregamento."""
     casos = [
         ("ATIVO", "VENDA / PEDIDO"),
-        ("PROSPECT", "NAO RESPONDE"),
+        ("PROSPECT", "NÃO RESPONDE"),
         ("INAT.REC", "EM ATENDIMENTO"),
+        # LEAD: prospect no funil, foco em qualificacao e 1a venda
+        ("LEAD", "EM ATENDIMENTO"),
+        # NOVO: cliente recente, foco em onboarding e 2a compra
+        ("NOVO", "PÓS-VENDA"),
     ]
     print("\n  SMOKE TEST -- 3 combinacoes conhecidas:")
     for situacao, resultado in casos:
