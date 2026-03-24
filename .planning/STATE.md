@@ -6,16 +6,16 @@ See: .planning/PROJECT.md (updated 2026-03-24)
 
 **Core value:** Motor Python funcional que roda localmente com dados reais, gerando agenda inteligente diaria para cada consultor a partir das 92 regras, Score, Sinaleiro e Projecao extraidos do Excel.
 
-**Current focus:** Phases 11-14 IMPLEMENTADAS — motor completo funcionando. Proximo: Phase 15 (Projecao + Export) e validacao E2E.
+**Current focus:** ALL PHASES COMPLETE (11-15). Motor v2.0 com 8 stages operacional.
 
 ## Current Position
 
-Phase: 15 of 15 (Projecao + Export) — PROXIMO
-Plan: TBD
-Status: Phases 11-14 complete (code built, audited, committed)
-Last activity: 2026-03-24 — 12 commits atomicos, QA audit 4 fixes, 175 arquivos organizados
+Phase: 15 of 15 — ALL COMPLETE
+Plan: Done
+Status: v2.0 Motor Operacional SaaS COMPLETE
+Last activity: 2026-03-24 — Phase 15 projecao_engine + pipeline 8 stages
 
-Progress: [#######################░░░░░░░] 80% (v2.0) | 100% (v1.0)
+Progress: [##############################] 100% (v2.0) | 100% (v1.0)
 
 ## Previous Milestone (v1.0 — Excel Rebuild)
 - 10 fases completas, 31 planos, 43 requisitos, 154.302 formulas
@@ -46,11 +46,11 @@ Progress: [#######################░░░░░░░] 80% (v2.0) | 100% (v1.0
 - test_pipeline.py: 69 testes (0 FAIL)
 - Committed: 2219c8c
 
-### Phase 15: Projecao + Export — NOT STARTED
-- Realizado vs meta SAP
-- % alcancado trimestral/anual
-- Export xlsx formatado
-- Dashboard terminal
+### Phase 15: Projecao + Export — COMPLETE
+- projecao_engine.py: carregar_metas_sap, calcular_projecao, consolidar_projecao, gerar_dashboard_terminal
+- Pipeline upgraded: 7 → 8 stages (projecao entre score e agenda)
+- Dashboard terminal ASCII com KPIs, top 10, churn alerts
+- Committed: 4f2bae1
 
 ## Performance Metrics
 

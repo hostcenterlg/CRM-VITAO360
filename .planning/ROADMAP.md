@@ -279,7 +279,10 @@ Plans:
   2. % alcancado esta disponivel por trimestre (Q1-Q4) e anual, consolidado por consultor e por rede
   3. Base processada completa (com score, sinaleiro, motor, projecao) eh exportada para xlsx formatado com cores e filtros
   4. Resumo executivo eh impresso no terminal: KPIs principais (fat. total, % meta, top 10 clientes, alertas de churn)
-**Plans**: TBD
+**Plans**: 1/1 COMPLETE (2026-03-24)
+
+Plans:
+- [x] projecao_engine.py + pipeline integration — realizado vs meta SAP, dashboard terminal, 8 stages
 
 ## Progress
 
@@ -303,7 +306,7 @@ Fases 11-15 executam sequencialmente: 11 -> 12 -> 13 -> 14 -> 15
 | 12. Motor de Regras | v2.0 | 1/1 | Complete | 2026-03-23 |
 | 13. Score + Sinaleiro | v2.0 | 1/1 | Complete | 2026-03-23 |
 | 14. Agenda Inteligente | v2.0 | 1/1 | Complete | 2026-03-23 |
-| 15. Projecao + Export | v2.0 | 0/? | Not started | - |
+| 15. Projecao + Export | v2.0 | 1/1 | Complete | 2026-03-24 |
 
 ---
 *Roadmap created: 2026-02-15 via DEUS-AIOS*
