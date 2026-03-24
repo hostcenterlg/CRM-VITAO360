@@ -88,7 +88,8 @@ Fonte: PAINEL DE ATIVIDADES (Dashboard Executivo 2025). Estes são os números c
 JAN: R$  80.000    FEV: R$  95.000    MAR: R$ 110.000    ABR: R$ 150.000
 MAI: R$ 180.000    JUN: R$ 220.000    JUL: R$ 200.000    AGO: R$ 230.000
 SET: R$ 210.000    OUT: R$ 280.000    NOV: R$ 260.000    DEZ: R$ 141.179
-TOTAL: R$ 2.156.179
+SOMA PAINEL: R$ 2.156.179 (dados brutos PAINEL DE ATIVIDADES)
+TOTAL AUDITADO: R$ 2.091.000 (CORRIGIDO 2026-03-23 — auditoria forense 68 arquivos; diferença de R$ 65K identificada na aba CONFLITOS)
 ```
 
 ## 4.2 Métricas operacionais
@@ -255,7 +256,7 @@ JULIO: Julio, Julio Gadret → JULIO
 # PARTE 12 — ENTREGAS PRIORIZADAS
 
 1. PROJEÇÃO reconstruída (18.180 fórmulas) — CRÍTICO
-2. Dados de faturamento corretos (R$ 2.156.179)
+2. Dados de faturamento corretos (R$ 2.091.000 — CORRIGIDO 2026-03-23, anterior R$ 2.156.179 superseded)
 3. Timeline mensal populada
 4. LOG completo (~11.758 registros)
 5. DASH redesenhada (3 blocos)

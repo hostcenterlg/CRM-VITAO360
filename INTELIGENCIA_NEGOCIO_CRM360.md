@@ -154,7 +154,7 @@ O CRM existe para gerar 40-60 atendimentos priorizados por consultor por dia.
 ## LIMITACOES CONHECIDAS
 
 1. **Cobertura limitada**: V13 tem 554 CNPJs (V31 tem 5.460) — V13 foi construido com dataset filtrado SAP+Mercos merge
-2. **Faturamento PAINEL**: R$ 2.156.179 nao bate com nenhuma fonte unica (SAP -3.08%, Mercos -12%, Merged +15.65%)
+2. **Faturamento PAINEL**: R$ 2.156.179 (PAINEL DE ATIVIDADES — SUPERSEDED) nao batia com nenhuma fonte unica (SAP -3.08%, Mercos -12%, Merged +15.65%). Baseline corrigido para R$ 2.091.000 (CORRIGIDO 2026-03-23, auditoria forense 68 arquivos — diferença de R$ 65K resolvida na aba CONFLITOS)
 3. **E-commerce**: Outubro e Maio 2025 AUSENTES (sem arquivo encontrado)
 4. **Julio Gadret**: 100% fora do sistema — dados muito limitados
 5. **558 registros ALUCINACAO**: do CONTROLE_FUNIL — descartados
