@@ -1,0 +1,211 @@
+==================================================================================================================================
+                                   AUDITORIA COMPLETA - ABAS DE AGENDA - V25
+==================================================================================================================================
+
+
+1. ABAS DE AGENDA ENCONTRADAS
+----------------------------------------------------------------------------------------------------------------------------------
+
+AGENDA LARISSA:
+  Nome exato: 'AGENDA LARISSA'
+  Consultor filtrado: LARISSA PADILHA
+  Status: OK (aba encontrada)
+
+AGENDA DAIANE:
+  Nome exato: 'AGENDA DAIANE'
+  Consultor filtrado: DAIANE STAVICKI
+  Status: OK (aba encontrada)
+
+AGENDA MANU:
+  Nome exato: 'AGENDA MANU'
+  Consultor filtrado: MANU DITZEL
+  Status: OK (aba encontrada)
+
+AGENDA JULIO:
+  Nome exato: 'AGENDA JULIO'
+  Consultor filtrado: JULIO GADRET
+  Status: OK (aba encontrada)
+
+
+2. ANALISE DIMENSIONAL E ESTRUTURA
+----------------------------------------------------------------------------------------------------------------------------------
+
+AGENDA LARISSA:
+  ├─ Linhas usadas: 4
+  ├─ Colunas usadas: 32
+  ├─ Header na linha 1: 'AGENDA DIÁRIA — LARISSA PADILHA'
+  ├─ Dados iniciam em: Linha 4 (com formulas SPILL)
+  └─ Linhas de suporte: 2 e 3 (vazias)
+
+AGENDA DAIANE:
+  ├─ Linhas usadas: 4
+  ├─ Colunas usadas: 32
+  ├─ Header na linha 1: 'AGENDA DIÁRIA — DAIANE STAVICKI'
+  ├─ Dados iniciam em: Linha 4 (com formulas SPILL)
+  └─ Linhas de suporte: 2 e 3 (vazias)
+
+AGENDA MANU:
+  ├─ Linhas usadas: 4
+  ├─ Colunas usadas: 32
+  ├─ Header na linha 1: 'AGENDA DIÁRIA — MANU DITZEL'
+  ├─ Dados iniciam em: Linha 4 (com formulas SPILL)
+  └─ Linhas de suporte: 2 e 3 (vazias)
+
+AGENDA JULIO:
+  ├─ Linhas usadas: 4
+  ├─ Colunas usadas: 32
+  ├─ Header na linha 1: 'AGENDA DIÁRIA — JULIO GADRET'
+  ├─ Dados iniciam em: Linha 4 (com formulas SPILL)
+  └─ Linhas de suporte: 2 e 3 (vazias)
+
+
+3. HEADERS COMPLETOS (32 COLUNAS)
+----------------------------------------------------------------------------------------------------------------------------------
+
+Colunas A-P (16 implementadas):
+
+  A:  RANK                      -> Score de prioridade para ordenacao
+  B:  CNPJ                      -> Identificador fiscal do cliente
+  C:  RAZAO SOCIAL              -> Nome oficial da empresa
+  D:  UF                        -> Estado/Regiao
+  E:  CIDADE                    -> Localizacao geografica
+  F:  SITUACAO                  -> Status do relacionamento
+  G:  DIAS SEM COMPRA           -> Metrica de inatividade
+  H:  CURVA ABC                 -> Classificacao por volume
+  I:  TICKET MEDIO              -> Valor medio de transacoes
+  J:  ESTAGIO FUNIL             -> Fase do pipeline de vendas
+  K:  ACAO FUTURA               -> Proximo passo recomendado
+  L:  TEMPERATURA               -> Qualificacao do contato
+  M:  DATA 1O CONTATO           -> Historico de engagement
+  N:  TENTATIVA                 -> Numero de tentativas de contato
+  O:  PRIORIDADE                -> Campo de ordenacao (SORTBY)
+  P:  CONSULTOR                 -> Campo de filtro (FILTER)
+
+Colunas Q-AF (16 posicoes vazias):
+  Q-AF: [SEM FORMULAS] - Nao foram implementadas
+
+
+4. STATUS DE POPULACAO
+----------------------------------------------------------------------------------------------------------------------------------
+
+AGENDA LARISSA:
+  Formulas presentes: SIM (16 colunas x linha 4)
+  Dados calculados visiveis: NAO (openpyxl nao renderiza cached values)
+  Valores hardcoded: NAO (apenas formulas)
+  Nota: Abra no Excel para ver dados calculados (Ctrl+Alt+F9 se necessario)
+
+AGENDA DAIANE:
+  Formulas presentes: SIM (16 colunas x linha 4)
+  Dados calculados visiveis: NAO (openpyxl nao renderiza cached values)
+  Valores hardcoded: NAO (apenas formulas)
+  Nota: Abra no Excel para ver dados calculados (Ctrl+Alt+F9 se necessario)
+
+AGENDA MANU:
+  Formulas presentes: SIM (16 colunas x linha 4)
+  Dados calculados visiveis: NAO (openpyxl nao renderiza cached values)
+  Valores hardcoded: NAO (apenas formulas)
+  Nota: Abra no Excel para ver dados calculados (Ctrl+Alt+F9 se necessario)
+
+AGENDA JULIO:
+  Formulas presentes: SIM (16 colunas x linha 4)
+  Dados calculados visiveis: NAO (openpyxl nao renderiza cached values)
+  Valores hardcoded: NAO (apenas formulas)
+  Nota: Abra no Excel para ver dados calculados (Ctrl+Alt+F9 se necessario)
+
+
+5. FORMULAS UTILIZADAS
+----------------------------------------------------------------------------------------------------------------------------------
+
+Exemplo (Coluna A4 - AGENDA LARISSA):
+
+=IFERROR(SORTBY(FILTER(CARTEIRA!JF$4:JF$6147,CARTEIRA!L$4:L$6147="LARISSA PADILHA"),FILTER(CARTEIRA!O$4:O$6147,CARTEIRA!L$4:L$6147="LARISSA PADILHA"),-1),"")
+
+
+Componentes:
+  FILTER: Filtra registros por consultor (L = nome exato)
+  SORTBY: Ordena por PRIORIDADE (O) descendente (-1)
+  IFERROR: Retorna vazio se houver erro
+  Range: CARTEIRA!$4:$6147 (6144 registros)
+
+
+6. MAPEAMENTO AGENDA -> CARTEIRA
+----------------------------------------------------------------------------------------------------------------------------------
+
+  A  <- Col JF  (#266): RANK
+  B  <- Col B   (#  2): CNPJ
+  C  <- Col C   (#  3): RAZAO SOCIAL
+  D  <- Col D   (#  4): UF
+  E  <- Col E   (#  5): CIDADE
+  F  <- Col N   (# 14): SITUACAO
+  G  <- Col P   (# 16): DIAS SEM COMPRA
+  H  <- Col AO  (# 41): CURVA ABC
+  I  <- Col AR  (# 44): TICKET MEDIO
+  J  <- Col AT  (# 46): ESTAGIO FUNIL
+  K  <- Col AW  (# 49): ACAO FUTURA
+  L  <- Col BD  (# 56): TEMPERATURA
+  M  <- Col BF  (# 58): DATA 1O CONTATO
+  N  <- Col BA  (# 53): TENTATIVA
+  O  <- Col O   (# 15): PRIORIDADE (SORT)
+  P  <- Col L   (# 12): CONSULTOR (FILTER)
+
+
+7. COBERTURA DE CONSULTORES
+----------------------------------------------------------------------------------------------------------------------------------
+
+  DAIANE STAVICKI          : COM aba AGENDA
+  HELDER BRUNKOW           : SEM aba AGENDA (44 registros na CARTEIRA)
+  JULIO GADRET             : COM aba AGENDA
+  LARISSA PADILHA          : COM aba AGENDA
+  MANU DITZEL              : COM aba AGENDA
+  KAIQUE                   : NAO existe na CARTEIRA
+
+Resumo: 4 agendas criadas / 5 consultores na CARTEIRA (cobertura 80%)
+
+
+8. SCORE E PRIORIDADE
+----------------------------------------------------------------------------------------------------------------------------------
+
+  RANK (A): Ordena agendas por score/prioridade
+  PRIORIDADE (O): Campo criterio SORTBY (descendente)
+  Status: IMPLEMENTADO mas dados nao visiveis sem abrir Excel
+
+
+9. CONSISTENCIA ENTRE AGENDAS
+----------------------------------------------------------------------------------------------------------------------------------
+
+  Todas as 4 abas: mesma estrutura, mesmos padroes, mesmas limitacoes
+  16 colunas com formula (A-P): OK
+  16 colunas vazias (Q-AF): NAO IMPLEMENTADAS
+
+
+10. PROBLEMAS CRITICOS
+----------------------------------------------------------------------------------------------------------------------------------
+
+  [!!] Dados nao visiveis: openpyxl nao renderiza cached values
+  [!!] 16 colunas incompletas: esperado 32, apenas 16 com formulas
+  [!!] Falta cobertura HELDER: 44 registros sem aba AGENDA
+  [!!] Dados nao persistidos: apenas formulas, sem valores reais
+
+
+11. RECOMENDACOES
+----------------------------------------------------------------------------------------------------------------------------------
+
+1. IMEDIATO: Executar V17 (build_v17_prepopulado.py)
+   -> Escreve VALORES REAIS nas agendas
+   -> Soluciona problema de dados vazios
+
+2. COMPLETAR 32 colunas:
+   -> Preencher Q-AF com formulas de outras colunas CARTEIRA
+   -> Manter consistencia com V31
+
+3. COBERTURA HELDER:
+   -> Criar AGENDA HELDER com mesmo padrao
+
+4. VALIDACAO POS-V17:
+   -> Verificar se dados aparecem sem Excel
+   -> Confirmar prioridades/rankings
+
+
+==================================================================================================================================
+                                             FIM DO RELATORIO
+==================================================================================================================================
