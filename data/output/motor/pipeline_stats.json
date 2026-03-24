@@ -1,0 +1,89 @@
+{
+  "metadata": {
+    "timestamp": "2026-03-24T02:14:18.213746+00:00",
+    "elapsed_total_s": 0.41,
+    "pipeline_versao": "2.0.0"
+  },
+  "stages": [
+    {
+      "stage": "IMPORT",
+      "status": "PASS",
+      "registros": 1581,
+      "elapsed_s": 0.02,
+      "erro": null
+    },
+    {
+      "stage": "CLASSIFY",
+      "status": "PASS",
+      "registros": 1581,
+      "elapsed_s": 0.01,
+      "erro": null
+    },
+    {
+      "stage": "MOTOR",
+      "status": "PASS",
+      "registros": 1581,
+      "elapsed_s": 0.02,
+      "erro": null
+    },
+    {
+      "stage": "SINALEIRO",
+      "status": "PASS",
+      "registros": 1581,
+      "elapsed_s": 0.01,
+      "erro": null
+    },
+    {
+      "stage": "SCORE",
+      "status": "PASS",
+      "registros": 1581,
+      "elapsed_s": 0.09,
+      "erro": null
+    },
+    {
+      "stage": "AGENDA",
+      "status": "PASS",
+      "registros": 140,
+      "elapsed_s": 0.07,
+      "erro": null
+    }
+  ],
+  "resumo": {
+    "total_registros": 1581,
+    "distribuicao_prioridade": {
+      "P6": 1081,
+      "P4": 231,
+      "P3": 142,
+      "P5": 127
+    },
+    "distribuicao_consultor": {
+      "DAIANE": 1116,
+      "LARISSA": 157,
+      "MANU": 151,
+      "JULIO": 91,
+      "DESCONHECIDO": 41,
+      "LEGADO": 5
+    },
+    "distribuicao_sinaleiro": {
+      "ROXO": 1151,
+      "VERMELHO": 292,
+      "VERDE": 110,
+      "AMARELO": 28
+    },
+    "total_atendimentos_agenda": 140,
+    "agendas": {
+      "LARISSA": {
+        "atendimentos": 40
+      },
+      "MANU": {
+        "atendimentos": 40
+      },
+      "JULIO": {
+        "atendimentos": 40
+      },
+      "DAIANE": {
+        "atendimentos": 20
+      }
+    }
+  }
+}
