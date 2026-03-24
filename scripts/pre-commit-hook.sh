@@ -86,8 +86,13 @@ fi
 # CHECK 5: Two-Base Architecture scan
 echo -n "[5/5] Two-Base scan... "
 TWOBASE_FAIL=0
+# Enforcement scripts are excluded (they CONTAIN detection patterns)
+ENFORCE_SKIP="verify.py|tech_debt_scan.py|preflight_check.py|postflight_check.py|session_boot.py|compliance_gate.py|auto_session_report.py"
 for f in $STAGED; do
     if echo "$f" | grep -qE '\.py$'; then
+        if echo "$f" | grep -qE "$ENFORCE_SKIP"; then
+            continue
+        fi
         if [ -f "$f" ]; then
             # Detect mixing: LOG/atendimento with monetary values (not R$ 0.00)
             if grep -qE '(LOG|log|atendimento).*valor.*[1-9]' "$f" 2>/dev/null; then
