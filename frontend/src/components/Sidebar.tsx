@@ -2,12 +2,20 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useAuth } from '@/contexts/AuthContext';
 
 // ---------------------------------------------------------------------------
-// Sidebar — navigation for CRM VITAO360, light theme only
+// Sidebar — navegacao CRM VITAO360, light theme only
 // ---------------------------------------------------------------------------
 
-const navItems = [
+interface NavItem {
+  href: string;
+  label: string;
+  icon: React.ReactNode;
+  adminOnly?: boolean;
+}
+
+const navItems: NavItem[] = [
   {
     href: '/',
     label: 'Dashboard',
@@ -48,6 +56,44 @@ const navItems = [
       </svg>
     ),
   },
+  {
+    href: '/sinaleiro',
+    label: 'Sinaleiro',
+    icon: (
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+          d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+      </svg>
+    ),
+  },
+];
+
+// Itens exclusivos para administradores
+const adminNavItems: NavItem[] = [
+  {
+    href: '/import',
+    label: 'Importar',
+    adminOnly: true,
+    icon: (
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+          d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+      </svg>
+    ),
+  },
+  {
+    href: '/config',
+    label: 'Config',
+    adminOnly: true,
+    icon: (
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+          d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+      </svg>
+    ),
+  },
 ];
 
 interface SidebarProps {
@@ -57,6 +103,7 @@ interface SidebarProps {
 
 export default function Sidebar({ mobileOpen, onClose }: SidebarProps) {
   const pathname = usePathname();
+  const { isAdmin } = useAuth();
 
   const isActive = (href: string) => {
     if (href === '/') return pathname === '/';
@@ -99,7 +146,7 @@ export default function Sidebar({ mobileOpen, onClose }: SidebarProps) {
           </div>
         </div>
 
-        {/* Nav */}
+        {/* Nav principal */}
         <nav className="flex-1 py-3 px-2 overflow-y-auto">
           <ul className="space-y-0.5">
             {navItems.map((item) => (
@@ -124,6 +171,38 @@ export default function Sidebar({ mobileOpen, onClose }: SidebarProps) {
               </li>
             ))}
           </ul>
+
+          {/* Secao Admin — visivel apenas para role=admin */}
+          {isAdmin && (
+            <div className="mt-4 pt-3 border-t border-gray-100">
+              <p className="px-3 mb-1 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
+                Administracao
+              </p>
+              <ul className="space-y-0.5">
+                {adminNavItems.map((item) => (
+                  <li key={item.href}>
+                    <Link
+                      href={item.href}
+                      onClick={onClose}
+                      className={`
+                        flex items-center gap-3 px-3 py-2 rounded text-sm font-medium transition-colors
+                        ${
+                          isActive(item.href)
+                            ? 'bg-green-50 text-green-700 border border-green-100'
+                            : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                        }
+                      `}
+                    >
+                      <span className={isActive(item.href) ? 'text-green-600' : 'text-gray-400'}>
+                        {item.icon}
+                      </span>
+                      {item.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </nav>
 
         {/* Footer */}
@@ -137,7 +216,7 @@ export default function Sidebar({ mobileOpen, onClose }: SidebarProps) {
 }
 
 // ---------------------------------------------------------------------------
-// Mobile hamburger button — exported separately for use in Header
+// Mobile hamburger button — exportado separadamente para o Header
 // ---------------------------------------------------------------------------
 
 export function HamburgerButton({ onClick }: { onClick: () => void }) {

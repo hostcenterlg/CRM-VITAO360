@@ -1,24 +1,61 @@
-// API client for CRM VITAO360 — all functions typed, BRL-ready
+// API client para CRM VITAO360 — tipado, auth via JWT, BRL-ready
+
+import { getToken } from '@/lib/auth';
 
 const BASE_URL =
   process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8000';
 
 // ---------------------------------------------------------------------------
-// Helpers
+// Helpers internos
 // ---------------------------------------------------------------------------
 
-async function fetchJson<T>(path: string): Promise<T> {
+async function fetchJson<T>(path: string, options?: RequestInit): Promise<T> {
+  const token = getToken();
+
+  const baseHeaders: Record<string, string> = {
+    'Content-Type': 'application/json',
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+  };
+
   const res = await fetch(`${BASE_URL}${path}`, {
     cache: 'no-store',
-    headers: { 'Content-Type': 'application/json' },
+    ...options,
+    headers: {
+      ...baseHeaders,
+      ...(options?.headers as Record<string, string> | undefined),
+    },
   });
 
+  // Token expirado — redireciona para login
+  if (res.status === 401) {
+    if (typeof window !== 'undefined') {
+      window.location.href = '/login';
+    }
+    throw new Error('Sessao expirada');
+  }
+
   if (!res.ok) {
-    throw new Error(`API error ${res.status} on ${path}`);
+    const body = await res.json().catch(() => ({})) as Record<string, unknown>;
+    throw new Error((body.detail as string) || `API error ${res.status}`);
   }
 
   return res.json() as Promise<T>;
 }
+
+async function mutateJson<T>(
+  path: string,
+  method: 'POST' | 'PUT' | 'DELETE',
+  body?: unknown
+): Promise<T> {
+  return fetchJson<T>(path, {
+    method,
+    body: body !== undefined ? JSON.stringify(body) : undefined,
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Utilitarios de formatacao
+// ---------------------------------------------------------------------------
 
 export function formatBRL(value: number): string {
   return new Intl.NumberFormat('pt-BR', {
@@ -176,9 +213,73 @@ export async function fetchCliente(cnpj: string): Promise<ClienteRegistro> {
 }
 
 // ---------------------------------------------------------------------------
-// Agenda endpoint
+// Agenda endpoints
 // ---------------------------------------------------------------------------
 
+interface AgendaConsultorResponse {
+  consultor: string;
+  data_agenda: string;
+  total: number;
+  itens: AgendaItem[];
+}
+
 export async function fetchAgenda(consultor: string): Promise<AgendaItem[]> {
-  return fetchJson<AgendaItem[]>(`/api/agenda/${encodeURIComponent(consultor)}`);
+  const res = await fetchJson<AgendaConsultorResponse>(
+    `/api/agenda/${encodeURIComponent(consultor)}`
+  );
+  return res.itens;
+}
+
+export async function gerarAgenda(): Promise<{ message: string }> {
+  return mutateJson<{ message: string }>('/api/agenda/gerar', 'POST');
+}
+
+// ---------------------------------------------------------------------------
+// Atendimentos (registros de log — Two-Base: R$ SEMPRE 0.00)
+// ---------------------------------------------------------------------------
+
+export interface AtendimentoPayload {
+  cnpj: string;
+  resultado: string;
+  descricao: string;
+}
+
+export interface AtendimentoResponse {
+  id: number;
+  cnpj: string;
+  resultado: string;
+  descricao: string;
+  data_registro: string;
+}
+
+export async function registrarAtendimento(
+  data: AtendimentoPayload
+): Promise<AtendimentoResponse> {
+  return mutateJson<AtendimentoResponse>('/api/atendimentos', 'POST', data);
+}
+
+// ---------------------------------------------------------------------------
+// Vendas (registros de venda — Two-Base: tem valor R$)
+// ---------------------------------------------------------------------------
+
+export interface VendaPayload {
+  cnpj: string;
+  data_pedido: string;
+  valor_pedido: number;
+  numero_pedido?: string;
+}
+
+export interface VendaResponse {
+  id: number;
+  cnpj: string;
+  data_pedido: string;
+  valor_pedido: number;
+  numero_pedido: string | null;
+  data_registro: string;
+}
+
+export async function registrarVenda(
+  data: VendaPayload
+): Promise<VendaResponse> {
+  return mutateJson<VendaResponse>('/api/vendas', 'POST', data);
 }
