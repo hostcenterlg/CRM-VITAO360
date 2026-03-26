@@ -176,7 +176,7 @@ export default function RedesPage() {
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetchJson<RedesResponse>('/api/redes');
+      const res = await fetchJson<RedesResponse>('/api/sinaleiro/redes');
       setData(res);
     } catch {
       setData(getMockRedes());

@@ -572,21 +572,23 @@ export interface UsuarioAdmin {
   nome: string;
   email: string;
   role: 'admin' | 'gerente' | 'consultor' | 'consultor_externo';
-  consultor_vinculado: string | null;
+  // O backend usa consultor_nome (DE-PARA: MANU, LARISSA, DAIANE, JULIO)
+  consultor_nome: string | null;
   ativo: boolean;
-  ultimo_login: string | null;
+  // ultimo_login nao e retornado pelo schema atual do backend
+  ultimo_login?: string | null;
 }
 
 export async function fetchUsuarios(): Promise<UsuarioAdmin[]> {
-  return fetchJson<UsuarioAdmin[]>('/api/usuarios');
+  return fetchJson<UsuarioAdmin[]>('/api/auth/users');
 }
 
-export async function criarUsuario(data: Omit<UsuarioAdmin, 'id' | 'ultimo_login'> & { senha: string }): Promise<UsuarioAdmin> {
-  return mutateJson<UsuarioAdmin>('/api/usuarios', 'POST', data);
+export async function criarUsuario(data: Omit<UsuarioAdmin, 'id' | 'ultimo_login'> & { senha: string; consultor_nome?: string | null }): Promise<UsuarioAdmin> {
+  return mutateJson<UsuarioAdmin>('/api/auth/users', 'POST', data);
 }
 
 export async function atualizarUsuario(id: number, data: Partial<UsuarioAdmin> & { senha?: string }): Promise<UsuarioAdmin> {
-  return mutateJson<UsuarioAdmin>(`/api/usuarios/${id}`, 'PATCH', data);
+  return mutateJson<UsuarioAdmin>(`/api/auth/users/${id}`, 'PATCH', data);
 }
 
 // ---------------------------------------------------------------------------
@@ -624,5 +626,5 @@ export interface RedesResponse {
 }
 
 export async function fetchRedes(): Promise<RedesResponse> {
-  return fetchJson<RedesResponse>('/api/redes');
+  return fetchJson<RedesResponse>('/api/sinaleiro/redes');
 }

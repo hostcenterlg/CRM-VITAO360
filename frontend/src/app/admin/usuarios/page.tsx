@@ -15,9 +15,10 @@ interface Usuario {
   nome: string;
   email: string;
   role: RoleUsuario;
-  consultor_vinculado: string | null;
+  // Backend usa consultor_nome (DE-PARA: MANU, LARISSA, DAIANE, JULIO)
+  consultor_nome: string | null;
   ativo: boolean;
-  ultimo_login: string | null;
+  ultimo_login?: string | null;
 }
 
 interface UsuarioForm {
@@ -25,7 +26,7 @@ interface UsuarioForm {
   email: string;
   senha: string;
   role: RoleUsuario;
-  consultor_vinculado: string;
+  consultor_nome: string;
   ativo: boolean;
 }
 
@@ -34,11 +35,11 @@ interface UsuarioForm {
 // ---------------------------------------------------------------------------
 
 const MOCK_USUARIOS: Usuario[] = [
-  { id: 1, nome: 'Leandro Vitao',    email: 'leandro@vitao.com.br',  role: 'admin',              consultor_vinculado: null,      ativo: true,  ultimo_login: '2026-03-25T08:00:00' },
-  { id: 2, nome: 'Manu Ditzel',      email: 'manu@vitao.com.br',     role: 'consultor',          consultor_vinculado: 'MANU',    ativo: true,  ultimo_login: '2026-03-25T07:45:00' },
-  { id: 3, nome: 'Larissa Padilha',  email: 'larissa@vitao.com.br',  role: 'consultor',          consultor_vinculado: 'LARISSA', ativo: true,  ultimo_login: '2026-03-25T07:30:00' },
-  { id: 4, nome: 'Daiane Stavicki',  email: 'daiane@vitao.com.br',   role: 'gerente',            consultor_vinculado: 'DAIANE',  ativo: true,  ultimo_login: '2026-03-24T18:00:00' },
-  { id: 5, nome: 'Julio Gadret',     email: 'julio@vitao.com.br',    role: 'consultor_externo',  consultor_vinculado: 'JULIO',   ativo: true,  ultimo_login: '2026-03-23T14:00:00' },
+  { id: 1, nome: 'Leandro Vitao',    email: 'leandro@vitao.com.br',  role: 'admin',              consultor_nome: null,      ativo: true,  ultimo_login: '2026-03-25T08:00:00' },
+  { id: 2, nome: 'Manu Ditzel',      email: 'manu@vitao.com.br',     role: 'consultor',          consultor_nome: 'MANU',    ativo: true,  ultimo_login: '2026-03-25T07:45:00' },
+  { id: 3, nome: 'Larissa Padilha',  email: 'larissa@vitao.com.br',  role: 'consultor',          consultor_nome: 'LARISSA', ativo: true,  ultimo_login: '2026-03-25T07:30:00' },
+  { id: 4, nome: 'Daiane Stavicki',  email: 'daiane@vitao.com.br',   role: 'gerente',            consultor_nome: 'DAIANE',  ativo: true,  ultimo_login: '2026-03-24T18:00:00' },
+  { id: 5, nome: 'Julio Gadret',     email: 'julio@vitao.com.br',    role: 'consultor_externo',  consultor_nome: 'JULIO',   ativo: true,  ultimo_login: '2026-03-23T14:00:00' },
 ];
 
 // ---------------------------------------------------------------------------
@@ -94,7 +95,7 @@ function ModalUsuario({ usuario, onClose, onSalvar }: ModalUsuarioProps) {
     email: usuario?.email ?? '',
     senha: '',
     role: usuario?.role ?? 'consultor',
-    consultor_vinculado: usuario?.consultor_vinculado ?? '',
+    consultor_nome: usuario?.consultor_nome ?? '',
     ativo: usuario?.ativo ?? true,
   });
   const [loading, setLoading] = useState(false);
@@ -213,8 +214,8 @@ function ModalUsuario({ usuario, onClose, onSalvar }: ModalUsuarioProps) {
                 Consultor Vinculado
               </label>
               <select
-                value={form.consultor_vinculado}
-                onChange={e => setForm(f => ({ ...f, consultor_vinculado: e.target.value }))}
+                value={form.consultor_nome}
+                onChange={e => setForm(f => ({ ...f, consultor_nome: e.target.value }))}
                 className="w-full h-9 px-3 text-xs border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-green-500 bg-white"
               >
                 <option value="">Nenhum</option>
@@ -285,7 +286,7 @@ export default function AdminUsuariosPage() {
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const data = await fetchJson<Usuario[]>('/api/usuarios');
+      const data = await fetchJson<Usuario[]>('/api/auth/users');
       setUsuarios(data);
     } catch {
       setUsuarios(MOCK_USUARIOS);
@@ -298,13 +299,13 @@ export default function AdminUsuariosPage() {
 
   async function handleSalvar(form: UsuarioForm, id?: number) {
     if (id) {
-      await fetchJson(`/api/usuarios/${id}`, {
+      await fetchJson(`/api/auth/users/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
       });
     } else {
-      await fetchJson('/api/usuarios', {
+      await fetchJson('/api/auth/users', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
@@ -315,7 +316,7 @@ export default function AdminUsuariosPage() {
 
   async function handleToggleAtivo(usuario: Usuario) {
     try {
-      await fetchJson(`/api/usuarios/${usuario.id}`, {
+      await fetchJson(`/api/auth/users/${usuario.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ativo: !usuario.ativo }),
@@ -329,7 +330,7 @@ export default function AdminUsuariosPage() {
     }
   }
 
-  function formatUltimoLogin(iso: string | null) {
+  function formatUltimoLogin(iso: string | null | undefined) {
     if (!iso) return 'Nunca';
     const d = new Date(iso);
     return d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: '2-digit' })
@@ -410,7 +411,7 @@ export default function AdminUsuariosPage() {
                         <RoleBadgeAdmin role={u.role} />
                       </td>
                       <td className="px-4 py-3 text-xs text-gray-600">
-                        {u.consultor_vinculado ?? <span className="text-gray-300">—</span>}
+                        {u.consultor_nome ?? <span className="text-gray-300">—</span>}
                       </td>
                       <td className="px-4 py-3">
                         <AtivoToggle ativo={u.ativo} onChange={() => handleToggleAtivo(u)} />

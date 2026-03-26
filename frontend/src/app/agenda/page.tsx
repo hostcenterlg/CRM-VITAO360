@@ -578,7 +578,7 @@ export default function AgendaPage() {
               }`}
             >
               <option value="">Sinaleiro</option>
-              {['VERDE', 'AMARELO', 'VERMELHO', 'ROXO'].map((s) => (
+              {['VERDE', 'AMARELO', 'LARANJA', 'VERMELHO', 'ROXO'].map((s) => (
                 <option key={s} value={s}>{s}</option>
               ))}
             </select>
