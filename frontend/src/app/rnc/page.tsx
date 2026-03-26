@@ -1,42 +1,13 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { fetchJson } from '@/lib/api-internal';
+import { fetchRNC, criarRNC, RNCItem, RNCResumo, RNCResponse, RNCPayload } from '@/lib/api';
 
 // ---------------------------------------------------------------------------
-// Tipos
+// Tipos locais (espelham os do api.ts)
 // ---------------------------------------------------------------------------
 
 type StatusRNC = 'ABERTO' | 'EM_ANDAMENTO' | 'RESOLVIDO' | 'ENCERRADO';
-
-interface RNCItem {
-  id: number;
-  data_abertura: string;
-  cliente_nome: string;
-  cliente_cnpj: string;
-  tipo_problema: string;
-  area_responsavel: string;
-  status: StatusRNC;
-  dias_aberto: number;
-  sla_status: 'DENTRO' | 'ATENCAO' | 'VIOLADO';
-  descricao: string;
-  consultor?: string;
-}
-
-interface RNCResumo {
-  total: number;
-  resolvido: number;
-  resolvido_pct: number;
-  em_andamento: number;
-  em_andamento_pct: number;
-  pendente: number;
-  pendente_pct: number;
-}
-
-interface RNCResponse {
-  resumo: RNCResumo;
-  itens: RNCItem[];
-}
 
 interface NovaRNCForm {
   cliente_cnpj: string;
@@ -50,14 +21,14 @@ interface NovaRNCForm {
 // ---------------------------------------------------------------------------
 
 const TIPOS_PROBLEMA = [
-  { value: 'ATRASO_ENTREGA', label: 'Atraso na Entrega', area: 'Expedicao' },
-  { value: 'PRODUTO_AVARIADO', label: 'Produto Avariado', area: 'Qualidade' },
-  { value: 'ERRO_SEPARACAO', label: 'Erro de Separacao', area: 'Expedicao' },
-  { value: 'ERRO_NOTA_FISCAL', label: 'Erro na Nota Fiscal', area: 'Faturamento' },
-  { value: 'DIVERGENCIA_PRECO', label: 'Divergencia de Preco', area: 'Faturamento' },
-  { value: 'COBRANCA_INDEVIDA', label: 'Cobranca Indevida', area: 'Financeiro' },
-  { value: 'RUPTURA_ESTOQUE', label: 'Ruptura de Estoque', area: 'Fabrica/PCP' },
-  { value: 'PROBLEMA_SISTEMA', label: 'Problema de Sistema', area: 'TI' },
+  { value: 'ATRASO_ENTREGA',    label: 'Atraso na Entrega',       area: 'Expedicao' },
+  { value: 'PRODUTO_AVARIADO',  label: 'Produto Avariado',         area: 'Qualidade' },
+  { value: 'ERRO_SEPARACAO',    label: 'Erro de Separacao',        area: 'Expedicao' },
+  { value: 'ERRO_NOTA_FISCAL',  label: 'Erro na Nota Fiscal',      area: 'Faturamento' },
+  { value: 'DIVERGENCIA_PRECO', label: 'Divergencia de Preco',     area: 'Faturamento' },
+  { value: 'COBRANCA_INDEVIDA', label: 'Cobranca Indevida',        area: 'Financeiro' },
+  { value: 'RUPTURA_ESTOQUE',   label: 'Ruptura de Estoque',       area: 'Fabrica/PCP' },
+  { value: 'PROBLEMA_SISTEMA',  label: 'Problema de Sistema',      area: 'TI' },
 ] as const;
 
 const STATUS_CONFIG: Record<StatusRNC, { label: string; bg: string; text: string }> = {
@@ -72,61 +43,6 @@ const SLA_CONFIG = {
   ATENCAO: { label: 'ATENCAO',  bg: '#FFC000', text: '#1a1a1a' },
   VIOLADO: { label: 'VIOLADO',  bg: '#FF0000', text: '#fff' },
 };
-
-// ---------------------------------------------------------------------------
-// Dados mock para quando a API ainda nao esta pronta
-// ---------------------------------------------------------------------------
-
-function getMockData(): RNCResponse {
-  return {
-    resumo: {
-      total: 135,
-      resolvido: 84,
-      resolvido_pct: 62,
-      em_andamento: 31,
-      em_andamento_pct: 23,
-      pendente: 20,
-      pendente_pct: 15,
-    },
-    itens: [
-      {
-        id: 1, data_abertura: '2026-03-25', cliente_nome: 'Distribuidora Ligeiro',
-        cliente_cnpj: '04067573000193', tipo_problema: 'ATRASO_ENTREGA',
-        area_responsavel: 'Expedicao', status: 'ABERTO', dias_aberto: 0,
-        sla_status: 'DENTRO', descricao: 'Pedido #12.456 nao chegou na data prevista.',
-        consultor: 'LARISSA',
-      },
-      {
-        id: 2, data_abertura: '2026-03-20', cliente_nome: 'Natural Shop',
-        cliente_cnpj: '12345678000100', tipo_problema: 'ERRO_NOTA_FISCAL',
-        area_responsavel: 'Faturamento', status: 'EM_ANDAMENTO', dias_aberto: 5,
-        sla_status: 'ATENCAO', descricao: 'Nota fiscal com CNPJ incorreto.',
-        consultor: 'LARISSA',
-      },
-      {
-        id: 3, data_abertura: '2026-03-15', cliente_nome: 'BioBom Ltda',
-        cliente_cnpj: '98765432000100', tipo_problema: 'PRODUTO_AVARIADO',
-        area_responsavel: 'Qualidade', status: 'RESOLVIDO', dias_aberto: 8,
-        sla_status: 'DENTRO', descricao: 'Caixas de caldo natural chegaram amassadas.',
-        consultor: 'MANU',
-      },
-      {
-        id: 4, data_abertura: '2026-03-10', cliente_nome: 'Verde Vida',
-        cliente_cnpj: '11122233000155', tipo_problema: 'COBRANCA_INDEVIDA',
-        area_responsavel: 'Financeiro', status: 'ABERTO', dias_aberto: 15,
-        sla_status: 'VIOLADO', descricao: 'Cobranca duplicada na fatura de marco.',
-        consultor: 'DAIANE',
-      },
-      {
-        id: 5, data_abertura: '2026-03-08', cliente_nome: 'Fitland SP 01',
-        cliente_cnpj: '22233344000177', tipo_problema: 'RUPTURA_ESTOQUE',
-        area_responsavel: 'Fabrica/PCP', status: 'EM_ANDAMENTO', dias_aberto: 17,
-        sla_status: 'VIOLADO', descricao: 'Produto granola tradicional sem estoque ha 3 semanas.',
-        consultor: 'JULIO',
-      },
-    ],
-  };
-}
 
 // ---------------------------------------------------------------------------
 // Componentes internos
@@ -171,6 +87,7 @@ function ModalNovaRNC({ onClose, onSalvar }: ModalNovaRNCProps) {
   });
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Partial<Record<keyof NovaRNCForm, string>>>({});
+  const [apiError, setApiError] = useState<string | null>(null);
 
   const areaAuto = TIPOS_PROBLEMA.find(t => t.value === form.tipo_problema)?.area ?? '';
 
@@ -187,11 +104,12 @@ function ModalNovaRNC({ onClose, onSalvar }: ModalNovaRNCProps) {
     e.preventDefault();
     if (!validate()) return;
     setLoading(true);
+    setApiError(null);
     try {
       await onSalvar(form);
       onClose();
-    } catch {
-      // erro tratado externamente
+    } catch (err: unknown) {
+      setApiError(err instanceof Error ? err.message : 'Erro ao salvar RNC');
     } finally {
       setLoading(false);
     }
@@ -232,6 +150,12 @@ function ModalNovaRNC({ onClose, onSalvar }: ModalNovaRNCProps) {
 
         {/* Body */}
         <form onSubmit={handleSubmit} className="px-6 py-5 space-y-4">
+          {apiError && (
+            <div role="alert" className="px-3 py-2 bg-red-50 border border-red-200 rounded text-xs text-red-700">
+              {apiError}
+            </div>
+          )}
+
           {/* CNPJ */}
           <div>
             <label className="block text-xs font-semibold text-gray-700 mb-1 uppercase tracking-wide">
@@ -336,6 +260,7 @@ function ModalNovaRNC({ onClose, onSalvar }: ModalNovaRNCProps) {
 export default function RNCPage() {
   const [data, setData] = useState<RNCResponse | null>(null);
   const [loading, setLoading] = useState(true);
+  const [apiError, setApiError] = useState<string | null>(null);
   const [filtroStatus, setFiltroStatus] = useState('');
   const [filtroTipo, setFiltroTipo] = useState('');
   const [filtroConsultor, setFiltroConsultor] = useState('');
@@ -343,16 +268,17 @@ export default function RNCPage() {
 
   const load = useCallback(async () => {
     setLoading(true);
+    setApiError(null);
     try {
-      const qs = new URLSearchParams();
-      if (filtroStatus) qs.set('status', filtroStatus);
-      if (filtroTipo) qs.set('tipo', filtroTipo);
-      if (filtroConsultor) qs.set('consultor', filtroConsultor);
-      const res = await fetchJson<RNCResponse>(`/api/rnc?${qs.toString()}`);
+      const res = await fetchRNC({
+        status: filtroStatus || undefined,
+        tipo: filtroTipo || undefined,
+        consultor: filtroConsultor || undefined,
+      });
       setData(res);
-    } catch {
-      // API indisponivel — usar dados mock
-      setData(getMockData());
+    } catch (err: unknown) {
+      setApiError(err instanceof Error ? err.message : 'Erro ao carregar RNCs');
+      setData(null);
     } finally {
       setLoading(false);
     }
@@ -360,22 +286,17 @@ export default function RNCPage() {
 
   useEffect(() => { void load(); }, [load]);
 
-  const itens = data?.itens ?? [];
-  const resumo = data?.resumo;
-
-  const itensFiltrados = itens.filter(item => {
-    if (filtroStatus && item.status !== filtroStatus) return false;
-    if (filtroTipo && item.tipo_problema !== filtroTipo) return false;
-    if (filtroConsultor && item.consultor !== filtroConsultor) return false;
-    return true;
-  });
+  const itens: RNCItem[] = data?.itens ?? [];
+  const resumo: RNCResumo | undefined = data?.resumo;
 
   async function handleSalvarRNC(form: NovaRNCForm) {
-    await fetchJson('/api/rnc', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form),
-    });
+    const payload: RNCPayload = {
+      cliente_cnpj: form.cliente_cnpj.replace(/\D/g, '').padStart(14, '0'),
+      cliente_nome: form.cliente_nome || undefined,
+      tipo_problema: form.tipo_problema,
+      descricao: form.descricao,
+    };
+    await criarRNC(payload);
     await load();
   }
 
@@ -412,23 +333,33 @@ export default function RNCPage() {
         </button>
       </div>
 
+      {/* Erro de API */}
+      {apiError && (
+        <div role="alert" className="p-3 bg-red-50 border border-red-200 rounded-lg text-xs text-red-700">
+          {apiError}
+          <button type="button" onClick={() => void load()} className="ml-2 underline">
+            Tentar novamente
+          </button>
+        </div>
+      )}
+
       {/* Cards resumo */}
       {resumo && (
         <div className="grid grid-cols-3 gap-4">
           <div className="bg-white rounded-lg border border-gray-200 p-4">
             <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">Resolvido</p>
             <p className="text-2xl font-bold" style={{ color: '#00B050' }}>{resumo.resolvido}</p>
-            <p className="text-xs text-gray-500 mt-1">{resumo.resolvido_pct}% do total</p>
+            <p className="text-xs text-gray-500 mt-1">{resumo.resolvido_pct.toFixed(0)}% do total</p>
           </div>
           <div className="bg-white rounded-lg border border-gray-200 p-4">
             <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">Em Andamento</p>
             <p className="text-2xl font-bold" style={{ color: '#FFC000' }}>{resumo.em_andamento}</p>
-            <p className="text-xs text-gray-500 mt-1">{resumo.em_andamento_pct}% do total</p>
+            <p className="text-xs text-gray-500 mt-1">{resumo.em_andamento_pct.toFixed(0)}% do total</p>
           </div>
           <div className="bg-white rounded-lg border border-gray-200 p-4">
             <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">Pendente</p>
             <p className="text-2xl font-bold" style={{ color: '#FF0000' }}>{resumo.pendente}</p>
-            <p className="text-xs text-gray-500 mt-1">{resumo.pendente_pct}% do total</p>
+            <p className="text-xs text-gray-500 mt-1">{resumo.pendente_pct.toFixed(0)}% do total</p>
           </div>
         </div>
       )}
@@ -508,14 +439,16 @@ export default function RNCPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {itensFiltrados.length === 0 ? (
+                {itens.length === 0 ? (
                   <tr>
                     <td colSpan={8} className="px-4 py-10 text-center text-xs text-gray-400">
-                      Nenhuma RNC encontrada com os filtros aplicados.
+                      {apiError
+                        ? 'Erro ao carregar dados. Tente novamente.'
+                        : 'Nenhuma RNC encontrada com os filtros aplicados.'}
                     </td>
                   </tr>
                 ) : (
-                  itensFiltrados.map(item => {
+                  itens.map(item => {
                     const rowBg =
                       item.sla_status === 'VIOLADO'
                         ? '#FEF2F2'
@@ -551,7 +484,8 @@ export default function RNCPage() {
               </tbody>
             </table>
             <div className="px-4 py-3 border-t border-gray-100 text-xs text-gray-500">
-              Mostrando {itensFiltrados.length} de {itens.length} RNCs
+              Mostrando {itens.length} RNC{itens.length !== 1 ? 's' : ''}
+              {resumo ? ` de ${resumo.total} total` : ''}
             </div>
           </div>
         )}

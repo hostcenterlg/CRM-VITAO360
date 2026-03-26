@@ -13,6 +13,8 @@ Routers registrados:
   /api/atendimentos — Atendimentos e log de interacoes
   /api/sinaleiro   — Saude de clientes, penetracao de redes, recalculo batch
   /api/redes       — Listagem detalhada de redes com lojas e indicadores
+  /api/motor       — Regras do Motor de Inteligencia Comercial (read-only, admin)
+  /api/rnc         — Registros de Nao Conformidade (CRUD + ciclo de vida)
 
 Startup:
   - Cria tabelas no SQLite se nao existirem (sem Alembic por ora)
@@ -36,8 +38,10 @@ from backend.app.api.routes_atendimentos import router as atendimentos_router
 from backend.app.api.routes_auth import router as auth_router
 from backend.app.api.routes_clientes import router as clientes_router
 from backend.app.api.routes_dashboard import router as dashboard_router
+from backend.app.api.routes_motor import router as motor_router
 from backend.app.api.routes_projecao import router as projecao_router
 from backend.app.api.routes_redes import router as redes_router
+from backend.app.api.routes_rnc import router as rnc_router
 from backend.app.api.routes_sinaleiro import router as sinaleiro_router
 from backend.app.api.routes_vendas import router as vendas_router
 from backend.app.database import Base, SessionLocal, engine
@@ -128,6 +132,8 @@ app.include_router(atendimentos_router)
 app.include_router(vendas_router)
 app.include_router(sinaleiro_router)
 app.include_router(redes_router)
+app.include_router(motor_router)
+app.include_router(rnc_router)
 
 
 # ---------------------------------------------------------------------------

@@ -176,7 +176,7 @@ export default function RedesPage() {
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetchJson<RedesResponse>('/api/sinaleiro/redes');
+      const res = await fetchJson<RedesResponse>('/api/redes');
       setData(res);
     } catch {
       setData(getMockRedes());
@@ -321,7 +321,7 @@ export default function RedesPage() {
                         <button
                           key={loja.cnpj}
                           type="button"
-                          onClick={() => router.push(`/clientes/${loja.cnpj}`)}
+                          onClick={() => router.push(`/carteira?busca=${loja.cnpj}`)}
                           className="w-full px-10 py-2 grid grid-cols-8 gap-3 items-center hover:bg-white transition-colors text-left focus:outline-none focus:ring-1 focus:ring-green-500 focus:ring-inset cursor-pointer"
                         >
                           <span className="col-span-2 text-[10px] font-mono text-gray-500">{loja.cnpj}</span>

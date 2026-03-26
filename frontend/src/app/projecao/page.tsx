@@ -3,10 +3,9 @@
 import { useEffect, useState } from 'react';
 import {
   fetchProjecao,
-  fetchProjecaoDetalhada,
+  fetchProjecaoConsultorDetalhe,
   Projecao,
-  ProjecaoDetalhada,
-  ProjecaoClienteItem,
+  ProjecaoConsultorDetalhe,
   formatBRL,
   formatPercent,
 } from '@/lib/api';
@@ -18,19 +17,16 @@ import {
 const BASELINE_2025 = 2_091_000;
 const META_2026 = 4_747_200;
 const PROJECAO_2026 = 3_377_120;
-const REALIZADO_Q1 = 415_904;
-
-const MESES_LABELS = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
 
 const CONSULTORES = ['MANU', 'LARISSA', 'DAIANE', 'JULIO'];
 
 export default function ProjecaoPage() {
   const [data, setData] = useState<Projecao | null>(null);
-  const [detalhada, setDetalhada] = useState<ProjecaoDetalhada | null>(null);
+  const [detalhe, setDetalhe] = useState<ProjecaoConsultorDetalhe | null>(null);
   const [loading, setLoading] = useState(true);
-  const [detalhadaLoading, setDetalhadaLoading] = useState(true);
+  const [detalheLoading, setDetalheLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [filtroConsultor, setFiltroConsultor] = useState<string>('');
+  const [filtroConsultor, setFiltroConsultor] = useState<string>('MANU');
 
   useEffect(() => {
     fetchProjecao()
@@ -40,20 +36,21 @@ export default function ProjecaoPage() {
   }, []);
 
   useEffect(() => {
-    setDetalhadaLoading(true);
-    fetchProjecaoDetalhada({ consultor: filtroConsultor || undefined })
-      .then(setDetalhada)
-      .catch(() => setDetalhada(null))
-      .finally(() => setDetalhadaLoading(false));
+    setDetalheLoading(true);
+    setDetalhe(null);
+    fetchProjecaoConsultorDetalhe(filtroConsultor)
+      .then(setDetalhe)
+      .catch(() => setDetalhe(null))
+      .finally(() => setDetalheLoading(false));
   }, [filtroConsultor]);
 
   const porConsultor = data?.por_consultor ?? [];
 
-  const pctQ1 = ((REALIZADO_Q1 / META_2026) * 100);
+  // Realizado Q1 vem do resumo da API
+  const realizadoYTD = data?.resumo.faturamento_realizado ?? 0;
+  const pctQ1 = META_2026 > 0 ? (realizadoYTD / META_2026) * 100 : 0;
   const pctQ1Color =
     pctQ1 >= 25 ? '#00B050' : pctQ1 >= 15 ? '#FFC000' : '#FF0000';
-
-  const clientes = detalhada?.por_cliente ?? [];
 
   return (
     <div className="space-y-6">
@@ -75,7 +72,10 @@ export default function ProjecaoPage() {
       <section>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {/* Baseline 2025 */}
-          <div className="bg-white rounded-lg border border-gray-200 p-4 flex flex-col gap-1 shadow-sm" style={{ borderLeftColor: '#2563eb', borderLeftWidth: '4px' }}>
+          <div
+            className="bg-white rounded-lg border border-gray-200 p-4 flex flex-col gap-1 shadow-sm"
+            style={{ borderLeftColor: '#2563eb', borderLeftWidth: '4px' }}
+          >
             <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
               Baseline 2025
             </p>
@@ -88,7 +88,10 @@ export default function ProjecaoPage() {
           </div>
 
           {/* Meta 2026 */}
-          <div className="bg-white rounded-lg border border-gray-200 p-4 flex flex-col gap-1 shadow-sm" style={{ borderLeftColor: '#00B050', borderLeftWidth: '4px' }}>
+          <div
+            className="bg-white rounded-lg border border-gray-200 p-4 flex flex-col gap-1 shadow-sm"
+            style={{ borderLeftColor: '#00B050', borderLeftWidth: '4px' }}
+          >
             <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
               Meta 2026
             </p>
@@ -96,11 +99,11 @@ export default function ProjecaoPage() {
               {formatBRL(META_2026)}
             </p>
             <p className="text-xs text-gray-400 mt-0.5">
-              +{formatPercent(((META_2026 - BASELINE_2025) / BASELINE_2025) * 100, 0)} vs Baseline 2025
+              +{formatPercent(((META_2026 - BASELINE_2025) / BASELINE_2025) * 100, 0)} vs Baseline
             </p>
           </div>
 
-          {/* Realizado Q1 */}
+          {/* Realizado YTD */}
           <div
             className="bg-white rounded-lg border border-gray-200 p-4 flex flex-col gap-1 shadow-sm"
             style={{ borderLeftColor: pctQ1Color, borderLeftWidth: '4px' }}
@@ -109,15 +112,18 @@ export default function ProjecaoPage() {
               Realizado 2026 YTD
             </p>
             <p className="text-2xl font-bold text-gray-900 leading-tight">
-              {formatBRL(REALIZADO_Q1)}
+              {loading ? '—' : formatBRL(realizadoYTD)}
             </p>
             <p className="text-xs mt-0.5" style={{ color: pctQ1Color }}>
-              {formatPercent(pctQ1)} da meta anual
+              {loading ? '—' : formatPercent(pctQ1)} da meta anual
             </p>
           </div>
 
           {/* Projecao 2026 */}
-          <div className="bg-white rounded-lg border border-gray-200 p-4 flex flex-col gap-1 shadow-sm" style={{ borderLeftColor: '#7c3aed', borderLeftWidth: '4px' }}>
+          <div
+            className="bg-white rounded-lg border border-gray-200 p-4 flex flex-col gap-1 shadow-sm"
+            style={{ borderLeftColor: '#7c3aed', borderLeftWidth: '4px' }}
+          >
             <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
               Projecao 2026
             </p>
@@ -125,25 +131,61 @@ export default function ProjecaoPage() {
               {formatBRL(PROJECAO_2026)}
             </p>
             <p className="text-xs text-gray-400 mt-0.5">
-              +{formatPercent(((PROJECAO_2026 - BASELINE_2025) / BASELINE_2025) * 100, 0)} vs Baseline 2025
+              +{formatPercent(((PROJECAO_2026 - BASELINE_2025) / BASELINE_2025) * 100, 0)} vs Baseline
             </p>
           </div>
         </div>
       </section>
 
-      {/* Grafico Realizado vs Meta por Mes */}
+      {/* Grafico Realizado vs Meta por Mes — por consultor */}
       <section className="bg-white rounded-lg border border-gray-200 p-5 shadow-sm">
-        <h2 className="text-sm font-semibold text-gray-700 mb-4">
-          Realizado vs Meta por Mes (2026)
-        </h2>
-        {detalhadaLoading ? (
+        <div className="flex items-center justify-between flex-wrap gap-3 mb-4">
+          <h2 className="text-sm font-semibold text-gray-700">
+            Evolucao Mensal por Consultor (2026)
+          </h2>
+          <div className="flex items-center gap-2">
+            <label className="text-xs text-gray-500 font-medium">Consultor:</label>
+            <select
+              value={filtroConsultor}
+              onChange={(e) => setFiltroConsultor(e.target.value)}
+              className="h-7 border border-gray-300 rounded px-2 text-xs text-gray-700 bg-white focus:outline-none focus:border-green-600"
+            >
+              {CONSULTORES.map((c) => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        {detalheLoading ? (
           <div className="h-48 flex items-center justify-center">
             <div className="text-sm text-gray-400 animate-pulse">Carregando grafico...</div>
           </div>
-        ) : detalhada?.por_mes?.length ? (
-          <GroupedBarChart data={detalhada.por_mes} />
+        ) : detalhe?.mensal?.length ? (
+          <GroupedBarChart data={detalhe.mensal} />
         ) : (
-          <MesesBarChart />
+          <div className="h-48 flex items-center justify-center text-sm text-gray-400">
+            Sem dados mensais para {filtroConsultor}
+          </div>
+        )}
+
+        {detalhe && (
+          <div className="mt-3 pt-3 border-t border-gray-100 flex flex-wrap gap-6 text-xs text-gray-600">
+            <span>
+              <span className="font-semibold">Realizado:</span>{' '}
+              {formatBRL(detalhe.faturamento_total)}
+            </span>
+            <span>
+              <span className="font-semibold">Meta:</span>{' '}
+              {formatBRL(detalhe.meta_total)}
+            </span>
+            <span style={{ color: detalhe.pct_alcancado >= 80 ? '#00B050' : detalhe.pct_alcancado >= 50 ? '#FFC000' : '#FF0000' }}>
+              <span className="font-semibold">% Atingido:</span>{' '}
+              {formatPercent(detalhe.pct_alcancado)}
+            </span>
+          </div>
         )}
       </section>
 
@@ -170,7 +212,7 @@ export default function ProjecaoPage() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="bg-gray-50 text-left">
-                  {['Consultor', 'Faturamento', 'Meta', '% Alcancado', 'Status'].map((h) => (
+                  {['Consultor', 'Faturamento', 'Meta', 'Pedidos', '% Alcancado', 'Status'].map((h) => (
                     <th
                       key={h}
                       className="px-4 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide whitespace-nowrap"
@@ -204,6 +246,9 @@ export default function ProjecaoPage() {
                       </td>
                       <td className="px-4 py-3 font-mono text-gray-600 text-xs">
                         {formatBRL(row.meta)}
+                      </td>
+                      <td className="px-4 py-3 text-xs text-gray-600 text-center">
+                        {row.total_vendas.toLocaleString('pt-BR')}
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-2">
@@ -244,46 +289,6 @@ export default function ProjecaoPage() {
         )}
       </section>
 
-      {/* Tabela por Cliente */}
-      <section className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
-        <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between flex-wrap gap-3">
-          <h2 className="text-sm font-semibold text-gray-700">
-            Meta vs Realizado por Cliente
-          </h2>
-
-          {/* Filtro consultor */}
-          <div className="flex items-center gap-2">
-            <label className="text-xs text-gray-500 font-medium">Consultor:</label>
-            <select
-              value={filtroConsultor}
-              onChange={(e) => setFiltroConsultor(e.target.value)}
-              className="h-7 border border-gray-300 rounded px-2 text-xs text-gray-700 bg-white focus:outline-none focus:border-green-600"
-            >
-              <option value="">Todos</option>
-              {CONSULTORES.map((c) => (
-                <option key={c} value={c}>
-                  {c}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-
-        {detalhadaLoading ? (
-          <div className="p-4 space-y-3">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="h-4 bg-gray-100 animate-pulse rounded" />
-            ))}
-          </div>
-        ) : clientes.length === 0 ? (
-          <div className="py-10 text-center text-gray-400 text-sm">
-            Sem dados de clientes disponíveis
-          </div>
-        ) : (
-          <ClienteProjecaoTable itens={clientes} />
-        )}
-      </section>
-
       {/* Notas */}
       <div className="bg-blue-50 border border-blue-100 rounded-lg p-4 text-xs text-blue-700 space-y-1">
         <p>
@@ -305,13 +310,13 @@ export default function ProjecaoPage() {
 // ---------------------------------------------------------------------------
 
 interface MesData {
-  mes: string;
+  mes_referencia: string;
+  faturamento: number;
   meta: number;
-  realizado: number;
 }
 
 function GroupedBarChart({ data }: { data: MesData[] }) {
-  const maxVal = Math.max(...data.flatMap((d) => [d.meta, d.realizado]), 1);
+  const maxVal = Math.max(...data.flatMap((d) => [d.meta, d.faturamento]), 1);
   const CHART_H = 160;
   const BAR_W = 14;
   const GAP = 4;
@@ -356,13 +361,18 @@ function GroupedBarChart({ data }: { data: MesData[] }) {
         {data.map((d, i) => {
           const x = 32 + i * GROUP_W;
           const metaH = maxVal > 0 ? (d.meta / maxVal) * CHART_H : 0;
-          const realH = maxVal > 0 ? (d.realizado / maxVal) * CHART_H : 0;
-          const pct = d.meta > 0 ? (d.realizado / d.meta) * 100 : 0;
+          const realH = maxVal > 0 ? (d.faturamento / maxVal) * CHART_H : 0;
+          const pct = d.meta > 0 ? (d.faturamento / d.meta) * 100 : 0;
           const barColor =
             pct >= 80 ? '#00B050' : pct >= 50 ? '#FFC000' : '#FF4500';
 
+          // Exibe o mes no formato curto (ex: "2026-01" -> "Jan")
+          const MESES_LABELS = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+          const mesNum = parseInt(d.mes_referencia.split('-')[1] ?? '1', 10) - 1;
+          const mesLabel = MESES_LABELS[mesNum] ?? d.mes_referencia;
+
           return (
-            <g key={d.mes}>
+            <g key={d.mes_referencia}>
               {/* Meta bar (background) */}
               <rect
                 x={x}
@@ -389,7 +399,7 @@ function GroupedBarChart({ data }: { data: MesData[] }) {
                 fontSize="8"
                 fill="#6B7280"
               >
-                {d.mes.substring(0, 3)}
+                {mesLabel}
               </text>
               {/* Pct label */}
               {pct > 0 && (
@@ -420,126 +430,6 @@ function GroupedBarChart({ data }: { data: MesData[] }) {
           </text>
         </g>
       </svg>
-    </div>
-  );
-}
-
-// Fallback chart quando nao ha dados mensais da API
-function MesesBarChart() {
-  const metasMensais = META_2026 / 12;
-  const realizadoPorMes = [
-    REALIZADO_Q1 * 0.33,
-    REALIZADO_Q1 * 0.35,
-    REALIZADO_Q1 * 0.32,
-    0, 0, 0, 0, 0, 0, 0, 0, 0,
-  ];
-
-  const mockData = MESES_LABELS.map((mes, i) => ({
-    mes,
-    meta: metasMensais,
-    realizado: realizadoPorMes[i] ?? 0,
-  }));
-
-  return <GroupedBarChart data={mockData} />;
-}
-
-// ---------------------------------------------------------------------------
-// ClienteProjecaoTable
-// ---------------------------------------------------------------------------
-
-function ClienteProjecaoTable({ itens }: { itens: ProjecaoClienteItem[] }) {
-  function formatCnpj(cnpj: string): string {
-    const d = cnpj.replace(/\D/g, '').padStart(14, '0');
-    if (d.length !== 14) return cnpj;
-    return `${d.slice(0, 2)}.${d.slice(2, 5)}.${d.slice(5, 8)}/${d.slice(8, 12)}-${d.slice(12)}`;
-  }
-
-  return (
-    <div className="overflow-x-auto scrollbar-thin">
-      <table className="w-full text-sm" role="table">
-        <thead>
-          <tr className="bg-gray-50">
-            {['CNPJ', 'Cliente', 'Consultor', 'Meta Anual', 'Realizado', '% Ating', 'Gap', 'Status Meta'].map(
-              (h) => (
-                <th
-                  key={h}
-                  scope="col"
-                  className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide whitespace-nowrap"
-                >
-                  {h}
-                </th>
-              )
-            )}
-          </tr>
-        </thead>
-        <tbody>
-          {itens.map((item) => {
-            const pct = item.pct_atingimento;
-            const pc = pct >= 80 ? '#00B050' : pct >= 50 ? '#FFC000' : '#FF0000';
-            const isNegGap = item.gap < 0;
-
-            return (
-              <tr
-                key={item.cnpj}
-                className="border-t border-gray-50 hover:bg-gray-50 transition-colors"
-              >
-                <td className="px-3 py-2.5 font-mono text-[11px] text-gray-400 whitespace-nowrap">
-                  {formatCnpj(item.cnpj)}
-                </td>
-                <td className="px-3 py-2.5 max-w-[180px]">
-                  <p className="font-medium text-gray-900 truncate text-xs">
-                    {item.nome_fantasia}
-                  </p>
-                </td>
-                <td className="px-3 py-2.5 text-xs text-gray-700 whitespace-nowrap">
-                  {item.consultor}
-                </td>
-                <td className="px-3 py-2.5 font-mono text-xs text-gray-700 whitespace-nowrap">
-                  {formatBRL(item.meta_anual)}
-                </td>
-                <td className="px-3 py-2.5 font-mono text-xs text-gray-800 whitespace-nowrap font-medium">
-                  {formatBRL(item.realizado)}
-                </td>
-                <td className="px-3 py-2.5 whitespace-nowrap">
-                  <div className="flex items-center gap-1.5">
-                    <div className="w-12 bg-gray-100 rounded-full h-1.5 overflow-hidden">
-                      <div
-                        className="h-full rounded-full transition-all duration-500"
-                        style={{
-                          width: `${Math.min(100, pct)}%`,
-                          backgroundColor: pc,
-                        }}
-                      />
-                    </div>
-                    <span className="text-xs font-semibold" style={{ color: pc }}>
-                      {formatPercent(pct)}
-                    </span>
-                  </div>
-                </td>
-                <td
-                  className="px-3 py-2.5 font-mono text-xs whitespace-nowrap font-medium"
-                  style={{ color: isNegGap ? '#DC2626' : '#00B050' }}
-                >
-                  {isNegGap
-                    ? `(${formatBRL(Math.abs(item.gap))})`
-                    : `+${formatBRL(item.gap)}`}
-                </td>
-                <td className="px-3 py-2.5 whitespace-nowrap">
-                  <span
-                    className="text-[10px] font-bold px-2 py-0.5 rounded uppercase"
-                    style={{
-                      backgroundColor: pc + '20',
-                      color: pc,
-                    }}
-                  >
-                    {item.status_meta || (pct >= 100 ? 'META ATINGIDA' : pct >= 50 ? 'EM ANDAMENTO' : 'CRITICO')}
-                  </span>
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
     </div>
   );
 }

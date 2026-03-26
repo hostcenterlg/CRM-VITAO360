@@ -1,7 +1,12 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { fetchJson } from '@/lib/api-internal';
+import {
+  fetchUsuarios,
+  criarUsuario,
+  atualizarUsuario,
+  UsuarioAdmin,
+} from '@/lib/api';
 
 // ---------------------------------------------------------------------------
 // Admin Usuarios — CRUD de usuarios do sistema
@@ -9,17 +14,6 @@ import { fetchJson } from '@/lib/api-internal';
 // ---------------------------------------------------------------------------
 
 type RoleUsuario = 'admin' | 'gerente' | 'consultor' | 'consultor_externo';
-
-interface Usuario {
-  id: number;
-  nome: string;
-  email: string;
-  role: RoleUsuario;
-  // Backend usa consultor_nome (DE-PARA: MANU, LARISSA, DAIANE, JULIO)
-  consultor_nome: string | null;
-  ativo: boolean;
-  ultimo_login?: string | null;
-}
 
 interface UsuarioForm {
   nome: string;
@@ -29,18 +23,6 @@ interface UsuarioForm {
   consultor_nome: string;
   ativo: boolean;
 }
-
-// ---------------------------------------------------------------------------
-// Mock data
-// ---------------------------------------------------------------------------
-
-const MOCK_USUARIOS: Usuario[] = [
-  { id: 1, nome: 'Leandro Vitao',    email: 'leandro@vitao.com.br',  role: 'admin',              consultor_nome: null,      ativo: true,  ultimo_login: '2026-03-25T08:00:00' },
-  { id: 2, nome: 'Manu Ditzel',      email: 'manu@vitao.com.br',     role: 'consultor',          consultor_nome: 'MANU',    ativo: true,  ultimo_login: '2026-03-25T07:45:00' },
-  { id: 3, nome: 'Larissa Padilha',  email: 'larissa@vitao.com.br',  role: 'consultor',          consultor_nome: 'LARISSA', ativo: true,  ultimo_login: '2026-03-25T07:30:00' },
-  { id: 4, nome: 'Daiane Stavicki',  email: 'daiane@vitao.com.br',   role: 'gerente',            consultor_nome: 'DAIANE',  ativo: true,  ultimo_login: '2026-03-24T18:00:00' },
-  { id: 5, nome: 'Julio Gadret',     email: 'julio@vitao.com.br',    role: 'consultor_externo',  consultor_nome: 'JULIO',   ativo: true,  ultimo_login: '2026-03-23T14:00:00' },
-];
 
 // ---------------------------------------------------------------------------
 // Constantes
@@ -62,8 +44,10 @@ const CONSULTORES = ['MANU', 'LARISSA', 'DAIANE', 'JULIO'];
 function RoleBadgeAdmin({ role }: { role: RoleUsuario }) {
   const cfg = ROLE_CONFIG[role] ?? { label: role, bg: '#e5e7eb', text: '#374151' };
   return (
-    <span className="inline-flex items-center px-2 py-0.5 text-[10px] font-semibold rounded uppercase"
-      style={{ backgroundColor: cfg.bg, color: cfg.text }}>
+    <span
+      className="inline-flex items-center px-2 py-0.5 text-[10px] font-semibold rounded uppercase"
+      style={{ backgroundColor: cfg.bg, color: cfg.text }}
+    >
       {cfg.label}
     </span>
   );
@@ -83,7 +67,7 @@ function AtivoToggle({ ativo, onChange }: { ativo: boolean; onChange: () => void
 }
 
 interface ModalUsuarioProps {
-  usuario: Usuario | null;
+  usuario: UsuarioAdmin | null;
   onClose: () => void;
   onSalvar: (form: UsuarioForm, id?: number) => Promise<void>;
 }
@@ -94,12 +78,13 @@ function ModalUsuario({ usuario, onClose, onSalvar }: ModalUsuarioProps) {
     nome: usuario?.nome ?? '',
     email: usuario?.email ?? '',
     senha: '',
-    role: usuario?.role ?? 'consultor',
+    role: (usuario?.role as RoleUsuario) ?? 'consultor',
     consultor_nome: usuario?.consultor_nome ?? '',
     ativo: usuario?.ativo ?? true,
   });
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Partial<Record<keyof UsuarioForm, string>>>({});
+  const [apiError, setApiError] = useState<string | null>(null);
 
   function validate(): boolean {
     const e: Partial<Record<keyof UsuarioForm, string>> = {};
@@ -114,11 +99,12 @@ function ModalUsuario({ usuario, onClose, onSalvar }: ModalUsuarioProps) {
     e.preventDefault();
     if (!validate()) return;
     setLoading(true);
+    setApiError(null);
     try {
       await onSalvar(form, usuario?.id);
       onClose();
-    } catch {
-      // erro tratado externamente
+    } catch (err: unknown) {
+      setApiError(err instanceof Error ? err.message : 'Erro ao salvar usuario');
     } finally {
       setLoading(false);
     }
@@ -160,6 +146,12 @@ function ModalUsuario({ usuario, onClose, onSalvar }: ModalUsuarioProps) {
 
         {/* Body */}
         <form onSubmit={handleSubmit} className="px-6 py-5 space-y-4">
+          {apiError && (
+            <div role="alert" className="px-3 py-2 bg-red-50 border border-red-200 rounded text-xs text-red-700">
+              {apiError}
+            </div>
+          )}
+
           {/* Nome */}
           <div>
             <label className="block text-xs font-semibold text-gray-700 mb-1 uppercase tracking-wide">
@@ -279,17 +271,19 @@ function ModalUsuario({ usuario, onClose, onSalvar }: ModalUsuarioProps) {
 // ---------------------------------------------------------------------------
 
 export default function AdminUsuariosPage() {
-  const [usuarios, setUsuarios] = useState<Usuario[]>([]);
+  const [usuarios, setUsuarios] = useState<UsuarioAdmin[]>([]);
   const [loading, setLoading] = useState(true);
-  const [modalUsuario, setModalUsuario] = useState<Usuario | null | 'novo'>(null);
+  const [apiError, setApiError] = useState<string | null>(null);
+  const [modalUsuario, setModalUsuario] = useState<UsuarioAdmin | null | 'novo'>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
+    setApiError(null);
     try {
-      const data = await fetchJson<Usuario[]>('/api/auth/users');
+      const data = await fetchUsuarios();
       setUsuarios(data);
-    } catch {
-      setUsuarios(MOCK_USUARIOS);
+    } catch (err: unknown) {
+      setApiError(err instanceof Error ? err.message : 'Erro ao carregar usuarios');
     } finally {
       setLoading(false);
     }
@@ -299,28 +293,30 @@ export default function AdminUsuariosPage() {
 
   async function handleSalvar(form: UsuarioForm, id?: number) {
     if (id) {
-      await fetchJson(`/api/auth/users/${id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
+      await atualizarUsuario(id, {
+        nome: form.nome,
+        email: form.email,
+        role: form.role as UsuarioAdmin['role'],
+        consultor_nome: form.consultor_nome || null,
+        ativo: form.ativo,
+        ...(form.senha ? { senha: form.senha } : {}),
       });
     } else {
-      await fetchJson('/api/auth/users', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
+      await criarUsuario({
+        nome: form.nome,
+        email: form.email,
+        role: form.role as UsuarioAdmin['role'],
+        consultor_nome: form.consultor_nome || null,
+        ativo: form.ativo,
+        senha: form.senha,
       });
     }
     await load();
   }
 
-  async function handleToggleAtivo(usuario: Usuario) {
+  async function handleToggleAtivo(usuario: UsuarioAdmin) {
     try {
-      await fetchJson(`/api/auth/users/${usuario.id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ativo: !usuario.ativo }),
-      });
+      await atualizarUsuario(usuario.id, { ativo: !usuario.ativo });
       await load();
     } catch {
       // API indisponivel — atualizar localmente para demonstracao
@@ -361,6 +357,16 @@ export default function AdminUsuariosPage() {
         </button>
       </div>
 
+      {/* Erro */}
+      {apiError && (
+        <div role="alert" className="p-3 bg-red-50 border border-red-200 rounded-lg text-xs text-red-700">
+          {apiError}
+          <button type="button" onClick={() => void load()} className="ml-2 underline">
+            Tentar novamente
+          </button>
+        </div>
+      )}
+
       {/* Tabela */}
       <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
         {loading ? (
@@ -385,7 +391,7 @@ export default function AdminUsuariosPage() {
                 {usuarios.length === 0 ? (
                   <tr>
                     <td colSpan={7} className="px-4 py-10 text-center text-xs text-gray-400">
-                      Nenhum usuario cadastrado.
+                      {apiError ? 'Erro ao carregar usuarios.' : 'Nenhum usuario cadastrado.'}
                     </td>
                   </tr>
                 ) : (
@@ -408,13 +414,13 @@ export default function AdminUsuariosPage() {
                       </td>
                       <td className="px-4 py-3 text-xs text-gray-600 font-mono">{u.email}</td>
                       <td className="px-4 py-3">
-                        <RoleBadgeAdmin role={u.role} />
+                        <RoleBadgeAdmin role={u.role as RoleUsuario} />
                       </td>
                       <td className="px-4 py-3 text-xs text-gray-600">
                         {u.consultor_nome ?? <span className="text-gray-300">—</span>}
                       </td>
                       <td className="px-4 py-3">
-                        <AtivoToggle ativo={u.ativo} onChange={() => handleToggleAtivo(u)} />
+                        <AtivoToggle ativo={u.ativo} onChange={() => void handleToggleAtivo(u)} />
                       </td>
                       <td className="px-4 py-3 text-xs text-gray-500">{formatUltimoLogin(u.ultimo_login)}</td>
                       <td className="px-4 py-3">

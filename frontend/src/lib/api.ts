@@ -108,10 +108,11 @@ export interface Top10Cliente {
 
 export interface ProjecaoResumo {
   faturamento_realizado: number;
-  meta_q1: number;
-  pct_alcancado: number;
   baseline_2025: number;
   projecao_2026: number;
+  q1_2026_real: number;
+  pct_projecao: number;
+  fonte_dados: string;
 }
 
 export interface ProjecaoConsultor {
@@ -119,6 +120,7 @@ export interface ProjecaoConsultor {
   faturamento: number;
   meta: number;
   pct_alcancado: number;
+  total_vendas: number;
 }
 
 export interface Projecao {
@@ -166,11 +168,12 @@ export interface SinaleiroResponse {
   itens: SinaleiroItem[];
 }
 
-// Projecao por mes (grafico barras)
+// Projecao por mes (grafico barras) — retornado por /api/projecao/{consultor}
 export interface ProjecaoMes {
-  mes: string;
+  mes_referencia: string;
+  faturamento: number;
   meta: number;
-  realizado: number;
+  total_vendas: number;
 }
 
 export interface ProjecaoClienteItem {
@@ -182,6 +185,15 @@ export interface ProjecaoClienteItem {
   pct_atingimento: number;
   gap: number;
   status_meta: string;
+}
+
+// Detalhe mensal de um consultor
+export interface ProjecaoConsultorDetalhe {
+  consultor: string;
+  faturamento_total: number;
+  meta_total: number;
+  pct_alcancado: number;
+  mensal: ProjecaoMes[];
 }
 
 export interface ScoreBreakdown {
@@ -284,7 +296,7 @@ export async function fetchTop10(): Promise<Top10Cliente[]> {
 }
 
 export async function fetchProjecao(): Promise<Projecao> {
-  return fetchJson<Projecao>('/api/dashboard/projecao');
+  return fetchJson<Projecao>('/api/projecao');
 }
 
 export async function fetchPerformance(): Promise<PerformanceConsultor[]> {
@@ -316,24 +328,13 @@ export async function fetchSinaleiro(
 }
 
 // ---------------------------------------------------------------------------
-// Projecao por mes e por cliente
+// Projecao por mes (detalhe de um consultor)
 // ---------------------------------------------------------------------------
 
-export interface ProjecaoDetalhadaParams {
-  consultor?: string;
-}
-
-export interface ProjecaoDetalhada {
-  por_mes: ProjecaoMes[];
-  por_cliente: ProjecaoClienteItem[];
-}
-
-export async function fetchProjecaoDetalhada(
-  params: ProjecaoDetalhadaParams = {}
-): Promise<ProjecaoDetalhada> {
-  const qs = new URLSearchParams();
-  if (params.consultor) qs.set('consultor', params.consultor);
-  return fetchJson<ProjecaoDetalhada>(`/api/projecao/detalhada?${qs.toString()}`);
+export async function fetchProjecaoConsultorDetalhe(
+  consultor: string
+): Promise<ProjecaoConsultorDetalhe> {
+  return fetchJson<ProjecaoConsultorDetalhe>(`/api/projecao/${encodeURIComponent(consultor)}`);
 }
 
 // ---------------------------------------------------------------------------
@@ -626,5 +627,5 @@ export interface RedesResponse {
 }
 
 export async function fetchRedes(): Promise<RedesResponse> {
-  return fetchJson<RedesResponse>('/api/sinaleiro/redes');
+  return fetchJson<RedesResponse>('/api/redes');
 }
