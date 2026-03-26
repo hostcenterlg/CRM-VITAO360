@@ -1,23 +1,20 @@
 """
 CRM VITAO360 — Vercel Serverless Entry Point.
-
-Uses Mangum to adapt FastAPI ASGI app to AWS Lambda/Vercel handler.
-Database is created in /tmp on cold start and seeded from seed_data.json.
 """
 import os
 import sys
 from pathlib import Path
 
-# Project root
+# Ensure project root is in sys.path
 ROOT = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(ROOT))
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 
-# Force /tmp for SQLite on Vercel (read-only filesystem)
-if os.environ.get("VERCEL"):
-    os.environ["DATABASE_URL"] = "sqlite:////tmp/crm_vitao360.db"
+# Always use /tmp for SQLite on Vercel (filesystem is read-only except /tmp)
+os.environ.setdefault("DATABASE_URL", "sqlite:////tmp/crm_vitao360.db")
+os.environ.setdefault("JWT_SECRET", "vitao360-vercel-secret-2026")
 
-# Import after path setup
-from mangum import Mangum
-from backend.app.main import app
+from mangum import Mangum  # noqa: E402
+from backend.app.main import app  # noqa: E402
 
 handler = Mangum(app, lifespan="auto")
