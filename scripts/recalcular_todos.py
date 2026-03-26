@@ -216,10 +216,13 @@ def calcular_status_meta(meta_anual: Optional[float], realizado: Optional[float]
 # ---------------------------------------------------------------------------
 
 def carregar_realizados(cursor: sqlite3.Cursor) -> dict[str, float]:
-    """Soma valor_pedido por CNPJ na tabela vendas (Two-Base: apenas VENDA)."""
+    """Soma valor_pedido por CNPJ na tabela vendas para 2025 (Two-Base: apenas VENDA).
+    Filtra pelo ano 2025 para manter compatibilidade com o baseline R$ 2.091M.
+    """
     cursor.execute("""
         SELECT cnpj, SUM(valor_pedido)
         FROM vendas
+        WHERE strftime('%Y', data_pedido) = '2025'
         GROUP BY cnpj
     """)
     return {row[0]: row[1] or 0.0 for row in cursor.fetchall()}
