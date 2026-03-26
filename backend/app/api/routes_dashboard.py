@@ -301,6 +301,102 @@ def projecao(
     )
 
 
+# ---------------------------------------------------------------------------
+# Territorios por consultor — mapeamento fixo (dominio VITAO360)
+# ---------------------------------------------------------------------------
+
+_TERRITORIOS: dict[str, str] = {
+    "MANU":    "SC / PR / RS",
+    "LARISSA": "Resto do Brasil",
+    "DAIANE":  "Key Account / Redes",
+    "JULIO":   "Externo (RCA)",
+}
+
+# Meta 2026 proporcional ao baseline (distribuicao historica)
+_METAS_2026: dict[str, float] = {
+    "MANU":    693_000.0,   # ~33% do baseline R$2.091M
+    "LARISSA": 940_950.0,   # ~45%
+    "DAIANE":  300_000.0,   # ~14%
+    "JULIO":   156_150.0,   # ~8%
+}
+
+
+@router.get(
+    "/performance",
+    summary="Performance por consultor — KPIs de meta e faturamento",
+)
+def performance(
+    user: Usuario = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> list[dict]:
+    """
+    Retorna performance de cada consultor com:
+      - territorio: regiao de atuacao
+      - total_clientes: clientes na carteira (nao-ALUCINACAO)
+      - faturamento_real: soma de faturamento_total dos clientes REAL/SINTETICO
+      - meta_2026: meta anual 2026 (soma de meta_anual ou fallback proporcional)
+      - pct_atingimento: faturamento_real / meta_2026 * 100
+      - status: BOM (>=70%), ALERTA (40-69%), CRITICO (<40%)
+
+    Ordenacao: maior faturamento_real primeiro.
+
+    Requer autenticacao JWT.
+    """
+    consultores_alvo = list(_TERRITORIOS.keys())
+    resultado: list[dict] = []
+
+    for consultor in consultores_alvo:
+        total_clientes = db.scalar(
+            select(func.count())
+            .select_from(Cliente)
+            .where(
+                Cliente.consultor == consultor,
+                Cliente.classificacao_3tier != "ALUCINACAO",
+            )
+        ) or 0
+
+        fat_real = db.scalar(
+            select(func.coalesce(func.sum(Cliente.faturamento_total), 0.0))
+            .where(
+                Cliente.consultor == consultor,
+                Cliente.classificacao_3tier.in_(["REAL", "SINTETICO"]),
+            )
+        ) or 0.0
+
+        # Meta: soma das metas individuais; fallback ao _METAS_2026
+        meta_db = db.scalar(
+            select(func.coalesce(func.sum(Cliente.meta_anual), 0.0))
+            .where(Cliente.consultor == consultor)
+        ) or 0.0
+
+        meta_2026 = round(meta_db if meta_db > 0 else _METAS_2026.get(consultor, 0.0), 2)
+        fat_real = round(float(fat_real), 2)
+        pct = round(fat_real / meta_2026 * 100, 1) if meta_2026 > 0 else 0.0
+
+        if pct >= 70:
+            status = "BOM"
+        elif pct >= 40:
+            status = "ALERTA"
+        else:
+            status = "CRITICO"
+
+        resultado.append(
+            {
+                "consultor": consultor,
+                "territorio": _TERRITORIOS[consultor],
+                "total_clientes": total_clientes,
+                "faturamento_real": fat_real,
+                "meta_2026": meta_2026,
+                "pct_atingimento": pct,
+                "status": status,
+            }
+        )
+
+    # Ordenar: maior faturamento primeiro
+    resultado.sort(key=lambda x: x["faturamento_real"], reverse=True)
+    return resultado
+
+
 @router.get(
     "/funil",
     summary="Pipeline de clientes por estagio de funil",

@@ -12,6 +12,7 @@ Routers registrados:
   /api/vendas      — Registro e consulta de vendas (Two-Base: valor > 0)
   /api/atendimentos — Atendimentos e log de interacoes
   /api/sinaleiro   — Saude de clientes, penetracao de redes, recalculo batch
+  /api/redes       — Listagem detalhada de redes com lojas e indicadores
 
 Startup:
   - Cria tabelas no SQLite se nao existirem (sem Alembic por ora)
@@ -36,6 +37,7 @@ from backend.app.api.routes_auth import router as auth_router
 from backend.app.api.routes_clientes import router as clientes_router
 from backend.app.api.routes_dashboard import router as dashboard_router
 from backend.app.api.routes_projecao import router as projecao_router
+from backend.app.api.routes_redes import router as redes_router
 from backend.app.api.routes_sinaleiro import router as sinaleiro_router
 from backend.app.api.routes_vendas import router as vendas_router
 from backend.app.database import Base, SessionLocal, engine
@@ -99,6 +101,9 @@ _ORIGINS = (
         "http://localhost:3000",
         "http://127.0.0.1:3000",
         "http://localhost:3001",
+        # Vercel deployments
+        "https://frontend-one-liart-94.vercel.app",
+        "https://frontend-hostcenterlg-9104s-projects.vercel.app",
     ]
 )
 
@@ -122,6 +127,7 @@ app.include_router(projecao_router)
 app.include_router(atendimentos_router)
 app.include_router(vendas_router)
 app.include_router(sinaleiro_router)
+app.include_router(redes_router)
 
 
 # ---------------------------------------------------------------------------
