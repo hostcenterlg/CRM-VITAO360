@@ -4,12 +4,14 @@ CRM VITAO360 — Rotas /api/dashboard
 Endpoints KPI para o painel gerencial:
 
   GET /api/dashboard/kpis          — indicadores principais
-  GET /api/dashboard/distribuicao  — distribuições (sinaleiro, situação, prioridade, consultor)
+  GET /api/dashboard/distribuicao  — distribuicoes (sinaleiro, situacao, prioridade, consultor)
   GET /api/dashboard/top10         — top 10 clientes por faturamento
-  GET /api/dashboard/projecao      — projeção: realizado vs meta por consultor
+  GET /api/dashboard/projecao      — projecao: realizado vs meta por consultor
+  GET /api/dashboard/funil         — pipeline por estagio de funil
 
 Faturamento baseline: R$ 2.091.000 (CORRIGIDO 2026-03-23, R7).
-Todos os valores monetários são Float; o frontend formata como R$.
+Todos os valores monetarios sao Float; o frontend formata como R$.
+Todos os endpoints requerem autenticacao JWT (Bearer token).
 """
 
 from __future__ import annotations
@@ -21,8 +23,10 @@ from pydantic import BaseModel, ConfigDict
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
+from backend.app.api.deps import get_current_user
 from backend.app.database import get_db
 from backend.app.models.cliente import Cliente
+from backend.app.models.usuario import Usuario
 
 router = APIRouter(prefix="/api/dashboard", tags=["Dashboard"])
 
@@ -48,8 +52,8 @@ class KPIsResponse(BaseModel):
 
 class DistribuicaoItem(BaseModel):
     label: str
-    quantidade: int
-    percentual: float
+    count: int
+    pct: float
 
 
 class DistribuicaoResponse(BaseModel):
@@ -68,26 +72,30 @@ class Top10Item(BaseModel):
     nome_fantasia: Optional[str]
     consultor: Optional[str]
     faturamento_total: Optional[float]
+    score: Optional[float]
+    prioridade: Optional[str]
     curva_abc: Optional[str]
     sinaleiro: Optional[str]
     situacao: Optional[str]
 
 
+class ProjecaoResumo(BaseModel):
+    faturamento_realizado: float
+    meta_q1: float
+    pct_alcancado: float
+    baseline_2025: float
+    projecao_2026: float
+
+
 class ProjecaoConsultor(BaseModel):
     consultor: str
-    total_clientes: int
-    faturamento_realizado: float
-    meta_anual_total: float
-    pct_alcancado_medio: float   # média ponderada de pct_alcancado
-    clientes_acima_meta: int
-    clientes_alerta: int
-    clientes_criticos: int
+    faturamento: float
+    meta: float
+    pct_alcancado: float
 
 
 class ProjecaoResponse(BaseModel):
-    faturamento_total_real: float
-    faturamento_baseline: float
-    pct_baseline: float           # faturamento_total_real / baseline
+    resumo: ProjecaoResumo
     por_consultor: list[ProjecaoConsultor]
 
 
@@ -104,8 +112,8 @@ def _distribuicao(db: Session, coluna, total: int) -> list[DistribuicaoItem]:
     return [
         DistribuicaoItem(
             label=r[0] or "—",
-            quantidade=r[1],
-            percentual=round(r[1] / total * 100, 1) if total else 0.0,
+            count=r[1],
+            pct=round(r[1] / total * 100, 1) if total else 0.0,
         )
         for r in rows
     ]
@@ -116,7 +124,10 @@ def _distribuicao(db: Session, coluna, total: int) -> list[DistribuicaoItem]:
 # ---------------------------------------------------------------------------
 
 @router.get("/kpis", response_model=KPIsResponse, summary="KPIs principais")
-def kpis(db: Session = Depends(get_db)) -> KPIsResponse:
+def kpis(
+    user: Usuario = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> KPIsResponse:
     """
     Indicadores-chave do painel gerencial.
 
@@ -182,8 +193,11 @@ def kpis(db: Session = Depends(get_db)) -> KPIsResponse:
     )
 
 
-@router.get("/distribuicao", response_model=DistribuicaoResponse, summary="Distribuições")
-def distribuicao(db: Session = Depends(get_db)) -> DistribuicaoResponse:
+@router.get("/distribuicao", response_model=DistribuicaoResponse, summary="Distribuicoes")
+def distribuicao(
+    user: Usuario = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> DistribuicaoResponse:
     """
     Distribuições percentuais por sinaleiro, situação, prioridade,
     consultor, curva ABC e temperatura.
@@ -201,7 +215,10 @@ def distribuicao(db: Session = Depends(get_db)) -> DistribuicaoResponse:
 
 
 @router.get("/top10", response_model=list[Top10Item], summary="Top 10 clientes por faturamento")
-def top10(db: Session = Depends(get_db)) -> list[Top10Item]:
+def top10(
+    user: Usuario = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> list[Top10Item]:
     """
     Os 10 clientes com maior faturamento_total.
     Apenas registros REAL ou SINTETICO (R8).
@@ -219,14 +236,19 @@ def top10(db: Session = Depends(get_db)) -> list[Top10Item]:
     return [Top10Item.model_validate(c) for c in clientes]
 
 
-@router.get("/projecao", response_model=ProjecaoResponse, summary="Projeção vs meta por consultor")
-def projecao(db: Session = Depends(get_db)) -> ProjecaoResponse:
+@router.get("/projecao", response_model=ProjecaoResponse, summary="Projecao vs meta por consultor")
+def projecao(
+    user: Usuario = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> ProjecaoResponse:
     """
     Consolidado de projeção anual:
-      - faturamento_total_real: soma do realizado por todos os consultores
-      - pct_baseline: quanto representa do baseline R$ 2.091.000
-      - por_consultor: detalhamento por consultor com status_meta
+      - resumo: faturamento realizado, meta Q1, % alcançado, baseline e projeção
+      - por_consultor: faturamento vs meta por consultor
     """
+    PROJECAO_2026 = 3_377_120.0
+    META_Q1 = PROJECAO_2026 / 4  # meta trimestral proporcional
+
     consultores_alvo = ["MANU", "LARISSA", "DAIANE", "JULIO"]
 
     fat_total = db.scalar(
@@ -237,12 +259,6 @@ def projecao(db: Session = Depends(get_db)) -> ProjecaoResponse:
     por_consultor: list[ProjecaoConsultor] = []
 
     for consultor in consultores_alvo:
-        total_c = db.scalar(
-            select(func.count())
-            .select_from(Cliente)
-            .where(Cliente.consultor == consultor)
-        ) or 0
-
         fat_c = db.scalar(
             select(func.coalesce(func.sum(Cliente.faturamento_total), 0.0))
             .where(
@@ -256,57 +272,56 @@ def projecao(db: Session = Depends(get_db)) -> ProjecaoResponse:
             .where(Cliente.consultor == consultor)
         ) or 0.0
 
-        pct_medio = db.scalar(
-            select(func.avg(Cliente.pct_alcancado))
-            .where(
-                Cliente.consultor == consultor,
-                Cliente.pct_alcancado.isnot(None),
-            )
-        ) or 0.0
+        # Se meta_anual não estiver preenchida, distribui proporcional ao baseline
+        if meta_c == 0:
+            meta_c = FATURAMENTO_BASELINE / len(consultores_alvo)
 
-        acima = db.scalar(
-            select(func.count())
-            .select_from(Cliente)
-            .where(
-                Cliente.consultor == consultor,
-                Cliente.status_meta == "ACIMA",
-            )
-        ) or 0
-
-        alerta = db.scalar(
-            select(func.count())
-            .select_from(Cliente)
-            .where(
-                Cliente.consultor == consultor,
-                Cliente.status_meta == "ALERTA",
-            )
-        ) or 0
-
-        critico = db.scalar(
-            select(func.count())
-            .select_from(Cliente)
-            .where(
-                Cliente.consultor == consultor,
-                Cliente.status_meta == "CRITICO",
-            )
-        ) or 0
+        pct = round(fat_c / meta_c * 100, 1) if meta_c > 0 else 0.0
 
         por_consultor.append(
             ProjecaoConsultor(
                 consultor=consultor,
-                total_clientes=total_c,
-                faturamento_realizado=round(fat_c, 2),
-                meta_anual_total=round(meta_c, 2),
-                pct_alcancado_medio=round(float(pct_medio) * 100, 1),
-                clientes_acima_meta=acima,
-                clientes_alerta=alerta,
-                clientes_criticos=critico,
+                faturamento=round(fat_c, 2),
+                meta=round(meta_c, 2),
+                pct_alcancado=pct,
             )
         )
 
+    pct_q1 = round(fat_total / META_Q1 * 100, 1) if META_Q1 > 0 else 0.0
+
     return ProjecaoResponse(
-        faturamento_total_real=round(fat_total, 2),
-        faturamento_baseline=FATURAMENTO_BASELINE,
-        pct_baseline=round(fat_total / FATURAMENTO_BASELINE * 100, 1),
+        resumo=ProjecaoResumo(
+            faturamento_realizado=round(fat_total, 2),
+            meta_q1=round(META_Q1, 2),
+            pct_alcancado=pct_q1,
+            baseline_2025=FATURAMENTO_BASELINE,
+            projecao_2026=PROJECAO_2026,
+        ),
         por_consultor=por_consultor,
     )
+
+
+@router.get(
+    "/funil",
+    summary="Pipeline de clientes por estagio de funil",
+)
+def funil(
+    user: Usuario = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> list[dict]:
+    """
+    Retorna a distribuicao de clientes por estagio_funil.
+
+    Clientes sem estagio_funil preenchido sao omitidos.
+    Ordenacao: maior volume primeiro.
+
+    Requer autenticacao JWT.
+    """
+    rows = db.execute(
+        select(Cliente.estagio_funil, func.count().label("qt"))
+        .where(Cliente.estagio_funil.isnot(None))
+        .group_by(Cliente.estagio_funil)
+        .order_by(func.count().desc())
+    ).all()
+
+    return [{"estagio": r[0], "total": r[1]} for r in rows]

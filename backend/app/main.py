@@ -4,12 +4,17 @@ CRM VITAO360 — FastAPI Application
 Ponto de entrada da API REST do CRM.
 
 Routers registrados:
-  /api/clientes    — CRUD + filtros de clientes
-  /api/agenda      — Agendas diárias por consultor
-  /api/dashboard   — KPIs, distribuições, projeção
+  /api/auth        — Login, refresh, me, CRUD usuarios
+  /api/clientes    — CRUD + filtros de clientes, timeline por CNPJ
+  /api/agenda      — Agendas diarias por consultor
+  /api/dashboard   — KPIs, distribuicoes, projecao, funil
+  /api/projecao    — Meta vs realizado por consultor (mensal + resumo)
+  /api/vendas      — Registro e consulta de vendas (Two-Base: valor > 0)
+  /api/atendimentos — Atendimentos e log de interacoes
+  /api/sinaleiro   — Saude de clientes, penetracao de redes, recalculo batch
 
 Startup:
-  - Cria tabelas no SQLite se não existirem (sem Alembic por ora)
+  - Cria tabelas no SQLite se nao existirem (sem Alembic por ora)
 
 CORS habilitado para o frontend Next.js em localhost:3000.
 
@@ -26,9 +31,15 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from backend.app.api.routes_agenda import router as agenda_router
+from backend.app.api.routes_atendimentos import router as atendimentos_router
+from backend.app.api.routes_auth import router as auth_router
 from backend.app.api.routes_clientes import router as clientes_router
 from backend.app.api.routes_dashboard import router as dashboard_router
-from backend.app.database import Base, engine
+from backend.app.api.routes_projecao import router as projecao_router
+from backend.app.api.routes_sinaleiro import router as sinaleiro_router
+from backend.app.api.routes_vendas import router as vendas_router
+from backend.app.database import Base, SessionLocal, engine
+from backend.app.services.seed_auth import seed_regras_motor, seed_usuarios
 
 
 # ---------------------------------------------------------------------------
@@ -37,10 +48,28 @@ from backend.app.database import Base, engine
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """Cria tabelas no banco na inicialização se não existirem."""
+    """
+    Inicializacao do banco na subida da aplicacao:
+      1. Cria todas as tabelas (sem Alembic por ora)
+      2. Seed automatico de usuarios iniciais (idempotente)
+      3. Seed automatico das regras do motor (idempotente)
+    """
     Base.metadata.create_all(bind=engine)
+
+    # Seed automatico — ambas as funcoes sao idempotentes
+    db = SessionLocal()
+    try:
+        n_users = seed_usuarios(db)
+        n_regras = seed_regras_motor(db)
+        if n_users:
+            print(f"[SEED] {n_users} usuario(s) criado(s)")
+        if n_regras:
+            print(f"[SEED] {n_regras} regra(s) do motor criada(s)")
+    finally:
+        db.close()
+
     yield
-    # Nenhum cleanup necessário por ora
+    # Nenhum cleanup necessario por ora
 
 
 # ---------------------------------------------------------------------------
@@ -85,9 +114,14 @@ app.add_middleware(
 # Routers
 # ---------------------------------------------------------------------------
 
+app.include_router(auth_router)
 app.include_router(clientes_router)
 app.include_router(agenda_router)
 app.include_router(dashboard_router)
+app.include_router(projecao_router)
+app.include_router(atendimentos_router)
+app.include_router(vendas_router)
+app.include_router(sinaleiro_router)
 
 
 # ---------------------------------------------------------------------------

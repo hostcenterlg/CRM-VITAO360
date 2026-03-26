@@ -26,7 +26,7 @@ _DATA_DIR = _PROJECT_ROOT / "data"
 _DATA_DIR.mkdir(parents=True, exist_ok=True)
 
 _DEFAULT_DB_URL = f"sqlite:///{_DATA_DIR / 'crm_vitao360.db'}"
-DATABASE_URL: str = os.getenv("DATABASE_URL", _DEFAULT_DB_URL)
+DATABASE_URL: str = os.getenv("DATABASE_URL", "") or _DEFAULT_DB_URL
 
 # ---------------------------------------------------------------------------
 # Engine
