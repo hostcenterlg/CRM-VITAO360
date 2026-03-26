@@ -46,6 +46,9 @@ class Cliente(Base):
     codigo_cliente = Column(String(20))      # Código SAP (armazenado como str)
     tipo_cliente_sap = Column(String(50))    # REDES/FRANQUIAS, SEM REDE, etc.
     macroregiao = Column(String(50))         # 03 - NACIONAL, 03 - SP CAPITAL, …
+    email = Column(String(255), nullable=True)
+    telefone = Column(String(20), nullable=True)
+    rede_regional = Column(String(100), nullable=True)  # Nome da rede/franquia regional
 
     # ------------------------------------------------------------------
     # Responsável / Equipe
