@@ -81,3 +81,5 @@ data/sources/deskrio/tickets/Notebooklm/
 
 # SQLite database (generated)
 data/crm_vitao360.db
+
+.vercel
