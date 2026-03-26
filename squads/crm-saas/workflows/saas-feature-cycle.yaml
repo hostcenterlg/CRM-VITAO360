@@ -1,0 +1,55 @@
+name: saas-feature-cycle
+description: "Ciclo completo de feature SaaS: design → implement → test → validate"
+version: "1.0.0"
+
+phases:
+  - name: design
+    agent: cs-architect
+    gate: design-approved
+    outputs:
+      - "API contract (OpenAPI)"
+      - "Data model changes"
+      - "Component hierarchy"
+
+  - name: data
+    agent: cs-data
+    gate: data-ready
+    depends_on: [design]
+    outputs:
+      - "Migrations"
+      - "Seed data"
+      - "CNPJ normalized"
+
+  - name: backend
+    agent: cs-backend
+    gate: endpoints-working
+    depends_on: [design, data]
+    outputs:
+      - "FastAPI endpoints"
+      - "Service logic"
+      - "Unit tests"
+
+  - name: frontend
+    agent: cs-frontend
+    gate: pages-rendered
+    depends_on: [backend]
+    outputs:
+      - "Next.js pages"
+      - "API integration"
+      - "Mantine components"
+
+  - name: qa
+    agent: cs-qa
+    gate: qa-pass
+    depends_on: [backend, frontend]
+    outputs:
+      - "Test report"
+      - "Detector de Mentira 3 níveis"
+      - "PASS / FAIL verdict"
+
+error_handling:
+  qa_fail: "Return to backend/frontend agent for fix (max 3 iterations)"
+  data_fail: "Escalate to cs-architect for schema review"
+
+execution_mode: sequential
+max_qa_iterations: 3

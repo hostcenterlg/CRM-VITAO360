@@ -1,0 +1,66 @@
+name: "crm-saas"
+version: "1.0.0"
+description: "Squad de desenvolvimento SaaS do CRM VITAO360 — backend FastAPI, frontend Next.js, integrações Mercos/SAP/Deskrio/WhatsApp"
+author: "Leandro"
+license: UNLICENSED
+slashPrefix: "cs"
+
+aios:
+  minVersion: "2.1.0"
+  type: squad
+
+# ─── COMPONENTS ───
+
+components:
+  agents:
+    - "cs-backend.md"
+    - "cs-frontend.md"
+    - "cs-data.md"
+    - "cs-qa.md"
+    - "cs-architect.md"
+  tasks:
+    - "cs-backend-implement-endpoint.md"
+    - "cs-frontend-build-page.md"
+    - "cs-data-integrate-source.md"
+    - "cs-qa-validate-feature.md"
+    - "cs-architect-design-module.md"
+  workflows:
+    - "saas-feature-cycle.yaml"
+  checklists:
+    - "saas-deploy-checklist.md"
+  templates: []
+  tools: []
+  scripts: []
+
+# ─── CONFIG ───
+
+config:
+  extends: none
+  coding-standards: config/coding-standards.md
+  tech-stack: config/tech-stack.md
+  source-tree: config/source-tree.md
+
+# ─── DEPENDENCIES ───
+
+dependencies:
+  node:
+    - "next@^14.0.0"
+    - "@mantine/core@^7.0.0"
+  python:
+    - "fastapi>=0.104.0"
+    - "sqlalchemy>=2.0.0"
+    - "pydantic>=2.0.0"
+    - "python-jose>=3.3.0"
+    - "openpyxl>=3.1.0"
+    - "pandas>=2.0.0"
+  squads: []
+
+# ─── METADATA ───
+
+tags:
+  - "crm"
+  - "saas"
+  - "b2b"
+  - "fastapi"
+  - "nextjs"
+  - "vitao360"

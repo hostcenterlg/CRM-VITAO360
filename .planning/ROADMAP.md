@@ -27,13 +27,21 @@ Rebuild definitivo do CRM VITAO360 em fases incrementais. O milestone v1.0 (fase
 
 </details>
 
-### v2.0 Motor Operacional SaaS (Fases 11-15)
+### v2.0 Motor Operacional SaaS (Fases 11-15) — COMPLETE 2026-03-24
 
-- [ ] **Phase 11: Import Pipeline** - Importar xlsx FINAL, normalizar CNPJ, classificar dados, aplicar DE-PARA vendedores
-- [ ] **Phase 12: Motor de Regras** - 92 combinacoes SITUACAO x RESULTADO em Python, regras configuraveis, calculo automatico
-- [ ] **Phase 13: Score + Sinaleiro** - Score 6 fatores ponderados (0-100), Piramide P1-P7, sinaleiro de saude por cliente
-- [ ] **Phase 14: Agenda Inteligente** - Lista diaria 40-60 atendimentos por consultor, priorizada por Score, export xlsx
-- [ ] **Phase 15: Projecao + Export** - Realizado vs meta SAP, % alcancado, export xlsx processado, dashboard terminal
+- [x] **Phase 11: Import Pipeline** - Importar xlsx FINAL, normalizar CNPJ, classificar dados, aplicar DE-PARA vendedores
+- [x] **Phase 12: Motor de Regras** - 92 combinacoes SITUACAO x RESULTADO em Python, regras configuraveis, calculo automatico
+- [x] **Phase 13: Score + Sinaleiro** - Score 6 fatores ponderados (0-100), Piramide P1-P7, sinaleiro de saude por cliente
+- [x] **Phase 14: Agenda Inteligente** - Lista diaria 40-60 atendimentos por consultor, priorizada por Score, export xlsx
+- [x] **Phase 15: Projecao + Export** - Realizado vs meta SAP, % alcancado, export xlsx processado, dashboard terminal
+
+### v3.0 SaaS Platform (Fases 16+) — EM DEFINICAO
+
+- [ ] **Phase 16: SaaS Foundation** - FastAPI backend, SQLAlchemy models, JWT auth, Next.js frontend (COMMITADO 2026-03-25)
+- [ ] **Phase 17: API Integration** - Conectar Mercos API, SAP endpoints, Deskrio webhooks ao backend
+- [ ] **Phase 18: WhatsApp + Asana** - Integrar Deskrio WhatsApp (15.468 contatos) + Asana task sync
+- [ ] **Phase 19: Dashboard Live** - Dashboard real-time com KPIs, sinaleiro, agenda no frontend
+- [ ] **Phase 20: Deploy + CI/CD** - Docker, hosting, CI/CD pipeline, monitoramento
 
 ## Phase Details
 
