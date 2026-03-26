@@ -15,25 +15,20 @@ interface AppShellProps {
   pageTitle?: string;
 }
 
-// Badge de role — cores por tipo de acesso
+// Badge de role — 4 roles: admin (roxo), gerente (azul), consultor (verde), consultor_externo (cinza)
 function RoleBadge({ role }: { role: string }) {
-  const styles: Record<string, string> = {
-    admin:
-      'bg-purple-100 text-purple-700 border border-purple-200',
-    consultor:
-      'bg-green-100 text-green-700 border border-green-200',
-    viewer:
-      'bg-gray-100 text-gray-600 border border-gray-200',
+  const map: Record<string, { cls: string; label: string }> = {
+    admin:             { cls: 'bg-purple-100 text-purple-700 border border-purple-200', label: 'Admin' },
+    gerente:           { cls: 'bg-blue-100 text-blue-700 border border-blue-200',       label: 'Gerente' },
+    consultor:         { cls: 'bg-green-100 text-green-700 border border-green-200',    label: 'Consultor' },
+    consultor_externo: { cls: 'bg-gray-100 text-gray-600 border border-gray-200',       label: 'Ext.' },
+    // legado — manter compatibilidade
+    viewer:            { cls: 'bg-gray-100 text-gray-600 border border-gray-200',       label: 'Visualizacao' },
   };
-  const label: Record<string, string> = {
-    admin: 'Admin',
-    consultor: 'Consultor',
-    viewer: 'Visualizacao',
-  };
-  const cls = styles[role] ?? styles['viewer'];
+  const entry = map[role] ?? map['viewer'];
   return (
-    <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded ${cls}`}>
-      {label[role] ?? role}
+    <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded ${entry.cls}`}>
+      {entry.label}
     </span>
   );
 }

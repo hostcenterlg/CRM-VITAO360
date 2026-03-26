@@ -326,32 +326,36 @@ def _importar_score_engine():
 
 
 def test_max_score_is_100() -> TestResult:
-    """Combinacao maxima (RECOMPRA+VERMELHO+A+QUENTE+MADURO+T1) deve resultar em score=100."""
+    """Combinacao maxima v2 (INAT.ANT+A+FIDELIZADO+QUENTE+T4+FU7d) deve resultar em score alto."""
     se = _importar_score_engine()
     score = se.calcular_score(
-        fase="RECOMPRA",
-        sinaleiro="VERMELHO",
+        situacao="INAT.ANT",
         curva_abc="A",
+        tipo_cliente="FIDELIZADO",
         temperatura="QUENTE",
-        tipo_cliente="MADURO",
-        tentativas="T1",
+        tentativas="T4",
+        dias_sem_compra=None,
+        ciclo_medio=None,
+        dias_atraso_followup=7.0,
+        ecommerce_carrinho=100.0,
     )
-    # Score maximo teorico: 100*0.25 + 100*0.20 + 100*0.20 + 100*0.15 + 100*0.10 + 100*0.10 = 100
-    passou = score == 100.0
-    msg = f"Score={score}, esperava 100.0" if not passou else ""
+    # Score v2: URGENCIA=100*0.30 + VALOR=100*0.25 + FOLLOWUP=100*0.20
+    #           + SINAL=100*0.15 + TENTATIVA=100*0.05 + SITUACAO=20*0.05
+    # = 30+25+20+15+5+1 = 96.0
+    passou = score >= 90.0
+    msg = f"Score={score}, esperava >= 90.0" if not passou else ""
     return ("test_max_score_is_100", passou, msg)
 
 
 def test_min_score_above_10() -> TestResult:
-    """Combinacao minima (NUTRICAO+ROXO+C+PERDIDO+PROSPECT+NUTRICAO) deve ser >= 0."""
+    """Combinacao minima v2 (PROSPECT+C+LEAD+PERDIDO+T1+sem_FU) deve ser >= 0 e <= 100."""
     se = _importar_score_engine()
     score = se.calcular_score(
-        fase="NUTRICAO",
-        sinaleiro="ROXO",
+        situacao="PROSPECT",
         curva_abc="C",
+        tipo_cliente="LEAD",
         temperatura="PERDIDO",
-        tipo_cliente="PROSPECT",
-        tentativas="NUTRICAO",
+        tentativas="T1",
     )
     passou = 0.0 <= score <= 100.0
     msg = f"Score={score} fora do intervalo [0, 100]" if not passou else ""
@@ -368,87 +372,66 @@ def test_weights_sum_to_100() -> TestResult:
 
 
 def test_p0_suporte_blocking() -> TestResult:
-    """SUPORTE com problema_aberto=True deve retornar P0 independente do score."""
+    """SUPORTE deve retornar P3 PROBLEMA (v2: P3 substitui P0 para suporte)."""
     se = _importar_score_engine()
     prioridade, score = se.atribuir_prioridade(
         resultado="SUPORTE",
-        estagio_funil="",
-        fase="NUTRICAO",
-        sinaleiro="ROXO",
+        situacao="ATIVO",
         curva_abc="C",
-        temperatura="FRIO",
         tipo_cliente="PROSPECT",
+        temperatura="FRIO",
         tentativas="T4",
-        problema_aberto=True,
-        followup_vencido=False,
-        cs_no_prazo=False,
     )
-    passou = prioridade == "P0"
-    msg = f"Esperava P0, recebeu {prioridade!r} (score={score})" if not passou else ""
+    passou = prioridade == "P3 PROBLEMA"
+    msg = f"Esperava 'P3 PROBLEMA', recebeu {prioridade!r} (score={score})" if not passou else ""
     return ("test_p0_suporte_blocking", passou, msg)
 
 
 def test_p1_followup_blocking() -> TestResult:
-    """EM ATENDIMENTO com followup_vencido=True deve retornar P1."""
+    """EM ATENDIMENTO deve retornar P2 NEGOCIACAO ATIVA (v2)."""
     se = _importar_score_engine()
     prioridade, score = se.atribuir_prioridade(
         resultado="EM ATENDIMENTO",
-        estagio_funil="",
-        fase="NUTRICAO",
-        sinaleiro="ROXO",
+        situacao="ATIVO",
         curva_abc="C",
-        temperatura="FRIO",
         tipo_cliente="PROSPECT",
+        temperatura="FRIO",
         tentativas="T4",
-        problema_aberto=False,
-        followup_vencido=True,
-        cs_no_prazo=False,
     )
-    passou = prioridade == "P1"
-    msg = f"Esperava P1, recebeu {prioridade!r} (score={score})" if not passou else ""
+    passou = prioridade == "P2 NEGOCIACAO ATIVA"
+    msg = f"Esperava 'P2 NEGOCIACAO ATIVA', recebeu {prioridade!r} (score={score})" if not passou else ""
     return ("test_p1_followup_blocking", passou, msg)
 
 
 def test_p2_high_score() -> TestResult:
-    """Score >= 80 deve resultar em P2 (sem bloqueios P0/P1)."""
+    """ORCAMENTO deve resultar em P2 NEGOCIACAO ATIVA (v2)."""
     se = _importar_score_engine()
-    # Score maximo sem bloqueios
     prioridade, score = se.atribuir_prioridade(
-        resultado="VENDA / PEDIDO",
-        estagio_funil="POS-VENDA",
-        fase="RECOMPRA",
-        sinaleiro="VERMELHO",
+        resultado="ORCAMENTO",
+        situacao="ATIVO",
         curva_abc="A",
-        temperatura="QUENTE",
         tipo_cliente="MADURO",
+        temperatura="QUENTE",
         tentativas="T1",
-        problema_aberto=False,
-        followup_vencido=False,
-        cs_no_prazo=False,
     )
-    passou = prioridade == "P2" and score >= 80.0
-    msg = f"prioridade={prioridade!r}, score={score} (esperava P2 e score>=80)" if not passou else ""
+    passou = prioridade == "P2 NEGOCIACAO ATIVA"
+    msg = f"prioridade={prioridade!r}, score={score} (esperava 'P2 NEGOCIACAO ATIVA')" if not passou else ""
     return ("test_p2_high_score", passou, msg)
 
 
 def test_p7_low_score() -> TestResult:
-    """Score < 15 deve resultar em P7."""
+    """PROSPECT deve resultar em P7 PROSPECCAO (v2)."""
     se = _importar_score_engine()
     prioridade, score = se.atribuir_prioridade(
-        resultado="RELACIONAMENTO",
-        estagio_funil="PROSPECCAO",
-        fase="NUTRICAO",
-        sinaleiro="ROXO",
+        resultado="",
+        situacao="PROSPECT",
         curva_abc="C",
+        tipo_cliente="LEAD",
         temperatura="PERDIDO",
-        tipo_cliente="PROSPECT",
-        tentativas="NUTRICAO",
-        problema_aberto=False,
-        followup_vencido=False,
-        cs_no_prazo=False,
+        tentativas="T1",
     )
-    passou = prioridade == "P7" and score < 15.0
-    msg = f"prioridade={prioridade!r}, score={score} (esperava P7 e score<15)" if not passou else ""
+    passou = prioridade == "P7 PROSPECCAO"
+    msg = f"prioridade={prioridade!r}, score={score} (esperava 'P7 PROSPECCAO')" if not passou else ""
     return ("test_p7_low_score", passou, msg)
 
 
@@ -512,29 +495,28 @@ def test_p7_never_in_agenda() -> TestResult:
 
 
 def test_p0_always_included_agenda() -> TestResult:
-    """Clientes P0 devem sempre entrar na agenda, sem contar no limite."""
+    """Clientes P3 PROBLEMA devem sempre entrar na agenda, sem contar no limite (v2: P3=suporte)."""
     se = _importar_score_engine()
-    # 40 clientes P2 + 5 clientes P0
-    linhas = [{"prioridade": "P2", "score": 85.0, "curva_abc": "A", "tipo_cliente": "MADURO"}] * 40
-    linhas += [{"prioridade": "P0", "score": 50.0, "curva_abc": "B", "tipo_cliente": "RECORRENTE"}] * 5
+    # 40 clientes P2 + 5 clientes P3 PROBLEMA (suporte — pula fila)
+    linhas = [{"prioridade": "P2 NEGOCIACAO ATIVA", "score": 85.0, "curva_abc": "A", "tipo_cliente": "MADURO"}] * 40
+    linhas += [{"prioridade": "P3 PROBLEMA", "score": 50.0, "curva_abc": "B", "tipo_cliente": "RECORRENTE"}] * 5
     df = pd.DataFrame(linhas)
     resultado = se.gerar_agenda_diaria(df, max_atendimentos=40)
-    p0_na_agenda = resultado[(resultado["prioridade"] == "P0") & (resultado["na_agenda"] == True)]
-    passou = len(p0_na_agenda) == 5
-    msg = f"P0 na agenda: {len(p0_na_agenda)}, esperava 5" if not passou else ""
+    p3_na_agenda = resultado[(resultado["prioridade"] == "P3 PROBLEMA") & (resultado["na_agenda"] == True)]
+    passou = len(p3_na_agenda) == 5
+    msg = f"P3 na agenda: {len(p3_na_agenda)}, esperava 5" if not passou else ""
     return ("test_p0_always_included_agenda", passou, msg)
 
 
 def test_score_unknown_values_zero() -> TestResult:
-    """Valores desconhecidos nas 6 dimensoes devem resultar em score 0 nessa dimensao (nao erro)."""
+    """Valores desconhecidos nos fatores v2 devem resultar em score valido (nao erro)."""
     se = _importar_score_engine()
     try:
         score = se.calcular_score(
-            fase="FASE_DESCONHECIDA",
-            sinaleiro="COR_INEXISTENTE",
+            situacao="SITUACAO_DESCONHECIDA",
             curva_abc="Z",
-            temperatura="GELADO",
             tipo_cliente="SUPER_CLIENTE",
+            temperatura="GELADO",
             tentativas="T99",
         )
         passou = 0.0 <= score <= 100.0

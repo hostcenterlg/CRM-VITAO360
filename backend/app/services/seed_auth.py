@@ -3,20 +3,22 @@ CRM VITAO360 — Seed de usuarios e regras do motor.
 
 Popula automaticamente no startup:
   1. 4 usuarios iniciais (admin + 3 consultores)
-  2. Regras do Motor de Regras V3 (combinacoes situacao x resultado)
+  2. Regras do Motor de Regras V4 — 92 combinacoes (7 situacoes x 14 resultados)
 
 Ambas as funcoes sao idempotentes: nao duplicam registros existentes.
 
-Fonte das regras: scripts/motor_regras.py — motor_de_regras()
-As combinacoes sao pre-calculadas para todas as situacoes x resultados validos.
+Fonte das regras: data/intelligence/motor_regras_v4.json (source of truth — 92 combinacoes)
+As combinacoes sao lidas diretamente do JSON; motor_de_regras() usado como fallback para
+combinacoes ausentes no JSON.
 
 Regras inviolaveis:
-  R8  — NUNCA inventar dados; regras extraidas do motor real
+  R8  — NUNCA inventar dados; regras extraidas do JSON source of truth
   R11 — Commits atomicos (seed e parte do startup, nao do ciclo de commits)
 """
 
 from __future__ import annotations
 
+import json
 import sys
 from pathlib import Path
 
@@ -32,6 +34,8 @@ from backend.app.security import hash_password
 _PROJECT_ROOT = Path(__file__).resolve().parents[4]  # services/ -> app/ -> backend/ -> root
 if str(_PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT))
+
+_MOTOR_REGRAS_JSON = _PROJECT_ROOT / "data" / "intelligence" / "motor_regras_v4.json"
 
 from scripts.motor_regras import (  # noqa: E402 — import apos ajuste de path
     FOLLOW_UP_DIAS,
@@ -110,108 +114,79 @@ def seed_usuarios(db: Session) -> int:
 # Regras do motor
 # ---------------------------------------------------------------------------
 
-# Todas as situacoes possiveis
-_SITUACOES = ["ATIVO", "EM RISCO", "INAT.REC", "INAT.ANT", "NOVO", "PROSPECT"]
-
-# Todos os resultados possiveis (12 ao total)
-_RESULTADOS = [
-    "EM ATENDIMENTO",
-    "ORÇAMENTO",
-    "CADASTRO",
-    "VENDA / PEDIDO",
-    "RELACIONAMENTO",
-    "FOLLOW UP 7",
-    "FOLLOW UP 15",
-    "SUPORTE",
-    "NÃO ATENDE",
-    "NÃO RESPONDE",
-    "RECUSOU LIGAÇÃO",
-    "PERDA / FECHOU LOJA",
-]
-
-# Restricoes de dominio do motor (R8 — nao inventar combinacoes invalidas)
-# CADASTRO so faz sentido para PROSPECT e NOVO (regra de negocio CRM VITAO360)
-_RESTRICOES: dict[str, list[str]] = {
-    "CADASTRO": ["PROSPECT", "NOVO"],
-}
-
-
-def _situacoes_validas_para(resultado: str) -> list[str]:
-    """Retorna as situacoes validas para um determinado resultado."""
-    if resultado in _RESTRICOES:
-        return _RESTRICOES[resultado]
-    return _SITUACOES
-
-
-def _tipo_acao_para(resultado: str) -> str:
+def _tipo_acao_para(grupo_dash: str) -> str:
     """
-    Mapeia resultado para o tipo_acao do dashboard.
-    Segue a logica de grupo_dash do motor.
+    Mapeia grupo_dash para o tipo_acao do dashboard.
     """
-    grupo = GRUPO_DASH.get(resultado, "")
-    if grupo == "FUNIL":
+    if grupo_dash == "FUNIL":
         return "VENDA"
-    if grupo == "RELAC.":
+    if grupo_dash == "RELAC.":
         return "RELACIONAMENTO"
-    if grupo == "NÃO VENDA":
+    if grupo_dash == "NÃO VENDA":
         return "NAO_VENDA"
     return "ATENDIMENTO"
 
 
+def _carregar_combinacoes_json() -> list[dict]:
+    """
+    Le as 92 combinacoes do motor_regras_v4.json (source of truth).
+
+    Fallback para lista vazia se o arquivo nao existir, para que
+    a estrategia por motor_de_regras() ainda possa ser usada.
+    """
+    if not _MOTOR_REGRAS_JSON.exists():
+        return []
+    with open(_MOTOR_REGRAS_JSON, encoding="utf-8") as f:
+        dados = json.load(f)
+    return dados.get("combinacoes", [])
+
+
 def seed_regras_motor(db: Session) -> int:
     """
-    Popula a tabela regras_motor com todas as combinacoes validas
-    de situacao x resultado, calculadas pelo motor real.
+    Popula a tabela regras_motor com todas as 92 combinacoes do motor_regras_v4.json
+    (7 situacoes x 14 resultados, com restricoes de negocio aplicadas).
 
-    Idempotente: verifica por chave "SITUACAO|RESULTADO" antes de inserir.
+    Estrategia:
+      1. Le combinacoes do JSON (source of truth — 92 entradas)
+      2. Para cada combinacao ausente na tabela, insere com os campos do JSON
+      3. Idempotente: verifica por chave "SITUACAO|RESULTADO" antes de inserir
+
     Nao atualiza regras existentes — para re-seed, deletar a tabela primeiro.
 
     Retorna a quantidade de regras efetivamente criadas.
     """
     criadas = 0
+    combinacoes = _carregar_combinacoes_json()
 
-    for resultado in _RESULTADOS:
-        for situacao in _situacoes_validas_para(resultado):
-            chave = f"{situacao}|{resultado}"
+    for combo in combinacoes:
+        situacao = combo.get("situacao", "")
+        resultado = combo.get("resultado", "")
+        chave = combo.get("chave") or f"{situacao}|{resultado}"
 
-            # Checar se ja existe (idempotencia por chave unica)
-            existe = db.query(RegraMotor).filter(RegraMotor.chave == chave).first()
-            if existe:
-                continue
+        # Checar se ja existe (idempotencia por chave unica)
+        existe = db.query(RegraMotor).filter(RegraMotor.chave == chave).first()
+        if existe:
+            continue
 
-            # Calcular campos via motor real (sem tentativa anterior nem estagio anterior)
-            # Isso representa o estado inicial de cada combinacao
-            campos = motor_de_regras(
-                situacao=situacao,
-                resultado=resultado,
-                estagio_anterior=None,
-                tentativa_anterior=None,
-            )
+        grupo_dash = combo.get("grupo_dash") or GRUPO_DASH.get(resultado, "")
+        follow_up_dias_json = combo.get("followup_dias") or combo.get("follow_up_dias")
+        follow_up_dias = follow_up_dias_json if follow_up_dias_json is not None else FOLLOW_UP_DIAS.get(resultado, 0)
 
-            # Sanitizar campos: garantir que nenhum campo obrigatorio seja None
-            estagio_funil = campos.get("estagio_funil") or "EM ATENDIMENTO"
-            fase = campos.get("fase") or "ATENDIMENTO"
-            tipo_contato = campos.get("tipo_contato") or "ATENDIMENTO"
-            acao_futura = campos.get("acao_futura") or "ATENDIMENTO"
-            temperatura = campos.get("temperatura") or "MORNO"
-            follow_up_dias = campos.get("follow_up_dias") or FOLLOW_UP_DIAS.get(resultado, 0)
-            grupo_dash = campos.get("grupo_dash") or GRUPO_DASH.get(resultado, "")
-
-            regra = RegraMotor(
-                situacao=situacao,
-                resultado=resultado,
-                estagio_funil=estagio_funil,
-                fase=fase,
-                tipo_contato=tipo_contato,
-                acao_futura=acao_futura,
-                temperatura=temperatura,
-                follow_up_dias=follow_up_dias,
-                grupo_dash=grupo_dash,
-                tipo_acao=_tipo_acao_para(resultado),
-                chave=chave,
-            )
-            db.add(regra)
-            criadas += 1
+        regra = RegraMotor(
+            situacao=situacao,
+            resultado=resultado,
+            estagio_funil=combo.get("estagio_funil") or "EM ATENDIMENTO",
+            fase=combo.get("fase") or "ATENDIMENTO",
+            tipo_contato=combo.get("tipo_contato") or "ATENDIMENTO",
+            acao_futura=combo.get("acao_futura") or "ATENDIMENTO",
+            temperatura=combo.get("temperatura") or "MORNO",
+            follow_up_dias=follow_up_dias,
+            grupo_dash=grupo_dash,
+            tipo_acao=combo.get("tipo_acao") or _tipo_acao_para(grupo_dash),
+            chave=chave,
+        )
+        db.add(regra)
+        criadas += 1
 
     if criadas:
         db.commit()

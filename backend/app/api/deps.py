@@ -5,9 +5,10 @@ Centraliza a logica de autenticacao e autorizacao reutilizavel.
 Cada dependency pode ser usada como parametro em qualquer rota via Depends().
 
 Hierarquia de roles:
-  admin     — acesso total
-  consultor — acesso a propria carteira
-  viewer    — somente leitura
+  admin             — acesso total
+  gerente           — ve todos os consultores, sem configuracao (Daiane)
+  consultor         — acesso a propria carteira
+  consultor_externo — carteira propria, sem dados financeiros (Julio)
 """
 
 from __future__ import annotations
@@ -76,15 +77,15 @@ def require_consultor_or_admin(
     user: Usuario = Depends(get_current_user),
 ) -> Usuario:
     """
-    Exige que o usuario autenticado tenha role 'consultor' ou 'admin'.
+    Exige que o usuario autenticado tenha role com permissao de escrita.
 
-    Viewers sao bloqueados. Usada em rotas de escrita (POST, PUT, DELETE)
-    que consultores precisam acessar para gerenciar sua propria carteira.
+    Roles permitidos: admin, gerente, consultor, consultor_externo.
+    Usada em rotas de escrita (POST, PUT, DELETE) de atendimentos e carteira.
 
     Raises:
-      HTTPException 403 — se role nao for 'admin' nem 'consultor'
+      HTTPException 403 — se role nao tiver permissao de escrita
     """
-    if user.role not in ("admin", "consultor"):
+    if user.role not in ("admin", "gerente", "consultor", "consultor_externo"):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Acesso restrito a consultores e administradores",

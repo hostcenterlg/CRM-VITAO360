@@ -61,7 +61,7 @@ Patterns de MENTIRA:
 - [ ] Fórmulas em inglês com separador vírgula
 - [ ] Nenhum dado ALUCINAÇÃO integrado
 - [ ] Motor 92/92 combinações cobertas
-- [ ] Score calculado para 100% dos clientes
+- [ ] Score v2 calculado para 100% dos clientes (6 fatores: URGENCIA 30%, VALOR 25%, FOLLOWUP 20%, SINAL 15%, TENTATIVA 5%, SITUACAO 5%)
 - [ ] Detector de Mentira 3 níveis PASS
 
 ## Thresholds

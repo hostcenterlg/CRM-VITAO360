@@ -27,6 +27,7 @@ interface AuthContextType {
   login: (email: string, senha: string) => Promise<void>;
   logout: () => void;
   isAdmin: boolean;
+  isGerente: boolean;
 }
 
 // ---------------------------------------------------------------------------
@@ -97,6 +98,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         login,
         logout,
         isAdmin: user?.role === 'admin',
+        isGerente: user?.role === 'gerente' || user?.role === 'admin',
       }}
     >
       {children}

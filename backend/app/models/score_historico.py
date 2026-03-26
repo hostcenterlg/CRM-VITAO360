@@ -4,13 +4,13 @@ CRM VITAO360 — Model ScoreHistorico
 Armazena o histórico de score calculado pelo Score Engine para cada cliente,
 por data de cálculo.  Permite análise de evolução de score ao longo do tempo.
 
-O score (0–100) é composto por fatores ponderados:
-  fator_fase        — peso da fase do funil (NUTRICAO, ATIVACAO, …)
-  fator_sinaleiro   — peso do sinaleiro atual (VERDE, AMARELO, VERMELHO, ROXO)
-  fator_curva       — peso da curva ABC (A, B, C)
-  fator_temperatura — peso da temperatura comercial (QUENTE, MORNO, FRIO, CRITICO)
-  fator_tipo_cliente— peso do tipo de cliente (EM DESENVOLVIMENTO, PROSPECT, …)
-  fator_tentativas  — peso pelo número de tentativas de contato (T1–T4)
+O score (0–100) é composto por fatores ponderados (nomes v2):
+  fator_urgencia  — urgência baseada em dias sem compra e ciclo (substitui fator_fase)
+  fator_valor     — valor baseado em curva ABC e tipo_cliente (substitui fator_curva)
+  fator_followup  — atraso no follow-up agendado (substitui fator_tentativas)
+  fator_sinal     — sinaleiro + temperatura comercial (substitui fator_sinaleiro/temperatura)
+  fator_tentativa — número de tentativas de contato T1–T4 (substitui fator_tipo_cliente)
+  fator_situacao  — situação do cliente (ATIVO, PROSPECT, INAT.REC, INAT.ANT)
 
 Fonte: scripts/motor/score_engine.py
 """
@@ -52,14 +52,14 @@ class ScoreHistorico(Base):
     situacao = Column(String(20))                    # ATIVO, PROSPECT, INAT.REC, INAT.ANT
 
     # ------------------------------------------------------------------
-    # Fatores de composição do score (para auditoria e ajuste de pesos)
+    # Fatores de composição do score v2 (para auditoria e ajuste de pesos)
     # ------------------------------------------------------------------
-    fator_fase = Column(Float)
-    fator_sinaleiro = Column(Float)
-    fator_curva = Column(Float)
-    fator_temperatura = Column(Float)
-    fator_tipo_cliente = Column(Float)
-    fator_tentativas = Column(Float)
+    fator_urgencia = Column(Float)
+    fator_valor = Column(Float)
+    fator_followup = Column(Float)
+    fator_sinal = Column(Float)
+    fator_tentativa = Column(Float)
+    fator_situacao = Column(Float)
 
     # ------------------------------------------------------------------
     # Índices compostos

@@ -44,7 +44,7 @@ async function fetchJson<T>(path: string, options?: RequestInit): Promise<T> {
 
 async function mutateJson<T>(
   path: string,
-  method: 'POST' | 'PUT' | 'DELETE',
+  method: 'POST' | 'PUT' | 'PATCH' | 'DELETE',
   body?: unknown
 ): Promise<T> {
   return fetchJson<T>(path, {
@@ -126,6 +126,78 @@ export interface Projecao {
   por_consultor: ProjecaoConsultor[];
 }
 
+// Performance por consultor (dashboard bloco 2)
+export interface PerformanceConsultor {
+  consultor: string;
+  territorio: string;
+  total_clientes: number;
+  faturamento_real: number;
+  meta_2026: number;
+  pct_atingimento: number;
+  status: 'BOM' | 'ALERTA' | 'CRITICO';
+}
+
+// Sinaleiro carteira
+export interface SinaleiroItem {
+  cnpj: string;
+  nome_fantasia: string;
+  uf: string;
+  consultor: string;
+  rede: string;
+  meta_anual: number;
+  realizado: number;
+  pct_atingimento: number;
+  gap: number;
+  cor: string;
+  maturidade: string;
+  acao_recomendada: string;
+}
+
+export interface SinaleiroResumo {
+  cor: string;
+  count: number;
+  pct: number;
+  faturamento: number;
+}
+
+export interface SinaleiroResponse {
+  total: number;
+  resumo: SinaleiroResumo[];
+  itens: SinaleiroItem[];
+}
+
+// Projecao por mes (grafico barras)
+export interface ProjecaoMes {
+  mes: string;
+  meta: number;
+  realizado: number;
+}
+
+export interface ProjecaoClienteItem {
+  cnpj: string;
+  nome_fantasia: string;
+  consultor: string;
+  meta_anual: number;
+  realizado: number;
+  pct_atingimento: number;
+  gap: number;
+  status_meta: string;
+}
+
+export interface ScoreBreakdown {
+  urgencia: number;
+  valor: number;
+  follow_up: number;
+  sinal: number;
+  tentativa: number;
+  situacao: number;
+}
+
+export interface VendaMensal {
+  mes: string;
+  valor: number;
+}
+
 export interface ClienteRegistro {
   cnpj: string;
   nome_fantasia: string;
@@ -136,14 +208,27 @@ export interface ClienteRegistro {
   prioridade: string;
   curva_abc?: string;
   score?: number;
+  score_breakdown?: ScoreBreakdown;
   faturamento_total?: number;
+  faturamento_2026?: number;
+  meta_anual?: number;
+  vendas_mensais?: VendaMensal[];
   cidade?: string;
   uf?: string;
+  email?: string;
+  telefone?: string;
+  data_cadastro?: string;
+  rede_grupo?: string;
   segmento?: string;
   ultima_compra?: string;
   dias_sem_compra?: number;
   ticket_medio?: number;
   meta_mensal?: number;
+  ciclo_medio?: number;
+  temperatura?: string;
+  fase?: string;
+  estagio_funil?: string;
+  tipo_cliente?: string;
   [key: string]: unknown;
 }
 
@@ -161,6 +246,25 @@ export interface AgendaItem {
   score: number;
   prioridade: string;
   acao: string;
+  // Campos extras que o backend pode retornar
+  sinaleiro?: string;
+  situacao?: string;
+  uf?: string;
+  consultor?: string;
+  dias_sem_compra?: number;
+  ciclo_medio?: number;
+  temperatura?: string;
+  tentativa?: string;
+  follow_up?: string;
+  curva_abc?: string;
+}
+
+export interface AtendimentoMotorFeedback {
+  estagio_funil?: string;
+  temperatura?: string;
+  fase?: string;
+  acao_futura?: string;
+  follow_up?: string;
 }
 
 // ---------------------------------------------------------------------------
@@ -183,6 +287,55 @@ export async function fetchProjecao(): Promise<Projecao> {
   return fetchJson<Projecao>('/api/dashboard/projecao');
 }
 
+export async function fetchPerformance(): Promise<PerformanceConsultor[]> {
+  return fetchJson<PerformanceConsultor[]>('/api/dashboard/performance');
+}
+
+// ---------------------------------------------------------------------------
+// Sinaleiro endpoints
+// ---------------------------------------------------------------------------
+
+export interface SinaleiroParams {
+  cor?: string;
+  consultor?: string;
+  rede?: string;
+  limit?: number;
+  offset?: number;
+}
+
+export async function fetchSinaleiro(
+  params: SinaleiroParams = {}
+): Promise<SinaleiroResponse> {
+  const qs = new URLSearchParams();
+  if (params.cor) qs.set('cor', params.cor);
+  if (params.consultor) qs.set('consultor', params.consultor);
+  if (params.rede) qs.set('rede', params.rede);
+  qs.set('limit', String(params.limit ?? 100));
+  qs.set('offset', String(params.offset ?? 0));
+  return fetchJson<SinaleiroResponse>(`/api/sinaleiro?${qs.toString()}`);
+}
+
+// ---------------------------------------------------------------------------
+// Projecao por mes e por cliente
+// ---------------------------------------------------------------------------
+
+export interface ProjecaoDetalhadaParams {
+  consultor?: string;
+}
+
+export interface ProjecaoDetalhada {
+  por_mes: ProjecaoMes[];
+  por_cliente: ProjecaoClienteItem[];
+}
+
+export async function fetchProjecaoDetalhada(
+  params: ProjecaoDetalhadaParams = {}
+): Promise<ProjecaoDetalhada> {
+  const qs = new URLSearchParams();
+  if (params.consultor) qs.set('consultor', params.consultor);
+  return fetchJson<ProjecaoDetalhada>(`/api/projecao/detalhada?${qs.toString()}`);
+}
+
 // ---------------------------------------------------------------------------
 // Clientes endpoints
 // ---------------------------------------------------------------------------
@@ -191,6 +344,13 @@ export interface ClientesParams {
   consultor?: string;
   situacao?: string;
   sinaleiro?: string;
+  abc?: string;
+  temperatura?: string;
+  prioridade?: string;
+  uf?: string;
+  busca?: string;
+  sort_by?: string;
+  sort_dir?: 'asc' | 'desc';
   limit?: number;
   offset?: number;
 }
@@ -202,10 +362,45 @@ export async function fetchClientes(
   if (params.consultor) qs.set('consultor', params.consultor);
   if (params.situacao) qs.set('situacao', params.situacao);
   if (params.sinaleiro) qs.set('sinaleiro', params.sinaleiro);
+  if (params.abc) qs.set('abc', params.abc);
+  if (params.temperatura) qs.set('temperatura', params.temperatura);
+  if (params.prioridade) qs.set('prioridade', params.prioridade);
+  if (params.uf) qs.set('uf', params.uf);
+  if (params.busca) qs.set('busca', params.busca);
+  if (params.sort_by) qs.set('sort_by', params.sort_by);
+  if (params.sort_dir) qs.set('sort_dir', params.sort_dir);
   qs.set('limit', String(params.limit ?? 50));
   qs.set('offset', String(params.offset ?? 0));
 
   return fetchJson<ClientesResponse>(`/api/clientes?${qs.toString()}`);
+}
+
+export interface AtendimentoHistoricoItem {
+  id: number;
+  cnpj: string;
+  consultor?: string;
+  resultado: string;
+  descricao: string;
+  data_registro: string;
+  via_whatsapp?: boolean;
+  via_ligacao?: boolean;
+  acao_futura?: string;
+}
+
+export interface AtendimentosHistoricoResponse {
+  total: number;
+  page: number;
+  page_size: number;
+  itens: AtendimentoHistoricoItem[];
+}
+
+export async function fetchAtendimentosHistorico(
+  cnpj: string,
+  page = 1,
+  page_size = 20
+): Promise<AtendimentosHistoricoResponse> {
+  const qs = new URLSearchParams({ cnpj, page: String(page), page_size: String(page_size) });
+  return fetchJson<AtendimentosHistoricoResponse>(`/api/atendimentos?${qs.toString()}`);
 }
 
 export async function fetchCliente(cnpj: string): Promise<ClienteRegistro> {
@@ -242,6 +437,8 @@ export interface AtendimentoPayload {
   cnpj: string;
   resultado: string;
   descricao: string;
+  via_whatsapp?: boolean;
+  via_ligacao?: boolean;
 }
 
 export interface AtendimentoResponse {
@@ -250,6 +447,14 @@ export interface AtendimentoResponse {
   resultado: string;
   descricao: string;
   data_registro: string;
+  // Saidas do Motor (calculadas pelo backend apos registrar)
+  motor?: {
+    estagio_funil?: string;
+    temperatura?: string;
+    fase?: string;
+    acao_futura?: string;
+    follow_up?: string;
+  };
 }
 
 export async function registrarAtendimento(
@@ -282,4 +487,142 @@ export async function registrarVenda(
   data: VendaPayload
 ): Promise<VendaResponse> {
   return mutateJson<VendaResponse>('/api/vendas', 'POST', data);
+}
+
+// ---------------------------------------------------------------------------
+// RNC endpoints
+// ---------------------------------------------------------------------------
+
+export interface RNCItem {
+  id: number;
+  data_abertura: string;
+  cliente_nome: string;
+  cliente_cnpj: string;
+  tipo_problema: string;
+  area_responsavel: string;
+  status: 'ABERTO' | 'EM_ANDAMENTO' | 'RESOLVIDO' | 'ENCERRADO';
+  dias_aberto: number;
+  sla_status: 'DENTRO' | 'ATENCAO' | 'VIOLADO';
+  descricao: string;
+  consultor?: string;
+}
+
+export interface RNCResumo {
+  total: number;
+  resolvido: number;
+  resolvido_pct: number;
+  em_andamento: number;
+  em_andamento_pct: number;
+  pendente: number;
+  pendente_pct: number;
+}
+
+export interface RNCResponse {
+  resumo: RNCResumo;
+  itens: RNCItem[];
+}
+
+export interface RNCPayload {
+  cliente_cnpj: string;
+  cliente_nome?: string;
+  tipo_problema: string;
+  descricao: string;
+}
+
+export async function fetchRNC(params: { status?: string; tipo?: string; consultor?: string } = {}): Promise<RNCResponse> {
+  const qs = new URLSearchParams();
+  if (params.status) qs.set('status', params.status);
+  if (params.tipo) qs.set('tipo', params.tipo);
+  if (params.consultor) qs.set('consultor', params.consultor);
+  return fetchJson<RNCResponse>(`/api/rnc?${qs.toString()}`);
+}
+
+export async function criarRNC(data: RNCPayload): Promise<RNCItem> {
+  return mutateJson<RNCItem>('/api/rnc', 'POST', data);
+}
+
+// ---------------------------------------------------------------------------
+// Motor de Regras endpoints
+// ---------------------------------------------------------------------------
+
+export interface RegraMotor {
+  id: number;
+  situacao: string;
+  resultado: string;
+  estagio_funil: string;
+  fase: string;
+  tipo_contato: string;
+  acao_futura: string;
+  temperatura: string;
+  follow_up_dias: number | null;
+  grupo_dashboard: string;
+  tipo_acao: string;
+}
+
+export async function fetchMotorRegras(): Promise<RegraMotor[]> {
+  return fetchJson<RegraMotor[]>('/api/motor/regras');
+}
+
+// ---------------------------------------------------------------------------
+// Usuarios endpoints
+// ---------------------------------------------------------------------------
+
+export interface UsuarioAdmin {
+  id: number;
+  nome: string;
+  email: string;
+  role: 'admin' | 'gerente' | 'consultor' | 'consultor_externo';
+  consultor_vinculado: string | null;
+  ativo: boolean;
+  ultimo_login: string | null;
+}
+
+export async function fetchUsuarios(): Promise<UsuarioAdmin[]> {
+  return fetchJson<UsuarioAdmin[]>('/api/usuarios');
+}
+
+export async function criarUsuario(data: Omit<UsuarioAdmin, 'id' | 'ultimo_login'> & { senha: string }): Promise<UsuarioAdmin> {
+  return mutateJson<UsuarioAdmin>('/api/usuarios', 'POST', data);
+}
+
+export async function atualizarUsuario(id: number, data: Partial<UsuarioAdmin> & { senha?: string }): Promise<UsuarioAdmin> {
+  return mutateJson<UsuarioAdmin>(`/api/usuarios/${id}`, 'PATCH', data);
+}
+
+// ---------------------------------------------------------------------------
+// Redes endpoints
+// ---------------------------------------------------------------------------
+
+export interface LojaRede {
+  cnpj: string;
+  nome: string;
+  cidade: string;
+  uf: string;
+  fat_real: number;
+  meta: number;
+  pct_ating: number;
+  cor: string;
+}
+
+export interface RedeItem {
+  nome: string;
+  consultor: string;
+  total_lojas: number;
+  fat_real: number;
+  meta: number;
+  pct_ating: number;
+  gap: number;
+  cor: string;
+  distribuicao: { VERDE: number; AMARELO: number; VERMELHO: number; ROXO: number };
+  lojas: LojaRede[];
+}
+
+export interface RedesResponse {
+  total_redes: number;
+  total_lojas: number;
+  redes: RedeItem[];
+}
+
+export async function fetchRedes(): Promise<RedesResponse> {
+  return fetchJson<RedesResponse>('/api/redes');
 }

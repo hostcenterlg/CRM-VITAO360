@@ -38,7 +38,9 @@ argument-hint: [*research|*analise|*insight|*benchmark|*report|*funil|*projecao]
 | Métrica | Valor |
 |---------|-------|
 | Faturamento projetado | R$ 3.377.120 (+69%) |
+| Meta ambiciosa (Score v2) | R$ 4.747.200 |
 | Q1 2026 real | R$ 459.465 |
+| Clientes SINALEIRO total | 661 |
 | Clientes ativos P12 | 207 |
 | Investimento equipe | R$ 300.000 |
 | Sobra acumulada | R$ 3.077.120 |
@@ -97,12 +99,26 @@ argument-hint: [*research|*analise|*insight|*benchmark|*report|*funil|*projecao]
 
 Fórmula: Penetração% = Fat.Real / (Lojas × R$525/mês × 11m) × 100
 
+## Score v2 — Referência
+
+| Fator | Peso |
+|-------|------|
+| URGENCIA | 30% |
+| VALOR | 25% |
+| FOLLOWUP | 20% |
+| SINAL | 15% |
+| TENTATIVA | 5% |
+| SITUACAO | 5% |
+
+Score v2 prioriza os 661 clientes SINALEIRO para atingir meta R$ 4.747.200.
+
 ## Conflitos Resolvidos
 
 | Tema | Decisão | Fonte |
 |------|---------|-------|
 | Receita 2025 | R$ 2.091.000 | PAINEL CEO auditado (68 arquivos) |
 | Receita 2026 | R$ 3.377.120 | Motor mês a mês com fórmulas |
+| Meta ambiciosa | R$ 4.747.200 | Score v2 × 661 clientes SINALEIRO |
 | Ativos P12 | 207 | Conservador com churn 80% real |
 | ROI | 10.3× | Nova estrutura equipe |
 | Churn | 50% meta (80% atual) | PV Q3 reduz 25pp |

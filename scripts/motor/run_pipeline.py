@@ -650,16 +650,16 @@ def stage_score(base: pd.DataFrame) -> tuple[pd.DataFrame, StageResult]:
 
         df = base.copy()
 
-        # Garantir colunas obrigatorias com defaults seguros
-        _defaults: dict[str, str] = {
-            "fase": "NUTRICAO",
-            "sinaleiro": "VERDE",
+        # Garantir colunas obrigatorias v2 com defaults seguros
+        # score_engine v2: situacao, curva_abc, tipo_cliente, temperatura, tentativas
+        _defaults_str: dict[str, str] = {
+            "situacao": "PROSPECT",
             "curva_abc": "C",
             "temperatura": "FRIO",
             "tipo_cliente": "PROSPECT",
             "tentativas": "T1",
         }
-        for col, default in _defaults.items():
+        for col, default in _defaults_str.items():
             if col not in df.columns:
                 logger.warning("Coluna '%s' ausente -- usando default '%s'", col, default)
                 df[col] = default
@@ -673,9 +673,12 @@ def stage_score(base: pd.DataFrame) -> tuple[pd.DataFrame, StageResult]:
                     )
                     df.loc[mask_vazio, col] = default
 
-        # problema_aberto: default False (ver score_engine.calcular_score_batch)
-        if "problema_aberto" not in df.columns:
-            df["problema_aberto"] = False
+        # Colunas opcionais numericas v2
+        for col_num in ("dias_sem_compra", "ciclo_medio", "dias_atraso_followup"):
+            if col_num not in df.columns:
+                df[col_num] = None
+        if "ecommerce_carrinho" not in df.columns:
+            df["ecommerce_carrinho"] = 0.0
 
         # Calcular score e prioridade
         df = calcular_score_batch(df)

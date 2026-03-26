@@ -303,7 +303,7 @@ CRM VITAO360 SaaS e uma plataforma web de inteligencia comercial para distribuid
 **Descricao:** Portar o Score Engine (`scripts/motor/score_engine.py`) com 6 dimensoes ponderadas e o Sinaleiro Engine (`scripts/motor/sinaleiro_engine.py`) para calculo em tempo real no backend. O Score determina a prioridade P0-P7 de cada cliente e o Sinaleiro indica a saude do cliente (dias sem comprar vs ciclo medio).
 
 **Referencia tecnica:**
-- Score = (FASE x 25%) + (SINALEIRO x 20%) + (ABC x 20%) + (TEMPERATURA x 15%) + (TIPO_CLIENTE x 10%) + (TENTATIVAS x 10%)
+- Score v2 = (URGENCIA x 30%) + (VALOR x 25%) + (FOLLOWUP x 20%) + (SINAL x 15%) + (TENTATIVA x 5%) + (SITUACAO x 5%)
 - Sinaleiro = ratio (dias_sem_compra / ciclo_medio): VERDE (<=0.5), AMARELO (<=1.0), LARANJA (<=1.5), VERMELHO (>1.5), ROXO (sem historico)
 
 #### Features
@@ -315,7 +315,7 @@ CRM VITAO360 SaaS e uma plataforma web de inteligencia comercial para distribuid
 | Descricao | Calcular Score 0-100 para cada cliente baseado em 6 dimensoes ponderadas |
 | Prioridade MoSCoW | Must |
 | Personas | Todos |
-| Acceptance Criteria | 1. FASE: RECOMPRA=100, NEGOCIACAO=80, SALVAMENTO=60, RECUPERACAO=40, PROSPECCAO=30, NUTRICAO=10. Peso 25%. 2. SINALEIRO: VERMELHO=100, AMARELO=60, VERDE=30, ROXO=0. Peso 20%. 3. CURVA ABC: A=100, B=60, C=30. Peso 20%. 4. TEMPERATURA: QUENTE=100, MORNO=60, FRIO=30, CRITICO=20, PERDIDO=0. Peso 15%. 5. TIPO_CLIENTE: MADURO=100, FIDELIZADO=85, RECORRENTE=70, EM_DESENV=50, NOVO=30, LEAD=15, PROSPECT=10. Peso 10%. 6. TENTATIVAS: T1=100, T2=70, T3=40, T4=10, NUTRICAO=5. Peso 10%. 7. Score arredondado para inteiro. 8. Recalculado em tempo real ao registrar atendimento. |
+| Acceptance Criteria | 1. URGENCIA (30%): INAT.ANT=100, INAT.REC=90, EM RISCO=70, ratio>=1.5=100, >=1.0=60, >=0.7=40, <0.7=20, PROSPECT/LEAD=10. 2. VALOR (25%): A+FIDELIZADO/MADURO=100, A=80, B+RECORRENTE/FIDELIZADO=60, B=50, C=20, sem ABC: FIDELIZADO/MADURO=60, RECORRENTE=40, EM_DESENV=20, default=10. 3. FOLLOWUP (20%): >=7d atraso=100, >=3d=80, >=1d=70, hoje=60, ate -3d=40, mais futuro=20, sem FU=50. 4. SINAL (15%): CRITICO=90, QUENTE+carrinho=100, QUENTE=80, MORNO+carrinho=70, MORNO=40, FRIO=10, PERDIDO=0. 5. TENTATIVA (5%): T4+=100, T3=50, T1/T2=10. 6. SITUACAO (5%): EM RISCO=80, ATIVO=40, INAT.REC/ANT=20, PROSPECT=10. 7. Score arredondado para 1 casa decimal, range 0-100. 8. Recalculado em tempo real ao registrar atendimento. |
 
 **FR-013 -- Classificacao de Prioridade P0-P7**
 
@@ -324,7 +324,7 @@ CRM VITAO360 SaaS e uma plataforma web de inteligencia comercial para distribuid
 | Descricao | Mapear Score calculado para nivel de prioridade P0 a P7 |
 | Prioridade MoSCoW | Must |
 | Personas | Todos |
-| Acceptance Criteria | 1. P0 (IMEDIATA): SUPORTE com problema aberto -- pula fila (nao depende de score). 2. P1 (URGENTE): EM ATENDIMENTO + follow-up vencido + CS no prazo (nao depende de score). 3. P2 (ALTA): Score 80-100, distribuicao ate 15-20/dia. 4. P3 (MEDIA-ALTA): Score 60-79, distribuicao 15-20/dia. 5. P4 (MEDIA): Score 45-59, distribuicao 5-10/dia. 6. P5 (MEDIA-BAIXA): Score 30-44, distribuicao 5-10/dia. 7. P6 (BAIXA): Score 15-29, distribuicao 0-5/dia. 8. P7 (NUTRICAO): Score 0-14, campanha mensal (0/dia na agenda regular). |
+| Acceptance Criteria | 1. P0 IMEDIATA (SUPORTE): cliente com problema_aberto=True -- pula fila, nao depende de score. 2. P1 NAMORO NOVO: resultado POS-VENDA/CS + tipo_cliente NOVO/ATIVO + score >= 70 -- pula fila, inviolavel. 3. P2 NEGOCIACAO ATIVA: resultado ORCAMENTO/EM ATENDIMENTO/CADASTRO -- distribuicao 15-20/dia. 4. P3 PROBLEMA: resultado SUPORTE aberto (sem problema_aberto) -- pula fila. 5. P4 MOMENTO OURO: INAT.REC com score >= 75, ou cliente NOVO, ou score >= 50 -- distribuicao 10-15/dia. 6. P5 INAT. RECENTE: INAT.REC com score < 75, ou INAT.ANT com score >= 80 -- distribuicao 5-10/dia. 7. P6 INAT. ANTIGO: INAT.ANT com score < 80 -- distribuicao 0-5/dia. 8. P7 PROSPECCAO: situacao PROSPECT ou LEAD -- campanha mensal (0/dia na agenda regular). |
 
 **FR-014 -- Calculo de Sinaleiro**
 

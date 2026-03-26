@@ -52,6 +52,8 @@ RESULTADOS_VALIDOS = [
     "NÃO RESPONDE",
     "RECUSOU LIGAÇÃO",
     "PERDA / FECHOU LOJA",
+    "PÓS-VENDA",
+    "CS (SUCESSO DO CLIENTE)",
 ]
 
 # Constantes expostas para uso interno em motor_regras_service (fallback sem scripts/)

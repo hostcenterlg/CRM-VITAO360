@@ -4,9 +4,10 @@ CRM VITAO360 — Model Usuario
 Representa um usuário autenticado do sistema SaaS.
 
 Roles possíveis:
-  admin     — acesso total, sem restrição por consultor
-  consultor — acesso restrito à sua própria carteira (campo consultor_nome)
-  viewer    — somente leitura
+  admin              — acesso total, sem restrição por consultor
+  gerente            — vê todos os consultores, sem permissão de configuração (Daiane)
+  consultor          — acesso restrito à sua própria carteira (campo consultor_nome)
+  consultor_externo  — carteira própria, sem acesso a dados financeiros (Julio)
 
 Relacionamento: um Usuario pode ser criado_por de ImportJob e LogInteracao.
 """
@@ -48,10 +49,10 @@ class Usuario(Base):
     # ------------------------------------------------------------------
     nome = Column(String(100), nullable=False)
 
-    # Role: admin | consultor | viewer
+    # Role: admin | gerente | consultor | consultor_externo
     role = Column(String(20), nullable=False, default="consultor")
 
-    # DE-PARA vendedor: MANU, LARISSA, DAIANE — NULL para admin/viewer
+    # DE-PARA vendedor: MANU, LARISSA, DAIANE, JULIO — NULL para admin/gerente
     consultor_nome = Column(String(50), nullable=True)
 
     # ------------------------------------------------------------------

@@ -42,7 +42,7 @@ class MotorRegrasService:
     Encapsula a logica do Motor de Regras CRM.
 
     Hierarquia de resolucao:
-      1. Tabela regras_motor (seed de 68 regras pre-calculadas)
+      1. Tabela regras_motor (seed de 92 combinacoes: 7 situacoes x ~14 resultados)
       2. scripts/motor_regras.py (fallback direto para cobertura total)
 
     Resultado: dict com 9 dimensoes calculadas automaticamente.

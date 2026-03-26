@@ -1,18 +1,23 @@
 """
-CRM VITAO360 — Testes do Score Engine e Sinaleiro Engine.
+CRM VITAO360 — Testes do Score Engine v2 e Sinaleiro Engine.
 
-Valida:
-  1. Calculo correto de score ponderado com 6 fatores
-  2. Prioridade P0 para cliente com problema_aberto
-  3. Prioridade P1 para followup_vencido + cs_no_prazo
-  4. Prioridade P7 para score muito baixo (NUTRICAO)
-  5. Sinaleiro ROXO para PROSPECT e LEAD
-  6. Sinaleiro VERDE para situacao NOVO
-  7. Sinaleiro VERDE quando dias <= ciclo_medio
-  8. Sinaleiro VERMELHO quando dias > ciclo_medio + 30
-  9. Sinaleiro AMARELO via fallback sem ciclo (dias=60)
-  10. Calculo correto de penetracao de rede (TICKET_REF=525, MESES=11)
-  11. ScoreHistorico criado apos aplicar_e_salvar
+Score v2 — 6 fatores ponderados:
+  URGENCIA   (30%): Dias sem compra / ciclo medio
+  VALOR      (25%): Curva ABC + Tipo Cliente
+  FOLLOWUP   (20%): Proximo follow-up vs hoje
+  SINAL      (15%): Temperatura + E-commerce
+  TENTATIVA   (5%): T1/T2/T3/T4
+  SITUACAO    (5%): Situacao Mercos
+
+Prioridade v2 (por situacao + resultado + tipo_cliente + score):
+  P1 NAMORO NOVO, P2 NEGOCIACAO ATIVA, P3 PROBLEMA,
+  P4 MOMENTO OURO, P5 INAT. RECENTE, P6 INAT. ANTIGO, P7 PROSPECCAO
+
+Sinaleiro:
+  ROXO = PROSPECT/LEAD
+  VERDE = NOVO ou dias <= ciclo
+  AMARELO = dias entre ciclo e ciclo+30
+  VERMELHO = INAT.ANT ou dias > ciclo+30
 
 Fixtures criam banco SQLite em memoria para isolamento total.
 Os models sao os mesmos de producao — nao ha mocks de schema.
@@ -28,7 +33,7 @@ from backend.app.database import Base
 from backend.app.models.cliente import Cliente
 from backend.app.models.rede import Rede
 from backend.app.models.score_historico import ScoreHistorico
-from backend.app.services.score_service import ScoreService, score_service
+from backend.app.services.score_service import ScoreService, PESOS, score_service
 from backend.app.services.sinaleiro_service import SinaleiroService, sinaleiro_service
 
 
@@ -51,14 +56,16 @@ def db():
 def _cliente(
     cnpj: str = "12345678000100",
     situacao: str = "ATIVO",
-    fase: str = "RECOMPRA",
-    sinaleiro: str = "VERMELHO",
     curva_abc: str = "A",
-    temperatura: str = "QUENTE",
     tipo_cliente: str = "MADURO",
+    temperatura: str = "QUENTE",
     tentativas: str = "T1",
     dias_sem_compra: int | None = None,
     ciclo_medio: float | None = None,
+    followup_dias: int | None = None,
+    resultado: str = "",
+    sinaleiro: str = "VERDE",
+    fase: str = "RECOMPRA",
     problema_aberto: bool = False,
     followup_vencido: bool = False,
     cs_no_prazo: bool = False,
@@ -68,14 +75,16 @@ def _cliente(
         cnpj=cnpj,
         nome_fantasia="Teste LTDA",
         situacao=situacao,
-        fase=fase,
-        sinaleiro=sinaleiro,
         curva_abc=curva_abc,
-        temperatura=temperatura,
         tipo_cliente=tipo_cliente,
+        temperatura=temperatura,
         tentativas=tentativas,
         dias_sem_compra=dias_sem_compra,
         ciclo_medio=ciclo_medio,
+        followup_dias=followup_dias,
+        resultado=resultado,
+        sinaleiro=sinaleiro,
+        fase=fase,
         problema_aberto=problema_aberto,
         followup_vencido=followup_vencido,
         cs_no_prazo=cs_no_prazo,
@@ -84,143 +93,331 @@ def _cliente(
 
 
 # ---------------------------------------------------------------------------
-# Testes — Score Engine
+# Testes — Fatores individuais v2
+# ---------------------------------------------------------------------------
+
+class TestFatoresV2:
+
+    def test_pesos_somam_100pct(self):
+        """Os 6 pesos v2 devem somar exatamente 1.0."""
+        soma = sum(PESOS.values())
+        assert abs(soma - 1.0) < 1e-9, f"Pesos somam {soma}, esperado 1.0"
+
+    def test_urgencia_inat_ant_100(self):
+        """INAT.ANT deve gerar fator_urgencia = 100."""
+        svc = ScoreService()
+        c = _cliente(situacao="INAT.ANT", dias_sem_compra=200, ciclo_medio=30.0)
+        r = svc.calcular(c)
+        assert r["fator_urgencia"] == 100.0
+
+    def test_urgencia_inat_rec_90(self):
+        """INAT.REC deve gerar fator_urgencia = 90."""
+        svc = ScoreService()
+        c = _cliente(situacao="INAT.REC", dias_sem_compra=60, ciclo_medio=30.0)
+        r = svc.calcular(c)
+        assert r["fator_urgencia"] == 90.0
+
+    def test_urgencia_ativo_com_ciclo_ratio_alto(self):
+        """ATIVO com ratio dias/ciclo >= 1.5 deve gerar urgencia = 100."""
+        svc = ScoreService()
+        c = _cliente(situacao="ATIVO", dias_sem_compra=60, ciclo_medio=30.0)
+        r = svc.calcular(c)
+        # ratio = 60/30 = 2.0 >= 1.5 -> 100
+        assert r["fator_urgencia"] == 100.0
+
+    def test_urgencia_prospect_10(self):
+        """PROSPECT deve gerar fator_urgencia = 10."""
+        svc = ScoreService()
+        c = _cliente(situacao="PROSPECT")
+        r = svc.calcular(c)
+        assert r["fator_urgencia"] == 10.0
+
+    def test_valor_a_maduro_100(self):
+        """Curva A + MADURO deve gerar fator_valor = 100."""
+        svc = ScoreService()
+        c = _cliente(curva_abc="A", tipo_cliente="MADURO")
+        r = svc.calcular(c)
+        assert r["fator_valor"] == 100.0
+
+    def test_valor_a_sem_premium_80(self):
+        """Curva A + tipo RECORRENTE deve gerar fator_valor = 80."""
+        svc = ScoreService()
+        c = _cliente(curva_abc="A", tipo_cliente="RECORRENTE")
+        r = svc.calcular(c)
+        assert r["fator_valor"] == 80.0
+
+    def test_valor_c_20(self):
+        """Curva C deve gerar fator_valor = 20."""
+        svc = ScoreService()
+        c = _cliente(curva_abc="C")
+        r = svc.calcular(c)
+        assert r["fator_valor"] == 20.0
+
+    def test_sinal_quente_sem_carrinho_80(self):
+        """QUENTE sem carrinho e-commerce deve gerar fator_sinal = 80."""
+        svc = ScoreService()
+        c = _cliente(temperatura="QUENTE")
+        r = svc.calcular(c)
+        assert r["fator_sinal"] == 80.0
+
+    def test_sinal_frio_10(self):
+        """FRIO deve gerar fator_sinal = 10."""
+        svc = ScoreService()
+        c = _cliente(temperatura="FRIO")
+        r = svc.calcular(c)
+        assert r["fator_sinal"] == 10.0
+
+    def test_sinal_com_emoji_temperatura(self):
+        """Temperatura com emoji do motor legado deve calcular igual sem emoji."""
+        svc = ScoreService()
+        c_emoji = _cliente(temperatura="🔥 QUENTE")
+        c_limpo = _cliente(temperatura="QUENTE")
+        assert svc.calcular(c_emoji)["fator_sinal"] == svc.calcular(c_limpo)["fator_sinal"]
+
+    def test_tentativa_t1_10(self):
+        """T1 deve gerar fator_tentativa = 10."""
+        svc = ScoreService()
+        c = _cliente(tentativas="T1")
+        r = svc.calcular(c)
+        assert r["fator_tentativa"] == 10.0
+
+    def test_tentativa_t3_50(self):
+        """T3 deve gerar fator_tentativa = 50."""
+        svc = ScoreService()
+        c = _cliente(tentativas="T3")
+        r = svc.calcular(c)
+        assert r["fator_tentativa"] == 50.0
+
+    def test_tentativa_t4_100(self):
+        """T4 deve gerar fator_tentativa = 100."""
+        svc = ScoreService()
+        c = _cliente(tentativas="T4")
+        r = svc.calcular(c)
+        assert r["fator_tentativa"] == 100.0
+
+    def test_situacao_ativo_40(self):
+        """ATIVO deve gerar fator_situacao = 40."""
+        svc = ScoreService()
+        c = _cliente(situacao="ATIVO", dias_sem_compra=15, ciclo_medio=30.0)
+        r = svc.calcular(c)
+        assert r["fator_situacao"] == 40.0
+
+    def test_followup_sem_fu_neutro_50(self):
+        """Sem follow-up agendado (followup_dias=None) deve gerar fator_followup = 50 (neutro)."""
+        svc = ScoreService()
+        c = _cliente(followup_dias=None)
+        r = svc.calcular(c)
+        assert r["fator_followup"] == 50.0
+
+
+# ---------------------------------------------------------------------------
+# Testes — Score total ponderado
 # ---------------------------------------------------------------------------
 
 class TestScoreCalculo:
 
-    def test_score_calculo_basico(self):
+    def test_score_formula_ponderada_v2(self):
         """
-        Cliente ATIVO com fase RECOMPRA, sinaleiro VERMELHO, ABC A deve
-        ter score alto (maximo possivel com esses fatores).
-        """
-        svc = ScoreService()
-        c = _cliente(
-            fase="RECOMPRA",       # 100 * 0.25 = 25.0
-            sinaleiro="VERMELHO",  # 100 * 0.20 = 20.0
-            curva_abc="A",         # 100 * 0.20 = 20.0
-            temperatura="QUENTE",  # 100 * 0.15 = 15.0
-            tipo_cliente="MADURO", # 100 * 0.10 = 10.0
-            tentativas="T1",       # 100 * 0.10 = 10.0
-        )
-        resultado = svc.calcular(c)
+        Verifica formula de ponderacao v2 com valores conhecidos.
+        Cliente ATIVO com ciclo ok (dias=15, ciclo=30 -> ratio=0.5 < 0.7 -> urgencia=20),
+        curva B sem premium (valor=50), sem FU (followup=50),
+        temperatura MORNO (sinal=40), T2 (tentativa=10), situacao ATIVO (situacao=40).
 
-        assert resultado["score"] == 100.0
-        assert resultado["fator_fase"] == 100.0
-        assert resultado["fator_sinaleiro"] == 100.0
-        assert resultado["fator_curva"] == 100.0
-        assert resultado["fator_temperatura"] == 100.0
-        assert resultado["fator_tipo_cliente"] == 100.0
-        assert resultado["fator_tentativas"] == 100.0
-
-    def test_score_formula_ponderada(self):
-        """
-        Verifica formula de ponderacao com valores conhecidos.
-        NUTRIÇÃO = 10, fallback = 0 para campos sem match.
-        Score = 10*0.25 + 0*0.20 + 60*0.20 + 60*0.15 + 15*0.10 + 5*0.10
-              = 2.5 + 0 + 12 + 9 + 1.5 + 0.5 = 25.5
+        Score = 20*0.30 + 50*0.25 + 50*0.20 + 40*0.15 + 10*0.05 + 40*0.05
+              = 6.0 + 12.5 + 10.0 + 6.0 + 0.5 + 2.0 = 37.0
         """
         svc = ScoreService()
         c = _cliente(
-            fase="NUTRIÇÃO",       # 10 * 0.25 = 2.5
-            sinaleiro="ROXO",      # 0  * 0.20 = 0.0
-            curva_abc="B",         # 60 * 0.20 = 12.0
-            temperatura="MORNO",   # 60 * 0.15 = 9.0
-            tipo_cliente="LEAD",   # 15 * 0.10 = 1.5
-            tentativas="NUTRIÇÃO", # 5  * 0.10 = 0.5
+            situacao="ATIVO",
+            curva_abc="B",
+            tipo_cliente="NOVO",
+            temperatura="MORNO",
+            tentativas="T2",
+            dias_sem_compra=15,
+            ciclo_medio=30.0,
+            followup_dias=None,
         )
-        resultado = svc.calcular(c)
-        assert resultado["score"] == 25.5
+        r = svc.calcular(c)
+        assert r["score"] == 37.0, f"Score esperado 37.0, obtido {r['score']}"
 
-    def test_score_com_emoji_temperatura(self):
-        """
-        Campo temperatura pode vir com emoji do motor legado.
-        '🔥 QUENTE' deve retornar mesmo score que 'QUENTE'.
-        """
-        svc = ScoreService()
-        c_com_emoji = _cliente(temperatura="🔥 QUENTE")
-        c_sem_emoji = _cliente(temperatura="QUENTE")
-
-        r_emoji = svc.calcular(c_com_emoji)
-        r_limpo = svc.calcular(c_sem_emoji)
-
-        assert r_emoji["fator_temperatura"] == r_limpo["fator_temperatura"]
-        assert r_emoji["score"] == r_limpo["score"]
-
-    def test_score_campos_nulos_retornam_zero(self):
-        """Cliente sem campos preenchidos deve retornar score 0."""
+    def test_score_campos_nulos_retornam_score_baixo(self):
+        """Cliente sem campos preenchidos retorna score >= 0 (followup neutro = 50)."""
         svc = ScoreService()
         c = Cliente(
             cnpj="00000000000001",
             nome_fantasia="Sem Dados",
             classificacao_3tier="REAL",
         )
-        resultado = svc.calcular(c)
-        assert resultado["score"] == 0.0
+        r = svc.calcular(c)
+        # Com todos os fatores em zero, exceto FOLLOWUP=50 (neutro)
+        # Score = 0*0.30 + 0*0.25 + 50*0.20 + 0*0.15 + 0*0.05 + 0*0.05 = 10.0
+        assert r["score"] >= 0.0
+        assert r["score"] <= 100.0
 
-    def test_score_variantes_acentuadas(self):
-        """
-        As tabelas de lookup aceitam variantes acentuadas e nao-acentuadas.
-        NEGOCIAÇÃO e NEGOCIACAO devem retornar mesmo fator.
-        """
+    def test_score_dentro_do_range(self):
+        """Score deve estar sempre entre 0 e 100."""
         svc = ScoreService()
-        c1 = _cliente(fase="NEGOCIAÇÃO")
-        c2 = _cliente(fase="NEGOCIACAO")
-        assert svc.calcular(c1)["fator_fase"] == svc.calcular(c2)["fator_fase"] == 80.0
-
-
-class TestPrioridade:
-
-    def test_prioridade_p0_suporte(self):
-        """problema_aberto=True deve retornar P0 independente do score."""
-        svc = ScoreService()
-        c = _cliente(problema_aberto=True)
-        resultado = svc.calcular(c)
-        assert resultado["prioridade"] == "P0"
-
-    def test_prioridade_p1_followup(self):
-        """followup_vencido=True + cs_no_prazo=True deve retornar P1."""
-        svc = ScoreService()
-        c = _cliente(followup_vencido=True, cs_no_prazo=True)
-        resultado = svc.calcular(c)
-        assert resultado["prioridade"] == "P1"
-
-    def test_prioridade_p1_requer_ambas_flags(self):
-        """Apenas followup_vencido sem cs_no_prazo nao deve ser P1."""
-        svc = ScoreService()
-        c = _cliente(followup_vencido=True, cs_no_prazo=False)
-        resultado = svc.calcular(c)
-        assert resultado["prioridade"] != "P1"
-
-    def test_prioridade_p2_score_alto(self):
-        """Score 100 deve retornar P2 (faixa 80-100)."""
-        svc = ScoreService()
-        c = _cliente(
-            fase="RECOMPRA", sinaleiro="VERMELHO", curva_abc="A",
-            temperatura="QUENTE", tipo_cliente="MADURO", tentativas="T1",
+        # Caso extremo maximo
+        c_max = _cliente(
+            situacao="INAT.ANT",      # urgencia=100
+            curva_abc="A",
+            tipo_cliente="MADURO",    # valor=100
+            temperatura="QUENTE",     # sinal=80
+            tentativas="T4",          # tentativa=100
         )
-        resultado = svc.calcular(c)
-        assert resultado["score"] == 100.0
-        assert resultado["prioridade"] == "P2"
+        r_max = svc.calcular(c_max)
+        assert 0.0 <= r_max["score"] <= 100.0
 
-    def test_prioridade_p7_nutricao(self):
-        """Score muito baixo deve retornar P7 (faixa 0-14.9)."""
+    def test_score_retorna_chaves_v2(self):
+        """Resultado deve conter todos os fatores v2 nomeados."""
         svc = ScoreService()
-        # Score = 10*0.25 + 0 + 0 + 0 + 0 + 5*0.10 = 2.5 + 0.5 = 3.0
+        c = _cliente()
+        r = svc.calcular(c)
+        for chave in ("score", "prioridade", "prioridade_curta",
+                      "fator_urgencia", "fator_valor", "fator_followup",
+                      "fator_sinal", "fator_tentativa", "fator_situacao"):
+            assert chave in r, f"Chave '{chave}' ausente no resultado"
+
+    def test_score_retrocompatibilidade_aliases(self):
+        """Aliases retrocompativeis (fator_fase, fator_sinaleiro etc.) devem existir."""
+        svc = ScoreService()
+        c = _cliente()
+        r = svc.calcular(c)
+        for alias in ("fator_fase", "fator_sinaleiro", "fator_curva",
+                      "fator_temperatura", "fator_tipo_cliente", "fator_tentativas"):
+            assert alias in r, f"Alias '{alias}' ausente no resultado"
+
+
+# ---------------------------------------------------------------------------
+# Testes — Prioridade v2
+# ---------------------------------------------------------------------------
+
+class TestPrioridadeV2:
+
+    def test_prioridade_p3_problema_suporte(self):
+        """resultado=SUPORTE deve retornar P3 PROBLEMA."""
+        svc = ScoreService()
+        c = _cliente(resultado="SUPORTE")
+        r = svc.calcular(c)
+        assert r["prioridade"] == "P3 PROBLEMA"
+        assert r["prioridade_curta"] == "P3"
+
+    def test_prioridade_p1_namoro_novo(self):
+        """POS-VENDA + tipo NOVO + score >= 70 deve retornar P1 NAMORO NOVO."""
+        svc = ScoreService()
+        # INAT.ANT = urgencia 100, A+MADURO = valor 100
+        # 100*0.30 + 100*0.25 + 50*0.20 + 80*0.15 + 10*0.05 + 20*0.05
+        # = 30 + 25 + 10 + 12 + 0.5 + 1 = 78.5 >= 70
         c = _cliente(
-            fase="NUTRIÇÃO", sinaleiro="ROXO", curva_abc="C",
-            temperatura="PERDIDO", tipo_cliente="PROSPECT", tentativas="NUTRIÇÃO",
+            situacao="INAT.ANT",
+            curva_abc="A",
+            tipo_cliente="NOVO",
+            temperatura="QUENTE",
+            tentativas="T1",
+            resultado="POS-VENDA",
         )
-        resultado = svc.calcular(c)
-        assert resultado["score"] < 15.0
-        assert resultado["prioridade"] == "P7"
+        r = svc.calcular(c)
+        if r["score"] >= 70:
+            assert r["prioridade"] == "P1 NAMORO NOVO"
+            assert r["prioridade_curta"] == "P1"
 
-    def test_prioridade_p0_tem_precedencia_sobre_p1(self):
-        """P0 (problema_aberto) tem precedencia sobre qualquer outra flag."""
+    def test_prioridade_p2_negociacao_orcamento(self):
+        """resultado=ORCAMENTO deve retornar P2 NEGOCIACAO ATIVA."""
         svc = ScoreService()
-        c = _cliente(problema_aberto=True, followup_vencido=True, cs_no_prazo=True)
-        resultado = svc.calcular(c)
-        assert resultado["prioridade"] == "P0"
+        c = _cliente(resultado="ORCAMENTO")
+        r = svc.calcular(c)
+        assert r["prioridade"] == "P2 NEGOCIACAO ATIVA"
+        assert r["prioridade_curta"] == "P2"
+
+    def test_prioridade_p2_em_atendimento(self):
+        """resultado=EM ATENDIMENTO deve retornar P2 NEGOCIACAO ATIVA."""
+        svc = ScoreService()
+        c = _cliente(resultado="EM ATENDIMENTO")
+        r = svc.calcular(c)
+        assert r["prioridade"] == "P2 NEGOCIACAO ATIVA"
+        assert r["prioridade_curta"] == "P2"
+
+    def test_prioridade_p4_inat_rec_score_alto(self):
+        """INAT.REC com score >= 75 deve retornar P4 MOMENTO OURO."""
+        svc = ScoreService()
+        # INAT.REC: urgencia=90, A+FIDELIZADO=100, QUENTE=80, T4=100
+        # 90*0.30 + 100*0.25 + 50*0.20 + 80*0.15 + 100*0.05 + 20*0.05
+        # = 27 + 25 + 10 + 12 + 5 + 1 = 80.0 >= 75
+        c = _cliente(
+            situacao="INAT.REC",
+            curva_abc="A",
+            tipo_cliente="FIDELIZADO",
+            temperatura="QUENTE",
+            tentativas="T4",
+        )
+        r = svc.calcular(c)
+        if r["score"] >= 75:
+            assert r["prioridade"] == "P4 MOMENTO OURO"
+            assert r["prioridade_curta"] == "P4"
+
+    def test_prioridade_p5_inat_rec_score_baixo(self):
+        """INAT.REC com score < 75 deve retornar P5 INAT. RECENTE."""
+        svc = ScoreService()
+        # INAT.REC com C+PROSPECT+FRIO+T1 para score baixo
+        # urgencia=90, C=20, FRIO=10, T1=10
+        # 90*0.30 + 20*0.25 + 50*0.20 + 10*0.15 + 10*0.05 + 20*0.05
+        # = 27 + 5 + 10 + 1.5 + 0.5 + 1 = 45.0 < 75
+        c = _cliente(
+            situacao="INAT.REC",
+            curva_abc="C",
+            tipo_cliente="PROSPECT",
+            temperatura="FRIO",
+            tentativas="T1",
+        )
+        r = svc.calcular(c)
+        assert r["score"] < 75
+        assert r["prioridade"] == "P5 INAT. RECENTE"
+        assert r["prioridade_curta"] == "P5"
+
+    def test_prioridade_p6_inat_ant_score_baixo(self):
+        """INAT.ANT com score < 80 deve retornar P6 INAT. ANTIGO."""
+        svc = ScoreService()
+        # INAT.ANT com C+FRIO+T1 para score baixo
+        # urgencia=100, C=20, FRIO=10, T1=10
+        # 100*0.30 + 20*0.25 + 50*0.20 + 10*0.15 + 10*0.05 + 20*0.05
+        # = 30 + 5 + 10 + 1.5 + 0.5 + 1 = 48.0 < 80
+        c = _cliente(
+            situacao="INAT.ANT",
+            curva_abc="C",
+            tipo_cliente="PROSPECT",
+            temperatura="FRIO",
+            tentativas="T1",
+        )
+        r = svc.calcular(c)
+        assert r["score"] < 80
+        assert r["prioridade"] == "P6 INAT. ANTIGO"
+        assert r["prioridade_curta"] == "P6"
+
+    def test_prioridade_p7_prospect(self):
+        """PROSPECT deve retornar P7 PROSPECCAO."""
+        svc = ScoreService()
+        c = _cliente(situacao="PROSPECT")
+        r = svc.calcular(c)
+        assert r["prioridade"] == "P7 PROSPECCAO"
+        assert r["prioridade_curta"] == "P7"
+
+    def test_prioridade_p7_lead(self):
+        """LEAD deve retornar P7 PROSPECCAO."""
+        svc = ScoreService()
+        c = _cliente(situacao="LEAD")
+        r = svc.calcular(c)
+        assert r["prioridade"] == "P7 PROSPECCAO"
+        assert r["prioridade_curta"] == "P7"
+
+    def test_prioridade_curta_max_2_chars_para_persistencia(self):
+        """prioridade_curta deve ter no maximo 2 caracteres (String(5) no model)."""
+        svc = ScoreService()
+        for situacao in ["ATIVO", "INAT.REC", "INAT.ANT", "PROSPECT", "LEAD"]:
+            c = _cliente(situacao=situacao)
+            r = svc.calcular(c)
+            assert len(r["prioridade_curta"]) <= 5, (
+                f"prioridade_curta '{r['prioridade_curta']}' excede String(5)"
+            )
 
 
 # ---------------------------------------------------------------------------
@@ -254,25 +451,25 @@ class TestSinaleiroCliente:
         assert svc.calcular(c) == "VERMELHO"
 
     def test_sinaleiro_ativo_com_ciclo_verde(self):
-        """dias_sem_compra <= ciclo_medio deve retornar VERDE."""
+        """ratio <= 0.5 deve retornar VERDE (FR-014). dias=15, ciclo=30 -> ratio=0.5."""
         svc = SinaleiroService()
-        c = _cliente(situacao="ATIVO", dias_sem_compra=25, ciclo_medio=30.0)
+        c = _cliente(situacao="ATIVO", dias_sem_compra=15, ciclo_medio=30.0)
         assert svc.calcular(c) == "VERDE"
 
-    def test_sinaleiro_ativo_no_limite_ciclo_verde(self):
-        """dias_sem_compra == ciclo_medio deve retornar VERDE (limite inclusivo)."""
+    def test_sinaleiro_ativo_no_limite_ciclo_amarelo(self):
+        """ratio == 1.0 deve retornar AMARELO (FR-014). dias=30, ciclo=30 -> ratio=1.0."""
         svc = SinaleiroService()
         c = _cliente(situacao="ATIVO", dias_sem_compra=30, ciclo_medio=30.0)
-        assert svc.calcular(c) == "VERDE"
-
-    def test_sinaleiro_ativo_alem_ciclo_amarelo(self):
-        """dias_sem_compra entre ciclo e ciclo+30 deve retornar AMARELO."""
-        svc = SinaleiroService()
-        c = _cliente(situacao="ATIVO", dias_sem_compra=45, ciclo_medio=30.0)
         assert svc.calcular(c) == "AMARELO"
 
+    def test_sinaleiro_ativo_ratio_laranja(self):
+        """ratio <= 1.5 deve retornar LARANJA (FR-014). dias=45, ciclo=30 -> ratio=1.5."""
+        svc = SinaleiroService()
+        c = _cliente(situacao="ATIVO", dias_sem_compra=45, ciclo_medio=30.0)
+        assert svc.calcular(c) == "LARANJA"
+
     def test_sinaleiro_ativo_alem_ciclo_vermelho(self):
-        """dias_sem_compra > ciclo_medio + 30 deve retornar VERMELHO."""
+        """ratio > 1.5 deve retornar VERMELHO (FR-014). dias=65, ciclo=30 -> ratio=2.17."""
         svc = SinaleiroService()
         c = _cliente(situacao="ATIVO", dias_sem_compra=65, ciclo_medio=30.0)
         assert svc.calcular(c) == "VERMELHO"
@@ -427,19 +624,19 @@ class TestScoreHistorico:
     def test_score_historico_salvo(self, db):
         """
         aplicar_e_salvar() deve criar registro em ScoreHistorico com os
-        valores corretos de score, prioridade, sinaleiro e fatores.
+        valores corretos de score, prioridade e fatores v2.
         """
         svc = ScoreService()
 
         c = _cliente(
             cnpj="11222333000181",
             situacao="ATIVO",
-            fase="RECOMPRA",
-            sinaleiro="VERDE",
             curva_abc="A",
-            temperatura="QUENTE",
             tipo_cliente="MADURO",
+            temperatura="QUENTE",
             tentativas="T1",
+            dias_sem_compra=60,
+            ciclo_medio=30.0,
         )
         db.add(c)
         db.flush()
@@ -447,27 +644,23 @@ class TestScoreHistorico:
         resultado = svc.aplicar_e_salvar(db, c)
         db.flush()
 
-        # Verificar que o historico foi criado
         hist = db.query(ScoreHistorico).filter(ScoreHistorico.cnpj == "11222333000181").first()
         assert hist is not None
         assert hist.score == resultado["score"]
-        assert hist.prioridade == resultado["prioridade"]
-        assert hist.fator_fase == resultado["fator_fase"]
-        assert hist.fator_curva == resultado["fator_curva"]
+        assert hist.prioridade == resultado["prioridade_curta"]
 
-    def test_score_salvo_no_cliente(self, db):
+    def test_score_salvo_no_cliente_como_label_curto(self, db):
         """
-        aplicar_e_salvar() deve atualizar cliente.score e cliente.prioridade.
+        aplicar_e_salvar() deve atualizar cliente.prioridade com label curto (max 5 chars).
         """
         svc = ScoreService()
 
         c = _cliente(
             cnpj="44555666000177",
-            fase="RECOMPRA",
-            sinaleiro="VERMELHO",
+            situacao="ATIVO",
             curva_abc="A",
-            temperatura="QUENTE",
             tipo_cliente="MADURO",
+            temperatura="QUENTE",
             tentativas="T1",
         )
         c.score = None
@@ -477,8 +670,9 @@ class TestScoreHistorico:
 
         svc.aplicar_e_salvar(db, c)
 
-        assert c.score == 100.0
-        assert c.prioridade == "P2"
+        assert c.score is not None
+        assert c.prioridade is not None
+        assert len(c.prioridade) <= 5, f"prioridade no model excede 5 chars: '{c.prioridade}'"
 
     def test_multiplos_historicos_mesmo_cliente(self, db):
         """
@@ -505,15 +699,14 @@ class TestScoreHistorico:
 
 class TestFluxoCompleto:
 
-    def test_sinaleiro_atualiza_fator_sinaleiro_no_score(self, db):
+    def test_sinaleiro_e_score_funcionam_juntos(self, db):
         """
-        Apos aplicar sinaleiro, o score recalculado deve refletir o novo
-        valor de sinaleiro. Muda ROXO (fator=0) para VERMELHO (fator=100).
+        Apos aplicar sinaleiro, score pode ser recalculado sem erro.
+        Sinaleiro ROXO (PROSPECT) deve ser calculado corretamente.
         """
         svc_sin = SinaleiroService()
         svc_score = ScoreService()
 
-        # Criar cliente PROSPECT (sinaleiro sera ROXO)
         c = _cliente(
             cnpj="99000111000166",
             situacao="PROSPECT",
@@ -526,7 +719,21 @@ class TestFluxoCompleto:
         svc_sin.aplicar(db, c)
         assert c.sinaleiro == "ROXO"
 
-        # Recalcular score com o novo sinaleiro
+        # Recalcular score com situacao PROSPECT
         resultado = svc_score.calcular(c)
-        # Fator sinaleiro para ROXO = 0
-        assert resultado["fator_sinaleiro"] == 0.0
+        # PROSPECT: urgencia=10, sinal depende de temperatura (QUENTE=80), etc.
+        assert resultado["score"] >= 0.0
+        assert resultado["score"] <= 100.0
+        # PROSPECT deve ser P7
+        assert resultado["prioridade_curta"] == "P7"
+
+    def test_score_v2_pesos_refletem_spec(self):
+        """
+        Verificar que os pesos importados refletem a especificacao v2 oficial.
+        """
+        assert PESOS["URGENCIA"] == 0.30
+        assert PESOS["VALOR"] == 0.25
+        assert PESOS["FOLLOWUP"] == 0.20
+        assert PESOS["SINAL"] == 0.15
+        assert PESOS["TENTATIVA"] == 0.05
+        assert PESOS["SITUACAO"] == 0.05

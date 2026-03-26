@@ -1,10 +1,11 @@
 """
 Motor de Sinaleiro — CRM VITAO360 v2.0.
 
-Calcula o sinaleiro de saude do cliente baseado em comportamento de compra:
-  VERDE    — dentro do ciclo, cliente saudavel
-  AMARELO  — em risco, ciclo ultrapassado mas dentro da margem
-  VERMELHO — perigo, muito tempo sem comprar
+Calcula o sinaleiro de saude do cliente baseado em comportamento de compra (FR-014 — 5 cores):
+  VERDE    — ratio <= 0.5 (dentro da metade do ciclo, cliente saudavel)
+  AMARELO  — ratio <= 1.0 (ciclo atingido, atencao)
+  LARANJA  — ratio <= 1.5 (ciclo ultrapassado, alerta — #FF8C00)
+  VERMELHO — ratio > 1.5  (perigo, muito tempo sem comprar)
   ROXO     — prospect/lead (nunca comprou) ou inativo antigo sem ciclo
 
 Tambem calcula:
@@ -36,6 +37,7 @@ logger = logging.getLogger("motor.sinaleiro_engine")
 # perigo = prioridade, nao de saude).
 SCORE_SINALEIRO: dict[str, int] = {
     "VERMELHO": 100,
+    "LARANJA": 80,
     "AMARELO": 60,
     "VERDE": 30,
     "ROXO": 0,
@@ -118,7 +120,7 @@ def calcular_sinaleiro(
 ) -> str:
     """Calcula o sinaleiro de saude de um cliente.
 
-    Logica (em ordem de precedencia):
+    Logica (em ordem de precedencia) — FR-014 (5 cores):
 
     1. PROSPECT ou LEAD -> sempre ROXO (nunca compraram)
     2. NOVO -> sempre VERDE (recente, independente de dias)
@@ -126,10 +128,11 @@ def calcular_sinaleiro(
     4. Sem dias_sem_compra E ciclo_medio: usa situacao como hint
        - INAT.REC / EM RISCO -> AMARELO
        - ATIVO sem dados -> VERDE (beneficio da duvida)
-    5. Com ciclo_medio valido (> 0):
-       - dias <= ciclo -> VERDE
-       - dias <= ciclo + 30 -> AMARELO
-       - dias > ciclo + 30 -> VERMELHO
+    5. Com ciclo_medio valido (> 0), ratio = dias / ciclo:
+       - ratio <= 0.5 -> VERDE
+       - ratio <= 1.0 -> AMARELO
+       - ratio <= 1.5 -> LARANJA
+       - ratio > 1.5  -> VERMELHO
     6. Fallback (ciclo_medio == 0 ou ausente):
        - dias <= 50 -> VERDE
        - dias <= 90 -> AMARELO
@@ -142,7 +145,7 @@ def calcular_sinaleiro(
                   PROSPECT, LEAD, NOVO, EM RISCO...).
 
     Returns:
-        Uma de: "VERDE", "AMARELO", "VERMELHO", "ROXO".
+        Uma de: "VERDE", "AMARELO", "LARANJA", "VERMELHO", "ROXO".
     """
     sit = _situacao_upper(situacao)
 
@@ -180,12 +183,15 @@ def calcular_sinaleiro(
         )
         dias = 0.0
 
-    # --- Regra 5: Ciclo medio valido ---
+    # --- Regra 5: Ciclo medio valido — ratio = dias / ciclo (FR-014) ---
     if ciclo is not None:
-        if dias <= ciclo:
+        ratio = dias / ciclo
+        if ratio <= 0.5:
             return "VERDE"
-        if dias <= ciclo + 30.0:
+        if ratio <= 1.0:
             return "AMARELO"
+        if ratio <= 1.5:
+            return "LARANJA"
         return "VERMELHO"
 
     # --- Regra 6: Fallback sem ciclo ---

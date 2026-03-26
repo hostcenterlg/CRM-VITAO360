@@ -41,6 +41,7 @@ def calcular_situacao(n_compras, dias_sem_compra):
 ```
 
 ### Referência completa: `data/docs/MOTOR_COMPLETO_CRM_VITAO360.md`
+### Filosofia CRM Autônomo: `data/docs/FILOSOFIA_CRM_AUTONOMO.md`
 
 ## Score Ranking (6 Fatores = 100%)
 

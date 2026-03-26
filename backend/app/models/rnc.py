@@ -9,7 +9,17 @@ pelo pipeline quando existe ao menos um RNC com status != "RESOLVIDO".
 
 Ciclo de vida:
   ABERTO → EM_ANDAMENTO → RESOLVIDO
-  ABERTO → CANCELADO (quando o problema não se confirma)
+  ABERTO → ENCERRADO (quando o problema não se confirma ou é encerrado)
+
+Categorias (alinhadas PRD FR-028):
+  ATRASO ENTREGA (TRANSPORTADORA)
+  PRODUTO AVARIADO (FABRICA/TRANSPORTE)
+  ERRO SEPARAÇÃO (EXPEDIÇÃO)
+  ERRO NOTA FISCAL (FATURAMENTO)
+  DIVERGÊNCIA PREÇO (FATURAMENTO)
+  COBRANÇA INDEVIDA (FINANCEIRO)
+  RUPTURA ESTOQUE (FABRICA/PCP)
+  PROBLEMA SISTEMA (TI)
 
 R5: cnpj = String(14), nunca float.
 """
@@ -46,15 +56,19 @@ class RNC(Base):
     data_abertura = Column(Date, nullable=False)
     consultor = Column(String(50), nullable=False, index=True)   # Consultor responsável
 
-    # Categorias: ENTREGA, QUALIDADE, PAGAMENTO, ATENDIMENTO, PRODUTO, OUTRO
-    tipo_problema = Column(String(50), nullable=False)
+    # Categorias PRD FR-028 (8 com área responsável):
+    #   ATRASO ENTREGA (TRANSPORTADORA), PRODUTO AVARIADO (FABRICA/TRANSPORTE),
+    #   ERRO SEPARAÇÃO (EXPEDIÇÃO), ERRO NOTA FISCAL (FATURAMENTO),
+    #   DIVERGÊNCIA PREÇO (FATURAMENTO), COBRANÇA INDEVIDA (FINANCEIRO),
+    #   RUPTURA ESTOQUE (FABRICA/PCP), PROBLEMA SISTEMA (TI)
+    tipo_problema = Column(String(60), nullable=False)
 
     descricao = Column(Text, nullable=False)
 
     # ------------------------------------------------------------------
     # Ciclo de vida
     # ------------------------------------------------------------------
-    # Status: ABERTO, EM_ANDAMENTO, RESOLVIDO, CANCELADO
+    # Status: ABERTO, EM_ANDAMENTO, RESOLVIDO, ENCERRADO
     status = Column(String(20), nullable=False, default="ABERTO")
     prazo_resolucao = Column(Date, nullable=True)
     responsavel = Column(String(100), nullable=True)    # Quem vai resolver internamente

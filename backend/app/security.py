@@ -48,7 +48,7 @@ def create_access_token(
 
     Payload inclui:
       sub  — ID do usuario (string)
-      role — role do usuario (admin | consultor | viewer)
+      role — role do usuario (admin | gerente | consultor | consultor_externo)
       exp  — timestamp de expiracao (UTC)
       type — "access" (diferencia de refresh)
     """

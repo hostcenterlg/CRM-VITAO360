@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: crm-vitao360-api
+    runtime: python
+    region: oregon
+    plan: free
+    buildCommand: bash render_build.sh
+    startCommand: uvicorn backend.app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHONPATH
+        value: /opt/render/project/src
+      - key: CORS_ORIGINS
+        value: https://crm-vitao360.vercel.app,https://crm-vitao360-*.vercel.app,http://localhost:3000
+      - key: JWT_SECRET
+        generateValue: true

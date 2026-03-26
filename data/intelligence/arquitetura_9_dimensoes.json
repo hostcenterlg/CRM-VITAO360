@@ -176,4 +176,14 @@
       "fator": "SITUACAO",
       "peso": "5%",
       "inputs": "situacao",
-   
+      "logica_score": "EM_RISCO(80) | ATIVO(40) | INAT.REC/INAT.ANT(20) | PROSPECT(10)"
+    }
+  ],
+  "desempate": [
+    "1. CURVA ABC (A primeiro)",
+    "2. TICKET MEDIO (maior primeiro)",
+    "3. TIPO CLIENTE (mais maduro primeiro)",
+    "4. FOLLOW-UP mais vencido primeiro"
+  ],
+  "meta_balance": "META BALANCE: Se P2-P5 nao cobrem 80% meta mensal, PROSPECÇÃO sobe forcado"
+}

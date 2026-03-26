@@ -1,14 +1,15 @@
 """
 CRM VITAO360 — Sinaleiro Engine: calcula saude do cliente e penetracao de redes.
 
-Logica de sinaleiro por cliente:
-  PROSPECT / LEAD  -> ROXO   (ainda nao e cliente)
-  NOVO             -> VERDE  (cliente recente, sem ciclo)
+Logica de sinaleiro por cliente (FR-014 — 5 cores por ratio dias/ciclo):
+  PROSPECT / LEAD  -> ROXO    (ainda nao e cliente)
+  NOVO             -> VERDE   (cliente recente, sem ciclo)
   INAT.ANT         -> VERMELHO (inativo ha mais de 1 ciclo prolongado)
-  Com ciclo_medio:
-    dias <= ciclo          -> VERDE
-    dias <= ciclo + 30     -> AMARELO
-    dias > ciclo + 30      -> VERMELHO
+  Com ciclo_medio (ratio = dias / ciclo):
+    ratio <= 0.5           -> VERDE
+    ratio <= 1.0           -> AMARELO
+    ratio <= 1.5           -> LARANJA  (#FF8C00)
+    ratio > 1.5            -> VERMELHO
   Fallback sem ciclo:
     dias <= 50  -> VERDE
     dias <= 90  -> AMARELO
@@ -67,7 +68,7 @@ class SinaleiroService:
                      ciclo_medio preenchidos.
 
         Returns:
-            String com o sinaleiro: 'VERDE', 'AMARELO', 'VERMELHO' ou 'ROXO'.
+            String com o sinaleiro: 'VERDE', 'AMARELO', 'LARANJA', 'VERMELHO' ou 'ROXO'.
         """
         situacao = (cliente.situacao or "").strip().upper()
 
@@ -88,13 +89,16 @@ class SinaleiroService:
                 return "AMARELO"
             return "VERDE"
 
-        # Com ciclo medio calculado: usar como referencia precisa
+        # Com ciclo medio calculado: usar ratio (FR-014 — 5 cores)
         ciclo = cliente.ciclo_medio
         if ciclo and ciclo > 0:
-            if dias <= ciclo:
+            ratio = dias / ciclo
+            if ratio <= 0.5:
                 return "VERDE"
-            if dias <= ciclo + _DIAS_MARGEM_CICLO:
+            if ratio <= 1.0:
                 return "AMARELO"
+            if ratio <= 1.5:
+                return "LARANJA"
             return "VERMELHO"
 
         # Fallback para clientes sem ciclo historico
