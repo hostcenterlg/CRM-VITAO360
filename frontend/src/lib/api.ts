@@ -408,6 +408,30 @@ export async function fetchCliente(cnpj: string): Promise<ClienteRegistro> {
   return fetchJson<ClienteRegistro>(`/api/clientes/${cnpj}`);
 }
 
+export interface ScoreFator {
+  valor: number;
+  peso: number;
+  contribuicao: number;
+}
+
+export interface ClienteScoreResponse {
+  cnpj: string;
+  score_total: number;
+  prioridade: string;
+  fatores: {
+    urgencia: ScoreFator;
+    valor: ScoreFator;
+    followup: ScoreFator;
+    sinal: ScoreFator;
+    tentativa: ScoreFator;
+    situacao: ScoreFator;
+  };
+}
+
+export async function fetchClienteScore(cnpj: string): Promise<ClienteScoreResponse> {
+  return fetchJson<ClienteScoreResponse>(`/api/clientes/${cnpj}/score`);
+}
+
 // ---------------------------------------------------------------------------
 // Agenda endpoints
 // ---------------------------------------------------------------------------

@@ -2,10 +2,13 @@
 CRM VITAO360 — Rotas /api/clientes
 
 Endpoints:
-  GET /api/clientes               — lista com filtros + paginacao
-  GET /api/clientes/stats         — agregados (count por situacao, consultor, sinaleiro)
-  GET /api/clientes/{cnpj}        — detalhe de um cliente
-  GET /api/clientes/{cnpj}/timeline — historico unificado (vendas + interacoes)
+  GET    /api/clientes               — lista com filtros + paginacao
+  GET    /api/clientes/stats         — agregados (count por situacao, consultor, sinaleiro)
+  GET    /api/clientes/{cnpj}        — detalhe de um cliente
+  PATCH  /api/clientes/{cnpj}        — edicao inline (consultor, rede_regional) — admin/gerente
+  GET    /api/clientes/{cnpj}/score  — breakdown do score v2 com 6 fatores ponderados
+  GET    /api/clientes/{cnpj}/score-history — historico de score (ultimos 30)
+  GET    /api/clientes/{cnpj}/timeline — historico unificado (vendas + interacoes)
 
 Todos os filtros sao opcionais e cumulativos.
 Paginacao padrao: limit=50, offset=0.
@@ -26,12 +29,14 @@ from pydantic import BaseModel, ConfigDict
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
-from backend.app.api.deps import get_current_user
+from backend.app.api.deps import get_current_user, require_admin_or_gerente
 from backend.app.database import get_db
+from backend.app.models.audit_log import AuditLog
 from backend.app.models.cliente import Cliente
 from backend.app.models.log_interacao import LogInteracao
 from backend.app.models.usuario import Usuario
 from backend.app.models.venda import Venda
+from backend.app.services.score_service import PESOS, score_service
 
 router = APIRouter(prefix="/api/clientes", tags=["Clientes"])
 
@@ -66,6 +71,7 @@ class ClienteDetalhe(ClienteResumo):
     """Todos os campos — retornado no endpoint /{cnpj}."""
 
     razao_social: Optional[str]
+    rede_regional: Optional[str]
     codigo_cliente: Optional[str]
     tipo_cliente_sap: Optional[str]
     macroregiao: Optional[str]
@@ -112,6 +118,28 @@ class StatsResponse(BaseModel):
     por_sinaleiro: list[StatsDistribuicao]
     por_curva_abc: list[StatsDistribuicao]
     por_prioridade: list[StatsDistribuicao]
+
+
+class ClientePatchInput(BaseModel):
+    """Payload para edicao inline de cliente via PATCH.
+
+    Apenas os campos explicitamente suportados podem ser alterados:
+      - consultor: reatribuicao de carteira (DE-PARA: MANU/LARISSA/DAIANE/JULIO)
+      - rede_regional: alteracao da rede/franquia do cliente
+
+    Todos os campos sao opcionais — somente os enviados serao atualizados.
+    """
+
+    consultor: Optional[str] = None
+    rede_regional: Optional[str] = None
+
+
+class ClientePatchResponse(BaseModel):
+    """Retorno do PATCH com cliente atualizado e resumo da auditoria."""
+
+    cnpj: str
+    campos_alterados: list[str]
+    cliente: ClienteDetalhe
 
 
 # ---------------------------------------------------------------------------
@@ -239,6 +267,149 @@ def detalhe_cliente(
         raise HTTPException(status_code=404, detail=f"Cliente CNPJ {cnpj_normalizado} nao encontrado.")
 
     return ClienteDetalhe.model_validate(cliente)
+
+
+@router.patch(
+    "/{cnpj}",
+    response_model=ClientePatchResponse,
+    summary="Edicao inline de campos do cliente (admin/gerente)",
+)
+def patch_cliente(
+    cnpj: str,
+    payload: ClientePatchInput,
+    user: Usuario = Depends(require_admin_or_gerente),
+    db: Session = Depends(get_db),
+) -> ClientePatchResponse:
+    """
+    Atualiza campos editaveis do cliente inline.
+
+    Campos permitidos:
+      - consultor: reatribuicao de carteira (normalizado para UPPERCASE)
+      - rede_regional: alteracao da rede/franquia
+
+    Cada campo alterado gera um registro em audit_logs com:
+      campo, valor_anterior, valor_novo, usuario_id, usuario_nome, created_at
+
+    R5: CNPJ normalizado para 14 digitos.
+    R12 — L3: reatribuicao de carteira requer role=admin ou role=gerente.
+
+    Requer autenticacao JWT com role 'admin' ou 'gerente'.
+
+    Returns:
+        ClientePatchResponse com cnpj, campos_alterados e cliente atualizado.
+    """
+    cnpj_n = re.sub(r"\D", "", cnpj).zfill(14)
+
+    cliente = db.scalar(select(Cliente).where(Cliente.cnpj == cnpj_n))
+    if not cliente:
+        raise HTTPException(status_code=404, detail=f"Cliente CNPJ {cnpj_n} nao encontrado.")
+
+    # Campos editaveis: nome_payload -> (nome_model, normalizador)
+    _CAMPOS_EDITAVEIS: dict[str, tuple[str, object]] = {
+        "consultor": ("consultor", str.upper),
+        "rede_regional": ("rede_regional", lambda v: v.strip()),
+    }
+
+    campos_alterados: list[str] = []
+
+    for campo_payload, (campo_model, normalizar) in _CAMPOS_EDITAVEIS.items():
+        valor_enviado = getattr(payload, campo_payload)
+        if valor_enviado is None:
+            # Campo nao enviado no payload — ignorar
+            continue
+
+        valor_normalizado = normalizar(valor_enviado)
+        valor_anterior = getattr(cliente, campo_model)
+
+        if valor_anterior == valor_normalizado:
+            # Sem mudanca real — nao gerar log desnecessario
+            continue
+
+        # Aplicar alteracao no model
+        setattr(cliente, campo_model, valor_normalizado)
+        campos_alterados.append(campo_payload)
+
+        # Registrar auditoria (R12 — quem, quando, o que mudou)
+        audit = AuditLog(
+            cnpj=cnpj_n,
+            campo=campo_payload,
+            valor_anterior=str(valor_anterior) if valor_anterior is not None else None,
+            valor_novo=valor_normalizado,
+            usuario_id=user.id,
+            usuario_nome=getattr(user, "nome", None) or getattr(user, "email", None),
+        )
+        db.add(audit)
+
+    if campos_alterados:
+        db.commit()
+        db.refresh(cliente)
+
+    return ClientePatchResponse(
+        cnpj=cnpj_n,
+        campos_alterados=campos_alterados,
+        cliente=ClienteDetalhe.model_validate(cliente),
+    )
+
+
+@router.get(
+    "/{cnpj}/score",
+    summary="Score atual com breakdown dos 6 fatores v2",
+)
+def score_breakdown_cliente(
+    cnpj: str,
+    user: Usuario = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> dict:
+    """
+    Retorna o score atual do cliente com breakdown completo dos 6 fatores v2.
+
+    Estrutura de resposta:
+      score_total: float (0-100)
+      prioridade:  string (P0-P7)
+      fatores:
+        urgencia:  {valor, peso, contribuicao}   — 30% do score
+        valor:     {valor, peso, contribuicao}   — 25% do score
+        followup:  {valor, peso, contribuicao}   — 20% do score
+        sinal:     {valor, peso, contribuicao}   — 15% do score
+        tentativa: {valor, peso, contribuicao}   —  5% do score
+        situacao:  {valor, peso, contribuicao}   —  5% do score
+
+    Recalcula on-the-fly a partir dos campos atuais do cliente.
+    Nao persiste — apenas exibe o calculo atual para visualizacao no frontend.
+
+    R5: CNPJ normalizado para 14 digitos antes da consulta.
+    Requer autenticacao JWT.
+    """
+    cnpj_n = re.sub(r"\D", "", cnpj).zfill(14)
+    cliente = db.scalar(select(Cliente).where(Cliente.cnpj == cnpj_n))
+    if not cliente:
+        raise HTTPException(status_code=404, detail=f"Cliente CNPJ {cnpj_n} nao encontrado.")
+
+    resultado = score_service.calcular(cliente)
+
+    def _fator(nome_fator: str, chave_resultado: str) -> dict:
+        """Monta dict {valor, peso, contribuicao} para um fator."""
+        valor = resultado[chave_resultado]
+        peso = PESOS[nome_fator]
+        return {
+            "valor": valor,
+            "peso": peso,
+            "contribuicao": round(valor * peso, 2),
+        }
+
+    return {
+        "cnpj": cnpj_n,
+        "score_total": resultado["score"],
+        "prioridade": resultado["prioridade_curta"],
+        "fatores": {
+            "urgencia": _fator("URGENCIA", "fator_urgencia"),
+            "valor": _fator("VALOR", "fator_valor"),
+            "followup": _fator("FOLLOWUP", "fator_followup"),
+            "sinal": _fator("SINAL", "fator_sinal"),
+            "tentativa": _fator("TENTATIVA", "fator_tentativa"),
+            "situacao": _fator("SITUACAO", "fator_situacao"),
+        },
+    }
 
 
 @router.get(

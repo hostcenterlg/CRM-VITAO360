@@ -91,3 +91,22 @@ def require_consultor_or_admin(
             detail="Acesso restrito a consultores e administradores",
         )
     return user
+
+
+def require_admin_or_gerente(user: Usuario = Depends(get_current_user)) -> Usuario:
+    """
+    Exige que o usuario autenticado tenha role 'admin' ou 'gerente'.
+
+    Usada em rotas de edicao inline de carteira (PATCH /api/clientes/{cnpj}):
+      - admin: acesso total, pode reatribuir qualquer cliente
+      - gerente: pode reatribuir clientes da carteira (Daiane)
+
+    Raises:
+      HTTPException 403 — se role nao for admin nem gerente
+    """
+    if user.role not in ("admin", "gerente"):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Acesso restrito a administradores e gerentes",
+        )
+    return user

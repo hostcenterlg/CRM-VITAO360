@@ -23,16 +23,16 @@ export default function KpiCard({
 }: KpiCardProps) {
   return (
     <div
-      className="bg-white rounded-lg border border-gray-200 p-4 flex flex-col gap-1 shadow-sm"
+      className="bg-white rounded-lg border border-gray-200 p-3 sm:p-4 flex flex-col gap-1 shadow-sm"
       style={{ borderLeftColor: accentColor, borderLeftWidth: '4px' }}
     >
       <div className="flex items-center justify-between gap-2">
-        <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+        <p className="text-[11px] sm:text-xs font-medium text-gray-500 uppercase tracking-wide leading-tight">
           {title}
         </p>
         {icon && (
           <span
-            className="flex-shrink-0 w-7 h-7 rounded flex items-center justify-center"
+            className="flex-shrink-0 w-6 h-6 sm:w-7 sm:h-7 rounded flex items-center justify-center"
             style={{ backgroundColor: accentColor + '18', color: accentColor }}
             aria-hidden="true"
           >
@@ -41,12 +41,12 @@ export default function KpiCard({
         )}
       </div>
       {loading ? (
-        <div className="h-7 w-28 bg-gray-100 animate-pulse rounded" />
+        <div className="h-6 sm:h-7 w-24 sm:w-28 bg-gray-100 animate-pulse rounded" />
       ) : (
-        <p className="text-2xl font-bold text-gray-900 leading-tight">{value}</p>
+        <p className="text-xl sm:text-2xl font-bold text-gray-900 leading-tight">{value}</p>
       )}
       {subtitle && (
-        <p className="text-xs text-gray-400 mt-0.5">{subtitle}</p>
+        <p className="text-[11px] sm:text-xs text-gray-400 mt-0.5">{subtitle}</p>
       )}
     </div>
   );

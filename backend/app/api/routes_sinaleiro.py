@@ -17,6 +17,7 @@ R8 — Registros classificados como ALUCINACAO sao excluidos do recalculo batch.
 
 from __future__ import annotations
 
+import time
 from typing import Optional
 
 from fastapi import APIRouter, Depends, Query
@@ -246,25 +247,40 @@ def sinaleiro_redes(
 
 @router.post(
     "/recalcular",
-    summary="Recalcula sinaleiro + score para todos os clientes (admin only)",
+    summary="Recalcula sinaleiro + score + prioridade + agenda para todos os clientes (admin only)",
 )
 def recalcular_sinaleiro(
     admin: Usuario = Depends(require_admin),
     db: Session = Depends(get_db),
 ) -> dict:
     """
-    Recalcula sinaleiro e score para todos os clientes nao classificados
-    como ALUCINACAO (R8 — nunca processar dados fabricados).
+    Recalcula em batch sinaleiro, score v2, prioridade v2 e agenda para todos
+    os clientes nao classificados como ALUCINACAO (R8).
 
-    Operacao em batch: flush e commit unico ao final para performance.
-    Deve ser executado apos importacao de novos dados ou alteracao de
-    parametros do motor.
+    Pipeline por cliente:
+      1. sinaleiro_service.aplicar()   — recalcula cliente.sinaleiro
+      2. score_service.aplicar_e_salvar() — recalcula cliente.score + cliente.prioridade
+                                            + persiste ScoreHistorico
+
+    Agenda:
+      Apos o recalculo de score, regenera a agenda do dia para todos os consultores
+      chamando agenda_service.gerar_para_todos() se disponivel. Se o servico nao
+      estiver configurado, o campo agenda_regenerada sera False.
+
+    Commit unico ao final para performance de batch.
+    R8: exclui registros classificados como ALUCINACAO.
 
     Requer autenticacao JWT com role 'admin'.
 
     Returns:
-        Dict com: recalculados (int), mensagem (str).
+        Dict com:
+          clientes_recalculados (int): total de clientes processados
+          tempo_ms (float): tempo total de processamento em milissegundos
+          agenda_regenerada (bool): True se agenda foi regenerada com sucesso
+          mensagem (str): resumo legivel
     """
+    t_inicio = time.monotonic()
+
     # R8: excluir registros classificados como ALUCINACAO
     clientes = (
         db.query(Cliente)
@@ -274,13 +290,35 @@ def recalcular_sinaleiro(
 
     total = 0
     for c in clientes:
+        # Passo 1: recalcula sinaleiro e atualiza cliente.sinaleiro
         sinaleiro_service.aplicar(db, c)
+        # Passo 2: recalcula score v2 + prioridade v2 + persiste ScoreHistorico
         score_service.aplicar_e_salvar(db, c)
         total += 1
 
     db.commit()
 
+    # Passo 3: regenerar agenda do dia para todos os consultores
+    agenda_regenerada = False
+    try:
+        from backend.app.services.agenda_service import agenda_service  # noqa: PLC0415
+        from datetime import date  # noqa: PLC0415
+        agenda_service.gerar_todas(db, data=date.today())
+        db.commit()
+        agenda_regenerada = True
+    except Exception:
+        # Agenda opcional — nao bloquear o recalculo se falhar
+        agenda_regenerada = False
+
+    t_fim = time.monotonic()
+    tempo_ms = round((t_fim - t_inicio) * 1000, 1)
+
     return {
-        "recalculados": total,
-        "mensagem": f"Sinaleiro + Score recalculados para {total} clientes",
+        "clientes_recalculados": total,
+        "tempo_ms": tempo_ms,
+        "agenda_regenerada": agenda_regenerada,
+        "mensagem": (
+            f"Sinaleiro + Score + Prioridade recalculados para {total} clientes "
+            f"em {tempo_ms} ms"
+        ),
     }

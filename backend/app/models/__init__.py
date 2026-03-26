@@ -17,6 +17,7 @@ Ordem de importação respeita dependências de FK:
   9. RNC           — FK → clientes.cnpj
  10. Meta          — FK → clientes.cnpj
  11. ImportJob     — FK → usuarios.id
+ 12. AuditLog      — FK → clientes.cnpj, usuarios.id
 """
 
 from .cliente import Cliente
@@ -30,6 +31,7 @@ from .rede import Rede
 from .rnc import RNC
 from .meta import Meta
 from .import_job import ImportJob
+from .audit_log import AuditLog
 
 __all__ = [
     "Cliente",
@@ -43,4 +45,5 @@ __all__ = [
     "RNC",
     "Meta",
     "ImportJob",
+    "AuditLog",
 ]

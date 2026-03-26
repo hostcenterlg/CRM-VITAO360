@@ -102,6 +102,12 @@ function CarteiraInner() {
   // Detalhe cliente
   const [selectedCnpj, setSelectedCnpj] = useState<string | null>(null);
 
+  // Export CSV
+  const [exporting, setExporting] = useState(false);
+
+  // Filtros colapsados em mobile
+  const [filtrosExpanded, setFiltrosExpanded] = useState(false);
+
   // Debounce da busca
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -147,6 +153,75 @@ function CarteiraInner() {
   useEffect(() => {
     load();
   }, [load]);
+
+  // ---------------------------------------------------------------------------
+  // Export CSV — gera client-side com os filtros ativos, encoding UTF-8 BOM
+  // ---------------------------------------------------------------------------
+
+  async function handleExportCsv() {
+    setExporting(true);
+    try {
+      const data = await fetchClientes({
+        ...filtros,
+        sort_by: sort.by,
+        sort_dir: sort.dir,
+        limit: 10000,
+        offset: 0,
+      });
+
+      const hoje = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+      const cabecalho = [
+        'CNPJ',
+        'Nome Fantasia',
+        'UF',
+        'Consultor',
+        'Situacao',
+        'Temperatura',
+        'Score',
+        'Prioridade',
+        'Sinaleiro',
+        'ABC',
+        'Faturamento',
+      ];
+
+      const linhas = data.registros.map((c) => [
+        // CNPJ como texto: ="04067573000193" — Excel nao converte para numero
+        `="${c.cnpj}"`,
+        `"${(c.nome_fantasia ?? '').replace(/"/g, '""')}"`,
+        c.uf ?? '',
+        c.consultor ?? '',
+        c.situacao ?? '',
+        c.temperatura ?? '',
+        c.score != null ? c.score.toFixed(1) : '',
+        c.prioridade ?? '',
+        c.sinaleiro ?? '',
+        c.curva_abc ?? '',
+        c.faturamento_total != null ? c.faturamento_total.toFixed(2) : '',
+      ]);
+
+      const csvContent = [
+        cabecalho.join(';'),
+        ...linhas.map((l) => l.join(';')),
+      ].join('\r\n');
+
+      // UTF-8 BOM para Excel BR abrir corretamente com acentos
+      const BOM = '\uFEFF';
+      const blob = new Blob([BOM + csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `carteira_vitao360_${hoje}.csv`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Erro ao exportar';
+      alert(`Erro ao exportar CSV: ${msg}`);
+    } finally {
+      setExporting(false);
+    }
+  }
 
   // ---------------------------------------------------------------------------
   // Handlers
@@ -216,15 +291,41 @@ function CarteiraInner() {
   return (
     <div className="space-y-3">
       {/* Cabeçalho */}
-      <div className="flex items-baseline justify-between">
+      <div className="flex items-start justify-between gap-3">
         <div>
-          <h1 className="text-xl font-bold text-gray-900">Carteira de Clientes</h1>
+          <h1 className="text-lg sm:text-xl font-bold text-gray-900">Carteira de Clientes</h1>
           <p className="text-xs text-gray-500 mt-0.5">
             {response
-              ? `Mostrando ${mostrando} de ${response.total.toLocaleString('pt-BR')} clientes`
+              ? `${mostrando} de ${response.total.toLocaleString('pt-BR')} clientes`
               : 'Carregando...'}
           </p>
         </div>
+
+        {/* Botao Exportar CSV */}
+        <button
+          type="button"
+          onClick={handleExportCsv}
+          disabled={exporting || loading}
+          aria-label="Exportar carteira filtrada como CSV"
+          className="flex items-center gap-1.5 min-h-11 sm:min-h-0 px-3 py-1.5 text-xs font-semibold text-green-700 border border-green-300 rounded-lg bg-white hover:bg-green-50 hover:border-green-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
+        >
+          {exporting ? (
+            <>
+              <svg className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+              </svg>
+              Exportando...
+            </>
+          ) : (
+            <>
+              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+              Exportar CSV
+            </>
+          )}
+        </button>
       </div>
 
       {/* Erro */}
@@ -250,10 +351,11 @@ function CarteiraInner() {
 
       {/* Barra de filtros */}
       <div className="bg-white rounded-lg border border-gray-200 p-3 shadow-sm">
-        <div className="flex flex-wrap gap-2 items-end">
-          {/* Busca */}
-          <div className="flex flex-col gap-1 min-w-[220px] flex-1">
-            <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+        {/* Header da barra de filtros — com botao toggle em mobile */}
+        <div className="flex items-center gap-2 mb-2 sm:mb-0">
+          {/* Busca sempre visivel */}
+          <div className="flex flex-col gap-1 flex-1 min-w-0">
+            <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide hidden sm:block">
               Busca
             </label>
             <div className="relative">
@@ -277,7 +379,7 @@ function CarteiraInner() {
                 onChange={handleBuscaChange}
                 placeholder="Nome ou CNPJ..."
                 aria-label="Buscar por nome ou CNPJ"
-                className={`w-full pl-8 pr-7 py-1.5 text-sm border rounded focus:outline-none focus:ring-2 focus:ring-green-200 focus:border-green-400 ${
+                className={`w-full pl-8 pr-7 py-2 sm:py-1.5 text-sm border rounded focus:outline-none focus:ring-2 focus:ring-green-200 focus:border-green-400 ${
                   filtros.busca
                     ? 'border-green-400 bg-green-50'
                     : 'border-gray-200 bg-white'
@@ -298,7 +400,32 @@ function CarteiraInner() {
             </div>
           </div>
 
-          {/* Dropdowns de filtro */}
+          {/* Botao "Filtros" visivel apenas em mobile */}
+          <button
+            type="button"
+            onClick={() => setFiltrosExpanded((v) => !v)}
+            aria-expanded={filtrosExpanded}
+            className={`sm:hidden flex items-center gap-1.5 min-h-11 px-3 py-2 text-sm font-medium rounded-md border transition-colors flex-shrink-0 ${
+              ativo
+                ? 'border-green-400 bg-green-50 text-green-800'
+                : 'border-gray-200 bg-white text-gray-600'
+            }`}
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round"
+                d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L13 13.414V19a1 1 0 01-.553.894l-4 2A1 1 0 017 21v-7.586L3.293 6.707A1 1 0 013 6V4z" />
+            </svg>
+            Filtros
+            {ativo && (
+              <span className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-green-600 text-white text-[9px] font-bold">
+                {Object.values(filtros).filter(Boolean).length}
+              </span>
+            )}
+          </button>
+        </div>
+
+        {/* Dropdowns de filtro — sempre visiveis em desktop, colapsaveis em mobile */}
+        <div className={`${filtrosExpanded ? 'flex' : 'hidden'} sm:flex flex-wrap gap-2 items-end mt-2`}>
           <FilterSelect
             label="Consultor"
             value={filtros.consultor}
@@ -395,12 +522,13 @@ function CarteiraInner() {
 
         {/* Paginação */}
         {response && response.total > PAGE_SIZE && (
-          <div className="flex items-center justify-between px-4 py-2.5 border-t border-gray-100 bg-gray-50">
-            <p className="text-xs text-gray-500">
-              {mostrando} de {response.total.toLocaleString('pt-BR')} clientes —{' '}
-              Pagina {currentPage} de {totalPages}
+          <div className="flex items-center justify-between px-3 sm:px-4 py-2.5 border-t border-gray-100 bg-gray-50 gap-3">
+            <p className="text-xs text-gray-500 min-w-0">
+              <span className="hidden sm:inline">{mostrando} de {response.total.toLocaleString('pt-BR')} clientes — </span>
+              <span className="sm:hidden">{mostrando} — </span>
+              Pag. {currentPage}/{totalPages}
             </p>
-            <div className="flex gap-2">
+            <div className="flex gap-2 flex-shrink-0">
               <PaginationButton
                 label="Anterior"
                 disabled={offset === 0}
@@ -489,7 +617,7 @@ function PaginationButton({ label, disabled, onClick }: PaginationButtonProps) {
       type="button"
       disabled={disabled}
       onClick={onClick}
-      className={`px-3 py-1.5 rounded text-xs font-medium border transition-colors ${
+      className={`min-h-11 sm:min-h-0 px-3 py-2 sm:py-1.5 rounded text-xs font-medium border transition-colors ${
         disabled
           ? 'border-gray-200 text-gray-300 cursor-not-allowed'
           : 'border-gray-300 text-gray-600 hover:bg-gray-50 hover:border-gray-400'

@@ -4,10 +4,12 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   AtendimentoHistoricoItem,
   ClienteRegistro,
+  ClienteScoreResponse,
   ScoreBreakdown,
   VendaMensal,
   fetchAtendimentosHistorico,
   fetchCliente,
+  fetchClienteScore,
   formatBRL,
 } from '@/lib/api';
 import { useAuth } from '@/contexts/AuthContext';
@@ -477,6 +479,7 @@ export default function ClienteDetalhe({ cnpj, onClose }: ClienteDetalheProps) {
   const isExternoJulio = user?.role === 'consultor_externo';
 
   const [cliente, setCliente] = useState<ClienteRegistro | null>(null);
+  const [scoreBreakdown, setScoreBreakdown] = useState<ScoreBreakdown | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -512,16 +515,37 @@ export default function ClienteDetalhe({ cnpj, onClose }: ClienteDetalheProps) {
     return () => document.removeEventListener('keydown', handler);
   }, [onClose]);
 
-  // Buscar dados do cliente
+  // Buscar dados do cliente + score breakdown em paralelo
   useEffect(() => {
     if (!cnpj) {
       setCliente(null);
+      setScoreBreakdown(null);
       return;
     }
     setLoading(true);
     setError(null);
-    fetchCliente(cnpj)
-      .then(setCliente)
+    setScoreBreakdown(null);
+
+    Promise.all([
+      fetchCliente(cnpj),
+      fetchClienteScore(cnpj).catch((): ClienteScoreResponse | null => null),
+    ])
+      .then(([clienteData, scoreData]) => {
+        setCliente(clienteData);
+        // Mapear estrutura do endpoint /score para ScoreBreakdown
+        if (scoreData?.fatores) {
+          setScoreBreakdown({
+            urgencia:  scoreData.fatores.urgencia.valor,
+            valor:     scoreData.fatores.valor.valor,
+            follow_up: scoreData.fatores.followup.valor,
+            sinal:     scoreData.fatores.sinal.valor,
+            tentativa: scoreData.fatores.tentativa.valor,
+            situacao:  scoreData.fatores.situacao.valor,
+          });
+        } else if (clienteData.score_breakdown) {
+          setScoreBreakdown(clienteData.score_breakdown);
+        }
+      })
       .catch((e: Error) => setError(e.message))
       .finally(() => setLoading(false));
   }, [cnpj]);
@@ -698,7 +722,7 @@ export default function ClienteDetalhe({ cnpj, onClose }: ClienteDetalheProps) {
                   <div className="pt-1">
                     <ScoreBreakdownDisplay
                       score={cliente.score}
-                      breakdown={cliente.score_breakdown}
+                      breakdown={scoreBreakdown ?? cliente.score_breakdown}
                     />
                   </div>
                 )}

@@ -92,8 +92,8 @@ export default function DashboardPage() {
   return (
     <div className="space-y-6">
       {/* Page heading */}
-      <div className="pb-4 border-b border-gray-200">
-        <h1 className="text-2xl font-bold text-gray-900">Dashboard CEO</h1>
+      <div className="pb-3 sm:pb-4 border-b border-gray-200">
+        <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Dashboard CEO</h1>
         <p className="text-sm text-gray-500 mt-1">
           Visao geral da carteira comercial VITAO360
         </p>
@@ -602,18 +602,19 @@ function BarChart({ items, colorMap, defaultColor = '#6b7280' }: BarChartProps) 
         const barWidth = (item.pct / maxPct) * 100;
 
         return (
-          <div key={item.label} className="flex items-center gap-3">
-            <span className="w-20 text-xs text-gray-600 text-right flex-shrink-0 font-medium truncate">
+          <div key={item.label} className="flex items-center gap-2 sm:gap-3">
+            <span className="w-16 sm:w-20 text-xs text-gray-600 text-right flex-shrink-0 font-medium truncate">
               {item.label}
             </span>
-            <div className="flex-1 bg-gray-100 rounded-full h-4 overflow-hidden">
+            <div className="flex-1 bg-gray-100 rounded-full h-3 sm:h-4 overflow-hidden">
               <div
                 className="h-full rounded-full transition-all duration-500"
                 style={{ width: `${barWidth}%`, backgroundColor: color }}
               />
             </div>
-            <span className="w-20 text-xs text-gray-500 flex-shrink-0 text-right">
-              {item.count.toLocaleString('pt-BR')} ({formatPercent(item.pct)})
+            <span className="w-16 sm:w-20 text-xs text-gray-500 flex-shrink-0 text-right">
+              <span className="hidden sm:inline">{item.count.toLocaleString('pt-BR')} ({formatPercent(item.pct)})</span>
+              <span className="sm:hidden">{formatPercent(item.pct)}</span>
             </span>
           </div>
         );

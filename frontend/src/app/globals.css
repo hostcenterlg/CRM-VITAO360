@@ -47,5 +47,18 @@ tr.hoverable:hover td {
 
 /* Sidebar transition */
 .sidebar-transition {
-  transition: width 200ms ease, transform 200ms ease;
+  transition: width 200ms ease, transform 200ms ease, box-shadow 200ms ease;
+}
+
+/* Quando sidebar esta aberto em mobile, adiciona sombra de drawer */
+.sidebar-transition.translate-x-0 {
+  box-shadow: 4px 0 16px rgba(0, 0, 0, 0.12);
+}
+
+/* Botao touch-target minimo em mobile via classe utilitaria */
+@media (max-width: 767px) {
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
 }

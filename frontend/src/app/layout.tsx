@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import { AuthProvider } from '@/contexts/AuthContext';
@@ -18,6 +18,12 @@ export const metadata: Metadata = {
   title: 'CRM VITAO360',
   description: 'Sistema de Inteligencia Comercial — VITAO Alimentos B2B',
   robots: 'noindex, nofollow', // internal tool
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
 };
 
 export default function RootLayout({

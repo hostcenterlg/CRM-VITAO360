@@ -266,7 +266,7 @@ function AgendaCard({ item, concluido, onRegistrar }: AgendaCardProps) {
               type="button"
               onClick={() => onRegistrar(item)}
               aria-label={`Registrar atendimento de ${item.nome_fantasia}`}
-              className="flex-shrink-0 px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white text-xs font-semibold rounded-md transition-all duration-150 hover:shadow-md hover:-translate-y-px focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1"
+              className="flex-shrink-0 min-h-11 sm:min-h-0 px-3 py-2 sm:py-1.5 bg-green-600 hover:bg-green-700 text-white text-xs font-semibold rounded-md transition-all duration-150 hover:shadow-md hover:-translate-y-px focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1"
             >
               Registrar Atendimento
             </button>
@@ -295,18 +295,22 @@ function ProgressBar({ total, concluidos, consultor }: ProgressBarProps) {
     pct >= 20 ? '#FF8C00' : '#E5E7EB';
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 px-5 py-4 shadow-sm">
-      <div className="flex items-center justify-between mb-2">
-        <p className="text-sm font-medium text-gray-700">
-          <span className="font-bold text-gray-900">{concluidos}</span> de{' '}
-          <span className="font-bold text-gray-900">{total}</span> atendimentos concluidos hoje
-          {pct > 0 && (
-            <span className="ml-2 text-xs text-gray-500">
-              ({pct}%)
-            </span>
-          )}
+    <div className="bg-white rounded-lg border border-gray-200 px-4 py-3 shadow-sm">
+      <div className="flex items-center justify-between mb-2 gap-2">
+        {/* Mobile: so mostra pct e consultor | Desktop: texto completo */}
+        <p className="text-sm font-medium text-gray-700 min-w-0">
+          <span className="hidden sm:inline">
+            <span className="font-bold text-gray-900">{concluidos}</span> de{' '}
+            <span className="font-bold text-gray-900">{total}</span> atendimentos concluidos hoje
+          </span>
+          <span className="sm:hidden font-bold text-gray-900">
+            {concluidos}/{total}
+          </span>
+          <span className="ml-2 text-xs font-semibold" style={{ color: progressColor }}>
+            {pct}%
+          </span>
         </p>
-        <p className="text-xs text-gray-500">{consultor}</p>
+        <p className="text-xs text-gray-500 flex-shrink-0">{consultor}</p>
       </div>
       <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
         <div
@@ -494,16 +498,16 @@ export default function AgendaPage() {
 
   return (
     <>
-      <div className="space-y-4 max-w-4xl">
+      <div className="space-y-3 sm:space-y-4 max-w-4xl">
         {/* Cabecalho da pagina */}
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <h1 className="text-xl font-bold text-gray-900">Agenda Comercial</h1>
-            <p className="text-xs text-gray-500 mt-0.5">{hoje}</p>
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0">
+            <h1 className="text-lg sm:text-xl font-bold text-gray-900">Agenda Comercial</h1>
+            <p className="text-xs text-gray-500 mt-0.5 truncate">{hoje}</p>
           </div>
-          <div className="flex items-center gap-3 flex-shrink-0">
+          <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
             {todosItems.length > 0 && (
-              <div className="text-right">
+              <div className="hidden sm:block text-right">
                 <p className="text-xs text-gray-500">Total na agenda</p>
                 <p className="text-xl font-bold text-gray-900">{todosItems.length}</p>
               </div>
@@ -512,7 +516,7 @@ export default function AgendaPage() {
               type="button"
               onClick={handleGerarAgenda}
               disabled={gerandoAgenda}
-              className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white rounded-lg
+              className="min-h-11 flex items-center gap-2 px-3 sm:px-4 py-2 text-sm font-semibold text-white rounded-lg
                          transition-all hover:opacity-90 active:scale-[0.98]
                          focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1
                          disabled:opacity-60 disabled:cursor-not-allowed"

@@ -259,7 +259,7 @@ export default function AtendimentoModal({ item, onClose, onSaved }: Atendimento
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4"
       style={{ backgroundColor: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(2px)' }}
       onClick={handleBackdropClick}
       aria-modal="true"
@@ -268,7 +268,7 @@ export default function AtendimentoModal({ item, onClose, onSaved }: Atendimento
     >
       <div
         ref={dialogRef}
-        className="bg-white rounded-xl shadow-2xl w-full max-w-[560px] max-h-[calc(100vh-2rem)] flex flex-col"
+        className="bg-white sm:rounded-xl shadow-2xl w-full sm:max-w-[560px] max-h-[95vh] sm:max-h-[calc(100vh-2rem)] flex flex-col rounded-t-2xl"
         style={{ animation: 'modalIn 200ms ease-out' }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -464,12 +464,12 @@ export default function AtendimentoModal({ item, onClose, onSaved }: Atendimento
 
         {/* Footer — so exibe antes de salvar */}
         {!motorFeedback && (
-          <div className="px-6 py-4 border-t border-gray-200 flex items-center justify-between gap-3 flex-shrink-0">
+          <div className="px-4 sm:px-6 py-4 border-t border-gray-200 flex items-center justify-between gap-3 flex-shrink-0">
             <button
               type="button"
               onClick={onClose}
               disabled={saving}
-              className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 disabled:opacity-50"
+              className="min-h-11 px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 disabled:opacity-50"
             >
               Cancelar
             </button>
@@ -478,7 +478,7 @@ export default function AtendimentoModal({ item, onClose, onSaved }: Atendimento
               form="form-atendimento"
               disabled={saving}
               aria-label={`Salvar atendimento de ${item.nome_fantasia}`}
-              className="px-5 py-2 bg-green-600 hover:bg-green-700 disabled:opacity-60 text-white text-sm font-semibold rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 flex items-center gap-2"
+              className="min-h-11 flex-1 sm:flex-none px-5 py-2 bg-green-600 hover:bg-green-700 disabled:opacity-60 text-white text-sm font-semibold rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 flex items-center justify-center gap-2"
             >
               {saving && (
                 <svg
