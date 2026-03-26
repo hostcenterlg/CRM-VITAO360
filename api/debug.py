@@ -1,69 +1,48 @@
-"""Debug handler to diagnose import errors on Vercel."""
+"""Debug handler — Vercel Python format."""
+from http.server import BaseHTTPRequestHandler
 import json
 import os
 import sys
-import traceback
 
 
-def handler(event, context):
-    """Return diagnostic info about the serverless environment."""
-    info = {
-        "python_version": sys.version,
-        "cwd": os.getcwd(),
-        "sys_path": sys.path[:5],
-        "env_keys": sorted([k for k in os.environ if not k.startswith("AWS")])[:20],
-        "vercel_env": os.environ.get("VERCEL", "NOT SET"),
-    }
-
-    # Try importing backend
-    try:
+class handler(BaseHTTPRequestHandler):
+    def do_GET(self):
         root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        if root not in sys.path:
-            sys.path.insert(0, root)
 
-        # Check backend dir exists
-        backend_dir = os.path.join(root, "backend")
-        info["backend_exists"] = os.path.isdir(backend_dir)
-        info["backend_app_exists"] = os.path.isdir(os.path.join(backend_dir, "app"))
+        info = {
+            "status": "ok",
+            "python": sys.version,
+            "cwd": os.getcwd(),
+            "root": root,
+            "backend_exists": os.path.isdir(os.path.join(root, "backend")),
+            "data_exists": os.path.isdir(os.path.join(root, "data")),
+        }
 
-        # List files in backend/app
-        app_dir = os.path.join(backend_dir, "app")
-        if os.path.isdir(app_dir):
-            info["backend_app_files"] = os.listdir(app_dir)[:20]
+        # Try imports
+        try:
+            if root not in sys.path:
+                sys.path.insert(0, root)
+            os.environ.setdefault("DATABASE_URL", "sqlite:////tmp/crm.db")
+            os.environ.setdefault("JWT_SECRET", "test")
 
-        # Try imports one by one
-        imports_ok = []
-        imports_fail = []
+            import fastapi
+            info["fastapi"] = fastapi.__version__
 
-        for mod in [
-            "backend",
-            "backend.app",
-            "backend.app.database",
-            "backend.app.main",
-            "mangum",
-            "fastapi",
-            "sqlalchemy",
-            "pydantic",
-            "jose",
-            "bcrypt",
-        ]:
-            try:
-                __import__(mod)
-                imports_ok.append(mod)
-            except Exception as e:
-                imports_fail.append(f"{mod}: {e}")
+            import sqlalchemy
+            info["sqlalchemy"] = sqlalchemy.__version__
 
-        info["imports_ok"] = imports_ok
-        info["imports_fail"] = imports_fail
+            import mangum
+            info["mangum"] = "ok"
 
-    except Exception as e:
-        info["error"] = str(e)
-        info["traceback"] = traceback.format_exc()
+            from backend.app.main import app
+            info["app"] = app.title
+        except Exception as e:
+            import traceback
+            info["error"] = str(e)
+            info["traceback"] = traceback.format_exc()
 
-    body = json.dumps(info, indent=2, default=str)
-
-    return {
-        "statusCode": 200,
-        "headers": {"Content-Type": "application/json"},
-        "body": body,
-    }
+        body = json.dumps(info, indent=2).encode()
+        self.send_response(200)
+        self.send_header("Content-Type", "application/json")
+        self.end_headers()
+        self.wfile.write(body)
