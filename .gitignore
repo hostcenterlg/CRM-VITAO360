@@ -74,3 +74,10 @@ data/sources/deskrio/tickets/Notebooklm/
 
 # Zip files
 *.zip
+
+# Claude Code worktrees (agent copies)
+.claude/worktrees/
+.claude/settings.local.json
+
+# SQLite database (generated)
+data/crm_vitao360.db
