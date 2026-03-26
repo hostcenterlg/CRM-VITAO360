@@ -4,9 +4,17 @@
     "api/index.py": {
       "runtime": "@vercel/python@4.5.0",
       "maxDuration": 30
+    },
+    "api/debug.py": {
+      "runtime": "@vercel/python@4.5.0",
+      "maxDuration": 10
     }
   },
   "routes": [
+    {
+      "src": "/debug",
+      "dest": "/api/debug.py"
+    },
     {
       "src": "/api/(.*)",
       "dest": "/api/index.py"
@@ -14,10 +22,6 @@
     {
       "src": "/health",
       "dest": "/api/index.py"
-    },
-    {
-      "src": "/(.*)",
-      "status": 404
     }
   ]
 }
