@@ -1,10 +1,11 @@
 {
   "meta": {
-    "titulo": "VITAO 360 — ARQUITETURA FINAL 9 DIMENSOES",
+    "titulo": "VITAO 360 — ARQUITETURA SCORE v2 (OFICIAL planilha INTELIGENTE FINAL OK)",
     "data": "27/02/2026",
     "total_dimensoes": 9,
-    "total_prioridades": 8,
-    "output_final": "PRIORIDADE (P0-P7) — Resultado do cruzamento das 9 dimensoes"
+    "total_prioridades": 7,
+    "output_final": "PRIORIDADE (P1-P7) — Score v2 com 6 fatores ponderados",
+    "data_atualizacao_v2": "25/03/2026"
   },
   "dimensoes": [
     {
@@ -91,107 +92,88 @@
   ],
   "prioridades": [
     {
-      "label": "P0",
-      "nome": "IMEDIATA",
-      "como_gera": "BLOQUEIO: SUPORTE com problema aberto",
-      "score": "N/A",
-      "distribuicao": "Pula fila",
-      "regra": "Automatico — cliente com problema = risco de perder"
-    },
-    {
       "label": "P1",
-      "nome": "URGENTE",
-      "como_gera": "BLOQUEIO: EM ATENDIMENTO + FU vencido + CS no prazo",
-      "score": "N/A",
+      "nome": "NAMORO NOVO",
+      "como_gera": "POS-VENDA/CS + NOVO/ATIVO + Score >= 70",
       "distribuicao": "Ate 15/dia",
-      "regra": "Namoro novo nao pode esfriar + promessa cumprida"
+      "regra": "Namoro novo nao pode esfriar"
     },
     {
       "label": "P2",
-      "nome": "ALTA",
-      "como_gera": "Score ponderado 80-100",
-      "score": "80-100",
-      "distribuicao": "15-20/dia",
-      "regra": "Top da lista apos bloqueios"
+      "nome": "NEGOCIACAO ATIVA",
+      "como_gera": "ORCAMENTO / EM ATENDIMENTO / CADASTRO",
+      "distribuicao": "Alta prioridade agenda",
+      "regra": "Negociacao em andamento — fechar ou qualificar"
     },
     {
       "label": "P3",
-      "nome": "MEDIA-ALTA",
-      "como_gera": "Score ponderado 60-79",
-      "score": "60-79",
-      "distribuicao": "15-20/dia",
-      "regra": "Segundo bloco"
+      "nome": "PROBLEMA",
+      "como_gera": "SUPORTE — problema aberto",
+      "distribuicao": "Pula fila — nao conta no limite",
+      "regra": "Risco de perda imediata por insatisfacao"
     },
     {
       "label": "P4",
-      "nome": "MEDIA",
-      "como_gera": "Score ponderado 45-59",
-      "score": "45-59",
-      "distribuicao": "5-10/dia",
-      "regra": "Corpo da agenda"
+      "nome": "MOMENTO OURO",
+      "como_gera": "INAT.REC Score>=75 | NOVO | Score>=50",
+      "distribuicao": "Corpo da agenda",
+      "regra": "Janela de oportunidade — agir antes de esfriar"
     },
     {
       "label": "P5",
-      "nome": "MEDIA-BAIXA",
-      "como_gera": "Score ponderado 30-44",
-      "score": "30-44",
-      "distribuicao": "5-10/dia",
-      "regra": "Se sobrar tempo"
+      "nome": "INAT. RECENTE",
+      "como_gera": "INAT.REC Score<75 | INAT.ANT Score>=80",
+      "distribuicao": "Se sobrar tempo",
+      "regra": "Reativacao — perda recente com potencial de recuperar"
     },
     {
       "label": "P6",
-      "nome": "BAIXA",
-      "como_gera": "Score ponderado 15-29",
-      "score": "15-29",
-      "distribuicao": "0-5/dia",
-      "regra": "Ultima prioridade"
+      "nome": "INAT. ANTIGO",
+      "como_gera": "INAT.ANT Score<80",
+      "distribuicao": "Ultima prioridade agenda",
+      "regra": "Reativacao dificil — tentativa sistematica"
     },
     {
       "label": "P7",
-      "nome": "NUTRICAO",
-      "como_gera": "Score 0-14. Campanha mensal.",
-      "score": "0-14",
-      "distribuicao": "0 (campanha)",
-      "regra": "Nunca entra nos 40/dia"
+      "nome": "PROSPECCAO",
+      "como_gera": "PROSPECT / LEAD",
+      "distribuicao": "0 (campanha mensal)",
+      "regra": "Nunca entra nos 40/dia — campanha dedicada"
     }
   ],
   "score_ponderado": [
     {
-      "dimensao": "FASE",
+      "fator": "URGENCIA",
+      "peso": "30%",
+      "inputs": "situacao, dias_sem_compra, ciclo_medio",
+      "logica_score": "INAT.ANT(100) | INAT.REC(90) | EM RISCO(70) | PROSPECT/LEAD(10) | ratio>=1.5(100) | ratio>=1.0(60) | ratio>=0.7(40) | ratio<0.7(20) | sem_ciclo+dias>50(60) | default(30)"
+    },
+    {
+      "fator": "VALOR",
       "peso": "25%",
-      "logica_score": "RECOMPRA(100) > NEGOCIAÇÃO(80) > SALVAMENTO(60) > RECUPERAÇÃO(40) > PROSPECÇÃO(30) > NUTRIÇÃO(10)"
+      "inputs": "curva_abc, tipo_cliente",
+      "logica_score": "A+FIDELIZADO/MADURO(100) | A(80) | B+RECORRENTE/FIDELIZADO(60) | B(50) | C(20) | sem_ABC+FIDELIZADO/MADURO(60) | sem_ABC+RECORRENTE(40) | sem_ABC+EM_DESENV(20) | default(10)"
     },
     {
-      "dimensao": "SINALEIRO",
+      "fator": "FOLLOWUP",
       "peso": "20%",
-      "logica_score": "VERMELHO(100) > AMARELO(60) > VERDE(30) > ROXO(0)"
+      "inputs": "dias_atraso_followup",
+      "logica_score": "sem_FU(50) | >=7d(100) | >=3d(80) | >=1d(70) | hoje(60) | ate_-3d(40) | mais_futuro(20)"
     },
     {
-      "dimensao": "CURVA ABC",
-      "peso": "20%",
-      "logica_score": "A(100) > B(60) > C(30)"
-    },
-    {
-      "dimensao": "TEMPERATURA",
+      "fator": "SINAL",
       "peso": "15%",
-      "logica_score": "QUENTE(100) > MORNO(60) > FRIO(30) > CRITICO(20) > PERDIDO(0)"
+      "inputs": "temperatura, ecommerce_carrinho",
+      "logica_score": "CRITICO(90) | QUENTE+carrinho(100) | QUENTE(80) | MORNO+carrinho(70) | MORNO(40) | FRIO(10) | PERDIDO(0)"
     },
     {
-      "dimensao": "TIPO CLIENTE",
-      "peso": "10%",
-      "logica_score": "MADURO(100) > FIDELIZADO(85) > RECORRENTE(70) > EM DESENV(50) > NOVO(30) > LEAD(15) > PROSPECT(10)"
+      "fator": "TENTATIVA",
+      "peso": "5%",
+      "inputs": "tentativas",
+      "logica_score": "T4+(100) | T3(50) | T1/T2(10)"
     },
     {
-      "dimensao": "TENTATIVAS",
-      "peso": "10%",
-      "logica_score": "T1(100) > T2(70) > T3(40) > T4(10) > NUTRICAO(5)"
-    }
-  ],
-  "desempate": [
-    "1. CURVA ABC (A primeiro)",
-    "2. TICKET MEDIO (maior primeiro)",
-    "3. TIPO CLIENTE (mais maduro primeiro)",
-    "4. FOLLOW-UP mais vencido primeiro"
-  ],
-  "meta_balance": "META BALANCE: Se P2-P5 nao cobrem 80% meta mensal, PROSPECÇÃO sobe forcado"
-}
+      "fator": "SITUACAO",
+      "peso": "5%",
+      "inputs": "situacao",
+   
