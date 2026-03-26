@@ -653,3 +653,58 @@ export interface RedesResponse {
 export async function fetchRedes(): Promise<RedesResponse> {
   return fetchJson<RedesResponse>('/api/redes');
 }
+
+// ---------------------------------------------------------------------------
+// Import endpoints
+// ---------------------------------------------------------------------------
+
+export interface ImportResult {
+  arquivo: string;
+  registros_lidos: number;
+  inseridos: number;
+  atualizados: number;
+  ignorados: number;
+  erros: number;
+  detalhes_erros: string[];
+  status: 'SUCESSO' | 'SUCESSO_COM_ERROS' | 'FALHA';
+}
+
+export interface ImportHistoryItem {
+  id: number;
+  data_import: string;
+  arquivo: string;
+  registros_lidos: number;
+  inseridos: number;
+  atualizados: number;
+  erros: number;
+  status: 'SUCESSO' | 'SUCESSO_COM_ERROS' | 'FALHA';
+}
+
+export interface ImportHistory {
+  total: number;
+  itens: ImportHistoryItem[];
+}
+
+export async function uploadImport(file: File): Promise<ImportResult> {
+  const formData = new FormData();
+  formData.append('file', file);
+  const token = getToken();
+  const res = await fetch(`${BASE_URL}/api/import/upload`, {
+    method: 'POST',
+    headers: { ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+    body: formData,
+  });
+  if (res.status === 401) {
+    if (typeof window !== 'undefined') window.location.href = '/login';
+    throw new Error('Sessao expirada');
+  }
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({})) as Record<string, unknown>;
+    throw new Error((body.detail as string) || `API error ${res.status}`);
+  }
+  return res.json() as Promise<ImportResult>;
+}
+
+export async function fetchImportHistory(): Promise<ImportHistory> {
+  return fetchJson<ImportHistory>('/api/import/history');
+}

@@ -15,6 +15,7 @@ Routers registrados:
   /api/redes       — Listagem detalhada de redes com lojas e indicadores
   /api/motor       — Regras do Motor de Inteligencia Comercial (read-only, admin)
   /api/rnc         — Registros de Nao Conformidade (CRUD + ciclo de vida)
+  /api/import      — Import pipeline: upload .xlsx Mercos/SAP, historico de jobs
 
 Startup:
   - Cria tabelas no SQLite se nao existirem (sem Alembic por ora)
@@ -38,6 +39,7 @@ from backend.app.api.routes_atendimentos import router as atendimentos_router
 from backend.app.api.routes_auth import router as auth_router
 from backend.app.api.routes_clientes import router as clientes_router
 from backend.app.api.routes_dashboard import router as dashboard_router
+from backend.app.api.routes_import import router as import_router
 from backend.app.api.routes_motor import router as motor_router
 from backend.app.api.routes_projecao import router as projecao_router
 from backend.app.api.routes_redes import router as redes_router
@@ -134,6 +136,7 @@ app.include_router(sinaleiro_router)
 app.include_router(redes_router)
 app.include_router(motor_router)
 app.include_router(rnc_router)
+app.include_router(import_router)
 
 
 # ---------------------------------------------------------------------------

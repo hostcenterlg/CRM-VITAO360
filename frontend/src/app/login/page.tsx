@@ -170,7 +170,7 @@ export default function LoginPage() {
         </div>
 
         <p className="text-center text-xs text-gray-400 mt-6">
-          VITAO Alimentos — uso interno
+          CRM VITAO360 v1.0 — Motor de Inteligencia Comercial
         </p>
       </div>
     </div>

@@ -99,6 +99,26 @@ export default function DashboardPage() {
         </p>
       </div>
 
+      {/* Empty data notice — shown when no data has been imported yet */}
+      {!loading && !error && kpis && kpis.faturamento_total === 0 && (
+        <div className="flex items-start gap-3 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+          <svg className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <div className="flex-1">
+            <p className="text-sm font-semibold text-amber-800">Nenhum dado importado</p>
+            <p className="text-xs text-amber-700 mt-0.5">
+              Acesse{' '}
+              <a href="/admin/import" className="font-bold underline">
+                Admin &gt; Import
+              </a>{' '}
+              para carregar dados.
+            </p>
+          </div>
+        </div>
+      )}
+
       {error && (
         <div className="flex items-start gap-3 p-4 bg-red-50 border border-red-200 rounded-lg">
           <svg className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

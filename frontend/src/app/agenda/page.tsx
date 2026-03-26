@@ -684,11 +684,19 @@ export default function AgendaPage() {
                 <p className="text-sm font-medium text-gray-600">
                   {temFiltrosAtivos
                     ? 'Nenhum item com esses filtros'
-                    : 'Nenhum atendimento na agenda'}
+                    : 'Agenda vazia'}
                 </p>
                 {!temFiltrosAtivos && (
                   <p className="text-xs text-gray-400 mt-1 mb-3">
-                    Clique em &quot;Gerar Agenda&quot; para criar os atendimentos do dia.
+                    Clique em &quot;Gerar Agenda&quot; ou{' '}
+                    <a
+                      href="/admin/import"
+                      className="font-semibold underline"
+                      style={{ color: '#00B050' }}
+                    >
+                      importe dados primeiro
+                    </a>
+                    .
                   </p>
                 )}
                 {temFiltrosAtivos ? (
