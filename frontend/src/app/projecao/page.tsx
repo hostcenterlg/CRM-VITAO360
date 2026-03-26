@@ -63,8 +63,22 @@ export default function ProjecaoPage() {
       </div>
 
       {error && (
-        <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">
-          Erro ao carregar projecao: {error}
+        <div className="flex items-start gap-3 p-4 bg-red-50 border border-red-200 rounded-lg">
+          <svg className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+          <div className="flex-1">
+            <p className="text-sm font-semibold text-red-800">Erro ao carregar projecao</p>
+            <p className="text-xs text-red-600 mt-0.5">{error}</p>
+          </div>
+          <button
+            type="button"
+            onClick={() => window.location.reload()}
+            className="flex-shrink-0 px-3 py-1.5 text-xs font-semibold text-red-700 border border-red-300 rounded-lg hover:bg-red-100 transition-colors"
+          >
+            Tentar novamente
+          </button>
         </div>
       )}
 
@@ -76,9 +90,21 @@ export default function ProjecaoPage() {
             className="bg-white rounded-lg border border-gray-200 p-4 flex flex-col gap-1 shadow-sm"
             style={{ borderLeftColor: '#2563eb', borderLeftWidth: '4px' }}
           >
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
-              Baseline 2025
-            </p>
+            <div className="flex items-center justify-between gap-2">
+              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                Baseline 2025
+              </p>
+              <span
+                className="w-7 h-7 rounded flex items-center justify-center flex-shrink-0"
+                style={{ backgroundColor: '#2563eb18', color: '#2563eb' }}
+                aria-hidden="true"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                    d="M12 22V12M12 12C12 9.239 9.761 7 7 7H3v2h4a3 3 0 010 6H3m9-3h4a3 3 0 110 6H3m9 0v3M12 3v4" />
+                </svg>
+              </span>
+            </div>
             <p className="text-2xl font-bold text-gray-900 leading-tight">
               {formatBRL(BASELINE_2025)}
             </p>
@@ -160,14 +186,31 @@ export default function ProjecaoPage() {
         </div>
 
         {detalheLoading ? (
-          <div className="h-48 flex items-center justify-center">
-            <div className="text-sm text-gray-400 animate-pulse">Carregando grafico...</div>
+          <div className="h-64 flex items-end gap-1.5 px-2 pb-8">
+            {Array.from({ length: 12 }).map((_, i) => (
+              <div key={i} className="flex-1 flex gap-0.5 items-end">
+                <div
+                  className="flex-1 bg-gray-100 animate-pulse rounded-t"
+                  style={{ height: `${20 + (i % 5) * 15}%`, minHeight: 8 }}
+                />
+                <div
+                  className="flex-1 bg-gray-200 animate-pulse rounded-t"
+                  style={{ height: `${15 + (i % 4) * 12}%`, minHeight: 6, animationDelay: `${i * 60}ms` }}
+                />
+              </div>
+            ))}
           </div>
         ) : detalhe?.mensal?.length ? (
           <GroupedBarChart data={detalhe.mensal} />
         ) : (
-          <div className="h-48 flex items-center justify-center text-sm text-gray-400">
-            Sem dados mensais para {filtroConsultor}
+          <div className="h-64 flex items-center justify-center text-sm text-gray-400">
+            <div className="text-center">
+              <svg className="w-10 h-10 mx-auto mb-3 text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
+                  d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+              </svg>
+              Sem dados mensais para {filtroConsultor}
+            </div>
           </div>
         )}
 
@@ -317,27 +360,33 @@ interface MesData {
 
 function GroupedBarChart({ data }: { data: MesData[] }) {
   const maxVal = Math.max(...data.flatMap((d) => [d.meta, d.faturamento]), 1);
-  const CHART_H = 160;
-  const BAR_W = 14;
-  const GAP = 4;
-  const GROUP_W = BAR_W * 2 + GAP + 8;
-  const CHART_W = data.length * GROUP_W + 40;
+  const CHART_H = 220;
+  const BAR_W = 16;
+  const GAP = 5;
+  const GROUP_W = BAR_W * 2 + GAP + 10;
+  const CHART_W = data.length * GROUP_W + 50;
+
+  const MESES_LABELS = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
 
   return (
     <div className="overflow-x-auto scrollbar-thin">
       <svg
         width={CHART_W}
-        height={CHART_H + 40}
+        height={CHART_H + 50}
         aria-label="Grafico realizado vs meta por mes"
         role="img"
       >
         {/* Y axis lines */}
         {[0, 0.25, 0.5, 0.75, 1].map((frac) => {
-          const y = 10 + (1 - frac) * CHART_H;
+          const y = 14 + (1 - frac) * CHART_H;
+          const labelVal = maxVal * frac;
+          const labelStr = labelVal >= 1000
+            ? `${(labelVal / 1000).toFixed(labelVal >= 100000 ? 0 : 1)}K`
+            : labelVal.toFixed(0);
           return (
             <g key={frac}>
               <line
-                x1={30}
+                x1={36}
                 y1={y}
                 x2={CHART_W}
                 y2={y}
@@ -345,13 +394,13 @@ function GroupedBarChart({ data }: { data: MesData[] }) {
                 strokeWidth={1}
               />
               <text
-                x={28}
+                x={34}
                 y={y + 3}
                 textAnchor="end"
-                fontSize="8"
+                fontSize="9"
                 fill="#9CA3AF"
               >
-                {(maxVal * frac / 1000).toFixed(0)}K
+                {labelStr}
               </text>
             </g>
           );
@@ -359,15 +408,13 @@ function GroupedBarChart({ data }: { data: MesData[] }) {
 
         {/* Bars */}
         {data.map((d, i) => {
-          const x = 32 + i * GROUP_W;
+          const x = 38 + i * GROUP_W;
           const metaH = maxVal > 0 ? (d.meta / maxVal) * CHART_H : 0;
           const realH = maxVal > 0 ? (d.faturamento / maxVal) * CHART_H : 0;
           const pct = d.meta > 0 ? (d.faturamento / d.meta) * 100 : 0;
           const barColor =
             pct >= 80 ? '#00B050' : pct >= 50 ? '#FFC000' : '#FF4500';
 
-          // Exibe o mes no formato curto (ex: "2026-01" -> "Jan")
-          const MESES_LABELS = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
           const mesNum = parseInt(d.mes_referencia.split('-')[1] ?? '1', 10) - 1;
           const mesLabel = MESES_LABELS[mesNum] ?? d.mes_referencia;
 
@@ -376,39 +423,40 @@ function GroupedBarChart({ data }: { data: MesData[] }) {
               {/* Meta bar (background) */}
               <rect
                 x={x}
-                y={10 + CHART_H - metaH}
+                y={14 + CHART_H - metaH}
                 width={BAR_W}
                 height={metaH}
                 fill="#E5E7EB"
-                rx={2}
+                rx={3}
               />
               {/* Realizado bar */}
               <rect
                 x={x + BAR_W + GAP}
-                y={10 + CHART_H - realH}
+                y={14 + CHART_H - realH}
                 width={BAR_W}
                 height={realH}
                 fill={barColor}
-                rx={2}
+                rx={3}
               />
               {/* Month label */}
               <text
-                x={x + BAR_W}
-                y={10 + CHART_H + 12}
+                x={x + BAR_W + GAP / 2}
+                y={14 + CHART_H + 14}
                 textAnchor="middle"
-                fontSize="8"
+                fontSize="9"
+                fontWeight="500"
                 fill="#6B7280"
               >
                 {mesLabel}
               </text>
-              {/* Pct label */}
-              {pct > 0 && (
+              {/* Pct label above realizado bar */}
+              {pct > 0 && realH > 12 && (
                 <text
                   x={x + BAR_W + GAP + BAR_W / 2}
-                  y={10 + CHART_H - realH - 3}
+                  y={14 + CHART_H - realH - 4}
                   textAnchor="middle"
-                  fontSize="7"
-                  fontWeight="600"
+                  fontSize="8"
+                  fontWeight="700"
                   fill={barColor}
                 >
                   {pct.toFixed(0)}%
@@ -420,12 +468,12 @@ function GroupedBarChart({ data }: { data: MesData[] }) {
 
         {/* Legend */}
         <g>
-          <rect x={CHART_W - 120} y={4} width={10} height={8} fill="#E5E7EB" rx={1} />
-          <text x={CHART_W - 107} y={11} fontSize="8" fill="#6B7280">
+          <rect x={CHART_W - 130} y={4} width={12} height={8} fill="#E5E7EB" rx={2} />
+          <text x={CHART_W - 115} y={12} fontSize="9" fill="#6B7280">
             Meta
           </text>
-          <rect x={CHART_W - 80} y={4} width={10} height={8} fill="#00B050" rx={1} />
-          <text x={CHART_W - 67} y={11} fontSize="8" fill="#6B7280">
+          <rect x={CHART_W - 85} y={4} width={12} height={8} fill="#00B050" rx={2} />
+          <text x={CHART_W - 70} y={12} fontSize="9" fill="#6B7280">
             Realizado
           </text>
         </g>

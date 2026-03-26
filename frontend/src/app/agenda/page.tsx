@@ -185,7 +185,7 @@ function AgendaCard({ item, concluido, onRegistrar }: AgendaCardProps) {
             </span>
 
             {/* Badge de prioridade */}
-            <StatusBadge value={item.prioridade} variant="prioridade" small />
+            <StatusBadge value={item.prioridade} variant="prioridade" large />
 
             {/* Nome do cliente */}
             <h3 className="text-sm font-bold text-gray-900 truncate leading-tight">
@@ -216,16 +216,20 @@ function AgendaCard({ item, concluido, onRegistrar }: AgendaCardProps) {
           {item.curva_abc && <StatusBadge value={item.curva_abc} variant="abc" small />}
         </div>
 
-        {/* Bloco de ACAO SUGERIDA (destaque principal) */}
+        {/* Bloco de ACAO SUGERIDA (destaque principal — elemento mais visivel do card) */}
         {item.acao && (
           <div
-            className="mb-2.5 px-3 py-2 rounded-r-md"
+            className="mb-2.5 px-3 py-2.5 rounded-r-md"
             style={{
-              backgroundColor: acao.bg,
-              borderLeft: `3px solid ${acao.border}`,
+              backgroundColor: concluido ? '#F9FAFB' : acao.bg,
+              borderLeft: `4px solid ${acao.border}`,
             }}
           >
-            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
+            <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1 flex items-center gap-1">
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5}
+                  d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
               Acao Prescrita
             </p>
             <p className="text-sm font-semibold text-gray-900 leading-snug">{item.acao}</p>
@@ -330,6 +334,7 @@ export default function AgendaPage() {
   >({});
   const [loadingTabs, setLoadingTabs] = useState<Partial<Record<Consultor, boolean>>>({});
   const [errorTabs, setErrorTabs] = useState<Partial<Record<Consultor, string>>>({});
+  const [gerandoAgenda, setGerandoAgenda] = useState(false);
 
   // CNPJ de itens concluidos por consultor (Two-Base: so LOG, sem R$)
   const [concluidosByConsultor, setConcluidosByConsultor] = useState<
@@ -458,6 +463,27 @@ export default function AgendaPage() {
     setModalItem(null);
   };
 
+  // Gerar nova agenda via backend
+  const handleGerarAgenda = async () => {
+    setGerandoAgenda(true);
+    try {
+      const apiBase = process.env.NEXT_PUBLIC_API_URL ?? 'https://crm-vitao360-api.onrender.com';
+      await fetch(`${apiBase}/api/agenda/gerar`, { method: 'POST' });
+      // Recarregar agenda do consultor ativo
+      setAgendaByConsultor((prev) => {
+        const next = { ...prev };
+        delete next[activeTab];
+        return next;
+      });
+      setLoadingTabs((prev) => ({ ...prev, [activeTab]: false }));
+      loadConsultor(activeTab);
+    } catch {
+      // Silently fail — user still sees current data
+    } finally {
+      setGerandoAgenda(false);
+    }
+  };
+
   const temFiltrosAtivos = !!(filtroPrioridade || filtroSinaleiro || filtroBusca);
 
   // ---------------------------------------------------------------------------
@@ -472,15 +498,42 @@ export default function AgendaPage() {
         {/* Cabecalho da pagina */}
         <div className="flex items-start justify-between gap-4">
           <div>
-            <h1 className="text-lg font-bold text-gray-900">Agenda Comercial</h1>
+            <h1 className="text-xl font-bold text-gray-900">Agenda Comercial</h1>
             <p className="text-xs text-gray-500 mt-0.5">{hoje}</p>
           </div>
-          {todosItems.length > 0 && (
-            <div className="text-right flex-shrink-0">
-              <p className="text-xs text-gray-500">Total na agenda</p>
-              <p className="text-xl font-bold text-gray-900">{todosItems.length}</p>
-            </div>
-          )}
+          <div className="flex items-center gap-3 flex-shrink-0">
+            {todosItems.length > 0 && (
+              <div className="text-right">
+                <p className="text-xs text-gray-500">Total na agenda</p>
+                <p className="text-xl font-bold text-gray-900">{todosItems.length}</p>
+              </div>
+            )}
+            <button
+              type="button"
+              onClick={handleGerarAgenda}
+              disabled={gerandoAgenda}
+              className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white rounded-lg
+                         transition-all hover:opacity-90 active:scale-[0.98]
+                         focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1
+                         disabled:opacity-60 disabled:cursor-not-allowed"
+              style={{ backgroundColor: '#00B050' }}
+            >
+              {gerandoAgenda ? (
+                <>
+                  <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                  Gerando...
+                </>
+              ) : (
+                <>
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                      d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                  Gerar Agenda
+                </>
+              )}
+            </button>
+          </div>
         </div>
 
         {/* Barra de progresso */}
@@ -624,16 +677,41 @@ export default function AgendaPage() {
                 <svg aria-hidden="true" className="w-10 h-10 mx-auto mb-3 text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                 </svg>
-                <p className="text-sm font-medium">
-                  {temFiltrosAtivos ? 'Nenhum item com esses filtros' : `Nenhum item na agenda de ${activeTab}`}
+                <p className="text-sm font-medium text-gray-600">
+                  {temFiltrosAtivos
+                    ? 'Nenhum item com esses filtros'
+                    : 'Nenhum atendimento na agenda'}
                 </p>
-                {temFiltrosAtivos && (
+                {!temFiltrosAtivos && (
+                  <p className="text-xs text-gray-400 mt-1 mb-3">
+                    Clique em &quot;Gerar Agenda&quot; para criar os atendimentos do dia.
+                  </p>
+                )}
+                {temFiltrosAtivos ? (
                   <button
                     type="button"
                     onClick={() => { setFiltroPrioridade(''); setFiltroSinaleiro(''); setFiltroBusca(''); }}
                     className="mt-2 text-sm text-green-600 hover:text-green-800 underline"
                   >
                     Limpar filtros
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={handleGerarAgenda}
+                    disabled={gerandoAgenda}
+                    className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white rounded-lg transition-all hover:opacity-90"
+                    style={{ backgroundColor: '#00B050' }}
+                  >
+                    {gerandoAgenda ? (
+                      <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                    ) : (
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                          d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                      </svg>
+                    )}
+                    Gerar Agenda
                   </button>
                 )}
               </div>

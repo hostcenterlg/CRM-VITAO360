@@ -213,12 +213,20 @@ export default function Sidebar({ mobileOpen, onClose }: SidebarProps) {
                           flex items-center gap-3 px-3 py-2 rounded text-sm font-medium transition-colors
                           ${
                             isActive(item.href)
-                              ? 'bg-green-50 text-green-700 border border-green-100'
+                              ? 'text-green-700'
                               : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                           }
                         `}
+                        style={
+                          isActive(item.href)
+                            ? { backgroundColor: '#00B05018', borderLeft: '3px solid #00B050', paddingLeft: '10px' }
+                            : undefined
+                        }
                       >
-                        <span className={isActive(item.href) ? 'text-green-600' : 'text-gray-400'}>
+                        <span
+                          className={isActive(item.href) ? '' : 'text-gray-400'}
+                          style={isActive(item.href) ? { color: '#00B050' } : undefined}
+                        >
                           {item.icon}
                         </span>
                         {item.label}

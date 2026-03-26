@@ -92,16 +92,30 @@ export default function DashboardPage() {
   return (
     <div className="space-y-6">
       {/* Page heading */}
-      <div>
-        <h1 className="text-xl font-bold text-gray-900">Dashboard</h1>
-        <p className="text-sm text-gray-500 mt-0.5">
+      <div className="pb-4 border-b border-gray-200">
+        <h1 className="text-2xl font-bold text-gray-900">Dashboard CEO</h1>
+        <p className="text-sm text-gray-500 mt-1">
           Visao geral da carteira comercial VITAO360
         </p>
       </div>
 
       {error && (
-        <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">
-          Erro ao carregar dados: {error}
+        <div className="flex items-start gap-3 p-4 bg-red-50 border border-red-200 rounded-lg">
+          <svg className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+          <div className="flex-1">
+            <p className="text-sm font-semibold text-red-800">Erro ao carregar dados</p>
+            <p className="text-xs text-red-600 mt-0.5">{error}</p>
+          </div>
+          <button
+            type="button"
+            onClick={() => window.location.reload()}
+            className="flex-shrink-0 px-3 py-1.5 text-xs font-semibold text-red-700 border border-red-300 rounded-lg hover:bg-red-100 transition-colors"
+          >
+            Tentar novamente
+          </button>
         </div>
       )}
 
@@ -114,6 +128,12 @@ export default function DashboardPage() {
             subtitle={`${kpis?.total_prospects ?? 0} prospects`}
             accentColor="#2563eb"
             loading={loading}
+            icon={
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                  d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+            }
           />
           <KpiCard
             title="Clientes Ativos"
@@ -121,13 +141,25 @@ export default function DashboardPage() {
             subtitle={`${kpis?.total_inativos ?? 0} inativos`}
             accentColor="#00B050"
             loading={loading}
+            icon={
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            }
           />
           <KpiCard
             title="Faturamento Total"
-            value={kpis ? formatBRL(kpis.faturamento_total) : '—'}
+            value={kpis ? formatFaturamentoCEO(kpis.faturamento_total) : '—'}
             subtitle="Baseline 2025"
             accentColor="#7c3aed"
             loading={loading}
+            icon={
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                  d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            }
           />
           <KpiCard
             title="Score Medio"
@@ -135,9 +167,18 @@ export default function DashboardPage() {
             subtitle={`${kpis?.clientes_criticos ?? 0} criticos / ${kpis?.clientes_alerta ?? 0} em alerta`}
             accentColor="#dc2626"
             loading={loading}
+            icon={
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+            }
           />
         </div>
       </section>
+
+      {/* Separador */}
+      <div className="border-t border-gray-200" />
 
       {/* Bloco 2: Donut Sinaleiro + Performance por Consultor */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -180,6 +221,9 @@ export default function DashboardPage() {
           )}
         </section>
       </div>
+
+      {/* Separador */}
+      <div className="border-t border-gray-200" />
 
       {/* Distribution charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -249,6 +293,9 @@ export default function DashboardPage() {
           )}
         </section>
       </div>
+
+      {/* Separador */}
+      <div className="border-t border-gray-200" />
 
       {/* Top 10 table */}
       <section className="bg-white rounded-lg border border-gray-200 shadow-sm">
@@ -625,6 +672,12 @@ function EmptyState() {
       Sem dados disponíveis
     </div>
   );
+}
+
+// Formata faturamento para CEO card (sem centavos, com prefixo R$)
+function formatFaturamentoCEO(value: number): string {
+  const rounded = Math.round(value);
+  return 'R$ ' + rounded.toLocaleString('pt-BR');
 }
 
 function formatCnpj(cnpj: string): string {

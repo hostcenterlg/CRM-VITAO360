@@ -133,8 +133,22 @@ export default function SinaleiroPage() {
       </div>
 
       {error && (
-        <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">
-          Erro ao carregar sinaleiro: {error}
+        <div className="flex items-start gap-3 p-4 bg-red-50 border border-red-200 rounded-lg">
+          <svg className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+          <div className="flex-1">
+            <p className="text-sm font-semibold text-red-800">Erro ao carregar sinaleiro</p>
+            <p className="text-xs text-red-600 mt-0.5">{error}</p>
+          </div>
+          <button
+            type="button"
+            onClick={() => load(filtroCor, filtroConsultor, filtroRede)}
+            className="flex-shrink-0 px-3 py-1.5 text-xs font-semibold text-red-700 border border-red-300 rounded-lg hover:bg-red-100 transition-colors"
+          >
+            Tentar novamente
+          </button>
         </div>
       )}
 
@@ -160,31 +174,40 @@ export default function SinaleiroPage() {
                     onClick={() =>
                       setFiltroCor(isSelected ? '' : item.cor.toUpperCase())
                     }
-                    className="rounded-lg border-2 p-4 text-left transition-all duration-150 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-offset-1"
+                    className="rounded-lg text-left transition-all duration-150 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-offset-1"
                     style={{
-                      borderColor: isSelected ? cfg.border : '#E5E7EB',
-                      backgroundColor: isSelected ? cfg.bg + '15' : '#fff',
+                      border: isSelected
+                        ? `3px solid ${cfg.border}`
+                        : '1px solid #E5E7EB',
+                      backgroundColor: isSelected ? cfg.bg + '18' : '#fff',
+                      padding: isSelected ? '14px' : '16px',
                     }}
                     aria-pressed={isSelected}
                     aria-label={`Filtrar por sinaleiro ${cfg.label}`}
                   >
-                    <div className="flex items-center gap-2 mb-1">
+                    <div className="flex items-center gap-2 mb-2">
                       <span
-                        className="inline-block w-2.5 h-2.5 rounded-full flex-shrink-0"
+                        className="inline-block w-3 h-3 rounded-full flex-shrink-0 shadow-sm"
                         style={{ backgroundColor: cfg.bg }}
                       />
-                      <span className="text-xs font-bold text-gray-700 uppercase">
+                      <span
+                        className="text-xs font-bold uppercase tracking-wide"
+                        style={{ color: isSelected ? cfg.border : '#374151' }}
+                      >
                         {cfg.label}
                       </span>
                     </div>
-                    <p className="text-2xl font-bold text-gray-900 leading-tight">
+                    <p className="text-3xl font-bold text-gray-900 leading-tight">
                       {item.count.toLocaleString('pt-BR')}
                     </p>
-                    <p className="text-xs text-gray-500 mt-0.5">
+                    <p className="text-xs text-gray-500 mt-0.5 font-medium">
                       {formatPercent(item.pct)}
                     </p>
                     {item.faturamento > 0 && (
-                      <p className="text-xs text-gray-400 mt-0.5 truncate">
+                      <p
+                        className="text-xs mt-1 font-semibold truncate"
+                        style={{ color: cfg.border }}
+                      >
                         {formatBRL(item.faturamento)}
                       </p>
                     )}

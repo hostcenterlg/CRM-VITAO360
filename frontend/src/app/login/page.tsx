@@ -53,13 +53,16 @@ export default function LoginPage() {
         {/* Logo / brand */}
         <div className="flex flex-col items-center mb-8">
           <div
-            className="w-12 h-12 rounded-xl flex items-center justify-center mb-3"
+            className="w-16 h-16 rounded-2xl flex items-center justify-center mb-4 shadow-md"
             style={{ backgroundColor: '#00B050' }}
           >
-            <span className="text-white font-bold text-xl">V</span>
+            <span className="text-white font-bold text-3xl tracking-tight">V</span>
           </div>
-          <h1 className="text-xl font-bold text-gray-900">CRM VITAO360</h1>
-          <p className="text-sm text-gray-500 mt-1">Inteligencia Comercial</p>
+          <h1 className="text-3xl font-bold text-gray-900 tracking-tight">CRM VITAO360</h1>
+          <p className="text-sm font-medium mt-2" style={{ color: '#00B050' }}>
+            Sistema de Inteligencia Comercial
+          </p>
+          <p className="text-xs text-gray-400 mt-1">VITAO Alimentos — CRM B2B</p>
         </div>
 
         {/* Card de login */}
@@ -145,19 +148,9 @@ export default function LoginPage() {
               type="submit"
               disabled={submitting || !email || !senha}
               className="w-full py-2.5 px-4 text-sm font-semibold text-white rounded-lg
-                         transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500
-                         disabled:opacity-50 disabled:cursor-not-allowed"
-              style={{ backgroundColor: submitting || !email || !senha ? undefined : '#00B050' }}
-              onMouseEnter={(e) => {
-                if (!submitting && email && senha) {
-                  (e.currentTarget as HTMLButtonElement).style.backgroundColor = '#009940';
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (!submitting && email && senha) {
-                  (e.currentTarget as HTMLButtonElement).style.backgroundColor = '#00B050';
-                }
-              }}
+                         transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500
+                         disabled:opacity-50 disabled:cursor-not-allowed hover:opacity-90 active:scale-[0.99]"
+              style={{ backgroundColor: '#00B050' }}
             >
               {submitting ? (
                 <span className="flex items-center justify-center gap-2">
@@ -165,7 +158,12 @@ export default function LoginPage() {
                   Entrando...
                 </span>
               ) : (
-                'Entrar'
+                <span className="flex items-center justify-center gap-2">
+                  Entrar
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                  </svg>
+                </span>
               )}
             </button>
           </form>

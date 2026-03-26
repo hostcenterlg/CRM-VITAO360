@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import Sidebar, { HamburgerButton } from './Sidebar';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -9,6 +9,32 @@ import { useAuth } from '@/contexts/AuthContext';
 // AppShell — sidebar + header com info do usuario + main content
 // Client component pois gerencia estado de sidebar e auth
 // ---------------------------------------------------------------------------
+
+// Map pathname -> page title for automatic header label
+const PAGE_TITLES: Record<string, string> = {
+  '/':              'Dashboard CEO',
+  '/agenda':        'Agenda Comercial',
+  '/carteira':      'Carteira de Clientes',
+  '/sinaleiro':     'Sinaleiro de Carteira',
+  '/projecao':      'Projecao Comercial',
+  '/redes':         'Redes e Franquias',
+  '/rnc':           'RNC',
+  '/admin/motor':   'Motor de IA',
+  '/admin/usuarios':'Usuarios',
+};
+
+// Map pathname -> breadcrumb segments [{ label, href? }]
+const BREADCRUMBS: Record<string, Array<{ label: string; href?: string }>> = {
+  '/':              [{ label: 'Dashboard' }],
+  '/agenda':        [{ label: 'Dashboard', href: '/' }, { label: 'Agenda' }],
+  '/carteira':      [{ label: 'Dashboard', href: '/' }, { label: 'Carteira' }],
+  '/sinaleiro':     [{ label: 'Dashboard', href: '/' }, { label: 'Sinaleiro' }],
+  '/projecao':      [{ label: 'Dashboard', href: '/' }, { label: 'Projecao' }],
+  '/redes':         [{ label: 'Dashboard', href: '/' }, { label: 'Redes' }],
+  '/rnc':           [{ label: 'Dashboard', href: '/' }, { label: 'RNC' }],
+  '/admin/motor':   [{ label: 'Admin', href: '/' }, { label: 'Motor' }],
+  '/admin/usuarios':[{ label: 'Admin', href: '/' }, { label: 'Usuarios' }],
+};
 
 interface AppShellProps {
   children: React.ReactNode;
@@ -37,6 +63,11 @@ export default function AppShell({ children, pageTitle }: AppShellProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { user, logout } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
+
+  // Auto-detect page title if not explicitly passed
+  const resolvedTitle = pageTitle ?? PAGE_TITLES[pathname] ?? undefined;
+  const breadcrumbs = BREADCRUMBS[pathname] ?? null;
 
   function handleLogout() {
     logout();
@@ -58,10 +89,40 @@ export default function AppShell({ children, pageTitle }: AppShellProps) {
           {/* Hamburger mobile */}
           <HamburgerButton onClick={() => setSidebarOpen(true)} />
 
-          {/* Titulo da pagina (opcional) */}
-          {pageTitle && (
-            <h1 className="text-base font-semibold text-gray-900">{pageTitle}</h1>
-          )}
+          {/* Breadcrumb + titulo */}
+          <div className="flex items-center gap-1 min-w-0">
+            {breadcrumbs && breadcrumbs.length > 1 ? (
+              <>
+                {breadcrumbs.map((crumb, idx) => (
+                  <span key={idx} className="flex items-center gap-1">
+                    {idx > 0 && (
+                      <svg className="w-3.5 h-3.5 text-gray-300 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    )}
+                    {crumb.href && idx < breadcrumbs.length - 1 ? (
+                      <button
+                        type="button"
+                        onClick={() => router.push(crumb.href!)}
+                        className="text-xs text-gray-400 hover:text-gray-700 transition-colors whitespace-nowrap"
+                      >
+                        {crumb.label}
+                      </button>
+                    ) : (
+                      <span className={idx === breadcrumbs.length - 1
+                        ? 'text-sm font-semibold text-gray-900 whitespace-nowrap'
+                        : 'text-xs text-gray-400 whitespace-nowrap'
+                      }>
+                        {crumb.label}
+                      </span>
+                    )}
+                  </span>
+                ))}
+              </>
+            ) : resolvedTitle ? (
+              <h1 className="text-base font-semibold text-gray-900">{resolvedTitle}</h1>
+            ) : null}
+          </div>
 
           {/* Spacer */}
           <div className="flex-1" />

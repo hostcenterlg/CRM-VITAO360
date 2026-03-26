@@ -50,16 +50,19 @@ const SINALEIRO_COLORS: Record<string, string> = {
 
 function SinaleiroDot({ value }: { value?: string }) {
   if (!value) return <span className="text-gray-300">—</span>;
-  const color = SINALEIRO_COLORS[value.toUpperCase()] ?? '#9CA3AF';
+  const upper = value.toUpperCase();
+  const color = SINALEIRO_COLORS[upper] ?? '#9CA3AF';
   return (
-    <span className="inline-flex items-center gap-1.5">
+    <span
+      className="inline-flex items-center justify-center"
+      title={value}
+      aria-label={`Sinaleiro: ${value}`}
+    >
       <span
-        className="inline-block rounded-full flex-shrink-0"
-        style={{ width: 10, height: 10, background: color }}
-        aria-label={`Sinaleiro: ${value}`}
+        className="inline-block rounded-full flex-shrink-0 shadow-sm"
+        style={{ width: 12, height: 12, background: color }}
         role="img"
       />
-      <span className="text-xs text-gray-600">{value}</span>
     </span>
   );
 }
@@ -151,8 +154,13 @@ export default function ClienteTable({
 
   if (registros.length === 0) {
     return (
-      <div className="py-16 text-center text-gray-400 text-sm">
-        Nenhum cliente encontrado com os filtros selecionados.
+      <div className="py-16 text-center text-gray-400">
+        <svg className="w-10 h-10 mx-auto mb-3 text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
+            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+        </svg>
+        <p className="text-sm font-medium text-gray-500">Nenhum cliente encontrado</p>
+        <p className="text-xs text-gray-400 mt-1">Tente ajustar os filtros ou limpar a busca.</p>
       </div>
     );
   }
@@ -167,8 +175,10 @@ export default function ClienteTable({
           {registros.map((c) => (
             <tr
               key={c.cnpj}
-              className={`border-t border-gray-100 hover:bg-gray-50 transition-colors ${
-                onRowClick ? 'cursor-pointer' : ''
+              className={`border-t border-gray-100 transition-colors ${
+                onRowClick
+                  ? 'cursor-pointer hover:bg-green-50/40 active:bg-green-50'
+                  : 'hover:bg-gray-50'
               } ${rowBorderStyle(c.sinaleiro)}`}
               onClick={() => onRowClick?.(c)}
             >
