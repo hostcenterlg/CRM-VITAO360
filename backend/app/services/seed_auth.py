@@ -2,7 +2,7 @@
 CRM VITAO360 — Seed de usuarios e regras do motor.
 
 Popula automaticamente no startup:
-  1. 4 usuarios iniciais (admin + 3 consultores)
+  1. 5 usuarios iniciais (admin + 3 consultores + 1 consultor_externo)
   2. Regras do Motor de Regras V4 — 92 combinacoes (7 situacoes x 14 resultados)
 
 Ambas as funcoes sao idempotentes: nao duplicam registros existentes.
@@ -77,12 +77,24 @@ USUARIOS_INICIAIS = [
         "consultor_nome": "DAIANE",
         "senha": "vitao2026",
     },
+    {
+        # Julio Gadret — RCA externo, territorio Brasil (presencial)
+        # Atende exclusivamente Cia Saude e Fitland; sem acesso a dados financeiros
+        "email": "julio@vitao.com.br",
+        "nome": "Julio Gadret",
+        "role": "consultor_externo",
+        "consultor_nome": "JULIO",
+        "senha": "vitao2026",
+    },
 ]
 
 
 def seed_usuarios(db: Session) -> int:
     """
-    Cria os 4 usuarios iniciais se ainda nao existirem.
+    Cria os 5 usuarios iniciais se ainda nao existirem.
+
+    Usuarios: Leandro (admin), Manu (consultor), Larissa (consultor),
+    Daiane (consultor), Julio Gadret (consultor_externo — Cia Saude + Fitland).
 
     Idempotente: verifica por email antes de inserir.
     Retorna a quantidade de usuarios efetivamente criados.

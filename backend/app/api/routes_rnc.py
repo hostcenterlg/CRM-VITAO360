@@ -15,7 +15,8 @@ Endpoints:
 
 Ciclo de vida:
   ABERTO → EM_ANDAMENTO → RESOLVIDO
-  ABERTO → ENCERRADO
+  ABERTO → CANCELADO (cancelado antes de resolucao)
+  ABERTO → ENCERRADO  (alias legado — aceito mas nao incentivado)
 
 Regras:
   R4  — Two-Base: RNC nao tem valor monetario. Nenhum campo de R$.
@@ -70,10 +71,12 @@ AREA_POR_TIPO: dict[str, str] = {
 }
 
 # Status validos e transicoes permitidas
-_STATUS_VALIDOS = {"ABERTO", "EM_ANDAMENTO", "RESOLVIDO", "ENCERRADO"}
+# PRD especifica: ABERTO, EM_ANDAMENTO, RESOLVIDO, CANCELADO
+# ENCERRADO mantido como alias legado para nao quebrar dados existentes
+_STATUS_VALIDOS = {"ABERTO", "EM_ANDAMENTO", "RESOLVIDO", "CANCELADO", "ENCERRADO"}
 
-# Status que indicam problema resolvido/encerrado (para atualizar cliente.problema_aberto)
-_STATUS_FECHADOS = {"RESOLVIDO", "ENCERRADO"}
+# Status que indicam problema resolvido/cancelado (para atualizar cliente.problema_aberto)
+_STATUS_FECHADOS = {"RESOLVIDO", "CANCELADO", "ENCERRADO"}
 
 
 # ---------------------------------------------------------------------------
@@ -153,7 +156,7 @@ class RNCPatch(BaseModel):
 
     status: Optional[str] = Field(
         None,
-        description="Novo status: ABERTO | EM_ANDAMENTO | RESOLVIDO | ENCERRADO",
+        description="Novo status: ABERTO | EM_ANDAMENTO | RESOLVIDO | CANCELADO | ENCERRADO",
         examples=["EM_ANDAMENTO"],
     )
     resolucao: Optional[str] = Field(
@@ -311,7 +314,7 @@ def listar_rncs(
     status_filtro: Optional[str] = Query(
         None,
         alias="status",
-        description="Filtrar por status: ABERTO | EM_ANDAMENTO | RESOLVIDO | ENCERRADO",
+        description="Filtrar por status: ABERTO | EM_ANDAMENTO | RESOLVIDO | CANCELADO | ENCERRADO",
     ),
     tipo_problema: Optional[str] = Query(
         None,
@@ -498,7 +501,7 @@ def criar_rnc(
     summary="Atualizar status de uma RNC",
     description=(
         "Atualiza status e/ou outros campos de uma RNC. "
-        "P0: se status = RESOLVIDO, seta cliente.problema_aberto = False "
+        "P0: se status = RESOLVIDO ou CANCELADO, seta cliente.problema_aberto = False "
         "(apenas se nao houver outras RNCs abertas para o mesmo cliente). "
         "Requer autenticacao."
     ),
@@ -512,13 +515,13 @@ def atualizar_rnc(
     """
     Atualiza status, resolucao e/ou responsavel de uma RNC.
 
-    Ao transicionar para RESOLVIDO:
+    Ao transicionar para RESOLVIDO ou CANCELADO:
       1. data_resolucao = hoje
       2. Verifica se existem outras RNCs ABERTAS/EM_ANDAMENTO para o mesmo CNPJ
       3. Se nao existirem: seta cliente.problema_aberto = False (P0)
 
-    Ao transicionar para ENCERRADO:
-      - Mesmo comportamento de RESOLVIDO para problema_aberto
+    Ao transicionar para ENCERRADO (alias legado):
+      - Mesmo comportamento de CANCELADO para problema_aberto
 
     Raises:
       HTTPException 404 — RNC nao encontrada

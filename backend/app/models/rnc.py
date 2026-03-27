@@ -9,7 +9,8 @@ pelo pipeline quando existe ao menos um RNC com status != "RESOLVIDO".
 
 Ciclo de vida:
   ABERTO → EM_ANDAMENTO → RESOLVIDO
-  ABERTO → ENCERRADO (quando o problema não se confirma ou é encerrado)
+  ABERTO → CANCELADO (cancelado antes de resolucao — PRD FR-028)
+  ABERTO → ENCERRADO  (alias legado — aceito para dados existentes)
 
 Categorias (alinhadas PRD FR-028):
   ATRASO ENTREGA (TRANSPORTADORA)
@@ -68,7 +69,7 @@ class RNC(Base):
     # ------------------------------------------------------------------
     # Ciclo de vida
     # ------------------------------------------------------------------
-    # Status: ABERTO, EM_ANDAMENTO, RESOLVIDO, ENCERRADO
+    # Status: ABERTO, EM_ANDAMENTO, RESOLVIDO, CANCELADO, ENCERRADO (legado)
     status = Column(String(20), nullable=False, default="ABERTO")
     prazo_resolucao = Column(Date, nullable=True)
     responsavel = Column(String(100), nullable=True)    # Quem vai resolver internamente
