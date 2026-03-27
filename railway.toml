@@ -1,0 +1,18 @@
+# railway.toml — Backend (FastAPI) service
+# Plataforma: Railway
+# Serviço: api (Python/FastAPI + PostgreSQL)
+# DEPRECATED: render.yaml e render_build.sh foram substituídos por este arquivo
+
+[build]
+builder = "nixpacks"
+buildCommand = "pip install -r backend/requirements.txt && python -c \"from backend.app.database import engine, Base; from backend.app.models import cliente, log_interacao, venda, regra_motor, usuario, meta, rede, rnc, score_historico, agenda, import_job, audit_log; Base.metadata.create_all(bind=engine); print('Tables OK')\" && python -c \"from backend.app.database import SessionLocal; from backend.app.services.seed_auth import seed_usuarios, seed_regras_motor; db=SessionLocal(); seed_usuarios(db); seed_regras_motor(db); db.close(); print('Seed OK')\""
+
+[deploy]
+startCommand = "uvicorn backend.app.main:app --host 0.0.0.0 --port $PORT"
+healthcheckPath = "/health"
+healthcheckTimeout = 10
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 3
+
+[build.nixpacks]
+providers = ["python"]

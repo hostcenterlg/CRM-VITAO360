@@ -1,3 +1,5 @@
+# DEPRECATED — migrado para Railway. Ver railway.toml na raiz do repositório.
+
 databases:
   - name: crm-vitao360-db
     plan: free

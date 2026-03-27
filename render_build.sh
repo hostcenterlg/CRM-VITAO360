@@ -1,4 +1,5 @@
 #!/bin/bash
+# DEPRECATED — migrado para Railway. Ver railway.toml na raiz do repositório.
 set -e
 
 echo "=== [1/4] Instalando dependencias ==="

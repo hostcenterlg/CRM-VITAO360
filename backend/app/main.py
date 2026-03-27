@@ -22,7 +22,8 @@ Routers registrados:
 Startup:
   - Cria tabelas no SQLite se nao existirem (sem Alembic por ora)
 
-CORS habilitado para o frontend Next.js em localhost:3000.
+CORS habilitado via variavel CORS_ORIGINS (padrão: localhost:3000).
+Em Railway: definir CORS_ORIGINS com a URL pública do serviço "web".
 
 Uso em desenvolvimento:
     uvicorn backend.app.main:app --reload --port 8000
@@ -108,7 +109,7 @@ app = FastAPI(
 # ---------------------------------------------------------------------------
 _ORIGINS_ENV = os.getenv(
     "CORS_ORIGINS",
-    "http://localhost:3000,http://127.0.0.1:3000,https://frontend-one-liart-94.vercel.app,https://crm-vitao360.vercel.app",
+    "http://localhost:3000,http://127.0.0.1:3000",
 )
 _ORIGINS = [o.strip() for o in _ORIGINS_ENV.split(",") if o.strip()]
 

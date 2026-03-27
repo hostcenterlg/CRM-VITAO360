@@ -1,0 +1,16 @@
+# railway.toml — Frontend (Next.js) service
+# Plataforma: Railway
+# Serviço: web (Next.js)
+# DEPRECATED: frontend/vercel.json foi substituído por este arquivo
+
+[build]
+builder = "nixpacks"
+buildCommand = "npm install && npm run build"
+
+[deploy]
+startCommand = "npm start"
+healthcheckPath = "/"
+healthcheckTimeout = 10
+
+[build.nixpacks]
+providers = ["node"]
