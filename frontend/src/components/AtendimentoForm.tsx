@@ -172,6 +172,7 @@ export default function AtendimentoForm({
         descricao: descricao.trim(),
         via_ligacao: tipoContato === 'LIGACAO',
         via_whatsapp: tipoContato === 'WHATSAPP',
+        tipo_contato: tipoContato,
       });
 
       // Notifica pai

@@ -464,6 +464,7 @@ export interface AtendimentoPayload {
   descricao: string;
   via_whatsapp?: boolean;
   via_ligacao?: boolean;
+  tipo_contato?: string;
 }
 
 export interface AtendimentoResponse {
@@ -566,6 +567,10 @@ export async function criarRNC(data: RNCPayload): Promise<RNCItem> {
   return mutateJson<RNCItem>('/api/rnc', 'POST', data);
 }
 
+export async function patchRNC(id: number, data: { status: string }): Promise<RNCItem> {
+  return mutateJson<RNCItem>(`/api/rnc/${id}`, 'PATCH', data);
+}
+
 // ---------------------------------------------------------------------------
 // Motor de Regras endpoints
 // ---------------------------------------------------------------------------
@@ -640,7 +645,7 @@ export interface RedeItem {
   pct_ating: number;
   gap: number;
   cor: string;
-  distribuicao: { VERDE: number; AMARELO: number; VERMELHO: number; ROXO: number };
+  distribuicao: { VERDE: number; AMARELO: number; LARANJA: number; VERMELHO: number; ROXO: number };
   lojas: LojaRede[];
 }
 

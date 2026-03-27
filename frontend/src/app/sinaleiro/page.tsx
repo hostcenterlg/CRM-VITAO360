@@ -9,6 +9,7 @@ import {
   formatBRL,
   formatPercent,
 } from '@/lib/api';
+import ClienteDetalhe from '@/components/ClienteDetalhe';
 
 // ---------------------------------------------------------------------------
 // Sinaleiro page — saude da carteira por cor de sinaleiro
@@ -68,19 +69,25 @@ export default function SinaleiroPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Drill-down
+  const [selectedCnpj, setSelectedCnpj] = useState<string | null>(null);
+
   // Filters
   const [filtroCor, setFiltroCor] = useState<string>('');
   const [filtroConsultor, setFiltroConsultor] = useState<string>('');
   const [filtroRede, setFiltroRede] = useState<string>('');
 
+  // Paginacao
+  const [limit, setLimit] = useState<number>(200);
+
   const load = useCallback(
-    (cor: string, consultor: string, rede: string) => {
+    (cor: string, consultor: string, rede: string, lim: number) => {
       setLoading(true);
       fetchSinaleiro({
         cor: cor || undefined,
         consultor: consultor || undefined,
         rede: rede || undefined,
-        limit: 200,
+        limit: lim,
       })
         .then(setData)
         .catch((e: Error) => setError(e.message))
@@ -90,8 +97,8 @@ export default function SinaleiroPage() {
   );
 
   useEffect(() => {
-    load(filtroCor, filtroConsultor, filtroRede);
-  }, [filtroCor, filtroConsultor, filtroRede, load]);
+    load(filtroCor, filtroConsultor, filtroRede, limit);
+  }, [filtroCor, filtroConsultor, filtroRede, limit, load]);
 
   // Derived lists for filter dropdowns
   const consultores = Array.from(
@@ -111,6 +118,7 @@ export default function SinaleiroPage() {
     setFiltroCor('');
     setFiltroConsultor('');
     setFiltroRede('');
+    setLimit(200);
   }
 
   // Sort resumo by canonical order
@@ -144,7 +152,7 @@ export default function SinaleiroPage() {
           </div>
           <button
             type="button"
-            onClick={() => load(filtroCor, filtroConsultor, filtroRede)}
+            onClick={() => load(filtroCor, filtroConsultor, filtroRede, limit)}
             className="flex-shrink-0 px-3 py-1.5 text-xs font-semibold text-red-700 border border-red-300 rounded-lg hover:bg-red-100 transition-colors"
           >
             Tentar novamente
@@ -330,6 +338,22 @@ export default function SinaleiroPage() {
         </div>
       </section>
 
+      {/* Aviso de truncamento */}
+      {!loading && data && data.itens?.length === limit && (
+        <div className="flex items-center justify-between gap-3 px-4 py-3 bg-amber-50 border border-amber-200 rounded-lg">
+          <p className="text-xs text-amber-800 font-medium">
+            Mostrando os primeiros {limit.toLocaleString('pt-BR')} registros. Use filtros para refinar ou carregue mais.
+          </p>
+          <button
+            type="button"
+            onClick={() => setLimit((prev) => prev + 200)}
+            className="flex-shrink-0 px-3 py-1.5 text-xs font-semibold text-amber-700 border border-amber-300 rounded-lg hover:bg-amber-100 transition-colors"
+          >
+            Carregar mais
+          </button>
+        </div>
+      )}
+
       {/* Tabela principal */}
       <section className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
         <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
@@ -351,7 +375,7 @@ export default function SinaleiroPage() {
               Nenhum cliente encontrado com os filtros selecionados
             </div>
           ) : (
-            <SinaleiroTable itens={data.itens} />
+            <SinaleiroTable itens={data.itens} onRowClick={setSelectedCnpj} />
           )}
         </div>
       </section>
@@ -366,6 +390,14 @@ export default function SinaleiroPage() {
           VERMELHO: em risco critico | ROXO: sem historico de compra
         </p>
       </div>
+
+      {/* Drill-down — ClienteDetalhe */}
+      {selectedCnpj && (
+        <ClienteDetalhe
+          cnpj={selectedCnpj}
+          onClose={() => setSelectedCnpj(null)}
+        />
+      )}
     </div>
   );
 }
@@ -374,7 +406,7 @@ export default function SinaleiroPage() {
 // SinaleiroTable
 // ---------------------------------------------------------------------------
 
-function SinaleiroTable({ itens }: { itens: SinaleiroItem[] }) {
+function SinaleiroTable({ itens, onRowClick }: { itens: SinaleiroItem[]; onRowClick: (cnpj: string) => void }) {
   return (
     <table className="w-full text-sm" role="table">
       <thead>
@@ -413,8 +445,10 @@ function SinaleiroTable({ itens }: { itens: SinaleiroItem[] }) {
           return (
             <tr
               key={item.cnpj}
-              className="border-t border-gray-50 hover:bg-gray-50 transition-colors"
+              className="border-t border-gray-50 hover:bg-gray-50 transition-colors cursor-pointer"
               style={{ borderLeft: `3px solid ${rowBorderColor}` }}
+              onClick={() => onRowClick(item.cnpj)}
+              title="Clique para ver detalhes do cliente"
             >
               {/* CNPJ */}
               <td className="px-3 py-2.5 font-mono text-[11px] text-gray-500 whitespace-nowrap">

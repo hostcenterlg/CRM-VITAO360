@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { fetchAgenda, AgendaItem } from '@/lib/api';
+import { fetchAgenda, gerarAgenda, AgendaItem } from '@/lib/api';
 import StatusBadge from '@/components/StatusBadge';
 import AtendimentoModal from '@/components/AtendimentoModal';
 
@@ -13,7 +13,8 @@ const CONSULTORES = ['LARISSA', 'MANU', 'JULIO', 'DAIANE'] as const;
 type Consultor = (typeof CONSULTORES)[number];
 
 // Prioridades que "pulam fila" — aparecem na secao PRIORITARIOS
-const PRIORIDADES_URGENTES = new Set(['P0', 'P1', 'P3']);
+// P2 = NEGOCIACAO ATIVA: incluso como urgente
+const PRIORIDADES_URGENTES = new Set(['P0', 'P1', 'P2', 'P3']);
 
 // ---------------------------------------------------------------------------
 // Helpers visuais
@@ -471,8 +472,7 @@ export default function AgendaPage() {
   const handleGerarAgenda = async () => {
     setGerandoAgenda(true);
     try {
-      const apiBase = process.env.NEXT_PUBLIC_API_URL ?? '';
-      await fetch(`${apiBase}/api/agenda/gerar`, { method: 'POST' });
+      await gerarAgenda();
       // Recarregar agenda do consultor ativo
       setAgendaByConsultor((prev) => {
         const next = { ...prev };

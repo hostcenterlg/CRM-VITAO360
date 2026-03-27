@@ -30,7 +30,7 @@ interface RedeItem {
   pct_ating: number;
   gap: number;
   cor: string;
-  distribuicao: { VERDE: number; AMARELO: number; VERMELHO: number; ROXO: number };
+  distribuicao: { VERDE: number; AMARELO: number; LARANJA: number; VERMELHO: number; ROXO: number };
   lojas: LojaRede[];
 }
 
@@ -49,6 +49,7 @@ interface RedesResponse {
 const COR_COLORS: Record<string, { bg: string; text: string; sigla: string }> = {
   VERDE:    { bg: '#00B050', text: '#fff',    sigla: 'V' },
   AMARELO:  { bg: '#FFC000', text: '#1a1a1a', sigla: 'A' },
+  LARANJA:  { bg: '#FF8C00', text: '#fff',    sigla: 'La' },
   VERMELHO: { bg: '#FF0000', text: '#fff',    sigla: 'Vm' },
   ROXO:     { bg: '#7030A0', text: '#fff',    sigla: 'Rx' },
 };

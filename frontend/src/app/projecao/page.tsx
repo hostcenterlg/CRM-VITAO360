@@ -14,9 +14,10 @@ import {
 // Projecao page — Baseline, Meta 2026, Realizado, grafico mensal, tabela
 // ---------------------------------------------------------------------------
 
-const BASELINE_2025 = 2_091_000;
-const META_2026 = 4_747_200;
-const PROJECAO_2026 = 3_377_120;
+// Fallbacks usados apenas quando a API nao retorna os dados
+const BASELINE_2025_FALLBACK = 2_091_000;
+const META_2026_FALLBACK = 4_747_200;
+const PROJECAO_2026_FALLBACK = 3_377_120;
 
 const CONSULTORES = ['MANU', 'LARISSA', 'DAIANE', 'JULIO'];
 
@@ -46,9 +47,14 @@ export default function ProjecaoPage() {
 
   const porConsultor = data?.por_consultor ?? [];
 
-  // Realizado Q1 vem do resumo da API
+  // Dados do resumo da API (com fallback para constantes)
+  const baseline2025 = data?.resumo.baseline_2025 ?? BASELINE_2025_FALLBACK;
+  const projecao2026 = data?.resumo.projecao_2026 ?? PROJECAO_2026_FALLBACK;
+  const meta2026 = META_2026_FALLBACK; // nao vem da API, manter fallback
+
+  // Realizado YTD vem do resumo da API
   const realizadoYTD = data?.resumo.faturamento_realizado ?? 0;
-  const pctQ1 = META_2026 > 0 ? (realizadoYTD / META_2026) * 100 : 0;
+  const pctQ1 = meta2026 > 0 ? (realizadoYTD / meta2026) * 100 : 0;
   const pctQ1Color =
     pctQ1 >= 25 ? '#00B050' : pctQ1 >= 15 ? '#FFC000' : '#FF0000';
 
@@ -106,7 +112,7 @@ export default function ProjecaoPage() {
               </span>
             </div>
             <p className="text-2xl font-bold text-gray-900 leading-tight">
-              {formatBRL(BASELINE_2025)}
+              {loading ? '—' : formatBRL(baseline2025)}
             </p>
             <p className="text-xs text-gray-400 mt-0.5">
               Auditoria forense — PAINEL CEO
@@ -122,10 +128,10 @@ export default function ProjecaoPage() {
               Meta 2026
             </p>
             <p className="text-2xl font-bold text-gray-900 leading-tight">
-              {formatBRL(META_2026)}
+              {formatBRL(meta2026)}
             </p>
             <p className="text-xs text-gray-400 mt-0.5">
-              +{formatPercent(((META_2026 - BASELINE_2025) / BASELINE_2025) * 100, 0)} vs Baseline
+              +{loading ? '—' : formatPercent(baseline2025 > 0 ? ((meta2026 - baseline2025) / baseline2025) * 100 : 0, 0)} vs Baseline
             </p>
           </div>
 
@@ -154,10 +160,10 @@ export default function ProjecaoPage() {
               Projecao 2026
             </p>
             <p className="text-2xl font-bold text-gray-900 leading-tight">
-              {formatBRL(PROJECAO_2026)}
+              {loading ? '—' : formatBRL(projecao2026)}
             </p>
             <p className="text-xs text-gray-400 mt-0.5">
-              +{formatPercent(((PROJECAO_2026 - BASELINE_2025) / BASELINE_2025) * 100, 0)} vs Baseline
+              {loading ? '—' : `+${formatPercent(baseline2025 > 0 ? ((projecao2026 - baseline2025) / baseline2025) * 100 : 0, 0)} vs Baseline`}
             </p>
           </div>
         </div>

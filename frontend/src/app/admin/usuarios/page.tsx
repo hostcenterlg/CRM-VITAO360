@@ -318,11 +318,9 @@ export default function AdminUsuariosPage() {
     try {
       await atualizarUsuario(usuario.id, { ativo: !usuario.ativo });
       await load();
-    } catch {
-      // API indisponivel — atualizar localmente para demonstracao
-      setUsuarios(prev =>
-        prev.map(u => u.id === usuario.id ? { ...u, ativo: !u.ativo } : u)
-      );
+    } catch (err: unknown) {
+      // Nao reverter — mostrar erro ao usuario
+      setApiError(err instanceof Error ? err.message : 'Erro ao atualizar status do usuario');
     }
   }
 

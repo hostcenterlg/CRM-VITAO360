@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { fetchRNC, criarRNC, RNCItem, RNCResumo, RNCResponse, RNCPayload } from '@/lib/api';
+import { fetchRNC, criarRNC, patchRNC, RNCItem, RNCResumo, RNCResponse, RNCPayload } from '@/lib/api';
 
 // ---------------------------------------------------------------------------
 // Tipos locais (espelham os do api.ts)
@@ -300,6 +300,15 @@ export default function RNCPage() {
     await load();
   }
 
+  async function handleMudarStatus(id: number, novoStatus: string) {
+    try {
+      await patchRNC(id, { status: novoStatus });
+      await load();
+    } catch (err: unknown) {
+      setApiError(err instanceof Error ? err.message : 'Erro ao atualizar status');
+    }
+  }
+
   const filtrosAtivos = [filtroStatus, filtroTipo, filtroConsultor].filter(Boolean).length;
 
   function formatarData(iso: string) {
@@ -436,12 +445,13 @@ export default function RNCPage() {
                   <th scope="col" className="px-4 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Status</th>
                   <th scope="col" className="px-4 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Dias</th>
                   <th scope="col" className="px-4 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">SLA</th>
+                  <th scope="col" className="px-4 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Acoes</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {itens.length === 0 ? (
                   <tr>
-                    <td colSpan={8} className="px-4 py-10 text-center text-xs text-gray-400">
+                    <td colSpan={9} className="px-4 py-10 text-center text-xs text-gray-400">
                       {apiError
                         ? 'Erro ao carregar dados. Tente novamente.'
                         : 'Nenhuma RNC encontrada com os filtros aplicados.'}
@@ -476,6 +486,38 @@ export default function RNCPage() {
                         <td className="px-4 py-2.5 text-xs text-gray-700 tabular-nums">{item.dias_aberto}</td>
                         <td className="px-4 py-2.5">
                           <SlaBadge sla={item.sla_status} dias={item.dias_aberto} />
+                        </td>
+                        <td className="px-4 py-2.5">
+                          {item.status === 'ABERTO' && (
+                            <button
+                              type="button"
+                              onClick={() => void handleMudarStatus(item.id, 'EM_ANDAMENTO')}
+                              className="px-2.5 py-1 text-[10px] font-semibold text-white rounded transition-colors"
+                              style={{ backgroundColor: '#FFC000', color: '#1a1a1a' }}
+                            >
+                              Iniciar
+                            </button>
+                          )}
+                          {item.status === 'EM_ANDAMENTO' && (
+                            <button
+                              type="button"
+                              onClick={() => void handleMudarStatus(item.id, 'RESOLVIDO')}
+                              className="px-2.5 py-1 text-[10px] font-semibold text-white rounded transition-colors"
+                              style={{ backgroundColor: '#00B050' }}
+                            >
+                              Resolver
+                            </button>
+                          )}
+                          {item.status === 'RESOLVIDO' && (
+                            <button
+                              type="button"
+                              onClick={() => void handleMudarStatus(item.id, 'ENCERRADO')}
+                              className="px-2.5 py-1 text-[10px] font-semibold text-white rounded transition-colors"
+                              style={{ backgroundColor: '#6B7280' }}
+                            >
+                              Encerrar
+                            </button>
+                          )}
                         </td>
                       </tr>
                     );
