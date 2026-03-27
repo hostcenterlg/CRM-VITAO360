@@ -54,6 +54,7 @@ class ProjecaoResumo(BaseModel):
     faturamento_realizado: float
     baseline_2025: float
     projecao_2026: float
+    meta_2026: float             # soma das metas SAP de todos os clientes
     q1_2026_real: float
     pct_projecao: float          # % do realizado sobre a projecao 2026
     fonte_dados: str             # "vendas" ou "clientes_fallback"
@@ -163,6 +164,22 @@ def _faturamento_consultor_fallback(db: Session, consultor: str) -> float:
     return float(total)
 
 
+def _meta_total_sap(db: Session) -> float:
+    """
+    Soma a meta_sap de todos os clientes na tabela metas (todos os periodos/consultores).
+
+    Retorna PROJECAO_2026 como fallback se nenhuma meta estiver cadastrada,
+    garantindo que o campo meta_2026 nunca seja zero.
+
+    R8: nao filtra por classificacao_3tier pois Meta nao possui esse campo.
+    """
+    total = db.scalar(
+        select(func.coalesce(func.sum(Meta.meta_sap), 0.0))
+    ) or 0.0
+    result = float(total)
+    return result if result > 0.0 else PROJECAO_2026
+
+
 def _meta_consultor(db: Session, consultor: str) -> float:
     """
     Soma a meta_sap de todos os periodos do consultor na tabela metas.
@@ -216,6 +233,9 @@ def projecao_resumo(
 
     pct_projecao = round(fat_total / PROJECAO_2026 * 100, 1) if PROJECAO_2026 > 0 else 0.0
 
+    # meta_2026: soma real das metas SAP cadastradas (fallback para PROJECAO_2026)
+    meta_2026 = _meta_total_sap(db)
+
     por_consultor: list[ProjecaoConsultor] = []
 
     for consultor in CONSULTORES_ALVO:
@@ -243,6 +263,7 @@ def projecao_resumo(
             faturamento_realizado=round(fat_total, 2),
             baseline_2025=FATURAMENTO_BASELINE,
             projecao_2026=PROJECAO_2026,
+            meta_2026=round(meta_2026, 2),
             q1_2026_real=Q1_REAL,
             pct_projecao=pct_projecao,
             fonte_dados=fonte_dados,
@@ -296,14 +317,13 @@ def projecao_consultor(
         .order_by(Venda.mes_referencia)
     ).all()
 
-    # Meta mensal — join metas com clientes para filtrar por consultor
+    # Meta mensal — join metas com clientes para filtrar por consultor.
+    # Fetch raw ano+mes integers and build "AAAA-MM" in Python to avoid
+    # SQLite-specific func.printf that breaks on PostgreSQL.
     rows_meta = db.execute(
         select(
-            (
-                func.cast(Meta.ano, type_=None).op("||")("-").op("||")(
-                    func.printf("%02d", Meta.mes)
-                )
-            ).label("mes_referencia"),
+            Meta.ano,
+            Meta.mes,
             func.sum(Meta.meta_sap).label("meta"),
         )
         .join(Cliente, Meta.cnpj == Cliente.cnpj)
@@ -312,8 +332,10 @@ def projecao_consultor(
         .order_by(Meta.ano, Meta.mes)
     ).all()
 
-    # Montar dicionario de meta por mes para cruzamento
-    meta_por_mes: dict[str, float] = {r.mes_referencia: float(r.meta) for r in rows_meta}
+    # Montar dicionario de meta por mes para cruzamento (zero-pad in Python)
+    meta_por_mes: dict[str, float] = {
+        f"{r.ano}-{r.mes:02d}": float(r.meta) for r in rows_meta
+    }
 
     mensal: list[MensalItem] = []
     for row in rows_realizado:

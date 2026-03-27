@@ -14,8 +14,12 @@ R5 — CNPJ: String com 14 digitos.
 from __future__ import annotations
 
 from datetime import datetime
+from typing import Optional
 
 from pydantic import BaseModel, Field
+
+# Valores validos para tipo_contato (canal de comunicacao do atendimento)
+TIPOS_CONTATO_VALIDOS = {"LIGACAO", "WHATSAPP", "VISITA", "EMAIL", "VIDEOCHAMADA"}
 
 
 class AtendimentoCreate(BaseModel):
@@ -50,6 +54,15 @@ class AtendimentoCreate(BaseModel):
         default="",
         description="Observacoes livres do consultor sobre a interacao",
         examples=["Cliente fechou pedido de R$ 2.000 em proteinas"],
+    )
+    tipo_contato: Optional[str] = Field(
+        default=None,
+        description=(
+            "Canal de comunicacao utilizado (opcional — o Motor de Regras calcula "
+            "automaticamente se nao informado). Valores validos: "
+            "LIGACAO, WHATSAPP, VISITA, EMAIL, VIDEOCHAMADA"
+        ),
+        examples=["WHATSAPP"],
     )
 
 

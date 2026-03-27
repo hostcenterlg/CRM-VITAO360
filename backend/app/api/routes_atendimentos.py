@@ -33,6 +33,7 @@ from backend.app.schemas.atendimento import (
     AtendimentoListItem,
     AtendimentoResponse,
     MotorResultado,
+    TIPOS_CONTATO_VALIDOS,
 )
 from backend.app.services.motor_regras_service import motor_service
 
@@ -130,6 +131,20 @@ def registrar_atendimento(
     # Consultor vem do JWT; admin usa "ADMIN" como fallback
     consultor = user.consultor_nome or "ADMIN"
 
+    # Validate tipo_contato if provided by the frontend
+    if body.tipo_contato is not None:
+        tc_upper = body.tipo_contato.upper()
+        if tc_upper not in TIPOS_CONTATO_VALIDOS:
+            raise HTTPException(
+                status_code=400,
+                detail={
+                    "erro": "tipo_contato invalido",
+                    "recebido": body.tipo_contato,
+                    "validos": sorted(TIPOS_CONTATO_VALIDOS),
+                },
+            )
+        body = body.model_copy(update={"tipo_contato": tc_upper})
+
     try:
         log = motor_service.registrar_atendimento(
             db=db,
@@ -138,6 +153,7 @@ def registrar_atendimento(
             descricao=body.descricao,
             consultor=consultor,
             user_id=user.id,
+            tipo_contato_override=body.tipo_contato,
         )
         db.commit()
         db.refresh(log)

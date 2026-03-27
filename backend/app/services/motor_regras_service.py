@@ -133,6 +133,7 @@ class MotorRegrasService:
         descricao: str,
         consultor: str,
         user_id: int | None = None,
+        tipo_contato_override: str | None = None,
     ) -> LogInteracao:
         """
         Fluxo completo de registro de atendimento:
@@ -149,6 +150,9 @@ class MotorRegrasService:
             descricao: Observacoes livres do consultor.
             consultor: Nome do consultor (MANU, LARISSA, DAIANE, ...).
             user_id: ID do usuario autenticado para auditoria.
+            tipo_contato_override: Canal de comunicacao informado pelo frontend
+                (LIGACAO, WHATSAPP, VISITA, EMAIL, VIDEOCHAMADA). Quando fornecido,
+                sobrepoe o valor calculado automaticamente pelo Motor de Regras.
 
         Returns:
             LogInteracao recém criado (ainda nao commitado).
@@ -173,6 +177,10 @@ class MotorRegrasService:
         # Passo 3: Criar LogInteracao
         # R4 — Two-Base: NUNCA valor monetario aqui.
         # Esta tabela e a metade LOG da arquitetura.
+        # tipo_contato_override permite que o frontend informe o canal real usado
+        # (ex.: WHATSAPP quando a ligacao foi pelo WhatsApp e nao telefone fixo).
+        tipo_contato_final = tipo_contato_override or campos["tipo_contato"]
+
         log = LogInteracao(
             cnpj=cnpj,
             data_interacao=datetime.now(timezone.utc),
@@ -181,7 +189,7 @@ class MotorRegrasService:
             descricao=descricao or "",
             estagio_funil=campos["estagio_funil"],
             fase=campos["fase"],
-            tipo_contato=campos["tipo_contato"],
+            tipo_contato=tipo_contato_final,
             acao_futura=campos["acao_futura"],
             temperatura=campos["temperatura"],
             follow_up_dias=campos["follow_up_dias"],
