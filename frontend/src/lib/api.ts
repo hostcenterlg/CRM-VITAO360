@@ -303,6 +303,22 @@ export async function fetchPerformance(): Promise<PerformanceConsultor[]> {
   return fetchJson<PerformanceConsultor[]>('/api/dashboard/performance');
 }
 
+export interface TendenciaMensal {
+  mes: string;          // "YYYY-MM" ex.: "2025-01"
+  faturamento: number;
+  vendas_qtd: number;
+  clientes_ativos: number;
+  ticket_medio: number;
+}
+
+export interface TendenciasResponse {
+  meses: TendenciaMensal[];
+}
+
+export async function fetchTendencias(): Promise<TendenciasResponse> {
+  return fetchJson<TendenciasResponse>('/api/dashboard/tendencias');
+}
+
 // ---------------------------------------------------------------------------
 // Sinaleiro endpoints
 // ---------------------------------------------------------------------------
@@ -765,4 +781,34 @@ export async function gerarMensagemWhatsApp(
 
 export async function getResumoSemanal(consultor: string): Promise<ResumoSemanalResponse> {
   return fetchJson<ResumoSemanalResponse>(`/api/ia/resumo-semanal/${consultor}`);
+}
+
+// ---------------------------------------------------------------------------
+// Redistribuicao de Carteira (FR-022)
+// ---------------------------------------------------------------------------
+
+export interface ConsultorResumo {
+  consultor: string;
+  total: number;
+  faturamento: number;
+}
+
+export interface RedistribuirResponse {
+  total_processados: number;
+  total_atualizados: number;
+  erros: string[];
+}
+
+export async function fetchConsultorResumo(): Promise<ConsultorResumo[]> {
+  return fetchJson<ConsultorResumo[]>('/api/clientes/por-consultor');
+}
+
+export async function redistribuirCarteira(
+  cnpjs: string[],
+  novo_consultor: string
+): Promise<RedistribuirResponse> {
+  return mutateJson<RedistribuirResponse>('/api/clientes/redistribuir', 'PATCH', {
+    cnpjs,
+    novo_consultor,
+  });
 }

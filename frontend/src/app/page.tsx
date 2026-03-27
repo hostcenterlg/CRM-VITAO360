@@ -6,10 +6,12 @@ import {
   fetchDistribuicao,
   fetchTop10,
   fetchPerformance,
+  fetchTendencias,
   KPIs,
   Distribuicao,
   Top10Cliente,
   PerformanceConsultor,
+  TendenciaMensal,
   formatBRL,
   formatPercent,
 } from '@/lib/api';
@@ -62,8 +64,10 @@ export default function DashboardPage() {
   const [distribuicao, setDistribuicao] = useState<Distribuicao | null>(null);
   const [top10, setTop10] = useState<Top10Cliente[]>([]);
   const [performance, setPerformance] = useState<PerformanceConsultor[]>([]);
+  const [tendencias, setTendencias] = useState<TendenciaMensal[]>([]);
   const [loading, setLoading] = useState(true);
   const [perfLoading, setPerfLoading] = useState(true);
+  const [tendenciasLoading, setTendenciasLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -87,6 +91,14 @@ export default function DashboardPage() {
         setPerformance([]);
       })
       .finally(() => setPerfLoading(false));
+  }, []);
+
+  useEffect(() => {
+    setTendenciasLoading(true);
+    fetchTendencias()
+      .then((res) => setTendencias(res.meses))
+      .catch(() => setTendencias([]))
+      .finally(() => setTendenciasLoading(false));
   }, []);
 
   return (
@@ -195,6 +207,27 @@ export default function DashboardPage() {
             }
           />
         </div>
+      </section>
+
+      {/* Separador */}
+      <div className="border-t border-gray-200" />
+
+      {/* Tendencias Mensais */}
+      <section className="bg-white rounded-lg border border-gray-200 p-5 shadow-sm">
+        <h2 className="text-sm font-semibold text-gray-700 mb-4">
+          Tendencias Mensais (ultimos 12 meses)
+        </h2>
+
+        {tendenciasLoading ? (
+          <TendenciasChartSkeleton />
+        ) : tendencias.length === 0 ? (
+          <EmptyState />
+        ) : (
+          <>
+            <TendenciasChart meses={tendencias} />
+            <TendenciasMiniIndicadores meses={tendencias} />
+          </>
+        )}
       </section>
 
       {/* Separador */}
@@ -691,6 +724,247 @@ function EmptyState() {
   return (
     <div className="py-8 text-center text-gray-400 text-sm">
       Sem dados disponíveis
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// TendenciasChart — grafico SVG de barras (faturamento) + linha (ticket medio)
+// ---------------------------------------------------------------------------
+
+const MESES_ABREV = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+
+function mesLabel(mes: string): string {
+  const partes = mes.split('-');
+  const num = parseInt(partes[1] ?? '1', 10) - 1;
+  return MESES_ABREV[num] ?? mes;
+}
+
+function formatYAxis(val: number): string {
+  if (val >= 1_000_000) return `${(val / 1_000_000).toFixed(1)}M`;
+  if (val >= 1_000) return `${(val / 1_000).toFixed(0)}K`;
+  return val.toFixed(0);
+}
+
+interface TendenciasChartProps {
+  meses: TendenciaMensal[];
+}
+
+function TendenciasChart({ meses }: TendenciasChartProps) {
+  const CHART_H = 200;
+  const BAR_W = 28;
+  const LEFT_PAD = 44;
+  const RIGHT_PAD = 10;
+  const N = meses.length;
+  const GROUP_W = BAR_W + 12;
+  const CHART_W = LEFT_PAD + N * GROUP_W + RIGHT_PAD;
+  const SVG_H = CHART_H + 44; // espaco para labels X + legenda
+
+  const maxFat = Math.max(...meses.map((m) => m.faturamento), 1);
+  const maxTicket = Math.max(...meses.map((m) => m.ticket_medio), 1);
+
+  // Pontos para a linha de ticket medio
+  const linePoints = meses
+    .map((m, i) => {
+      const cx = LEFT_PAD + i * GROUP_W + BAR_W / 2;
+      const cy = 14 + CHART_H - (m.ticket_medio / maxTicket) * CHART_H;
+      return `${cx},${cy}`;
+    })
+    .join(' ');
+
+  return (
+    <div className="overflow-x-auto scrollbar-thin">
+      <svg
+        width={CHART_W}
+        height={SVG_H}
+        aria-label="Grafico de tendencias mensais — faturamento e ticket medio"
+        role="img"
+      >
+        {/* Linhas horizontais de referencia */}
+        {[0, 0.25, 0.5, 0.75, 1].map((frac) => {
+          const y = 14 + (1 - frac) * CHART_H;
+          return (
+            <g key={frac}>
+              <line
+                x1={LEFT_PAD - 4}
+                y1={y}
+                x2={CHART_W - RIGHT_PAD}
+                y2={y}
+                stroke="#F3F4F6"
+                strokeWidth={1}
+              />
+              <text
+                x={LEFT_PAD - 6}
+                y={y + 3}
+                textAnchor="end"
+                fontSize="9"
+                fill="#9CA3AF"
+              >
+                {formatYAxis(maxFat * frac)}
+              </text>
+            </g>
+          );
+        })}
+
+        {/* Barras de faturamento */}
+        {meses.map((m, i) => {
+          const x = LEFT_PAD + i * GROUP_W;
+          const barH = maxFat > 0 ? (m.faturamento / maxFat) * CHART_H : 0;
+          const barY = 14 + CHART_H - barH;
+          const label = mesLabel(m.mes);
+
+          return (
+            <g key={m.mes}>
+              <rect
+                x={x}
+                y={barY}
+                width={BAR_W}
+                height={Math.max(barH, 0)}
+                fill="#00B050"
+                rx={3}
+                opacity={0.85}
+              >
+                <title>
+                  {label}: {formatBRL(m.faturamento)} ({m.vendas_qtd} vendas)
+                </title>
+              </rect>
+              {/* Label do mes no eixo X */}
+              <text
+                x={x + BAR_W / 2}
+                y={14 + CHART_H + 13}
+                textAnchor="middle"
+                fontSize="9"
+                fontWeight="500"
+                fill="#6B7280"
+              >
+                {label}
+              </text>
+            </g>
+          );
+        })}
+
+        {/* Linha de ticket medio (overlay) */}
+        {meses.some((m) => m.ticket_medio > 0) && (
+          <polyline
+            points={linePoints}
+            fill="none"
+            stroke="#3B82F6"
+            strokeWidth={2}
+            strokeLinejoin="round"
+            strokeLinecap="round"
+          />
+        )}
+
+        {/* Pontos na linha de ticket medio */}
+        {meses.map((m, i) => {
+          if (m.ticket_medio === 0) return null;
+          const cx = LEFT_PAD + i * GROUP_W + BAR_W / 2;
+          const cy = 14 + CHART_H - (m.ticket_medio / maxTicket) * CHART_H;
+          return (
+            <circle key={`dot-${m.mes}`} cx={cx} cy={cy} r={3} fill="#3B82F6">
+              <title>Ticket medio {mesLabel(m.mes)}: {formatBRL(m.ticket_medio)}</title>
+            </circle>
+          );
+        })}
+
+        {/* Legenda */}
+        <g>
+          <rect x={LEFT_PAD} y={14 + CHART_H + 26} width={10} height={8} fill="#00B050" rx={2} />
+          <text x={LEFT_PAD + 13} y={14 + CHART_H + 34} fontSize="9" fill="#6B7280">
+            Faturamento
+          </text>
+          <line
+            x1={LEFT_PAD + 90}
+            y1={14 + CHART_H + 30}
+            x2={LEFT_PAD + 102}
+            y2={14 + CHART_H + 30}
+            stroke="#3B82F6"
+            strokeWidth={2}
+          />
+          <circle cx={LEFT_PAD + 96} cy={14 + CHART_H + 30} r={3} fill="#3B82F6" />
+          <text x={LEFT_PAD + 106} y={14 + CHART_H + 34} fontSize="9" fill="#6B7280">
+            Ticket Medio
+          </text>
+        </g>
+      </svg>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// TendenciasMiniIndicadores — 3 comparacoes mes atual vs anterior
+// ---------------------------------------------------------------------------
+
+interface MiniTrendProps {
+  label: string;
+  atual: number;
+  anterior: number;
+  formatter: (v: number) => string;
+}
+
+function MiniTrend({ label, atual, anterior, formatter }: MiniTrendProps) {
+  const diff = anterior > 0 ? ((atual - anterior) / anterior) * 100 : 0;
+  const isUp = diff >= 0;
+  const color = isUp ? '#00B050' : '#FF0000';
+  const arrow = isUp ? '▲' : '▼';
+
+  return (
+    <div className="flex flex-col gap-0.5 flex-1 min-w-[100px]">
+      <span className="text-[10px] font-medium text-gray-400 uppercase tracking-wide">{label}</span>
+      <span className="text-sm font-bold text-gray-900">{formatter(atual)}</span>
+      <span className="text-[10px] font-semibold" style={{ color }}>
+        {arrow} {Math.abs(diff).toFixed(1)}% vs mes ant.
+      </span>
+    </div>
+  );
+}
+
+function TendenciasMiniIndicadores({ meses }: { meses: TendenciaMensal[] }) {
+  if (meses.length < 2) return null;
+  const atual = meses[meses.length - 1]!;
+  const anterior = meses[meses.length - 2]!;
+
+  return (
+    <div className="mt-4 pt-4 border-t border-gray-100 flex flex-wrap gap-4 sm:gap-6">
+      <MiniTrend
+        label="Faturamento"
+        atual={atual.faturamento}
+        anterior={anterior.faturamento}
+        formatter={(v) => formatBRL(v)}
+      />
+      <MiniTrend
+        label="Vendas"
+        atual={atual.vendas_qtd}
+        anterior={anterior.vendas_qtd}
+        formatter={(v) => v.toLocaleString('pt-BR')}
+      />
+      <MiniTrend
+        label="Ticket Medio"
+        atual={atual.ticket_medio}
+        anterior={anterior.ticket_medio}
+        formatter={(v) => formatBRL(v)}
+      />
+    </div>
+  );
+}
+
+function TendenciasChartSkeleton() {
+  return (
+    <div className="space-y-3">
+      <div className="flex items-end gap-2 h-48">
+        {Array.from({ length: 12 }).map((_, i) => (
+          <div
+            key={i}
+            className="flex-1 bg-gray-100 animate-pulse rounded-t"
+            style={{ height: `${20 + (i % 6) * 12}%`, animationDelay: `${i * 50}ms` }}
+          />
+        ))}
+      </div>
+      <div className="flex gap-4">
+        {Array.from({ length: 3 }).map((_, i) => (
+          <div key={i} className="flex-1 h-10 bg-gray-100 animate-pulse rounded" />
+        ))}
+      </div>
     </div>
   );
 }
