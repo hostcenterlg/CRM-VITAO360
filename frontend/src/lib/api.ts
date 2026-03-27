@@ -708,3 +708,56 @@ export async function uploadImport(file: File): Promise<ImportResult> {
 export async function fetchImportHistory(): Promise<ImportHistory> {
   return fetchJson<ImportHistory>('/api/import/history');
 }
+
+// ---------------------------------------------------------------------------
+// IA — Inteligencia Artificial
+// ---------------------------------------------------------------------------
+
+export interface BriefingResponse {
+  cnpj: string;
+  nome_cliente: string;
+  briefing: string;
+  tokens_usados: number;
+  cached: boolean;
+  ia_configurada: boolean;
+}
+
+export interface MensagemWhatsAppResponse {
+  cnpj: string;
+  nome_cliente: string;
+  mensagem: string;
+  tokens_usados: number;
+  ia_configurada: boolean;
+}
+
+export interface MetricasSemanais {
+  total_carteira: number;
+  vendas_semana_qtd: number;
+  vendas_semana_volume: number;
+  clientes_em_risco: number;
+  followups_vencidos: number;
+}
+
+export interface ResumoSemanalResponse {
+  consultor: string;
+  periodo: string;
+  resumo: string;
+  tokens_usados: number;
+  metricas: MetricasSemanais;
+  ia_configurada: boolean;
+}
+
+export async function getBriefing(cnpj: string): Promise<BriefingResponse> {
+  return fetchJson<BriefingResponse>(`/api/ia/briefing/${cnpj}`);
+}
+
+export async function gerarMensagemWhatsApp(
+  cnpj: string,
+  objetivo: string
+): Promise<MensagemWhatsAppResponse> {
+  return mutateJson<MensagemWhatsAppResponse>(`/api/ia/mensagem/${cnpj}`, 'POST', { objetivo });
+}
+
+export async function getResumoSemanal(consultor: string): Promise<ResumoSemanalResponse> {
+  return fetchJson<ResumoSemanalResponse>(`/api/ia/resumo-semanal/${consultor}`);
+}

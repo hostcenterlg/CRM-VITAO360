@@ -14,6 +14,7 @@ import {
 } from '@/lib/api';
 import { useAuth } from '@/contexts/AuthContext';
 import StatusBadge from './StatusBadge';
+import AtendimentoForm from './AtendimentoForm';
 
 // ---------------------------------------------------------------------------
 // ClienteDetalhe — drawer lateral com ficha completa do cliente
@@ -483,6 +484,11 @@ export default function ClienteDetalhe({ cnpj, onClose }: ClienteDetalheProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Estado do modal de atendimento
+  const [atendimentoAberto, setAtendimentoAberto] = useState(false);
+  // Chave para forcar re-render do HistoricoBloco apos salvar atendimento
+  const [historicoKey, setHistoricoKey] = useState(0);
+
   // Estado dos blocos colapsáveis — persistido em sessionStorage
   const [open, setOpen] = useState<Record<BlocoKey, boolean>>(() => {
     if (typeof window === 'undefined') {
@@ -604,16 +610,40 @@ export default function ClienteDetalhe({ cnpj, onClose }: ClienteDetalheProps) {
               </div>
             )}
           </div>
-          <button
-            type="button"
-            onClick={onClose}
-            className="p-2 rounded hover:bg-gray-100 text-gray-500 flex-shrink-0"
-            aria-label="Fechar ficha do cliente"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
+          <div className="flex items-center gap-2 flex-shrink-0">
+            {/* Botao de registrar atendimento — disponivel assim que o cliente carrega */}
+            {cliente && !loading && (
+              <button
+                type="button"
+                onClick={() => setAtendimentoAberto(true)}
+                aria-label={`Registrar atendimento de ${cliente.nome_fantasia}`}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white rounded-md transition-all hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1"
+                style={{ backgroundColor: '#00B050' }}
+              >
+                <svg
+                  aria-hidden="true"
+                  className="w-3.5 h-3.5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  strokeWidth={2.5}
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+                </svg>
+                Registrar
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={onClose}
+              className="p-2 rounded hover:bg-gray-100 text-gray-500"
+              aria-label="Fechar ficha do cliente"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
         </div>
 
         {/* Corpo scrollável */}
@@ -808,12 +838,45 @@ export default function ClienteDetalhe({ cnpj, onClose }: ClienteDetalheProps) {
                 open={open.historico}
                 onToggle={() => toggleBloco('historico')}
               >
-                <HistoricoBloco cnpj={cnpj} />
+                {/* historicoKey forca remontagem apos novo atendimento ser registrado */}
+                <HistoricoBloco key={historicoKey} cnpj={cnpj} />
               </Bloco>
             </>
           )}
         </div>
       </aside>
+
+      {/* Modal de atendimento — abre sobre o drawer */}
+      {atendimentoAberto && cliente && (
+        <AtendimentoForm
+          cliente={{
+            cnpj: cliente.cnpj,
+            nome_fantasia: cliente.nome_fantasia,
+            situacao: cliente.situacao,
+            sinaleiro: cliente.sinaleiro,
+            score: cliente.score,
+            prioridade: cliente.prioridade,
+            consultor: cliente.consultor,
+            uf: cliente.uf,
+          }}
+          onClose={() => setAtendimentoAberto(false)}
+          onSaved={() => {
+            // Incrementar key forca HistoricoBloco a recarregar do backend
+            setHistoricoKey((k) => k + 1);
+            // Abrir bloco de historico se estiver fechado
+            setOpen((prev) => {
+              const next = { ...prev, historico: true };
+              try {
+                sessionStorage.setItem('crm_detalhe_blocos', JSON.stringify(next));
+              } catch {
+                // fallback silencioso
+              }
+              return next;
+            });
+          }}
+          labelFechar="Fechar e voltar ao cliente"
+        />
+      )}
     </>
   );
 }
