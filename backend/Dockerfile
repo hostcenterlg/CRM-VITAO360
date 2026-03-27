@@ -2,11 +2,12 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
-COPY requirements.txt .
+COPY backend/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY . /app/backend/
-COPY ../data/intelligence /app/data/intelligence/
+COPY backend/ /app/backend/
+COPY data/intelligence/ /app/data/intelligence/
+COPY scripts/motor_regras.py /app/scripts/motor_regras.py
 
 ENV PYTHONPATH=/app
 ENV PORT=8000

@@ -31,7 +31,7 @@ from backend.app.security import hash_password
 # ---------------------------------------------------------------------------
 # Adicionar raiz do projeto ao path para importar scripts/motor_regras.py
 # ---------------------------------------------------------------------------
-_PROJECT_ROOT = Path(__file__).resolve().parents[4]  # services/ -> app/ -> backend/ -> root
+_PROJECT_ROOT = Path(__file__).resolve().parents[3]  # services/ -> app/ -> backend/ -> repo root
 if str(_PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT))
 

@@ -7,7 +7,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY backend/ /app/backend/
 COPY data/intelligence/ /app/data/intelligence/
-COPY scripts/motor/ /app/scripts/motor/
+COPY scripts/motor_regras.py /app/scripts/motor_regras.py
 
 ENV PYTHONPATH=/app
 ENV PORT=8000
