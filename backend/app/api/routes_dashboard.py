@@ -27,6 +27,7 @@ from backend.app.api.deps import get_current_user
 from backend.app.database import get_db
 from backend.app.models.cliente import Cliente
 from backend.app.models.usuario import Usuario
+from backend.app.models.venda import Venda
 
 router = APIRouter(prefix="/api/dashboard", tags=["Dashboard"])
 
@@ -153,9 +154,10 @@ def kpis(
     ) or 0
 
     # R8: excluir ALUCINACAO do faturamento
+    # Fonte de verdade: tabela vendas (Two-Base Architecture — R1/R7)
     fat_total = db.scalar(
-        select(func.coalesce(func.sum(Cliente.faturamento_total), 0.0))
-        .where(Cliente.classificacao_3tier.in_(["REAL", "SINTETICO"]))
+        select(func.coalesce(func.sum(Venda.valor_pedido), 0.0))
+        .where(Venda.classificacao_3tier.in_(["REAL", "SINTETICO"]))
     ) or 0.0
 
     media_score = db.scalar(
@@ -251,19 +253,20 @@ def projecao(
 
     consultores_alvo = ["MANU", "LARISSA", "DAIANE", "JULIO"]
 
+    # Fonte de verdade: tabela vendas (Two-Base Architecture — R1/R7)
     fat_total = db.scalar(
-        select(func.coalesce(func.sum(Cliente.faturamento_total), 0.0))
-        .where(Cliente.classificacao_3tier.in_(["REAL", "SINTETICO"]))
+        select(func.coalesce(func.sum(Venda.valor_pedido), 0.0))
+        .where(Venda.classificacao_3tier.in_(["REAL", "SINTETICO"]))
     ) or 0.0
 
     por_consultor: list[ProjecaoConsultor] = []
 
     for consultor in consultores_alvo:
         fat_c = db.scalar(
-            select(func.coalesce(func.sum(Cliente.faturamento_total), 0.0))
+            select(func.coalesce(func.sum(Venda.valor_pedido), 0.0))
             .where(
-                Cliente.consultor == consultor,
-                Cliente.classificacao_3tier.in_(["REAL", "SINTETICO"]),
+                Venda.consultor == consultor,
+                Venda.classificacao_3tier.in_(["REAL", "SINTETICO"]),
             )
         ) or 0.0
 
@@ -355,11 +358,12 @@ def performance(
             )
         ) or 0
 
+        # Fonte de verdade: tabela vendas (Two-Base Architecture — R1/R7)
         fat_real = db.scalar(
-            select(func.coalesce(func.sum(Cliente.faturamento_total), 0.0))
+            select(func.coalesce(func.sum(Venda.valor_pedido), 0.0))
             .where(
-                Cliente.consultor == consultor,
-                Cliente.classificacao_3tier.in_(["REAL", "SINTETICO"]),
+                Venda.consultor == consultor,
+                Venda.classificacao_3tier.in_(["REAL", "SINTETICO"]),
             )
         ) or 0.0
 
