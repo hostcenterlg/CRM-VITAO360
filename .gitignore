@@ -79,7 +79,9 @@ data/sources/deskrio/tickets/Notebooklm/
 .claude/worktrees/
 .claude/settings.local.json
 
-# SQLite database (generated)
+# SQLite database (generated) + WAL journal files
 data/crm_vitao360.db
+data/crm_vitao360.db-shm
+data/crm_vitao360.db-wal
 
 .vercel

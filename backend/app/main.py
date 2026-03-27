@@ -101,19 +101,11 @@ app = FastAPI(
 # ---------------------------------------------------------------------------
 # CORS — frontend Next.js em dev (porta 3000) e produção
 # ---------------------------------------------------------------------------
-_ORIGINS_ENV = os.getenv("CORS_ORIGINS", "")
-_ORIGINS = (
-    [o.strip() for o in _ORIGINS_ENV.split(",") if o.strip()]
-    if _ORIGINS_ENV
-    else [
-        "http://localhost:3000",
-        "http://127.0.0.1:3000",
-        "http://localhost:3001",
-        # Vercel deployments
-        "https://frontend-one-liart-94.vercel.app",
-        "https://frontend-hostcenterlg-9104s-projects.vercel.app",
-    ]
+_ORIGINS_ENV = os.getenv(
+    "CORS_ORIGINS",
+    "http://localhost:3000,http://127.0.0.1:3000,https://frontend-one-liart-94.vercel.app,https://crm-vitao360.vercel.app",
 )
+_ORIGINS = [o.strip() for o in _ORIGINS_ENV.split(",") if o.strip()]
 
 app.add_middleware(
     CORSMiddleware,
