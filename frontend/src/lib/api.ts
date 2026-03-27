@@ -812,3 +812,79 @@ export async function redistribuirCarteira(
     novo_consultor,
   });
 }
+
+// ---------------------------------------------------------------------------
+// WhatsApp — Integracao Deskrio
+// ---------------------------------------------------------------------------
+
+export interface ConexaoWA {
+  id: number | null;
+  nome: string;
+  status: string;
+  status_legivel: string;
+}
+
+export interface WhatsAppStatus {
+  configurado: boolean;
+  conexoes: ConexaoWA[];
+  alguma_conectada: boolean;
+  total_conexoes: number;
+}
+
+export interface WhatsAppContatoResponse {
+  encontrado: boolean;
+  numero: string | null;
+  nome: string | null;
+  deskrio_id: number | null;
+  cnpj: string | null;
+}
+
+export interface WhatsAppEnviarResponse {
+  enviado: boolean;
+  mensagem_id: string | null;
+  numero: string | null;
+  erro: string | null;
+}
+
+export interface TicketWA {
+  id: number | null;
+  status: string | null;
+  criado_em: string | null;
+  atualizado_em: string | null;
+  contact_id: number | null;
+}
+
+export interface WhatsAppTicketsResponse {
+  cnpj: string | null;
+  numero: string | null;
+  total: number;
+  tickets: TicketWA[];
+}
+
+export async function fetchWhatsAppStatus(): Promise<WhatsAppStatus> {
+  return fetchJson<WhatsAppStatus>('/api/whatsapp/status');
+}
+
+export async function buscarContatoWhatsApp(cnpj: string): Promise<WhatsAppContatoResponse> {
+  return fetchJson<WhatsAppContatoResponse>(`/api/whatsapp/contato/${cnpj}`);
+}
+
+export async function enviarWhatsApp(
+  cnpj: string,
+  mensagem: string
+): Promise<WhatsAppEnviarResponse> {
+  return mutateJson<WhatsAppEnviarResponse>('/api/whatsapp/enviar', 'POST', { cnpj, mensagem });
+}
+
+export async function fetchWhatsAppTickets(
+  cnpj: string,
+  dias = 7
+): Promise<WhatsAppTicketsResponse> {
+  return fetchJson<WhatsAppTicketsResponse>(
+    `/api/whatsapp/tickets?cnpj=${cnpj}&dias=${dias}`
+  );
+}
+
+export async function fetchWhatsAppConexoes(): Promise<ConexaoWA[]> {
+  return fetchJson<ConexaoWA[]>('/api/whatsapp/conexoes');
+}

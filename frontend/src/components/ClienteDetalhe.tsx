@@ -9,9 +9,13 @@ import {
   MensagemWhatsAppResponse,
   ScoreBreakdown,
   VendaMensal,
+  WhatsAppEnviarResponse,
+  WhatsAppStatus,
+  enviarWhatsApp,
   fetchAtendimentosHistorico,
   fetchCliente,
   fetchClienteScore,
+  fetchWhatsAppStatus,
   formatBRL,
   getBriefing,
   gerarMensagemWhatsApp,
@@ -477,6 +481,39 @@ function HistoricoBloco({ cnpj }: { cnpj: string }) {
 // Bloco IA — Briefing + Gerador de mensagem WhatsApp
 // ---------------------------------------------------------------------------
 
+// ---------------------------------------------------------------------------
+// Indicador de status WhatsApp (dot verde/vermelho)
+// ---------------------------------------------------------------------------
+
+function WhatsAppStatusDot({ status }: { status: WhatsAppStatus | null; loading: boolean }) {
+  if (status === null) return null;
+  if (!status.configurado) {
+    return (
+      <span
+        className="inline-flex items-center gap-1 text-[10px] text-gray-400"
+        title="WhatsApp nao configurado"
+      >
+        <span className="w-2 h-2 rounded-full bg-gray-300 flex-shrink-0" />
+        WA nao configurado
+      </span>
+    );
+  }
+  const conectado = status.alguma_conectada;
+  return (
+    <span
+      className="inline-flex items-center gap-1 text-[10px] font-medium"
+      style={{ color: conectado ? '#00A651' : '#9CA3AF' }}
+      title={conectado ? 'WhatsApp conectado' : 'WhatsApp desconectado'}
+    >
+      <span
+        className="w-2 h-2 rounded-full flex-shrink-0"
+        style={{ backgroundColor: conectado ? '#00A651' : '#9CA3AF' }}
+      />
+      WA {conectado ? 'conectado' : 'desconectado'}
+    </span>
+  );
+}
+
 function BlocoIA({ cnpj }: { cnpj: string }) {
   // Estado do briefing
   const [briefing, setBriefing] = useState<BriefingResponse | null>(null);
@@ -489,6 +526,22 @@ function BlocoIA({ cnpj }: { cnpj: string }) {
   const [loadingMensagem, setLoadingMensagem] = useState(false);
   const [erroMensagem, setErroMensagem] = useState<string | null>(null);
   const [copiado, setCopiado] = useState(false);
+
+  // Estado do envio real via Deskrio
+  const [waStatus, setWaStatus] = useState<WhatsAppStatus | null>(null);
+  const [loadingWaStatus, setLoadingWaStatus] = useState(false);
+  const [enviando, setEnviando] = useState(false);
+  const [resultadoEnvio, setResultadoEnvio] = useState<WhatsAppEnviarResponse | null>(null);
+  const [erroEnvio, setErroEnvio] = useState<string | null>(null);
+
+  // Carregar status WA ao montar o bloco
+  useEffect(() => {
+    setLoadingWaStatus(true);
+    fetchWhatsAppStatus()
+      .then(setWaStatus)
+      .catch(() => setWaStatus(null))
+      .finally(() => setLoadingWaStatus(false));
+  }, []);
 
   const handleGerarBriefing = async () => {
     setLoadingBriefing(true);
@@ -508,6 +561,8 @@ function BlocoIA({ cnpj }: { cnpj: string }) {
     setLoadingMensagem(true);
     setErroMensagem(null);
     setCopiado(false);
+    setResultadoEnvio(null);
+    setErroEnvio(null);
     try {
       const data = await gerarMensagemWhatsApp(cnpj, objetivo.trim());
       setMensagem(data);
@@ -526,6 +581,24 @@ function BlocoIA({ cnpj }: { cnpj: string }) {
       setTimeout(() => setCopiado(false), 2000);
     } catch {
       // fallback: selecionar texto manualmente
+    }
+  };
+
+  const handleEnviarViaWhatsApp = async () => {
+    if (!mensagem?.mensagem) return;
+    setEnviando(true);
+    setErroEnvio(null);
+    setResultadoEnvio(null);
+    try {
+      const resultado = await enviarWhatsApp(cnpj, mensagem.mensagem);
+      setResultadoEnvio(resultado);
+      if (!resultado.enviado && resultado.erro) {
+        setErroEnvio(resultado.erro);
+      }
+    } catch (e: unknown) {
+      setErroEnvio(e instanceof Error ? e.message : 'Erro ao enviar via WhatsApp');
+    } finally {
+      setEnviando(false);
     }
   };
 
@@ -581,7 +654,12 @@ function BlocoIA({ cnpj }: { cnpj: string }) {
 
       {/* Secao Mensagem WhatsApp */}
       <div className="space-y-2">
-        <p className="text-xs font-semibold text-gray-700">Gerar mensagem WhatsApp</p>
+        <div className="flex items-center justify-between gap-2">
+          <p className="text-xs font-semibold text-gray-700">Gerar mensagem WhatsApp</p>
+          {!loadingWaStatus && (
+            <WhatsAppStatusDot status={waStatus} loading={loadingWaStatus} />
+          )}
+        </div>
 
         <div className="flex gap-2">
           <input
@@ -660,6 +738,65 @@ function BlocoIA({ cnpj }: { cnpj: string }) {
                 )}
               </button>
             </div>
+
+            {/* Botao de envio real via Deskrio */}
+            <div className="flex items-center justify-between gap-2 pt-1">
+              <button
+                type="button"
+                onClick={handleEnviarViaWhatsApp}
+                disabled={enviando || !mensagem?.mensagem || resultadoEnvio?.enviado === true}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white rounded-md transition-all hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1 disabled:opacity-50"
+                style={{ backgroundColor: '#00A651' }}
+                title={
+                  !waStatus?.configurado
+                    ? 'WhatsApp nao configurado'
+                    : !waStatus?.alguma_conectada
+                    ? 'Sem conexao WhatsApp ativa'
+                    : 'Enviar mensagem via WhatsApp'
+                }
+              >
+                {enviando ? (
+                  <>
+                    <span className="w-3 h-3 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                    Enviando...
+                  </>
+                ) : resultadoEnvio?.enviado ? (
+                  <>
+                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                    </svg>
+                    Enviado!
+                  </>
+                ) : (
+                  <>
+                    <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
+                      <path d="M12 0C5.373 0 0 5.373 0 12c0 2.139.558 4.144 1.535 5.879L.057 23.55a.5.5 0 00.608.608l5.693-1.479A11.952 11.952 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.96 0-3.799-.56-5.354-1.527l-.383-.231-3.979 1.034 1.054-3.867-.252-.4A9.956 9.956 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z" />
+                    </svg>
+                    Enviar via WhatsApp
+                  </>
+                )}
+              </button>
+
+              {resultadoEnvio?.enviado && resultadoEnvio.numero && (
+                <span className="text-[10px] text-gray-400">
+                  Enviado para {resultadoEnvio.numero}
+                </span>
+              )}
+            </div>
+
+            {/* Feedback de envio */}
+            {erroEnvio && (
+              <p className="text-xs text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2">
+                {erroEnvio}
+              </p>
+            )}
+            {resultadoEnvio?.enviado && (
+              <p className="text-xs text-green-700 bg-green-50 border border-green-200 rounded-md px-3 py-2">
+                Mensagem enviada via WhatsApp
+                {resultadoEnvio.mensagem_id ? ` (ID: ${resultadoEnvio.mensagem_id})` : ''}.
+              </p>
+            )}
           </div>
         )}
       </div>

@@ -5,8 +5,12 @@ import {
   fetchAgenda,
   gerarAgenda,
   getResumoSemanal,
+  enviarWhatsApp,
+  fetchWhatsAppStatus,
   AgendaItem,
   ResumoSemanalResponse,
+  WhatsAppStatus,
+  WhatsAppEnviarResponse,
 } from '@/lib/api';
 import StatusBadge from '@/components/StatusBadge';
 import AtendimentoModal from '@/components/AtendimentoModal';
@@ -106,6 +110,182 @@ function FollowUpBadge({ followUp }: { followUp?: string }) {
   return <span className="text-[11px] text-gray-500">{followUp}</span>;
 }
 
+// ---------------------------------------------------------------------------
+// Modal rapido de envio WhatsApp a partir da agenda
+// ---------------------------------------------------------------------------
+
+interface WhatsAppAgendaModalProps {
+  item: AgendaItem;
+  waStatus: WhatsAppStatus | null;
+  onClose: () => void;
+}
+
+function WhatsAppAgendaModal({ item, waStatus, onClose }: WhatsAppAgendaModalProps) {
+  const [mensagem, setMensagem] = useState(item.acao ?? '');
+  const [enviando, setEnviando] = useState(false);
+  const [resultado, setResultado] = useState<WhatsAppEnviarResponse | null>(null);
+  const [erro, setErro] = useState<string | null>(null);
+
+  const podeSendEscrever = waStatus?.configurado && waStatus.alguma_conectada;
+
+  const handleEnviar = async () => {
+    if (!mensagem.trim()) return;
+    setEnviando(true);
+    setErro(null);
+    setResultado(null);
+    try {
+      const res = await enviarWhatsApp(item.cnpj, mensagem.trim());
+      setResultado(res);
+      if (!res.enviado && res.erro) {
+        setErro(res.erro);
+      }
+    } catch (e: unknown) {
+      setErro(e instanceof Error ? e.message : 'Erro ao enviar mensagem');
+    } finally {
+      setEnviando(false);
+    }
+  };
+
+  // Fechar com ESC
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    document.addEventListener('keydown', handler);
+    return () => document.removeEventListener('keydown', handler);
+  }, [onClose]);
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      role="dialog"
+      aria-modal="true"
+      aria-label={`Enviar WhatsApp para ${item.nome_fantasia}`}
+    >
+      {/* Overlay */}
+      <div
+        className="absolute inset-0 bg-black/40"
+        onClick={onClose}
+        aria-hidden="true"
+      />
+
+      {/* Modal */}
+      <div className="relative w-full max-w-md bg-white rounded-xl shadow-xl overflow-hidden">
+        {/* Header */}
+        <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 bg-gray-50">
+          <div className="flex items-center gap-2 min-w-0">
+            <div className="flex-shrink-0 w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
+              <svg className="w-4 h-4 text-green-700" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
+                <path d="M12 0C5.373 0 0 5.373 0 12c0 2.139.558 4.144 1.535 5.879L.057 23.55a.5.5 0 00.608.608l5.693-1.479A11.952 11.952 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.96 0-3.799-.56-5.354-1.527l-.383-.231-3.979 1.034 1.054-3.867-.252-.4A9.956 9.956 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z" />
+              </svg>
+            </div>
+            <div className="min-w-0">
+              <p className="text-sm font-bold text-gray-900 truncate">{item.nome_fantasia}</p>
+              <p className="text-[10px] text-gray-400 font-mono">{item.cnpj}</p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Fechar modal"
+            className="flex-shrink-0 p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-md transition-colors"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        {/* Corpo */}
+        <div className="p-4 space-y-3">
+          {/* Status WA */}
+          {waStatus && (
+            <div className={`flex items-center gap-1.5 text-[11px] font-medium px-2 py-1.5 rounded-md ${
+              waStatus.alguma_conectada
+                ? 'bg-green-50 text-green-700'
+                : 'bg-gray-50 text-gray-500'
+            }`}>
+              <span
+                className="w-2 h-2 rounded-full flex-shrink-0"
+                style={{ backgroundColor: waStatus.alguma_conectada ? '#00A651' : '#9CA3AF' }}
+              />
+              {waStatus.configurado
+                ? (waStatus.alguma_conectada ? 'WhatsApp conectado — pronto para envio' : 'WhatsApp desconectado')
+                : 'WhatsApp nao configurado'}
+            </div>
+          )}
+
+          {/* Acao prescrita como contexto */}
+          {item.acao && (
+            <div className="px-3 py-2 bg-gray-50 rounded-md border border-gray-100">
+              <p className="text-[10px] text-gray-400 uppercase font-semibold tracking-wide mb-0.5">Acao prescrita</p>
+              <p className="text-xs text-gray-700">{item.acao}</p>
+            </div>
+          )}
+
+          {/* Campo de mensagem */}
+          <div className="space-y-1">
+            <label className="text-xs font-medium text-gray-700" htmlFor="wa-mensagem-agenda">
+              Mensagem WhatsApp
+            </label>
+            <textarea
+              id="wa-mensagem-agenda"
+              rows={4}
+              value={mensagem}
+              onChange={(e) => setMensagem(e.target.value)}
+              placeholder="Digite ou edite a mensagem para enviar..."
+              disabled={resultado?.enviado}
+              className="w-full p-3 text-xs border border-gray-200 rounded-lg bg-white text-gray-800 resize-none focus:outline-none focus:ring-2 focus:ring-green-500 leading-relaxed disabled:bg-gray-50 disabled:text-gray-500"
+            />
+            <p className="text-[10px] text-gray-400 text-right">{mensagem.length}/4096</p>
+          </div>
+
+          {/* Feedback */}
+          {erro && (
+            <p className="text-xs text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2">
+              {erro}
+            </p>
+          )}
+          {resultado?.enviado && (
+            <p className="text-xs text-green-700 bg-green-50 border border-green-200 rounded-md px-3 py-2">
+              Mensagem enviada com sucesso via WhatsApp
+              {resultado.numero ? ` para ${resultado.numero}` : ''}.
+            </p>
+          )}
+        </div>
+
+        {/* Footer */}
+        <div className="px-4 py-3 border-t border-gray-100 flex items-center justify-end gap-2">
+          <button
+            type="button"
+            onClick={onClose}
+            className="px-3 py-1.5 text-xs font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400"
+          >
+            {resultado?.enviado ? 'Fechar' : 'Cancelar'}
+          </button>
+          {!resultado?.enviado && (
+            <button
+              type="button"
+              onClick={handleEnviar}
+              disabled={enviando || !mensagem.trim() || !podeSendEscrever}
+              className="inline-flex items-center gap-1.5 px-4 py-1.5 text-xs font-semibold text-white rounded-md transition-all hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1 disabled:opacity-50"
+              style={{ backgroundColor: '#00A651' }}
+            >
+              {enviando ? (
+                <>
+                  <span className="w-3 h-3 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                  Enviando...
+                </>
+              ) : (
+                'Enviar WhatsApp'
+              )}
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function AgendaSkeleton() {
   return (
     <div className="space-y-3 p-4">
@@ -128,9 +308,10 @@ interface AgendaCardProps {
   item: AgendaItem;
   concluido: boolean;
   onRegistrar: (item: AgendaItem) => void;
+  onWhatsApp?: (item: AgendaItem) => void;
 }
 
-function AgendaCard({ item, concluido, onRegistrar }: AgendaCardProps) {
+function AgendaCard({ item, concluido, onRegistrar, onWhatsApp }: AgendaCardProps) {
   const prio = (item.prioridade ?? '').toUpperCase();
   const sinal = (item.sinaleiro ?? '').toUpperCase();
   const isUrgente = PRIORIDADES_URGENTES.has(prio);
@@ -260,7 +441,7 @@ function AgendaCard({ item, concluido, onRegistrar }: AgendaCardProps) {
             <ScoreBar score={item.score} />
           </div>
 
-          {/* Botao de acao ou checkmark de concluido */}
+          {/* Botoes de acao ou checkmark de concluido */}
           {concluido ? (
             <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-green-50 text-green-700 text-xs font-semibold border border-green-200">
               <svg aria-hidden="true" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -269,14 +450,31 @@ function AgendaCard({ item, concluido, onRegistrar }: AgendaCardProps) {
               Concluido
             </span>
           ) : (
-            <button
-              type="button"
-              onClick={() => onRegistrar(item)}
-              aria-label={`Registrar atendimento de ${item.nome_fantasia}`}
-              className="flex-shrink-0 min-h-11 sm:min-h-0 px-3 py-2 sm:py-1.5 bg-green-600 hover:bg-green-700 text-white text-xs font-semibold rounded-md transition-all duration-150 hover:shadow-md hover:-translate-y-px focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1"
-            >
-              Registrar Atendimento
-            </button>
+            <div className="flex items-center gap-1.5 flex-shrink-0">
+              {/* Botao WhatsApp rapido */}
+              {onWhatsApp && (
+                <button
+                  type="button"
+                  onClick={() => onWhatsApp(item)}
+                  aria-label={`Enviar WhatsApp para ${item.nome_fantasia}`}
+                  title="Enviar mensagem WhatsApp"
+                  className="min-h-11 sm:min-h-0 p-2 sm:py-1.5 rounded-md border border-gray-200 text-gray-500 hover:text-green-700 hover:border-green-300 hover:bg-green-50 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1"
+                >
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
+                    <path d="M12 0C5.373 0 0 5.373 0 12c0 2.139.558 4.144 1.535 5.879L.057 23.55a.5.5 0 00.608.608l5.693-1.479A11.952 11.952 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.96 0-3.799-.56-5.354-1.527l-.383-.231-3.979 1.034 1.054-3.867-.252-.4A9.956 9.956 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z" />
+                  </svg>
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={() => onRegistrar(item)}
+                aria-label={`Registrar atendimento de ${item.nome_fantasia}`}
+                className="flex-shrink-0 min-h-11 sm:min-h-0 px-3 py-2 sm:py-1.5 bg-green-600 hover:bg-green-700 text-white text-xs font-semibold rounded-md transition-all duration-150 hover:shadow-md hover:-translate-y-px focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1"
+              >
+                Registrar Atendimento
+              </button>
+            </div>
           )}
         </div>
       </div>
@@ -563,6 +761,10 @@ export default function AgendaPage() {
   // Modal de atendimento
   const [modalItem, setModalItem] = useState<AgendaItem | null>(null);
 
+  // Modal WhatsApp rapido
+  const [waModalItem, setWaModalItem] = useState<AgendaItem | null>(null);
+  const [waStatus, setWaStatus] = useState<WhatsAppStatus | null>(null);
+
   // Filtros locais
   const [filtroPrioridade, setFiltroPrioridade] = useState<string>('');
   const [filtroSinaleiro, setFiltroSinaleiro] = useState<string>('');
@@ -594,6 +796,10 @@ export default function AgendaPage() {
 
   useEffect(() => {
     loadConsultor('LARISSA');
+    // Carregar status WhatsApp uma vez ao montar
+    fetchWhatsAppStatus()
+      .then(setWaStatus)
+      .catch(() => setWaStatus(null));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -700,6 +906,14 @@ export default function AgendaPage() {
     } finally {
       setGerandoAgenda(false);
     }
+  };
+
+  const handleWhatsApp = (item: AgendaItem) => {
+    setWaModalItem(item);
+  };
+
+  const handleWhatsAppClose = () => {
+    setWaModalItem(null);
   };
 
   const temFiltrosAtivos = !!(filtroPrioridade || filtroSinaleiro || filtroBusca);
@@ -965,6 +1179,7 @@ export default function AgendaPage() {
                           item={item}
                           concluido={concluidosSet.has(item.cnpj)}
                           onRegistrar={handleRegistrar}
+                          onWhatsApp={handleWhatsApp}
                         />
                       ))}
                     </div>
@@ -991,6 +1206,7 @@ export default function AgendaPage() {
                           item={item}
                           concluido={concluidosSet.has(item.cnpj)}
                           onRegistrar={handleRegistrar}
+                          onWhatsApp={handleWhatsApp}
                         />
                       ))}
                     </div>
@@ -1044,6 +1260,15 @@ export default function AgendaPage() {
           item={modalItem}
           onClose={handleModalClose}
           onSaved={handleModalSaved}
+        />
+      )}
+
+      {/* Modal WhatsApp rapido */}
+      {waModalItem && (
+        <WhatsAppAgendaModal
+          item={waModalItem}
+          waStatus={waStatus}
+          onClose={handleWhatsAppClose}
         />
       )}
     </>
