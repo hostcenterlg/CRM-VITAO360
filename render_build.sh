@@ -7,7 +7,7 @@ pip install -r backend/requirements.txt
 echo "=== [2/4] Criando banco ==="
 python -c "
 from backend.app.database import engine, Base
-from backend.app.models import cliente, log_interacao, venda, regra_motor, usuario, meta, rede, rnc, score_historico, agenda, import_job
+from backend.app.models import cliente, log_interacao, venda, regra_motor, usuario, meta, rede, rnc, score_historico, agenda, import_job, audit_log
 Base.metadata.create_all(bind=engine)
 print('OK: tabelas criadas')
 "

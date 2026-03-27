@@ -28,6 +28,10 @@ _DATA_DIR.mkdir(parents=True, exist_ok=True)
 _DEFAULT_DB_URL = f"sqlite:///{_DATA_DIR / 'crm_vitao360.db'}"
 DATABASE_URL: str = os.getenv("DATABASE_URL", "") or _DEFAULT_DB_URL
 
+# Render retorna postgres:// mas SQLAlchemy 2.0 exige postgresql://
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+
 # ---------------------------------------------------------------------------
 # Engine
 # ---------------------------------------------------------------------------
