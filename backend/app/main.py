@@ -29,8 +29,11 @@ Uso em desenvolvimento:
 
 from __future__ import annotations
 
+import logging
 import os
 from contextlib import asynccontextmanager
+
+logger = logging.getLogger(__name__)
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -72,9 +75,9 @@ async def lifespan(app: FastAPI):
         n_users = seed_usuarios(db)
         n_regras = seed_regras_motor(db)
         if n_users:
-            print(f"[SEED] {n_users} usuario(s) criado(s)")
+            logger.info("[SEED] %d usuario(s) criado(s)", n_users)
         if n_regras:
-            print(f"[SEED] {n_regras} regra(s) do motor criada(s)")
+            logger.info("[SEED] %d regra(s) do motor criada(s)", n_regras)
     finally:
         db.close()
 

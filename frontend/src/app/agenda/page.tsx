@@ -471,7 +471,7 @@ export default function AgendaPage() {
   const handleGerarAgenda = async () => {
     setGerandoAgenda(true);
     try {
-      const apiBase = process.env.NEXT_PUBLIC_API_URL ?? 'https://crm-vitao360-api.onrender.com';
+      const apiBase = process.env.NEXT_PUBLIC_API_URL ?? '';
       await fetch(`${apiBase}/api/agenda/gerar`, { method: 'POST' });
       // Recarregar agenda do consultor ativo
       setAgendaByConsultor((prev) => {

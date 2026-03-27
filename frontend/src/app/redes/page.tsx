@@ -40,73 +40,7 @@ interface RedesResponse {
   redes: RedeItem[];
 }
 
-// ---------------------------------------------------------------------------
-// Mock data
-// ---------------------------------------------------------------------------
-
-function getMockRedes(): RedesResponse {
-  const fitlandLojas: LojaRede[] = [
-    { cnpj: '12345678000101', nome: 'Fitland SP 01', cidade: 'Sao Paulo', uf: 'SP', fat_real: 8500, meta: 12000, pct_ating: 71, cor: 'AMARELO' },
-    { cnpj: '12345678000202', nome: 'Fitland SP 02', cidade: 'Campinas',  uf: 'SP', fat_real: 2100, meta: 12000, pct_ating: 18, cor: 'VERMELHO' },
-    { cnpj: '12345678000303', nome: 'Fitland RJ 01', cidade: 'Rio de Janeiro', uf: 'RJ', fat_real: 9800, meta: 10000, pct_ating: 98, cor: 'VERDE' },
-    { cnpj: '12345678000404', nome: 'Fitland PR 01', cidade: 'Curitiba', uf: 'PR', fat_real: 0, meta: 12000, pct_ating: 0, cor: 'ROXO' },
-    { cnpj: '12345678000505', nome: 'Fitland MG 01', cidade: 'Belo Horizonte', uf: 'MG', fat_real: 5200, meta: 10000, pct_ating: 52, cor: 'AMARELO' },
-    { cnpj: '12345678000606', nome: 'Fitland RS 01', cidade: 'Porto Alegre', uf: 'RS', fat_real: 11000, meta: 12000, pct_ating: 92, cor: 'VERDE' },
-    { cnpj: '12345678000707', nome: 'Fitland SC 01', cidade: 'Florianopolis', uf: 'SC', fat_real: 1500, meta: 10000, pct_ating: 15, cor: 'VERMELHO' },
-    { cnpj: '12345678000808', nome: 'Fitland BA 01', cidade: 'Salvador', uf: 'BA', fat_real: 7800, meta: 10000, pct_ating: 78, cor: 'AMARELO' },
-  ];
-
-  const ciaSaudeLojas: LojaRede[] = [
-    { cnpj: '98765432000101', nome: 'Cia Saude SP 01', cidade: 'Sao Paulo', uf: 'SP', fat_real: 4500, meta: 11000, pct_ating: 41, cor: 'VERMELHO' },
-    { cnpj: '98765432000202', nome: 'Cia Saude SP 02', cidade: 'Santos', uf: 'SP', fat_real: 800, meta: 11000, pct_ating: 7, cor: 'VERMELHO' },
-    { cnpj: '98765432000303', nome: 'Cia Saude RJ 01', cidade: 'Rio de Janeiro', uf: 'RJ', fat_real: 0, meta: 10900, pct_ating: 0, cor: 'ROXO' },
-    { cnpj: '98765432000404', nome: 'Cia Saude MG 01', cidade: 'Uberlandia', uf: 'MG', fat_real: 12000, meta: 10900, pct_ating: 110, cor: 'VERDE' },
-    { cnpj: '98765432000505', nome: 'Cia Saude PR 01', cidade: 'Curitiba', uf: 'PR', fat_real: 3200, meta: 10900, pct_ating: 29, cor: 'VERMELHO' },
-  ];
-
-  const calcDist = (lojas: LojaRede[]) => ({
-    VERDE: lojas.filter(l => l.cor === 'VERDE').length,
-    AMARELO: lojas.filter(l => l.cor === 'AMARELO').length,
-    VERMELHO: lojas.filter(l => l.cor === 'VERMELHO').length,
-    ROXO: lojas.filter(l => l.cor === 'ROXO').length,
-  });
-
-  const fatFitland = fitlandLojas.reduce((s, l) => s + l.fat_real, 0);
-  const metaFitland = 58 * 10700;
-  const fatCia = ciaSaudeLojas.reduce((s, l) => s + l.fat_real, 0);
-  const metaCia = 72 * 10880;
-
-  return {
-    total_redes: 2,
-    total_lojas: 130,
-    redes: [
-      {
-        nome: 'FITLAND',
-        consultor: 'JULIO',
-        total_lojas: 58,
-        fat_real: fatFitland,
-        meta: metaFitland,
-        pct_ating: Math.round((fatFitland / metaFitland) * 100 * 10) / 10,
-        gap: fatFitland - metaFitland,
-        cor: 'VERMELHO',
-        distribuicao: calcDist(fitlandLojas),
-        lojas: fitlandLojas,
-      },
-      {
-        nome: 'CIA SAUDE',
-        consultor: 'JULIO',
-        total_lojas: 72,
-        fat_real: fatCia,
-        meta: metaCia,
-        pct_ating: Math.round((fatCia / metaCia) * 100 * 10) / 10,
-        gap: fatCia - metaCia,
-        cor: 'VERMELHO',
-        distribuicao: calcDist(ciaSaudeLojas),
-        lojas: ciaSaudeLojas,
-      },
-    ],
-  };
-}
+// Mock data removido — R8: NUNCA exibir dados fabricados
 
 // ---------------------------------------------------------------------------
 // Helpers visuais
@@ -171,15 +105,18 @@ export default function RedesPage() {
   const router = useRouter();
   const [data, setData] = useState<RedesResponse | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [expandida, setExpandida] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
+    setError(null);
     try {
       const res = await fetchJson<RedesResponse>('/api/redes');
       setData(res);
     } catch {
-      setData(getMockRedes());
+      setError('Erro ao carregar redes. Tente novamente.');
+      setData(null);
     } finally {
       setLoading(false);
     }
@@ -203,6 +140,16 @@ export default function RedesPage() {
           {data?.total_redes ?? 0} redes | {data?.total_lojas ?? 0} lojas
         </p>
       </div>
+
+      {/* Erro */}
+      {error && (
+        <div className="px-4 py-3 bg-red-50 border border-red-200 rounded-lg flex items-center justify-between">
+          <p className="text-sm text-red-700">{error}</p>
+          <button onClick={() => void load()} className="text-xs font-semibold text-red-600 hover:text-red-800 underline">
+            Tentar novamente
+          </button>
+        </div>
+      )}
 
       {/* Alerta redes criticas */}
       {criticas.length > 0 && (
