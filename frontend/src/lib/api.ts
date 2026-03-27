@@ -9,7 +9,7 @@ const BASE_URL =
 // Helpers internos
 // ---------------------------------------------------------------------------
 
-async function fetchJson<T>(path: string, options?: RequestInit): Promise<T> {
+export async function fetchJson<T>(path: string, options?: RequestInit): Promise<T> {
   const token = getToken();
 
   const baseHeaders: Record<string, string> = {
