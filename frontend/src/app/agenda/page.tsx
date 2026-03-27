@@ -1,7 +1,13 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { fetchAgenda, gerarAgenda, AgendaItem } from '@/lib/api';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  fetchAgenda,
+  gerarAgenda,
+  getResumoSemanal,
+  AgendaItem,
+  ResumoSemanalResponse,
+} from '@/lib/api';
 import StatusBadge from '@/components/StatusBadge';
 import AtendimentoModal from '@/components/AtendimentoModal';
 
@@ -329,6 +335,214 @@ function ProgressBar({ total, concluidos, consultor }: ProgressBarProps) {
 }
 
 // ---------------------------------------------------------------------------
+// Resumo Semanal IA
+// ---------------------------------------------------------------------------
+
+const CONSULTORES_RESUMO = ['LARISSA', 'MANU', 'DAIANE', 'JULIO'] as const;
+
+function ResumoSemanalIA({ consultorAtivo }: { consultorAtivo: string }) {
+  const [aberto, setAberto] = useState(false);
+  const [consultorSelecionado, setConsultorSelecionado] = useState(consultorAtivo);
+  const [resumo, setResumo] = useState<ResumoSemanalResponse | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [erro, setErro] = useState<string | null>(null);
+
+  // Sincroniza consultor selecionado com a aba ativa (so se ainda nao foi alterado manualmente)
+  const alteradoManualmente = useRef(false);
+  useEffect(() => {
+    if (!alteradoManualmente.current) {
+      setConsultorSelecionado(consultorAtivo);
+    }
+  }, [consultorAtivo]);
+
+  const handleGerar = async () => {
+    setLoading(true);
+    setErro(null);
+    try {
+      const data = await getResumoSemanal(consultorSelecionado);
+      setResumo(data);
+    } catch (e: unknown) {
+      setErro(e instanceof Error ? e.message : 'Erro ao gerar resumo');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const metricaColor = (val: number, limiteAlerta: number) =>
+    val >= limiteAlerta ? '#FF0000' : '#374151';
+
+  return (
+    <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
+      {/* Header colapsavel */}
+      <button
+        type="button"
+        onClick={() => setAberto((v) => !v)}
+        className="w-full flex items-center justify-between px-4 py-3 bg-gray-50 hover:bg-gray-100 transition-colors text-left"
+        aria-expanded={aberto}
+      >
+        <div className="flex items-center gap-2">
+          <svg
+            aria-hidden="true"
+            className="w-4 h-4 flex-shrink-0"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            strokeWidth={2}
+            style={{ color: '#00B050' }}
+          >
+            <path strokeLinecap="round" strokeLinejoin="round"
+              d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+          </svg>
+          <span className="text-[11px] font-semibold text-gray-600 uppercase tracking-wider">
+            Resumo Semanal IA
+          </span>
+        </div>
+        <svg
+          className={`w-4 h-4 text-gray-400 flex-shrink-0 transition-transform duration-200 ${aberto ? 'rotate-180' : ''}`}
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          aria-hidden="true"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+
+      {/* Corpo colapsavel */}
+      <div
+        className={`transition-all duration-200 overflow-hidden ${aberto ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'}`}
+        aria-hidden={!aberto}
+      >
+        <div className="px-4 py-4 space-y-4">
+          {/* Controles: dropdown consultor + botao gerar */}
+          <div className="flex flex-wrap items-center gap-3">
+            <div className="flex items-center gap-2">
+              <label
+                htmlFor="resumo-consultor-select"
+                className="text-xs text-gray-600 font-medium flex-shrink-0"
+              >
+                Consultor:
+              </label>
+              <select
+                id="resumo-consultor-select"
+                value={consultorSelecionado}
+                onChange={(e) => {
+                  alteradoManualmente.current = true;
+                  setConsultorSelecionado(e.target.value);
+                  setResumo(null);
+                  setErro(null);
+                }}
+                className="h-8 px-2 text-xs border border-gray-300 rounded-md bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500"
+              >
+                {CONSULTORES_RESUMO.map((c) => (
+                  <option key={c} value={c}>{c}</option>
+                ))}
+              </select>
+            </div>
+
+            <button
+              type="button"
+              onClick={handleGerar}
+              disabled={loading}
+              className="inline-flex items-center gap-1.5 px-4 py-1.5 text-xs font-semibold text-white rounded-md transition-all hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1 disabled:opacity-50"
+              style={{ backgroundColor: '#00B050' }}
+            >
+              {loading ? (
+                <>
+                  <span className="w-3 h-3 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                  Gerando...
+                </>
+              ) : (
+                'Gerar Resumo'
+              )}
+            </button>
+          </div>
+
+          {/* Erro */}
+          {erro && (
+            <p className="text-xs text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2">
+              {erro}
+            </p>
+          )}
+
+          {/* Resultado */}
+          {resumo && (
+            <div className="space-y-4">
+              {!resumo.ia_configurada && (
+                <p className="text-[10px] text-amber-600 bg-amber-50 border border-amber-200 rounded px-2 py-1 italic">
+                  IA nao configurada — resumo baseado em regras locais
+                </p>
+              )}
+
+              {/* Cards de metricas */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                <div className="bg-gray-50 border border-gray-100 rounded-lg px-3 py-2 text-center">
+                  <p className="text-[10px] text-gray-500 font-medium uppercase tracking-wide">Carteira</p>
+                  <p className="text-xl font-bold text-gray-900 mt-0.5 tabular-nums">
+                    {resumo.metricas.total_carteira}
+                  </p>
+                  <p className="text-[10px] text-gray-400">clientes</p>
+                </div>
+
+                <div className="bg-gray-50 border border-gray-100 rounded-lg px-3 py-2 text-center">
+                  <p className="text-[10px] text-gray-500 font-medium uppercase tracking-wide">Vendas Semana</p>
+                  <p
+                    className="text-xl font-bold mt-0.5 tabular-nums"
+                    style={{ color: '#00B050' }}
+                  >
+                    {resumo.metricas.vendas_semana_qtd}
+                  </p>
+                  <p className="text-[10px] text-gray-400">pedidos</p>
+                </div>
+
+                <div className="bg-gray-50 border border-gray-100 rounded-lg px-3 py-2 text-center">
+                  <p className="text-[10px] text-gray-500 font-medium uppercase tracking-wide">Em Risco</p>
+                  <p
+                    className="text-xl font-bold mt-0.5 tabular-nums"
+                    style={{ color: metricaColor(resumo.metricas.clientes_em_risco, 5) }}
+                  >
+                    {resumo.metricas.clientes_em_risco}
+                  </p>
+                  <p className="text-[10px] text-gray-400">clientes</p>
+                </div>
+
+                <div className="bg-gray-50 border border-gray-100 rounded-lg px-3 py-2 text-center">
+                  <p className="text-[10px] text-gray-500 font-medium uppercase tracking-wide">FU Vencidos</p>
+                  <p
+                    className="text-xl font-bold mt-0.5 tabular-nums"
+                    style={{ color: metricaColor(resumo.metricas.followups_vencidos, 3) }}
+                  >
+                    {resumo.metricas.followups_vencidos}
+                  </p>
+                  <p className="text-[10px] text-gray-400">follow-ups</p>
+                </div>
+              </div>
+
+              {/* Texto do resumo IA */}
+              <div className="bg-green-50 border border-green-100 rounded-lg p-3">
+                <p className="text-[10px] font-semibold text-green-700 uppercase tracking-wide mb-1.5">
+                  Analise IA — {resumo.consultor} — {resumo.periodo}
+                </p>
+                <p className="text-xs text-gray-800 whitespace-pre-wrap leading-relaxed">
+                  {resumo.resumo}
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Estado vazio (ainda nao gerado) */}
+          {!resumo && !loading && !erro && (
+            <p className="text-xs text-gray-400 italic text-center py-2">
+              Clique em &quot;Gerar Resumo&quot; para ver a analise da semana de {consultorSelecionado}.
+            </p>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // Pagina principal
 // ---------------------------------------------------------------------------
 
@@ -539,6 +753,9 @@ export default function AgendaPage() {
             </button>
           </div>
         </div>
+
+        {/* Resumo Semanal IA */}
+        <ResumoSemanalIA consultorAtivo={activeTab} />
 
         {/* Barra de progresso */}
         {todosItems.length > 0 && (
