@@ -4,6 +4,8 @@ CRM VITAO360 — Rotas /api/clientes
 Endpoints:
   GET    /api/clientes               — lista com filtros + paginacao
   GET    /api/clientes/stats         — agregados (count por situacao, consultor, sinaleiro)
+  GET    /api/clientes/por-consultor — resumo de clientes e faturamento por consultor
+  PATCH  /api/clientes/redistribuir  — redistribuicao em lote de carteira entre consultores (admin)
   GET    /api/clientes/{cnpj}        — detalhe de um cliente
   PATCH  /api/clientes/{cnpj}        — edicao inline (consultor, rede_regional) — admin/gerente
   GET    /api/clientes/{cnpj}/score  — breakdown do score v2 com 6 fatores ponderados
@@ -29,7 +31,7 @@ from pydantic import BaseModel, ConfigDict
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
-from backend.app.api.deps import get_current_user, require_admin_or_gerente
+from backend.app.api.deps import get_current_user, require_admin, require_admin_or_gerente
 from backend.app.database import get_db
 from backend.app.models.audit_log import AuditLog
 from backend.app.models.cliente import Cliente
@@ -142,6 +144,45 @@ class ClientePatchResponse(BaseModel):
     cliente: ClienteDetalhe
 
 
+# Consultores validos (DE-PARA definido na CLAUDE.md)
+_CONSULTORES_VALIDOS = {"MANU", "LARISSA", "DAIANE", "JULIO"}
+
+
+class RedistribuirPayload(BaseModel):
+    """Payload para redistribuicao em lote de carteira entre consultores.
+
+    R12 — L3: operacao aprovada pelo Leandro (licenca maternidade Manu Q2 2026).
+    R5: CNPJs validados e normalizados para 14 digitos.
+    """
+
+    cnpjs: list[str]
+    """Lista de CNPJs a reatribuir (aceita com ou sem pontuacao)."""
+
+    novo_consultor: str
+    """Nome do consultor destino. Valido: MANU, LARISSA, DAIANE, JULIO."""
+
+
+class RedistribuirResponse(BaseModel):
+    """Resultado da operacao de redistribuicao em lote."""
+
+    total_processados: int
+    """Total de CNPJs recebidos no payload."""
+
+    total_atualizados: int
+    """CNPJs que tiveram o consultor efetivamente alterado."""
+
+    erros: list[str]
+    """CNPJs nao encontrados ou com erro de processamento."""
+
+
+class ConsultorResumo(BaseModel):
+    """Resumo de clientes e faturamento agrupados por consultor."""
+
+    consultor: str
+    total: int
+    faturamento: float
+
+
 # ---------------------------------------------------------------------------
 # Endpoints
 # ---------------------------------------------------------------------------
@@ -244,6 +285,124 @@ def stats_clientes(
         por_sinaleiro=_contar(Cliente.sinaleiro),
         por_curva_abc=_contar(Cliente.curva_abc),
         por_prioridade=_contar(Cliente.prioridade),
+    )
+
+
+@router.get(
+    "/por-consultor",
+    response_model=list[ConsultorResumo],
+    summary="Resumo de clientes e faturamento por consultor",
+)
+def por_consultor(
+    user: Usuario = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> list[ConsultorResumo]:
+    """
+    Retorna lista com total de clientes e faturamento acumulado por consultor.
+
+    Util para visualizar a distribuicao atual da carteira antes de uma
+    redistribuicao (FR-022 — Licenca Maternidade Manu Q2 2026).
+
+    R4 — Two-Base: faturamento_total vem APENAS de registros tipo VENDA.
+    Requer autenticacao JWT.
+    """
+    rows = db.execute(
+        select(
+            Cliente.consultor,
+            func.count().label("total"),
+            func.coalesce(func.sum(Cliente.faturamento_total), 0.0).label("faturamento"),
+        )
+        .where(Cliente.consultor.isnot(None))
+        .group_by(Cliente.consultor)
+        .order_by(func.count().desc())
+    ).all()
+
+    return [
+        ConsultorResumo(
+            consultor=r.consultor,
+            total=r.total,
+            faturamento=float(r.faturamento),
+        )
+        for r in rows
+    ]
+
+
+@router.patch(
+    "/redistribuir",
+    response_model=RedistribuirResponse,
+    summary="Redistribuir clientes entre consultores (admin)",
+)
+def redistribuir_carteira(
+    body: RedistribuirPayload,
+    user: Usuario = Depends(require_admin),
+    db: Session = Depends(get_db),
+) -> RedistribuirResponse:
+    """
+    Reatribui em lote uma lista de clientes para um novo consultor.
+
+    Regras:
+      - Somente role=admin pode executar esta operacao (R12 — L3 aprovado Leandro).
+      - novo_consultor deve ser um dos valores validos: MANU, LARISSA, DAIANE, JULIO.
+      - Cada CNPJ e normalizado (R5) antes da busca.
+      - CNPJs nao encontrados sao retornados na lista de erros sem abortar o lote.
+      - Cada alteracao gera registro em audit_logs (campo=consultor).
+      - Nao gera log quando o consultor ja e o mesmo (evita audit noise).
+
+    FR-022 — Redistribuicao de Carteira (licenca maternidade Manu Q2 2026).
+
+    Returns:
+        RedistribuirResponse com totais processados, atualizados e lista de erros.
+    """
+    # Validar consultor destino
+    novo_consultor = body.novo_consultor.strip().upper()
+    if novo_consultor not in _CONSULTORES_VALIDOS:
+        raise HTTPException(
+            status_code=422,
+            detail=(
+                f"Consultor '{novo_consultor}' invalido. "
+                f"Valores aceitos: {', '.join(sorted(_CONSULTORES_VALIDOS))}"
+            ),
+        )
+
+    total_processados = len(body.cnpjs)
+    total_atualizados = 0
+    erros: list[str] = []
+
+    for cnpj_raw in body.cnpjs:
+        # R5: normalizar CNPJ — remover pontuacao e zero-pad para 14 digitos
+        cnpj_n = re.sub(r"\D", "", str(cnpj_raw)).zfill(14)
+
+        cliente = db.scalar(select(Cliente).where(Cliente.cnpj == cnpj_n))
+        if not cliente:
+            erros.append(f"CNPJ {cnpj_n} nao encontrado")
+            continue
+
+        # Sem mudanca real — pular sem gerar audit noise
+        if cliente.consultor == novo_consultor:
+            total_atualizados += 1
+            continue
+
+        valor_anterior = cliente.consultor
+        cliente.consultor = novo_consultor
+        total_atualizados += 1
+
+        # Registrar auditoria (R12 — quem, quando, o que mudou)
+        audit = AuditLog(
+            cnpj=cnpj_n,
+            campo="consultor",
+            valor_anterior=str(valor_anterior) if valor_anterior is not None else None,
+            valor_novo=novo_consultor,
+            usuario_id=user.id,
+            usuario_nome=getattr(user, "nome", None) or getattr(user, "email", None),
+        )
+        db.add(audit)
+
+    db.commit()
+
+    return RedistribuirResponse(
+        total_processados=total_processados,
+        total_atualizados=total_atualizados,
+        erros=erros,
     )
 
 
