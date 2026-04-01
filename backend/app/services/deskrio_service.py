@@ -29,6 +29,8 @@ from __future__ import annotations
 import logging
 import os
 import re
+import time
+import threading
 from typing import Any
 
 import httpx
@@ -45,12 +47,74 @@ logger = logging.getLogger(__name__)
 
 _TIMEOUT_SEGUNDOS: float = 15.0
 
+# Retry configuration for 503/5xx resilience
+_MAX_RETRIES: int = 3
+_RETRY_BACKOFF_BASE: float = 1.0  # 1s, 2s, 4s exponential backoff
+_RETRYABLE_STATUS_CODES: frozenset[int] = frozenset({502, 503, 504})
+
+# In-memory cache configuration (TTL-based, no external dependencies)
+_CACHE_TTL_SECONDS: float = 300.0  # 5 minutes
+
 # Mapeamento de status de conexao do Deskrio para texto legivel
 _STATUS_LEGIVEL: dict[str, str] = {
     "CONNECTED": "conectado",
     "DISCONNECTED": "desconectado",
     "CONNECTING": "conectando",
 }
+
+
+# ---------------------------------------------------------------------------
+# Simple thread-safe TTL cache (stdlib only, no new dependencies)
+# ---------------------------------------------------------------------------
+
+class _TTLCache:
+    """
+    Minimal thread-safe in-memory cache with TTL expiration.
+
+    Used to reduce load on the Deskrio API which frequently returns 503.
+    Keys are strings (e.g., "GET:/v1/api/contact/5541999999999").
+    Values are stored with their insertion timestamp and evicted on read
+    if expired.
+    """
+
+    def __init__(self, ttl: float = _CACHE_TTL_SECONDS, max_size: int = 500):
+        self._store: dict[str, tuple[float, Any]] = {}
+        self._ttl = ttl
+        self._max_size = max_size
+        self._lock = threading.Lock()
+
+    def get(self, key: str) -> tuple[bool, Any]:
+        """Return (hit, value). If expired or missing, returns (False, None)."""
+        with self._lock:
+            entry = self._store.get(key)
+            if entry is None:
+                return False, None
+            ts, value = entry
+            if time.monotonic() - ts > self._ttl:
+                del self._store[key]
+                return False, None
+            return True, value
+
+    def set(self, key: str, value: Any) -> None:
+        """Store value with current timestamp. Evicts oldest if at capacity."""
+        with self._lock:
+            # Simple eviction: drop oldest 25% when at max capacity
+            if len(self._store) >= self._max_size and key not in self._store:
+                sorted_keys = sorted(
+                    self._store, key=lambda k: self._store[k][0]
+                )
+                for k in sorted_keys[: self._max_size // 4]:
+                    del self._store[k]
+            self._store[key] = (time.monotonic(), value)
+
+    def clear(self) -> None:
+        """Flush all cached entries."""
+        with self._lock:
+            self._store.clear()
+
+
+# Module-level cache instance shared by all DeskrioService calls
+_cache = _TTLCache()
 
 
 # ---------------------------------------------------------------------------
@@ -112,67 +176,175 @@ class DeskrioService:
             "Content-Type": "application/json",
         }
 
-    def _get(self, path: str, params: dict[str, Any] | None = None) -> Any | None:
+    def _get(
+        self,
+        path: str,
+        params: dict[str, Any] | None = None,
+        *,
+        use_cache: bool = True,
+    ) -> Any | None:
         """
-        Executa GET na API Deskrio.
+        Executa GET na API Deskrio with retry and caching.
 
-        Retorna JSON parseado ou None em caso de erro.
+        Retry: exponential backoff (1s, 2s, 4s) on 502/503/504.
+        Cache: in-memory TTL cache (5 min) to reduce API load.
+        Fallback: returns None gracefully on persistent failure.
         """
         if not self.configurado:
             logger.debug("Deskrio nao configurado — GET %s ignorado", path)
             return None
 
-        url = f"{self.base_url}{path}"
-        try:
-            with httpx.Client(timeout=_TIMEOUT_SEGUNDOS) as client:
-                resp = client.get(url, headers=self._headers(), params=params or {})
-                resp.raise_for_status()
-                return resp.json()
-        except httpx.HTTPStatusError as exc:
-            logger.warning(
-                "Deskrio HTTP error | GET %s | status=%d | body=%.300s",
-                path,
-                exc.response.status_code,
-                exc.response.text,
+        # Build cache key from path + sorted params
+        cache_key = f"GET:{path}"
+        if params:
+            sorted_params = "&".join(
+                f"{k}={v}" for k, v in sorted(params.items())
             )
-            return None
-        except httpx.TimeoutException:
-            logger.warning("Deskrio timeout | GET %s", path)
-            return None
-        except Exception as exc:  # noqa: BLE001
-            logger.exception("Deskrio erro inesperado | GET %s | %s", path, exc)
-            return None
+            cache_key = f"{cache_key}?{sorted_params}"
+
+        # Check cache first
+        if use_cache:
+            hit, cached_value = _cache.get(cache_key)
+            if hit:
+                logger.debug("Deskrio cache HIT | %s", cache_key)
+                return cached_value
+
+        url = f"{self.base_url}{path}"
+        last_exc: Exception | None = None
+
+        for attempt in range(_MAX_RETRIES):
+            try:
+                with httpx.Client(timeout=_TIMEOUT_SEGUNDOS) as client:
+                    resp = client.get(
+                        url, headers=self._headers(), params=params or {}
+                    )
+                    resp.raise_for_status()
+                    data = resp.json()
+
+                    # Cache successful responses
+                    if use_cache:
+                        _cache.set(cache_key, data)
+
+                    return data
+
+            except httpx.HTTPStatusError as exc:
+                last_exc = exc
+                status_code = exc.response.status_code
+                if status_code in _RETRYABLE_STATUS_CODES and attempt < _MAX_RETRIES - 1:
+                    wait = _RETRY_BACKOFF_BASE * (2 ** attempt)
+                    logger.warning(
+                        "Deskrio %d (retryable) | GET %s | attempt %d/%d | "
+                        "retrying in %.1fs",
+                        status_code, path, attempt + 1, _MAX_RETRIES, wait,
+                    )
+                    time.sleep(wait)
+                    continue
+                # Non-retryable HTTP error or final attempt
+                logger.warning(
+                    "Deskrio HTTP error | GET %s | status=%d | body=%.300s",
+                    path, status_code, exc.response.text,
+                )
+                return None
+
+            except httpx.TimeoutException:
+                last_exc = None
+                if attempt < _MAX_RETRIES - 1:
+                    wait = _RETRY_BACKOFF_BASE * (2 ** attempt)
+                    logger.warning(
+                        "Deskrio timeout | GET %s | attempt %d/%d | "
+                        "retrying in %.1fs",
+                        path, attempt + 1, _MAX_RETRIES, wait,
+                    )
+                    time.sleep(wait)
+                    continue
+                logger.warning(
+                    "Deskrio timeout | GET %s | all %d attempts exhausted",
+                    path, _MAX_RETRIES,
+                )
+                return None
+
+            except Exception as exc:  # noqa: BLE001
+                logger.exception(
+                    "Deskrio erro inesperado | GET %s | %s", path, exc
+                )
+                return None
+
+        # Should not reach here, but safety fallback
+        logger.warning(
+            "Deskrio all retries exhausted | GET %s | last_exc=%s",
+            path, last_exc,
+        )
+        return None
 
     def _post(self, path: str, payload: dict[str, Any]) -> Any | None:
         """
-        Executa POST na API Deskrio.
+        Executa POST na API Deskrio with retry on 5xx.
 
-        Retorna JSON parseado ou None em caso de erro.
+        POST requests are NOT cached (mutations must not be replayed from cache).
+        Retry: exponential backoff (1s, 2s, 4s) on 502/503/504 only.
         """
         if not self.configurado:
             logger.debug("Deskrio nao configurado — POST %s ignorado", path)
             return None
 
         url = f"{self.base_url}{path}"
-        try:
-            with httpx.Client(timeout=_TIMEOUT_SEGUNDOS) as client:
-                resp = client.post(url, headers=self._headers(), json=payload)
-                resp.raise_for_status()
-                return resp.json()
-        except httpx.HTTPStatusError as exc:
-            logger.warning(
-                "Deskrio HTTP error | POST %s | status=%d | body=%.300s",
-                path,
-                exc.response.status_code,
-                exc.response.text,
-            )
-            return None
-        except httpx.TimeoutException:
-            logger.warning("Deskrio timeout | POST %s", path)
-            return None
-        except Exception as exc:  # noqa: BLE001
-            logger.exception("Deskrio erro inesperado | POST %s | %s", path, exc)
-            return None
+        last_exc: Exception | None = None
+
+        for attempt in range(_MAX_RETRIES):
+            try:
+                with httpx.Client(timeout=_TIMEOUT_SEGUNDOS) as client:
+                    resp = client.post(
+                        url, headers=self._headers(), json=payload
+                    )
+                    resp.raise_for_status()
+                    return resp.json()
+
+            except httpx.HTTPStatusError as exc:
+                last_exc = exc
+                status_code = exc.response.status_code
+                if status_code in _RETRYABLE_STATUS_CODES and attempt < _MAX_RETRIES - 1:
+                    wait = _RETRY_BACKOFF_BASE * (2 ** attempt)
+                    logger.warning(
+                        "Deskrio %d (retryable) | POST %s | attempt %d/%d | "
+                        "retrying in %.1fs",
+                        status_code, path, attempt + 1, _MAX_RETRIES, wait,
+                    )
+                    time.sleep(wait)
+                    continue
+                logger.warning(
+                    "Deskrio HTTP error | POST %s | status=%d | body=%.300s",
+                    path, status_code, exc.response.text,
+                )
+                return None
+
+            except httpx.TimeoutException:
+                last_exc = None
+                if attempt < _MAX_RETRIES - 1:
+                    wait = _RETRY_BACKOFF_BASE * (2 ** attempt)
+                    logger.warning(
+                        "Deskrio timeout | POST %s | attempt %d/%d | "
+                        "retrying in %.1fs",
+                        path, attempt + 1, _MAX_RETRIES, wait,
+                    )
+                    time.sleep(wait)
+                    continue
+                logger.warning(
+                    "Deskrio timeout | POST %s | all %d attempts exhausted",
+                    path, _MAX_RETRIES,
+                )
+                return None
+
+            except Exception as exc:  # noqa: BLE001
+                logger.exception(
+                    "Deskrio erro inesperado | POST %s | %s", path, exc
+                )
+                return None
+
+        logger.warning(
+            "Deskrio all retries exhausted | POST %s | last_exc=%s",
+            path, last_exc,
+        )
+        return None
 
     # ------------------------------------------------------------------
     # Metodos publicos
