@@ -18,6 +18,7 @@ Routers registrados:
   /api/import      — Import pipeline: upload .xlsx Mercos/SAP, historico de jobs
   /api/ia          — Inteligencia Artificial: briefings pre-ligacao, mensagens WA, resumos semanais
   /api/whatsapp    — Integracao Deskrio: status conexoes, busca contato, envio mensagem WA
+  /api/relatorios  — Motor XLSX: vendas, positivacao, atividades, inativos, metas
 
 Startup:
   - Cria tabelas no SQLite se nao existirem (sem Alembic por ora)
@@ -55,6 +56,7 @@ from backend.app.api.routes_clientes import router as clientes_router
 from backend.app.api.routes_dashboard import router as dashboard_router
 from backend.app.api.routes_ia import router as ia_router
 from backend.app.api.routes_import import router as import_router
+from backend.app.api.routes_relatorios import router as relatorios_router
 from backend.app.api.routes_whatsapp import router as whatsapp_router
 from backend.app.api.routes_motor import router as motor_router
 from backend.app.api.routes_projecao import router as projecao_router
@@ -323,6 +325,7 @@ app.include_router(import_router)
 app.include_router(ia_router)
 app.include_router(whatsapp_router)
 app.include_router(produtos_router)
+app.include_router(relatorios_router)
 
 
 # ---------------------------------------------------------------------------
