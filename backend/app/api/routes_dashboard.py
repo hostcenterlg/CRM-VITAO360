@@ -896,3 +896,448 @@ def positivacao(
         por_situacao=por_situacao,
         por_consultor=por_consultor,
     )
+
+
+# ---------------------------------------------------------------------------
+# Churn — clientes que compraram no período anterior mas NÃO no atual
+# Two-Base: APENAS tabela vendas (R1/R4)
+# ---------------------------------------------------------------------------
+
+class ChurnClienteItem(BaseModel):
+    cnpj: str
+    nome: Optional[str]
+    ultimo_pedido: Optional[str]   # ISO date string
+    faturamento_total: Optional[float]
+
+
+class ChurnConsultorItem(BaseModel):
+    consultor: str
+    perdidos: int
+    valor: float
+
+
+class ChurnResponse(BaseModel):
+    periodo: str                              # "YYYY-MM" (período atual analisado)
+    clientes_perdidos: int
+    valor_perdido: float
+    por_consultor: list[ChurnConsultorItem]
+    top_perdidos: list[ChurnClienteItem]
+
+
+@router.get(
+    "/churn",
+    response_model=ChurnResponse,
+    summary="Clientes que compraram no período anterior mas não no atual (churn)",
+)
+def churn(
+    mes: Optional[int] = Query(default=None, ge=1, le=12, description="Mês atual (1-12). Padrão: mês atual."),
+    ano: Optional[int] = Query(default=None, ge=2020, description="Ano atual (ex.: 2026). Padrão: ano atual."),
+    consultor: Optional[str] = Query(default=None, description="Filtrar por consultor"),
+    user: Usuario = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> ChurnResponse:
+    """
+    Identifica clientes que tiveram vendas no período ANTERIOR (mes-1/ano)
+    mas NÃO tiveram nenhuma venda no período ATUAL (mes/ano).
+
+    Interpretação: clientes que foram perdidos / deixaram de comprar.
+
+    Two-Base: usa APENAS tabela vendas (R1). Exclui ALUCINACAO (R8).
+    Requer autenticação JWT.
+    """
+    hoje = date.today()
+    mes_atual = mes if mes is not None else hoje.month
+    ano_atual = ano if ano is not None else hoje.year
+
+    # --- Date ranges ---
+    # Current period
+    dt_atual_ini = date(ano_atual, mes_atual, 1)
+    if mes_atual == 12:
+        dt_atual_fim = date(ano_atual + 1, 1, 1) - timedelta(days=1)
+    else:
+        dt_atual_fim = date(ano_atual, mes_atual + 1, 1) - timedelta(days=1)
+
+    # Previous period (one month back)
+    if mes_atual == 1:
+        mes_ant, ano_ant = 12, ano_atual - 1
+    else:
+        mes_ant, ano_ant = mes_atual - 1, ano_atual
+
+    dt_ant_ini = date(ano_ant, mes_ant, 1)
+    if mes_ant == 12:
+        dt_ant_fim = date(ano_ant + 1, 1, 1) - timedelta(days=1)
+    else:
+        dt_ant_fim = date(ano_ant, mes_ant + 1, 1) - timedelta(days=1)
+
+    periodo_str = f"{ano_atual:04d}-{mes_atual:02d}"
+
+    # --- CNPJs that bought in the PREVIOUS period ---
+    prev_q = (
+        select(func.distinct(Venda.cnpj))
+        .where(
+            Venda.classificacao_3tier.in_(["REAL", "SINTETICO"]),
+            Venda.data_pedido >= dt_ant_ini,
+            Venda.data_pedido <= dt_ant_fim,
+        )
+    )
+    if consultor:
+        prev_q = prev_q.where(Venda.consultor == consultor.upper())
+
+    prev_cnpjs: set[str] = {row[0] for row in db.execute(prev_q).all()}
+
+    # --- CNPJs that bought in the CURRENT period ---
+    curr_q = (
+        select(func.distinct(Venda.cnpj))
+        .where(
+            Venda.classificacao_3tier.in_(["REAL", "SINTETICO"]),
+            Venda.data_pedido >= dt_atual_ini,
+            Venda.data_pedido <= dt_atual_fim,
+        )
+    )
+    if consultor:
+        curr_q = curr_q.where(Venda.consultor == consultor.upper())
+
+    curr_cnpjs: set[str] = {row[0] for row in db.execute(curr_q).all()}
+
+    # Churned = bought previously but NOT in current period
+    churned_cnpjs: set[str] = prev_cnpjs - curr_cnpjs
+
+    if not churned_cnpjs:
+        return ChurnResponse(
+            periodo=periodo_str,
+            clientes_perdidos=0,
+            valor_perdido=0.0,
+            por_consultor=[],
+            top_perdidos=[],
+        )
+
+    # --- Valor perdido: faturamento desses clientes no período anterior ---
+    valor_rows = db.execute(
+        select(
+            Venda.cnpj,
+            Venda.consultor,
+            func.sum(Venda.valor_pedido).label("total"),
+        )
+        .where(
+            Venda.cnpj.in_(churned_cnpjs),
+            Venda.classificacao_3tier.in_(["REAL", "SINTETICO"]),
+            Venda.data_pedido >= dt_ant_ini,
+            Venda.data_pedido <= dt_ant_fim,
+        )
+        .group_by(Venda.cnpj, Venda.consultor)
+        .order_by(func.sum(Venda.valor_pedido).desc())
+    ).all()
+
+    valor_total = round(sum(float(r.total or 0) for r in valor_rows), 2)
+
+    # --- Por consultor ---
+    consultor_map: dict[str, dict] = {}
+    for r in valor_rows:
+        cons = r.consultor or "NAO_INFORMADO"
+        if cons not in consultor_map:
+            consultor_map[cons] = {"perdidos": 0, "valor": 0.0}
+        consultor_map[cons]["perdidos"] += 1
+        consultor_map[cons]["valor"] += float(r.total or 0)
+
+    por_consultor = [
+        ChurnConsultorItem(
+            consultor=cons,
+            perdidos=data["perdidos"],
+            valor=round(data["valor"], 2),
+        )
+        for cons, data in sorted(
+            consultor_map.items(), key=lambda x: x[1]["valor"], reverse=True
+        )
+    ]
+
+    # --- Top perdidos: join with clientes for name + last order date ---
+    # Build a mapping cnpj -> (nome, data_ultimo_pedido, fat_total) from the query
+    top_rows = db.execute(
+        select(
+            Venda.cnpj,
+            Cliente.nome_fantasia,
+            func.max(Venda.data_pedido).label("ultimo_pedido"),
+            func.sum(Venda.valor_pedido).label("fat_total"),
+        )
+        .join(Cliente, Venda.cnpj == Cliente.cnpj, isouter=True)
+        .where(
+            Venda.cnpj.in_(churned_cnpjs),
+            Venda.classificacao_3tier.in_(["REAL", "SINTETICO"]),
+        )
+        .group_by(Venda.cnpj, Cliente.nome_fantasia)
+        .order_by(func.sum(Venda.valor_pedido).desc())
+        .limit(20)  # cap top list
+    ).all()
+
+    top_perdidos = [
+        ChurnClienteItem(
+            cnpj=r.cnpj,
+            nome=r.nome_fantasia,
+            ultimo_pedido=r.ultimo_pedido.isoformat() if r.ultimo_pedido else None,
+            faturamento_total=round(float(r.fat_total or 0), 2),
+        )
+        for r in top_rows
+    ]
+
+    return ChurnResponse(
+        periodo=periodo_str,
+        clientes_perdidos=len(churned_cnpjs),
+        valor_perdido=valor_total,
+        por_consultor=por_consultor,
+        top_perdidos=top_perdidos,
+    )
+
+
+# ---------------------------------------------------------------------------
+# Reativação — clientes sem vendas nos 3 meses anteriores que voltaram a comprar
+# Two-Base: APENAS tabela vendas (R1/R4)
+# ---------------------------------------------------------------------------
+
+class ReativacaoConsultorItem(BaseModel):
+    consultor: str
+    reativados: int
+    valor: float
+
+
+class ReativacaoResponse(BaseModel):
+    periodo: str                              # "YYYY-MM"
+    reativados: int
+    valor_reativado: float
+    por_consultor: list[ReativacaoConsultorItem]
+
+
+@router.get(
+    "/reativacao",
+    response_model=ReativacaoResponse,
+    summary="Clientes reativados: sem compra nos 3 meses anteriores e com venda no período atual",
+)
+def reativacao(
+    mes: Optional[int] = Query(default=None, ge=1, le=12, description="Mês atual (1-12). Padrão: mês atual."),
+    ano: Optional[int] = Query(default=None, ge=2020, description="Ano atual (ex.: 2026). Padrão: ano atual."),
+    consultor: Optional[str] = Query(default=None, description="Filtrar por consultor"),
+    user: Usuario = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> ReativacaoResponse:
+    """
+    Identifica clientes que NÃO tiveram vendas nos 3 meses anteriores ao período
+    informado, mas SIM tiveram ao menos uma venda no período atual.
+
+    Interpretação: clientes que foram reativados / voltaram a comprar.
+
+    Two-Base: usa APENAS tabela vendas (R1). Exclui ALUCINACAO (R8).
+    Requer autenticação JWT.
+    """
+    hoje = date.today()
+    mes_atual = mes if mes is not None else hoje.month
+    ano_atual = ano if ano is not None else hoje.year
+
+    # --- Date ranges ---
+    # Current period: mes/ano
+    dt_atual_ini = date(ano_atual, mes_atual, 1)
+    if mes_atual == 12:
+        dt_atual_fim = date(ano_atual + 1, 1, 1) - timedelta(days=1)
+    else:
+        dt_atual_fim = date(ano_atual, mes_atual + 1, 1) - timedelta(days=1)
+
+    # Silence period: 3 months before the current period
+    # Calculate first day 3 months back
+    cursor = dt_atual_ini
+    for _ in range(3):
+        cursor = (cursor - timedelta(days=1)).replace(day=1)
+    dt_silencio_ini = cursor
+    # Last day of silence window = day before current period start
+    dt_silencio_fim = dt_atual_ini - timedelta(days=1)
+
+    periodo_str = f"{ano_atual:04d}-{mes_atual:02d}"
+
+    # --- CNPJs that bought in the CURRENT period ---
+    curr_q = (
+        select(func.distinct(Venda.cnpj))
+        .where(
+            Venda.classificacao_3tier.in_(["REAL", "SINTETICO"]),
+            Venda.data_pedido >= dt_atual_ini,
+            Venda.data_pedido <= dt_atual_fim,
+        )
+    )
+    if consultor:
+        curr_q = curr_q.where(Venda.consultor == consultor.upper())
+
+    curr_cnpjs: set[str] = {row[0] for row in db.execute(curr_q).all()}
+
+    if not curr_cnpjs:
+        return ReativacaoResponse(
+            periodo=periodo_str,
+            reativados=0,
+            valor_reativado=0.0,
+            por_consultor=[],
+        )
+
+    # --- CNPJs that bought DURING the 3-month silence window ---
+    silencio_q = (
+        select(func.distinct(Venda.cnpj))
+        .where(
+            Venda.cnpj.in_(curr_cnpjs),
+            Venda.classificacao_3tier.in_(["REAL", "SINTETICO"]),
+            Venda.data_pedido >= dt_silencio_ini,
+            Venda.data_pedido <= dt_silencio_fim,
+        )
+    )
+
+    silencio_cnpjs: set[str] = {row[0] for row in db.execute(silencio_q).all()}
+
+    # Reativados = bought in current period AND were silent in the previous 3 months
+    reativados_cnpjs: set[str] = curr_cnpjs - silencio_cnpjs
+
+    if not reativados_cnpjs:
+        return ReativacaoResponse(
+            periodo=periodo_str,
+            reativados=0,
+            valor_reativado=0.0,
+            por_consultor=[],
+        )
+
+    # --- Valor reativado: faturamento no período atual ---
+    valor_rows = db.execute(
+        select(
+            Venda.consultor,
+            func.count(func.distinct(Venda.cnpj)).label("reativados"),
+            func.sum(Venda.valor_pedido).label("valor"),
+        )
+        .where(
+            Venda.cnpj.in_(reativados_cnpjs),
+            Venda.classificacao_3tier.in_(["REAL", "SINTETICO"]),
+            Venda.data_pedido >= dt_atual_ini,
+            Venda.data_pedido <= dt_atual_fim,
+        )
+        .group_by(Venda.consultor)
+        .order_by(func.sum(Venda.valor_pedido).desc())
+    ).all()
+
+    valor_total = round(sum(float(r.valor or 0) for r in valor_rows), 2)
+
+    por_consultor = [
+        ReativacaoConsultorItem(
+            consultor=r.consultor or "NAO_INFORMADO",
+            reativados=int(r.reativados),
+            valor=round(float(r.valor or 0), 2),
+        )
+        for r in valor_rows
+    ]
+
+    return ReativacaoResponse(
+        periodo=periodo_str,
+        reativados=len(reativados_cnpjs),
+        valor_reativado=valor_total,
+        por_consultor=por_consultor,
+    )
+
+
+# ---------------------------------------------------------------------------
+# Positivação por UF — taxa de positivação agrupada por estado
+# Two-Base: APENAS tabela vendas para positivação (R1/R4)
+# ---------------------------------------------------------------------------
+
+class PositivacaoUFItem(BaseModel):
+    uf: str
+    total_carteira: int
+    positivados: int
+    taxa: float
+
+
+class PositivacaoUFResponse(BaseModel):
+    periodo: str                              # "YYYY-MM"
+    por_uf: list[PositivacaoUFItem]
+
+
+@router.get(
+    "/positivacao-uf",
+    response_model=PositivacaoUFResponse,
+    summary="Positivação de clientes agrupada por UF (estado)",
+)
+def positivacao_uf(
+    mes: Optional[int] = Query(default=None, ge=1, le=12, description="Mês (1-12). Padrão: mês atual."),
+    ano: Optional[int] = Query(default=None, ge=2020, description="Ano (ex.: 2026). Padrão: ano atual."),
+    user: Usuario = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> PositivacaoUFResponse:
+    """
+    Retorna a taxa de positivação de clientes agrupada por UF (estado).
+
+    Para cada UF:
+      - total_carteira: clientes não-ALUCINACAO com UF preenchida
+      - positivados:    distintos CNPJs com ao menos 1 venda no período
+      - taxa:           positivados / total_carteira * 100 (%)
+
+    Two-Base: positivação calculada APENAS via tabela vendas (R1).
+    Exclui ALUCINACAO (R8). Ordena por taxa decrescente.
+    Requer autenticação JWT.
+    """
+    hoje = date.today()
+    mes_ref = mes if mes is not None else hoje.month
+    ano_ref = ano if ano is not None else hoje.year
+
+    # Date range for the requested month
+    dt_inicio = date(ano_ref, mes_ref, 1)
+    if mes_ref == 12:
+        dt_fim = date(ano_ref + 1, 1, 1) - timedelta(days=1)
+    else:
+        dt_fim = date(ano_ref, mes_ref + 1, 1) - timedelta(days=1)
+
+    periodo_str = f"{ano_ref:04d}-{mes_ref:02d}"
+
+    # --- Total carteira by UF (non-ALUCINACAO, UF not null) ---
+    carteira_rows = db.execute(
+        select(
+            Cliente.uf,
+            func.count().label("total"),
+        )
+        .where(
+            Cliente.classificacao_3tier != "ALUCINACAO",
+            Cliente.uf.isnot(None),
+        )
+        .group_by(Cliente.uf)
+    ).all()
+
+    # Build a dict uf -> total_carteira
+    carteira_by_uf: dict[str, int] = {r.uf: int(r.total) for r in carteira_rows}
+
+    # --- Positivados by UF: join vendas with clientes ---
+    positiv_rows = db.execute(
+        select(
+            Cliente.uf,
+            func.count(func.distinct(Venda.cnpj)).label("positivados"),
+        )
+        .join(Cliente, Venda.cnpj == Cliente.cnpj)
+        .where(
+            Venda.classificacao_3tier.in_(["REAL", "SINTETICO"]),
+            Venda.data_pedido >= dt_inicio,
+            Venda.data_pedido <= dt_fim,
+            Cliente.classificacao_3tier != "ALUCINACAO",
+            Cliente.uf.isnot(None),
+        )
+        .group_by(Cliente.uf)
+    ).all()
+
+    positiv_by_uf: dict[str, int] = {r.uf: int(r.positivados) for r in positiv_rows}
+
+    # --- Build response: only UFs that exist in carteira ---
+    resultado: list[PositivacaoUFItem] = []
+    for uf_val, total in carteira_by_uf.items():
+        posit = positiv_by_uf.get(uf_val, 0)
+        taxa = round(posit / total * 100, 1) if total > 0 else 0.0
+        resultado.append(
+            PositivacaoUFItem(
+                uf=uf_val,
+                total_carteira=total,
+                positivados=posit,
+                taxa=taxa,
+            )
+        )
+
+    # Sort by taxa descending, then uf ascending for tie-breaking
+    resultado.sort(key=lambda x: (-x.taxa, x.uf))
+
+    return PositivacaoUFResponse(
+        periodo=periodo_str,
+        por_uf=resultado,
+    )
