@@ -45,6 +45,7 @@ interface Mensagem {
   enviado: boolean; // true = sent by us (green right), false = received (white left)
   timestamp: string;
   tipo: 'texto' | 'atendimento';
+  media_url?: string;
 }
 
 interface ClienteScore {
@@ -69,6 +70,7 @@ interface ClienteScore {
 // ---------------------------------------------------------------------------
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? '';
+const POLL_INTERVAL_MS = 30_000;
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -101,6 +103,180 @@ function formatTime(dateStr: string): string {
 
 function formatBRL(v: number): string {
   return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v);
+}
+
+/** Returns a canonical seconds-ago label for the last-refreshed indicator. */
+function formatSecondsAgo(lastRefreshed: Date | null): string {
+  if (!lastRefreshed) return '';
+  const seconds = Math.floor((Date.now() - lastRefreshed.getTime()) / 1000);
+  if (seconds < 5) return 'Atualizado agora';
+  if (seconds < 60) return `Atualizado há ${seconds}s`;
+  const minutes = Math.floor(seconds / 60);
+  return `Atualizado há ${minutes}min`;
+}
+
+// ---------------------------------------------------------------------------
+// Media helpers
+// ---------------------------------------------------------------------------
+
+type MediaType = 'image' | 'audio' | 'video' | 'document';
+
+function getMediaType(url: string): MediaType | null {
+  if (!url) return null;
+  // Try to extract extension from path before query string
+  const cleanUrl = url.split('?')[0] ?? '';
+  const ext = (cleanUrl.split('.').pop() ?? '').toLowerCase();
+  if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext)) return 'image';
+  if (['mp3', 'ogg', 'wav', 'opus', 'm4a'].includes(ext)) return 'audio';
+  if (['mp4', 'webm'].includes(ext)) return 'video';
+  if (['pdf', 'doc', 'docx', 'xls', 'xlsx'].includes(ext)) return 'document';
+  // Fallback: inspect path segments for content-type hints (Deskrio URLs may lack extensions)
+  if (/\/(image|img|photo|foto)\//i.test(url)) return 'image';
+  if (/\/(audio|voice|ptt)\//i.test(url)) return 'audio';
+  if (/\/(video|vid)\//i.test(url)) return 'video';
+  if (/\/(document|doc|file)\//i.test(url)) return 'document';
+  return null;
+}
+
+function getDocumentIcon(): string {
+  return 'M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z';
+}
+
+interface MediaBubbleProps {
+  url: string;
+  enviado: boolean;
+}
+
+function MediaBubble({ url, enviado }: MediaBubbleProps) {
+  const mediaType = getMediaType(url);
+  const [imgExpanded, setImgExpanded] = useState(false);
+
+  if (!mediaType) {
+    // Unknown type — show as a generic download link
+    return (
+      <a
+        href={url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={`flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-medium underline
+          ${enviado ? 'text-white/90' : 'text-green-700'}`}
+      >
+        <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={getDocumentIcon()} />
+        </svg>
+        Arquivo anexo
+      </a>
+    );
+  }
+
+  if (mediaType === 'image') {
+    return (
+      <>
+        <button
+          type="button"
+          onClick={() => setImgExpanded(true)}
+          className="block focus:outline-none focus:ring-2 focus:ring-green-400 rounded-xl overflow-hidden"
+          aria-label="Ampliar imagem"
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={url}
+            alt="Imagem recebida via WhatsApp"
+            className="rounded-xl object-cover"
+            style={{ maxWidth: '300px', maxHeight: '220px', display: 'block' }}
+            loading="lazy"
+            onError={(e) => {
+              (e.currentTarget as HTMLImageElement).style.display = 'none';
+            }}
+          />
+        </button>
+
+        {/* Lightbox overlay */}
+        {imgExpanded && (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/80"
+            onClick={() => setImgExpanded(false)}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Imagem ampliada"
+          >
+            <button
+              type="button"
+              onClick={() => setImgExpanded(false)}
+              className="absolute top-4 right-4 text-white bg-black/50 rounded-full p-2
+                         hover:bg-black/70 transition-colors"
+              aria-label="Fechar"
+            >
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={url}
+              alt="Imagem ampliada"
+              className="max-w-[90vw] max-h-[90vh] rounded-xl shadow-2xl object-contain"
+              onClick={(e) => e.stopPropagation()}
+            />
+          </div>
+        )}
+      </>
+    );
+  }
+
+  if (mediaType === 'audio') {
+    return (
+      <div className="w-full" style={{ maxWidth: '300px' }}>
+        {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
+        <audio
+          controls
+          src={url}
+          className="w-full rounded-lg"
+          style={{ height: '36px', minWidth: '220px' }}
+        />
+      </div>
+    );
+  }
+
+  if (mediaType === 'video') {
+    return (
+      <div style={{ maxWidth: '300px' }}>
+        {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
+        <video
+          controls
+          src={url}
+          className="rounded-xl object-cover"
+          style={{ maxWidth: '300px', maxHeight: '220px', display: 'block' }}
+        />
+      </div>
+    );
+  }
+
+  // document
+  const fileName = url.split('/').pop()?.split('?')[0] ?? 'Documento';
+  return (
+    <a
+      href={url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl border text-xs font-medium
+        transition-colors hover:opacity-80
+        ${enviado
+          ? 'border-white/30 text-white bg-white/10'
+          : 'border-gray-200 text-gray-700 bg-gray-50 hover:bg-gray-100'}`}
+      style={{ maxWidth: '260px' }}
+      download
+    >
+      <svg className="w-5 h-5 flex-shrink-0 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d={getDocumentIcon()} />
+      </svg>
+      <span className="truncate">{fileName}</span>
+      <svg className="w-3.5 h-3.5 flex-shrink-0 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+          d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+      </svg>
+    </a>
+  );
 }
 
 interface TempBadgeProps {
@@ -170,6 +346,9 @@ interface ConversationListProps {
   onBuscaChange: (v: string) => void;
   onSelect: (c: Cliente) => void;
   atendimentoMap: Record<string, Atendimento | undefined>;
+  lastRefreshed: Date | null;
+  onRefresh: () => void;
+  refreshing: boolean;
 }
 
 function ConversationList({
@@ -181,18 +360,49 @@ function ConversationList({
   onBuscaChange,
   onSelect,
   atendimentoMap,
+  lastRefreshed,
+  onRefresh,
+  refreshing,
 }: ConversationListProps) {
   return (
     <div className="w-80 flex-shrink-0 border-r border-gray-200 bg-white flex flex-col h-full">
       {/* Header */}
       <div className="px-4 py-3 border-b border-gray-100 flex-shrink-0">
-        <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center justify-between mb-2">
           <h2 className="text-sm font-bold text-gray-900">WhatsApp Inbox</h2>
-          <div className="flex items-center gap-1.5">
-            <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-            <span className="text-[10px] text-green-700 font-medium">Online</span>
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5">
+              <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+              <span className="text-[10px] text-green-700 font-medium">Online</span>
+            </div>
+            {/* Manual refresh button */}
+            <button
+              type="button"
+              onClick={onRefresh}
+              disabled={refreshing}
+              aria-label="Atualizar conversas"
+              title="Atualizar conversas"
+              className="p-1 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100
+                         transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              <svg
+                className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`}
+                fill="none" viewBox="0 0 24 24" stroke="currentColor"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+            </button>
           </div>
         </div>
+
+        {/* Last-refreshed indicator */}
+        {lastRefreshed && (
+          <p className="text-[9px] text-gray-400 mb-2 leading-none">
+            {formatSecondsAgo(lastRefreshed)}
+          </p>
+        )}
+
         {/* Search */}
         <div className="relative">
           <svg
@@ -232,8 +442,17 @@ function ConversationList({
         )}
 
         {!loading && error && (
-          <div className="p-4 text-center">
-            <p className="text-xs text-red-600">{error}</p>
+          <div className="p-5 text-center">
+            <svg className="w-8 h-8 text-amber-300 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <p className="text-xs font-medium text-gray-600 mb-1">
+              WhatsApp temporariamente indisponivel
+            </p>
+            <p className="text-[11px] text-gray-400">
+              Mostrando atendimentos do CRM
+            </p>
           </div>
         )}
 
@@ -322,6 +541,9 @@ interface ChatPanelProps {
   sending: boolean;
   onBack: () => void;
   showBack: boolean;
+  lastRefreshed: Date | null;
+  onRefresh: () => void;
+  refreshingMensagens: boolean;
 }
 
 function ChatPanel({
@@ -334,6 +556,9 @@ function ChatPanel({
   sending,
   onBack,
   showBack,
+  lastRefreshed,
+  onRefresh,
+  refreshingMensagens,
 }: ChatPanelProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -413,6 +638,25 @@ function ChatPanel({
 
         {/* Action buttons */}
         <div className="flex items-center gap-2 flex-shrink-0">
+          {/* Manual refresh for messages */}
+          <button
+            type="button"
+            onClick={onRefresh}
+            disabled={refreshingMensagens || loadingMensagens}
+            aria-label="Atualizar mensagens"
+            title={lastRefreshed ? formatSecondsAgo(lastRefreshed) : 'Atualizar mensagens'}
+            className="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100
+                       transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            <svg
+              className={`w-4 h-4 ${refreshingMensagens ? 'animate-spin' : ''}`}
+              fill="none" viewBox="0 0 24 24" stroke="currentColor"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+          </button>
+
           <button
             type="button"
             title="Ligar para o cliente"
@@ -442,6 +686,13 @@ function ChatPanel({
         </div>
       </div>
 
+      {/* Last-refreshed indicator bar */}
+      {lastRefreshed && (
+        <div className="flex items-center justify-center px-4 py-1 bg-gray-50 border-b border-gray-100 flex-shrink-0">
+          <span className="text-[10px] text-gray-400">{formatSecondsAgo(lastRefreshed)}</span>
+        </div>
+      )}
+
       {/* Messages area */}
       <div className="flex-1 overflow-y-auto scrollbar-thin px-4 py-4 space-y-3">
         {loadingMensagens && (
@@ -452,13 +703,22 @@ function ChatPanel({
 
         {!loadingMensagens && mensagens.length === 0 && (
           <div className="flex flex-col items-center justify-center h-32 text-center">
-            <p className="text-xs text-gray-400">Nenhuma mensagem encontrada</p>
-            <p className="text-[11px] text-gray-300 mt-1">Envie uma mensagem para iniciar a conversa</p>
+            <svg className="w-8 h-8 text-amber-300 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <p className="text-xs font-medium text-gray-600 mb-1">
+              WhatsApp temporariamente indisponivel
+            </p>
+            <p className="text-[11px] text-gray-400">
+              Mostrando atendimentos do CRM
+            </p>
           </div>
         )}
 
         {!loadingMensagens && mensagens.map((m) => {
           const isAtendimento = m.tipo === 'atendimento';
+          const mediaType = m.media_url ? getMediaType(m.media_url) : null;
           return (
             <div
               key={m.id}
@@ -495,7 +755,16 @@ function ChatPanel({
                     backgroundColor: m.enviado ? '#00B050' : undefined,
                   }}
                 >
-                  {m.texto}
+                  {/* Media content — rendered above text */}
+                  {m.media_url && (
+                    <div className={`mb-1.5 ${mediaType === 'audio' ? 'w-full' : ''}`}>
+                      <MediaBubble url={m.media_url} enviado={m.enviado} />
+                    </div>
+                  )}
+                  {/* Text content — only shown when present */}
+                  {m.texto && (
+                    <span>{m.texto}</span>
+                  )}
                 </div>
                 <div className={`flex items-center gap-1.5 mt-0.5 ${m.enviado ? 'justify-end' : 'justify-start'}`}>
                   {!isAtendimento && !m.enviado && (
@@ -784,6 +1053,7 @@ export default function InboxPage() {
   // Atendimentos
   const [mensagens, setMensagens] = useState<Mensagem[]>([]);
   const [loadingMensagens, setLoadingMensagens] = useState(false);
+  const [refreshingMensagens, setRefreshingMensagens] = useState(false);
 
   // Latest atendimento per client (for preview in list)
   const [atendimentoMap, setAtendimentoMap] = useState<Record<string, Atendimento | undefined>>({});
@@ -798,6 +1068,16 @@ export default function InboxPage() {
 
   // Mobile view: 'list' or 'chat'
   const [mobileView, setMobileView] = useState<'list' | 'chat'>('list');
+
+  // Auto-polling state
+  const [lastRefreshed, setLastRefreshed] = useState<Date | null>(null);
+  const [refreshingList, setRefreshingList] = useState(false);
+  // Ticker that forces the "Atualizado há X segundos" label to re-render every 10s
+  const [, setTickCount] = useState(0);
+
+  // Stable ref to avoid stale-closure issues in the polling interval
+  const selectedClienteRef = useRef<Cliente | null>(null);
+  selectedClienteRef.current = selectedCliente;
 
   // ---------------------------------------------------------------------------
   // Load clients
@@ -834,7 +1114,7 @@ export default function InboxPage() {
   }
 
   // ---------------------------------------------------------------------------
-  // Load latest atendimento for list preview (top 10 shown)
+  // Load latest atendimento for list preview (top 20 shown)
   // ---------------------------------------------------------------------------
 
   useEffect(() => {
@@ -864,18 +1144,13 @@ export default function InboxPage() {
   }, [clientes]);
 
   // ---------------------------------------------------------------------------
-  // Select client -> load WhatsApp messages (real) + fallback atendimentos + score
+  // Core message loader — used both on select and on poll refresh
   // ---------------------------------------------------------------------------
 
-  async function handleSelectCliente(c: Cliente) {
-    setSelectedCliente(c);
-    setMobileView('chat');
-    setMensagens([]);
-    setScore(null);
-    setInputTexto('');
+  const loadMensagens = useCallback(async (c: Cliente, silent = false) => {
+    if (!silent) setLoadingMensagens(true);
+    else setRefreshingMensagens(true);
 
-    // Load WhatsApp conversation (Deskrio real) + CRM atendimentos in parallel
-    setLoadingMensagens(true);
     try {
       const [conversaResult, atendResult] = await Promise.allSettled([
         apiFetch<{
@@ -899,6 +1174,7 @@ export default function InboxPage() {
             enviado: !m.de_cliente,
             timestamp: m.timestamp,
             tipo: 'texto',
+            media_url: m.media_url ?? undefined,
           });
         }
       }
@@ -907,8 +1183,6 @@ export default function InboxPage() {
       if (atendResult.status === 'fulfilled') {
         const atts = atendResult.value.atendimentos ?? [];
 
-        // If we got WA messages, only add atendimentos that don't overlap
-        // If no WA messages, show all atendimentos as before
         const waTimestamps = new Set(msgs.map((m) => m.timestamp.slice(0, 10)));
         const attsToShow = msgs.length > 0
           ? atts.filter((a) => !waTimestamps.has(a.data_atendimento?.slice(0, 10)))
@@ -924,21 +1198,36 @@ export default function InboxPage() {
           });
         }
 
-        // Update preview map
         if (atts.length > 0) {
           setAtendimentoMap((prev) => ({ ...prev, [c.cnpj]: atts[0] }));
         }
       }
 
-      // Sort all messages by timestamp (oldest first)
       msgs.sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
 
       setMensagens(msgs);
+      setLastRefreshed(new Date());
     } catch {
-      // show empty state
+      // show empty state with fallback messaging — do not throw
     } finally {
-      setLoadingMensagens(false);
+      if (!silent) setLoadingMensagens(false);
+      else setRefreshingMensagens(false);
     }
+  }, []);
+
+  // ---------------------------------------------------------------------------
+  // Select client
+  // ---------------------------------------------------------------------------
+
+  async function handleSelectCliente(c: Cliente) {
+    setSelectedCliente(c);
+    setMobileView('chat');
+    setMensagens([]);
+    setScore(null);
+    setInputTexto('');
+    setLastRefreshed(null);
+
+    await loadMensagens(c, false);
 
     // Load score / intelligence
     setLoadingScore(true);
@@ -951,6 +1240,50 @@ export default function InboxPage() {
       setLoadingScore(false);
     }
   }
+
+  // ---------------------------------------------------------------------------
+  // Manual refresh handlers
+  // ---------------------------------------------------------------------------
+
+  async function handleRefreshList() {
+    setRefreshingList(true);
+    try {
+      await loadClientes(busca);
+    } finally {
+      setRefreshingList(false);
+    }
+  }
+
+  async function handleRefreshMensagens() {
+    const c = selectedClienteRef.current;
+    if (!c) return;
+    await loadMensagens(c, true);
+  }
+
+  // ---------------------------------------------------------------------------
+  // Auto-polling — 30s interval, only when tab is visible
+  // ---------------------------------------------------------------------------
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (document.hidden) return;
+      const c = selectedClienteRef.current;
+      if (c) {
+        // Silently refresh messages for the selected conversation
+        loadMensagens(c, true);
+      }
+    }, POLL_INTERVAL_MS);
+
+    return () => clearInterval(interval);
+  }, [loadMensagens]);
+
+  // Ticker: re-render the "Atualizado há Xs" label every 10 seconds
+  useEffect(() => {
+    const ticker = setInterval(() => {
+      setTickCount((n) => n + 1);
+    }, 10_000);
+    return () => clearInterval(ticker);
+  }, []);
 
   // ---------------------------------------------------------------------------
   // Send message
@@ -1016,6 +1349,9 @@ export default function InboxPage() {
           onBuscaChange={handleBuscaChange}
           onSelect={handleSelectCliente}
           atendimentoMap={atendimentoMap}
+          lastRefreshed={lastRefreshed}
+          onRefresh={handleRefreshList}
+          refreshing={refreshingList}
         />
       </div>
 
@@ -1033,6 +1369,9 @@ export default function InboxPage() {
           sending={sending}
           onBack={() => setMobileView('list')}
           showBack={mobileView === 'chat'}
+          lastRefreshed={lastRefreshed}
+          onRefresh={handleRefreshMensagens}
+          refreshingMensagens={refreshingMensagens}
         />
       </div>
 
