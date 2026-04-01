@@ -355,6 +355,173 @@ class DeskrioService:
 
         return None
 
+    def listar_mensagens(
+        self,
+        ticket_id: int,
+        page: int = 1,
+    ) -> dict[str, Any]:
+        """
+        Busca mensagens reais de um ticket Deskrio (conversa WhatsApp).
+
+        Endpoint: GET /v1/api/messages/{ticketId}?pageNumber={page}
+
+        Args:
+            ticket_id: ID do ticket Deskrio.
+            page:      Pagina (paginacao do Deskrio).
+
+        Returns:
+            Dict com {count, messages[], hasMore} ou dict vazio em erro.
+        """
+        logger.info("Deskrio listar_mensagens | ticket_id=%d page=%d", ticket_id, page)
+        data = self._get(
+            f"/v1/api/messages/{ticket_id}",
+            params={"pageNumber": str(page)},
+        )
+
+        if isinstance(data, dict):
+            return data
+
+        # Fallback: API pode retornar lista diretamente
+        if isinstance(data, list):
+            return {"count": len(data), "messages": data, "hasMore": False}
+
+        return {"count": 0, "messages": [], "hasMore": False}
+
+    def buscar_tickets_por_contato(
+        self,
+        contact_id: int,
+        limite: int = 10,
+    ) -> list[dict[str, Any]]:
+        """
+        Busca tickets recentes de um contato especifico.
+
+        Filtra listar_tickets pelo contactId (ultimos 90 dias).
+
+        Args:
+            contact_id: ID do contato Deskrio.
+            limite:     Maximo de tickets a retornar.
+
+        Returns:
+            Lista de tickets do contato, ordenados por data desc.
+        """
+        from datetime import date, timedelta
+
+        hoje = date.today()
+        inicio = hoje - timedelta(days=90)
+
+        todos = self.listar_tickets(
+            data_inicio=inicio.isoformat(),
+            data_fim=hoje.isoformat(),
+        )
+
+        # Filtrar por contactId
+        do_contato = [
+            t for t in todos
+            if t.get("contactId") == contact_id
+        ]
+
+        # Ordenar por data desc (mais recente primeiro)
+        do_contato.sort(
+            key=lambda t: t.get("updatedAt") or t.get("createdAt") or "",
+            reverse=True,
+        )
+
+        return do_contato[:limite]
+
+    def obter_conversa_completa(
+        self,
+        cnpj: str,
+        max_mensagens: int = 50,
+    ) -> dict[str, Any]:
+        """
+        Busca a conversa WhatsApp completa de um cliente pelo CNPJ.
+
+        Fluxo:
+          1. Busca contato por CNPJ
+          2. Busca tickets do contato
+          3. Busca mensagens do ticket mais recente (ou aberto)
+
+        Args:
+            cnpj: CNPJ do cliente (sera normalizado).
+            max_mensagens: Maximo de mensagens a retornar.
+
+        Returns:
+            Dict com {contato, ticket, mensagens[], total, configurado}.
+        """
+        cnpj_norm = _normalizar_cnpj(cnpj)
+        resultado: dict[str, Any] = {
+            "configurado": self.configurado,
+            "contato": None,
+            "ticket": None,
+            "mensagens": [],
+            "total": 0,
+        }
+
+        if not self.configurado:
+            return resultado
+
+        # 1. Buscar contato
+        contato = self.buscar_contato_por_cnpj(cnpj_norm)
+        if contato is None:
+            logger.info("Conversa: contato nao encontrado | cnpj=%s", cnpj_norm)
+            return resultado
+
+        resultado["contato"] = {
+            "id": contato.get("id"),
+            "nome": contato.get("name"),
+            "numero": contato.get("number"),
+        }
+
+        # 2. Buscar tickets do contato
+        contact_id = contato.get("id")
+        if not contact_id:
+            return resultado
+
+        tickets = self.buscar_tickets_por_contato(contact_id, limite=5)
+        if not tickets:
+            logger.info("Conversa: sem tickets | cnpj=%s contact_id=%s", cnpj_norm, contact_id)
+            return resultado
+
+        # Preferir ticket aberto, senao o mais recente
+        ticket = next(
+            (t for t in tickets if t.get("status") in ("open", "pending")),
+            tickets[0],
+        )
+
+        resultado["ticket"] = {
+            "id": ticket.get("id"),
+            "status": ticket.get("status"),
+            "criado_em": ticket.get("createdAt"),
+            "atualizado_em": ticket.get("updatedAt"),
+            "ultima_mensagem": ticket.get("lastMessage"),
+        }
+
+        # 3. Buscar mensagens do ticket
+        ticket_id = ticket.get("id")
+        if not ticket_id:
+            return resultado
+
+        msgs_data = self.listar_mensagens(ticket_id)
+        mensagens_raw = msgs_data.get("messages", [])
+
+        # Normalizar mensagens para formato padrao
+        mensagens: list[dict[str, Any]] = []
+        for m in mensagens_raw[:max_mensagens]:
+            mensagens.append({
+                "id": m.get("id"),
+                "texto": m.get("body") or m.get("message") or "",
+                "de_cliente": not bool(m.get("fromMe")),
+                "timestamp": m.get("createdAt") or m.get("timestamp") or "",
+                "tipo": m.get("mediaType") or "chat",
+                "media_url": m.get("mediaUrl"),
+                "nome_contato": m.get("contact", {}).get("name") if isinstance(m.get("contact"), dict) else None,
+            })
+
+        resultado["mensagens"] = mensagens
+        resultado["total"] = msgs_data.get("count", len(mensagens))
+
+        return resultado
+
     def listar_kanban_boards(self) -> list[dict[str, Any]]:
         """
         Lista boards Kanban disponiveis na conta.

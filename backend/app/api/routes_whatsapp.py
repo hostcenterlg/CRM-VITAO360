@@ -433,3 +433,151 @@ def get_conexoes(
         )
         for c in conexoes_raw
     ]
+
+
+# ---------------------------------------------------------------------------
+# Schemas — Conversa real
+# ---------------------------------------------------------------------------
+
+class MensagemWA(BaseModel):
+    """Uma mensagem individual do WhatsApp (Deskrio)."""
+    id: int | str | None = None
+    texto: str
+    de_cliente: bool
+    timestamp: str
+    tipo: str = "chat"
+    media_url: str | None = None
+    nome_contato: str | None = None
+
+
+class ContatoResumo(BaseModel):
+    id: int | None = None
+    nome: str | None = None
+    numero: str | None = None
+
+
+class TicketResumo(BaseModel):
+    id: int | None = None
+    status: str | None = None
+    criado_em: str | None = None
+    atualizado_em: str | None = None
+    ultima_mensagem: str | None = None
+
+
+class ConversaResponse(BaseModel):
+    """Conversa WhatsApp completa de um cliente."""
+    configurado: bool
+    contato: ContatoResumo | None = None
+    ticket: TicketResumo | None = None
+    mensagens: list[MensagemWA]
+    total: int
+
+
+class MensagensTicketResponse(BaseModel):
+    """Mensagens de um ticket especifico."""
+    ticket_id: int
+    mensagens: list[MensagemWA]
+    total: int
+    has_more: bool
+
+
+# ---------------------------------------------------------------------------
+# Endpoints — Conversa real (NOVOS — nao alteram os existentes)
+# ---------------------------------------------------------------------------
+
+@router.get(
+    "/conversa/{cnpj}",
+    response_model=ConversaResponse,
+    summary="Conversa WhatsApp completa de um cliente",
+    description=(
+        "Busca o contato Deskrio pelo CNPJ, encontra o ticket mais recente "
+        "(preferindo abertos), e retorna as mensagens reais do WhatsApp. "
+        "Este e o endpoint principal para a Inbox mostrar conversas reais."
+    ),
+)
+def get_conversa(
+    cnpj: str,
+    user: Usuario = Depends(require_consultor_or_admin),
+) -> ConversaResponse:
+    """
+    Retorna conversa WhatsApp real de um cliente.
+
+    Fluxo: CNPJ -> contato Deskrio -> tickets -> mensagens do ticket.
+    Retorna lista vazia (sem erro) se nao encontrar contato ou tickets.
+    """
+    cnpj_norm = _normalizar_cnpj(cnpj)
+
+    logger.info(
+        "GET /api/whatsapp/conversa/%s | usuario=%s",
+        cnpj_norm,
+        getattr(user, "email", user.id),
+    )
+
+    dados = deskrio_service.obter_conversa_completa(cnpj_norm)
+
+    return ConversaResponse(
+        configurado=dados["configurado"],
+        contato=ContatoResumo(**dados["contato"]) if dados["contato"] else None,
+        ticket=TicketResumo(**dados["ticket"]) if dados["ticket"] else None,
+        mensagens=[MensagemWA(**m) for m in dados["mensagens"]],
+        total=dados["total"],
+    )
+
+
+@router.get(
+    "/mensagens/{ticket_id}",
+    response_model=MensagensTicketResponse,
+    summary="Mensagens de um ticket especifico",
+    description=(
+        "Retorna mensagens paginadas de um ticket Deskrio. "
+        "Util para navegar tickets antigos ou carregar mais mensagens."
+    ),
+)
+def get_mensagens_ticket(
+    ticket_id: int,
+    page: int = Query(1, ge=1, le=100, description="Pagina (1-based)"),
+    user: Usuario = Depends(require_consultor_or_admin),
+) -> MensagensTicketResponse:
+    """
+    Retorna mensagens de um ticket Deskrio especifico.
+    """
+    logger.info(
+        "GET /api/whatsapp/mensagens/%d | page=%d usuario=%s",
+        ticket_id,
+        page,
+        getattr(user, "email", user.id),
+    )
+
+    if not deskrio_service.configurado:
+        return MensagensTicketResponse(
+            ticket_id=ticket_id,
+            mensagens=[],
+            total=0,
+            has_more=False,
+        )
+
+    dados = deskrio_service.listar_mensagens(ticket_id, page=page)
+    mensagens_raw = dados.get("messages", [])
+
+    mensagens = [
+        MensagemWA(
+            id=m.get("id"),
+            texto=m.get("body") or m.get("message") or "",
+            de_cliente=not bool(m.get("fromMe")),
+            timestamp=m.get("createdAt") or m.get("timestamp") or "",
+            tipo=m.get("mediaType") or "chat",
+            media_url=m.get("mediaUrl"),
+            nome_contato=(
+                m.get("contact", {}).get("name")
+                if isinstance(m.get("contact"), dict) else None
+            ),
+        )
+        for m in mensagens_raw
+    ]
+
+    return MensagensTicketResponse(
+        ticket_id=ticket_id,
+        mensagens=mensagens,
+        total=dados.get("count", len(mensagens)),
+        has_more=dados.get("hasMore", False),
+    )
