@@ -23,6 +23,7 @@ const PAGE_TITLES: Record<string, string> = {
   '/rnc':           'RNC',
   '/admin/motor':   'Motor de IA',
   '/admin/usuarios':'Usuarios',
+  '/atualizacoes':  'Atualizacoes & Pendencias',
 };
 
 // Map pathname -> breadcrumb segments [{ label, href? }]
@@ -37,6 +38,7 @@ const BREADCRUMBS: Record<string, Array<{ label: string; href?: string }>> = {
   '/redes':         [{ label: 'Dashboard', href: '/' }, { label: 'Redes' }],
   '/rnc':           [{ label: 'Dashboard', href: '/' }, { label: 'RNC' }],
   '/admin/motor':   [{ label: 'Admin', href: '/' }, { label: 'Motor' }],
+  '/atualizacoes':  [{ label: 'Admin', href: '/' }, { label: 'Atualizacoes' }],
   '/admin/usuarios':[{ label: 'Admin', href: '/' }, { label: 'Usuarios' }],
 };
 
