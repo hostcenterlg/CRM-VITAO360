@@ -987,3 +987,165 @@ export async function fetchPositivacao(
     `/api/dashboard/positivacao${query ? `?${query}` : ''}`
   );
 }
+
+// ---------------------------------------------------------------------------
+// Produtos endpoints
+// ---------------------------------------------------------------------------
+
+export interface ProdutoItem {
+  id: number;
+  codigo: string;
+  nome: string;
+  categoria: string;
+  unidade: string;
+  preco_tabela: number;
+  comissao_pct: number;
+  ativo: boolean;
+  descricao?: string;
+  peso_liquido?: number;
+  validade_dias?: number;
+  precos_regionais?: { regiao: string; preco: number }[];
+}
+
+export interface ProdutosResponse {
+  total: number;
+  limit: number;
+  offset: number;
+  itens: ProdutoItem[];
+}
+
+export interface ProdutosParams {
+  busca?: string;
+  categoria?: string;
+  ativo?: boolean;
+  limit?: number;
+  offset?: number;
+}
+
+export async function fetchProdutos(
+  params?: ProdutosParams
+): Promise<ProdutosResponse> {
+  const qs = new URLSearchParams();
+  if (params?.busca) qs.set('busca', params.busca);
+  if (params?.categoria) qs.set('categoria', params.categoria);
+  if (params?.ativo !== undefined) qs.set('ativo', String(params.ativo));
+  qs.set('limit', String(params?.limit ?? 50));
+  qs.set('offset', String(params?.offset ?? 0));
+  return fetchJson<ProdutosResponse>(`/api/produtos?${qs.toString()}`);
+}
+
+export async function fetchProdutoCategorias(): Promise<string[]> {
+  return fetchJson<string[]>('/api/produtos/categorias');
+}
+
+export async function fetchProdutosMaisVendidos(
+  params?: { consultor?: string; limit?: number }
+): Promise<ProdutoItem[]> {
+  const qs = new URLSearchParams();
+  if (params?.consultor) qs.set('consultor', params.consultor);
+  qs.set('limit', String(params?.limit ?? 5));
+  return fetchJson<ProdutoItem[]>(`/api/produtos/mais-vendidos?${qs.toString()}`);
+}
+
+export async function fetchProduto(id: number): Promise<ProdutoItem> {
+  return fetchJson<ProdutoItem>(`/api/produtos/${id}`);
+}
+
+// ---------------------------------------------------------------------------
+// Vendas (pedidos) endpoints
+// ---------------------------------------------------------------------------
+
+export interface VendaPedidoItem {
+  id: number;
+  numero_pedido: string;
+  consultor: string;
+  cliente_cnpj: string;
+  cliente_nome: string;
+  status: 'DIGITADO' | 'LIBERADO' | 'FATURADO' | 'ENTREGUE' | 'CANCELADO';
+  valor_total: number;
+  condicao_pagamento: string;
+  data_pedido: string;
+  data_atualizacao?: string;
+  itens_qtd?: number;
+}
+
+export interface VendasPorStatusResponse {
+  total: number;
+  itens: VendaPedidoItem[];
+  resumo_status: Record<string, number>;
+}
+
+export interface VendasParams {
+  status?: string;
+  consultor?: string;
+  data_inicio?: string;
+  data_fim?: string;
+  busca?: string;
+  limit?: number;
+  offset?: number;
+}
+
+export async function fetchVendasPorStatus(
+  params?: VendasParams
+): Promise<VendasPorStatusResponse> {
+  const qs = new URLSearchParams();
+  if (params?.status) qs.set('status', params.status);
+  if (params?.consultor) qs.set('consultor', params.consultor);
+  if (params?.data_inicio) qs.set('data_inicio', params.data_inicio);
+  if (params?.data_fim) qs.set('data_fim', params.data_fim);
+  if (params?.busca) qs.set('busca', params.busca);
+  qs.set('limit', String(params?.limit ?? 100));
+  qs.set('offset', String(params?.offset ?? 0));
+  return fetchJson<VendasPorStatusResponse>(`/api/vendas?${qs.toString()}`);
+}
+
+export async function transicionarStatusVenda(
+  id: number,
+  novoStatus: string
+): Promise<VendaPedidoItem> {
+  return mutateJson<VendaPedidoItem>(`/api/vendas/${id}/status`, 'PATCH', {
+    novo_status: novoStatus,
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Relatorios endpoints
+// ---------------------------------------------------------------------------
+
+export interface RelatorioInfo {
+  tipo: string;
+  titulo: string;
+  descricao: string;
+  filtros: string[];
+}
+
+export async function fetchRelatorioCatalogo(): Promise<RelatorioInfo[]> {
+  return fetchJson<RelatorioInfo[]>('/api/relatorios/catalogo');
+}
+
+export async function downloadRelatorio(
+  tipo: string,
+  params: Record<string, string>
+): Promise<Blob> {
+  const token = getToken();
+  const query = new URLSearchParams(params).toString();
+  const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? '';
+  const res = await fetch(
+    `${BASE_URL}/api/relatorios/${tipo}${query ? `?${query}` : ''}`,
+    {
+      cache: 'no-store',
+      headers: {
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+    }
+  );
+  if (res.status === 401) {
+    if (typeof window !== 'undefined') window.location.href = '/login';
+    throw new Error('Sessao expirada');
+  }
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({})) as Record<string, unknown>;
+    throw new Error((body.detail as string) || `API error ${res.status}`);
+  }
+  return res.blob();
+}
