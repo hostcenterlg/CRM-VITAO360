@@ -13,8 +13,10 @@ import { useAuth } from '@/contexts/AuthContext';
 // Map pathname -> page title for automatic header label
 const PAGE_TITLES: Record<string, string> = {
   '/':              'Dashboard CEO',
+  '/inbox':         'WhatsApp Inbox',
   '/agenda':        'Agenda Comercial',
   '/carteira':      'Carteira de Clientes',
+  '/pipeline':      'Pipeline Kanban',
   '/sinaleiro':     'Sinaleiro de Carteira',
   '/projecao':      'Projecao Comercial',
   '/redes':         'Redes e Franquias',
@@ -26,8 +28,10 @@ const PAGE_TITLES: Record<string, string> = {
 // Map pathname -> breadcrumb segments [{ label, href? }]
 const BREADCRUMBS: Record<string, Array<{ label: string; href?: string }>> = {
   '/':              [{ label: 'Dashboard' }],
+  '/inbox':         [{ label: 'Dashboard', href: '/' }, { label: 'Inbox' }],
   '/agenda':        [{ label: 'Dashboard', href: '/' }, { label: 'Agenda' }],
   '/carteira':      [{ label: 'Dashboard', href: '/' }, { label: 'Carteira' }],
+  '/pipeline':      [{ label: 'Dashboard', href: '/' }, { label: 'Pipeline' }],
   '/sinaleiro':     [{ label: 'Dashboard', href: '/' }, { label: 'Sinaleiro' }],
   '/projecao':      [{ label: 'Dashboard', href: '/' }, { label: 'Projecao' }],
   '/redes':         [{ label: 'Dashboard', href: '/' }, { label: 'Redes' }],
@@ -85,7 +89,7 @@ export default function AppShell({ children, pageTitle }: AppShellProps) {
       {/* Coluna principal */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Header */}
-        <header className="flex-shrink-0 bg-white border-b border-gray-200 px-4 py-2.5 flex items-center gap-3">
+        <header className="flex-shrink-0 bg-white border-b border-gray-200 px-4 py-2.5 flex items-center gap-3 shadow-sm">
           {/* Hamburger mobile */}
           <HamburgerButton onClick={() => setSidebarOpen(true)} />
 
@@ -132,9 +136,12 @@ export default function AppShell({ children, pageTitle }: AppShellProps) {
             <div className="flex items-center gap-3">
               {/* Nome + role */}
               <div className="hidden sm:flex flex-col items-end gap-0.5">
-                <span className="text-sm font-medium text-gray-800 leading-tight">
-                  {user.consultor_nome ?? user.nome}
-                </span>
+                <div className="flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse-dot flex-shrink-0" />
+                  <span className="text-sm font-medium text-gray-800 leading-tight">
+                    {user.consultor_nome ?? user.nome}
+                  </span>
+                </div>
                 <RoleBadge role={user.role} />
               </div>
 

@@ -55,19 +55,19 @@ const abcMap: Record<string, { bg: string; text: string }> = {
   D: { bg: '#9CA3AF', text: '#fff' },
 };
 
-// Temperatura: QUENTE, MORNO, FRIO, CRITICO, PERDIDO
-const temperaturaMap: Record<string, { bg: string; text: string }> = {
-  QUENTE:  { bg: '#EF4444', text: '#fff' },
-  MORNO:   { bg: '#F97316', text: '#fff' },
-  FRIO:    { bg: '#60A5FA', text: '#fff' },
-  CRITICO: { bg: '#7030A0', text: '#fff' },
-  PERDIDO: { bg: '#6B7280', text: '#fff' },
+// Temperatura: QUENTE=🔥, MORNO=⚠️, FRIO=❄️, CRITICO=🚨, PERDIDO=💀
+const temperaturaMap: Record<string, { bg: string; text: string; emoji: string }> = {
+  QUENTE:  { bg: '#EF4444', text: '#fff',    emoji: '🔥' },
+  MORNO:   { bg: '#F97316', text: '#fff',    emoji: '⚠️' },
+  FRIO:    { bg: '#60A5FA', text: '#fff',    emoji: '❄️' },
+  CRITICO: { bg: '#7030A0', text: '#fff',    emoji: '🚨' },
+  PERDIDO: { bg: '#6B7280', text: '#fff',    emoji: '💀' },
 };
 
 function getStyle(
   value: string,
   variant: BadgeVariant
-): { bg: string; text: string; label?: string } {
+): { bg: string; text: string; label?: string; emoji?: string } {
   const key = value?.toUpperCase?.() ?? '';
 
   switch (variant) {
@@ -110,10 +110,13 @@ export default function StatusBadge({
   if (!value) return <span className="text-gray-400">—</span>;
 
   const style = getStyle(value, variant);
+  const key = value?.toUpperCase?.() ?? '';
   const display =
-    variant === 'situacao' && situacaoMap[value?.toUpperCase?.()]?.label
-      ? situacaoMap[value.toUpperCase()].label
-      : value.toUpperCase();
+    variant === 'situacao' && situacaoMap[key]?.label
+      ? situacaoMap[key].label
+      : key;
+
+  const emoji = variant === 'temperatura' ? (style.emoji ?? '') : '';
 
   const sizeClass = large
     ? 'px-2.5 py-1 text-xs'
@@ -126,8 +129,9 @@ export default function StatusBadge({
       role="status"
       aria-label={`${variant}: ${value}`}
       style={{ backgroundColor: style.bg, color: style.text }}
-      className={`inline-flex items-center font-semibold rounded uppercase tracking-wide ${sizeClass}`}
+      className={`inline-flex items-center gap-0.5 font-semibold rounded uppercase tracking-wide ${sizeClass}`}
     >
+      {emoji && <span aria-hidden="true">{emoji}</span>}
       {display}
     </span>
   );

@@ -21,6 +21,8 @@ interface ClienteTableProps {
   sort?: SortState;
   onSort?: (col: string) => void;
   showFaturamento?: boolean;
+  onResetFilters?: () => void;
+  hasActiveFilters?: boolean;
 }
 
 // Mapa: chave da coluna -> campo no ClienteRegistro
@@ -121,6 +123,8 @@ export default function ClienteTable({
   sort,
   onSort,
   showFaturamento = true,
+  onResetFilters,
+  hasActiveFilters = false,
 }: ClienteTableProps) {
   const visibleCols = showFaturamento
     ? COLS
@@ -160,7 +164,22 @@ export default function ClienteTable({
             d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
         </svg>
         <p className="text-sm font-medium text-gray-500">Nenhum cliente encontrado</p>
-        <p className="text-xs text-gray-400 mt-1">Tente ajustar os filtros ou limpar a busca.</p>
+        {hasActiveFilters ? (
+          <>
+            <p className="text-xs text-gray-400 mt-1">Nenhum cliente corresponde aos filtros selecionados.</p>
+            {onResetFilters && (
+              <button
+                type="button"
+                onClick={onResetFilters}
+                className="mt-3 px-4 py-1.5 text-xs font-semibold text-green-700 border border-green-300 rounded-lg bg-white hover:bg-green-50 hover:border-green-400 transition-colors"
+              >
+                Limpar filtros
+              </button>
+            )}
+          </>
+        ) : (
+          <p className="text-xs text-gray-400 mt-1">Tente ajustar os filtros ou limpar a busca.</p>
+        )}
       </div>
     );
   }
@@ -172,12 +191,14 @@ export default function ClienteTable({
           <TableHead cols={visibleCols} sort={sort} onSort={onSort} />
         </thead>
         <tbody>
-          {registros.map((c) => (
+          {registros.map((c, idx) => (
             <tr
               key={c.cnpj}
               className={`border-t border-gray-100 transition-colors ${
+                idx % 2 === 1 ? 'bg-gray-50/50' : 'bg-white'
+              } ${
                 onRowClick
-                  ? 'cursor-pointer hover:bg-green-50/40 active:bg-green-50'
+                  ? 'cursor-pointer hover:bg-green-50/60 active:bg-green-50'
                   : 'hover:bg-gray-50'
               } ${rowBorderStyle(c.sinaleiro)}`}
               onClick={() => onRowClick?.(c)}

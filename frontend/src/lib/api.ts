@@ -81,6 +81,7 @@ export interface KPIs {
   media_score: number;
   clientes_alerta: number;
   clientes_criticos: number;
+  followups_vencidos: number;
 }
 
 export interface DistribuicaoItem {
@@ -379,7 +380,7 @@ export async function fetchClientes(
   if (params.consultor) qs.set('consultor', params.consultor);
   if (params.situacao) qs.set('situacao', params.situacao);
   if (params.sinaleiro) qs.set('sinaleiro', params.sinaleiro);
-  if (params.abc) qs.set('abc', params.abc);
+  if (params.abc) qs.set('curva_abc', params.abc);
   if (params.temperatura) qs.set('temperatura', params.temperatura);
   if (params.prioridade) qs.set('prioridade', params.prioridade);
   if (params.uf) qs.set('uf', params.uf);
