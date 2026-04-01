@@ -2,17 +2,20 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
+import { fetchJson } from '@/lib/api';
 
 // ---------------------------------------------------------------------------
 // Sidebar — navegacao CRM VITAO360, light theme only
-// Grupos: CRM (Agenda, Carteira, Sinaleiro) | Gestao (Dashboard, Projecao, Redes, RNC) | Admin (Motor, Usuarios)
+// Grupos: CRM (Inbox, Pipeline, Agenda, Tarefas, Carteira, Sinaleiro) | Gestao | Admin
 // ---------------------------------------------------------------------------
 
 interface NavItem {
   href: string;
   label: string;
   icon: React.ReactNode;
+  showTarefasBadge?: boolean; // renders TarefasBadge when true
 }
 
 interface NavGroup {
@@ -22,10 +25,72 @@ interface NavGroup {
   gerenteOuAdmin?: boolean;
 }
 
+// ---------------------------------------------------------------------------
+// TarefasBadge — fetches open RNC count as a proxy for pending tasks
+// ---------------------------------------------------------------------------
+
+interface RNCCountResponse {
+  resumo?: { pendente?: number; em_andamento?: number };
+}
+
+function TarefasBadge({ active }: { active: boolean }) {
+  const [count, setCount] = useState<number | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    async function load() {
+      try {
+        const res = await fetchJson<RNCCountResponse>('/api/rnc?status=ABERTO');
+        if (!cancelled && res.resumo) {
+          const n = (res.resumo.pendente ?? 0) + (res.resumo.em_andamento ?? 0);
+          setCount(n);
+        }
+      } catch {
+        // Non-critical — badge is informational only
+      }
+    }
+    void load();
+    return () => { cancelled = true; };
+  }, []);
+
+  if (!count || count === 0) return null;
+
+  return (
+    <span
+      className="inline-flex items-center justify-center min-w-[18px] h-[18px]
+                 px-1 rounded-full text-white text-[9px] font-bold leading-none ml-auto"
+      style={{ backgroundColor: active ? 'rgba(255,255,255,0.35)' : '#ef4444' }}
+      aria-label={`${count} tarefas pendentes`}
+    >
+      {count > 99 ? '99+' : count}
+    </span>
+  );
+}
+
 const navGroups: NavGroup[] = [
   {
     label: 'CRM',
     items: [
+      {
+        href: '/inbox',
+        label: 'Inbox',
+        icon: (
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+              d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+          </svg>
+        ),
+      },
+      {
+        href: '/pipeline',
+        label: 'Pipeline',
+        icon: (
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+              d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+          </svg>
+        ),
+      },
       {
         href: '/agenda',
         label: 'Agenda',
@@ -33,6 +98,17 @@ const navGroups: NavGroup[] = [
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
               d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+        ),
+      },
+      {
+        href: '/tarefas',
+        label: 'Tarefas',
+        showTarefasBadge: true,
+        icon: (
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+              d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
           </svg>
         ),
       },
@@ -201,16 +277,15 @@ export default function Sidebar({ mobileOpen, onClose }: SidebarProps) {
         aria-label="Menu principal"
       >
         {/* Brand */}
-        <div className="flex items-center gap-2 px-4 py-4 border-b border-gray-100">
+        <div className="flex items-center gap-3 px-4 py-4 border-b border-gray-100 gradient-vitao">
           <div
-            className="w-7 h-7 rounded flex items-center justify-center flex-shrink-0"
-            style={{ backgroundColor: '#00B050' }}
+            className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 bg-white/20"
           >
-            <span className="text-white font-bold text-xs">V</span>
+            <span className="text-white font-bold text-sm">V</span>
           </div>
           <div className="min-w-0">
-            <p className="font-bold text-gray-900 text-sm leading-tight">CRM VITAO360</p>
-            <p className="text-[10px] text-gray-400 leading-tight">Inteligencia Comercial</p>
+            <p className="font-bold text-white text-sm leading-tight">CRM VITAO360</p>
+            <p className="text-[10px] text-white/70 leading-tight">Inteligencia Comercial</p>
           </div>
         </div>
 
@@ -224,35 +299,41 @@ export default function Sidebar({ mobileOpen, onClose }: SidebarProps) {
                   {group.label}
                 </p>
                 <ul className="space-y-0.5">
-                  {group.items.map((item) => (
-                    <li key={item.href}>
-                      <Link
-                        href={item.href}
-                        onClick={onClose}
-                        className={`
-                          flex items-center gap-3 px-3 py-2 rounded text-sm font-medium transition-colors
-                          ${
-                            isActive(item.href)
-                              ? 'text-green-700'
-                              : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                  {group.items.map((item) => {
+                    const active = isActive(item.href);
+                    return (
+                      <li key={item.href}>
+                        <Link
+                          href={item.href}
+                          onClick={onClose}
+                          className={`
+                            flex items-center gap-3 px-3 py-2 rounded text-sm font-medium transition-colors
+                            ${
+                              active
+                                ? 'text-green-700'
+                                : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                            }
+                          `}
+                          style={
+                            active
+                              ? { backgroundColor: '#00B05018', borderLeft: '3px solid #00B050', paddingLeft: '10px' }
+                              : undefined
                           }
-                        `}
-                        style={
-                          isActive(item.href)
-                            ? { backgroundColor: '#00B05018', borderLeft: '3px solid #00B050', paddingLeft: '10px' }
-                            : undefined
-                        }
-                      >
-                        <span
-                          className={isActive(item.href) ? '' : 'text-gray-400'}
-                          style={isActive(item.href) ? { color: '#00B050' } : undefined}
                         >
-                          {item.icon}
-                        </span>
-                        {item.label}
-                      </Link>
-                    </li>
-                  ))}
+                          <span
+                            className={active ? '' : 'text-gray-400'}
+                            style={active ? { color: '#00B050' } : undefined}
+                          >
+                            {item.icon}
+                          </span>
+                          <span className="flex-1 leading-tight">{item.label}</span>
+                          {item.showTarefasBadge && (
+                            <TarefasBadge active={active} />
+                          )}
+                        </Link>
+                      </li>
+                    );
+                  })}
                 </ul>
               </div>
             );
