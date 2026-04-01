@@ -125,15 +125,25 @@ class StatsResponse(BaseModel):
 class ClientePatchInput(BaseModel):
     """Payload para edicao inline de cliente via PATCH.
 
-    Apenas os campos explicitamente suportados podem ser alterados:
-      - consultor: reatribuicao de carteira (DE-PARA: MANU/LARISSA/DAIANE/JULIO)
+    Campos editaveis:
+      - consultor:     reatribuicao de carteira (DE-PARA: MANU/LARISSA/DAIANE/JULIO)
       - rede_regional: alteracao da rede/franquia do cliente
+      - telefone:      telefone de contato (String, max 20 chars)
+      - email:         e-mail de contato (String, max 255 chars)
+      - cidade:        cidade do cliente (String, max 100 chars)
+      - uf:            unidade federativa (String, 2 chars, maiusculo)
+
+    Nota: contato_principal nao existe na tabela clientes — omitido intencionalmente.
 
     Todos os campos sao opcionais — somente os enviados serao atualizados.
     """
 
     consultor: Optional[str] = None
     rede_regional: Optional[str] = None
+    telefone: Optional[str] = None
+    email: Optional[str] = None
+    cidade: Optional[str] = None
+    uf: Optional[str] = None
 
 
 class ClientePatchResponse(BaseModel):
@@ -443,8 +453,12 @@ def patch_cliente(
     Atualiza campos editaveis do cliente inline.
 
     Campos permitidos:
-      - consultor: reatribuicao de carteira (normalizado para UPPERCASE)
+      - consultor:     reatribuicao de carteira (normalizado para UPPERCASE)
       - rede_regional: alteracao da rede/franquia
+      - telefone:      telefone de contato (max 20 chars)
+      - email:         e-mail de contato (max 255 chars)
+      - cidade:        cidade do cliente (max 100 chars)
+      - uf:            unidade federativa (normalizado para UPPERCASE, max 2 chars)
 
     Cada campo alterado gera um registro em audit_logs com:
       campo, valor_anterior, valor_novo, usuario_id, usuario_nome, created_at
@@ -467,6 +481,10 @@ def patch_cliente(
     _CAMPOS_EDITAVEIS: dict[str, tuple[str, object]] = {
         "consultor": ("consultor", str.upper),
         "rede_regional": ("rede_regional", lambda v: v.strip()),
+        "telefone": ("telefone", lambda v: v.strip()[:20]),
+        "email": ("email", lambda v: v.strip()[:255]),
+        "cidade": ("cidade", lambda v: v.strip()[:100]),
+        "uf": ("uf", lambda v: v.strip().upper()[:2]),
     }
 
     campos_alterados: list[str] = []
