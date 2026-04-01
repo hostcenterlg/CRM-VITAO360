@@ -26,6 +26,7 @@ from sqlalchemy import (
     Index,
     Integer,
     String,
+    Text,
 )
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
@@ -88,6 +89,28 @@ class Venda(Base):
     mes_referencia = Column(String(7), nullable=True)
 
     # ------------------------------------------------------------------
+    # Status do pedido (fluxo de vida)
+    # DIGITADO  → pedido lançado, aguardando liberação
+    # LIBERADO  → aprovado pelo gerente/admin, pronto para faturar
+    # FATURADO  → NF emitida (SAP)
+    # ENTREGUE  → entrega confirmada
+    # CANCELADO → pedido cancelado (terminal)
+    # Transições válidas em routes_vendas.py (_TRANSICOES_VALIDAS).
+    # ------------------------------------------------------------------
+    status_pedido = Column(
+        String(20),
+        nullable=False,
+        default="DIGITADO",
+        index=True,
+    )
+
+    # Condição de pagamento negociada (ex.: "Boleto 30/60/90", "PIX à vista")
+    condicao_pagamento = Column(String(100), nullable=True)
+
+    # Observações livres sobre o pedido (ex.: restrições de entrega)
+    observacao = Column(Text, nullable=True)
+
+    # ------------------------------------------------------------------
     # Auditoria
     # ------------------------------------------------------------------
     created_at = Column(DateTime, server_default=func.now())
@@ -100,6 +123,14 @@ class Venda(Base):
         backref="vendas",
         foreign_keys=[cnpj],
         primaryjoin="Venda.cnpj == Cliente.cnpj",
+    )
+
+    # Itens individuais do pedido (linhas de produto)
+    # cascade="all, delete-orphan": deletar a venda deleta todos os seus itens
+    itens = relationship(
+        "VendaItem",
+        back_populates="venda",
+        cascade="all, delete-orphan",
     )
 
     # ------------------------------------------------------------------

@@ -18,6 +18,9 @@ Ordem de importação respeita dependências de FK:
  10. Meta          — FK → clientes.cnpj
  11. ImportJob     — FK → usuarios.id
  12. AuditLog      — FK → clientes.cnpj, usuarios.id
+ 13. Produto        — sem FK externa (catálogo de produtos)
+ 14. PrecoRegional  — FK → produtos.id
+ 15. VendaItem      — FK → vendas.id, produtos.id  (Two-Base: metade VENDA — R4)
 """
 
 from .cliente import Cliente
@@ -32,6 +35,9 @@ from .rnc import RNC
 from .meta import Meta
 from .import_job import ImportJob
 from .audit_log import AuditLog
+from .produto import Produto
+from .preco_regional import PrecoRegional
+from .venda_item import VendaItem
 
 __all__ = [
     "Cliente",
@@ -46,4 +52,7 @@ __all__ = [
     "Meta",
     "ImportJob",
     "AuditLog",
+    "Produto",
+    "PrecoRegional",
+    "VendaItem",
 ]
