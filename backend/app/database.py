@@ -20,10 +20,15 @@ load_dotenv()
 
 # ---------------------------------------------------------------------------
 # Caminho do banco SQLite — dentro de data/ para manter a organização do repo
+# Em Vercel serverless, filesystem é read-only exceto /tmp
 # ---------------------------------------------------------------------------
 _PROJECT_ROOT = Path(__file__).resolve().parents[2]  # backend/ -> repo root
-_DATA_DIR = _PROJECT_ROOT / "data"
-_DATA_DIR.mkdir(parents=True, exist_ok=True)
+
+if os.getenv("VERCEL"):
+    _DATA_DIR = Path("/tmp")
+else:
+    _DATA_DIR = _PROJECT_ROOT / "data"
+    _DATA_DIR.mkdir(parents=True, exist_ok=True)
 
 _DEFAULT_DB_URL = f"sqlite:///{_DATA_DIR / 'crm_vitao360.db'}"
 DATABASE_URL: str = os.getenv("DATABASE_URL", "") or _DEFAULT_DB_URL
@@ -37,13 +42,15 @@ if DATABASE_URL.startswith("postgres://"):
 # ---------------------------------------------------------------------------
 _connect_args: dict = {}
 if DATABASE_URL.startswith("sqlite"):
-    # Necessário para SQLite em ambiente com múltiplas threads (FastAPI)
     _connect_args = {"check_same_thread": False}
+elif "supabase" in DATABASE_URL or "neon" in DATABASE_URL:
+    _connect_args = {"sslmode": "require"}
 
 engine = create_engine(
     DATABASE_URL,
     connect_args=_connect_args,
-    echo=bool(os.getenv("DB_ECHO", "")),  # DB_ECHO=1 para debug SQL
+    echo=bool(os.getenv("DB_ECHO", "")),
+    pool_pre_ping=True,
 )
 
 # ---------------------------------------------------------------------------

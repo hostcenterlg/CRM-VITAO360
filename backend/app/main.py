@@ -37,8 +37,11 @@ from contextlib import asynccontextmanager
 
 logger = logging.getLogger(__name__)
 
-from fastapi import FastAPI
+import traceback
+
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
 from backend.app.api.routes_agenda import router as agenda_router
 from backend.app.api.routes_atendimentos import router as atendimentos_router
@@ -70,22 +73,24 @@ async def lifespan(app: FastAPI):
       2. Seed automatico de usuarios iniciais (idempotente)
       3. Seed automatico das regras do motor (idempotente)
     """
-    Base.metadata.create_all(bind=engine)
-
-    # Seed automatico — ambas as funcoes sao idempotentes
-    db = SessionLocal()
     try:
-        n_users = seed_usuarios(db)
-        n_regras = seed_regras_motor(db)
-        if n_users:
-            logger.info("[SEED] %d usuario(s) criado(s)", n_users)
-        if n_regras:
-            logger.info("[SEED] %d regra(s) do motor criada(s)", n_regras)
-    finally:
-        db.close()
+        Base.metadata.create_all(bind=engine)
+
+        # Seed automatico — ambas as funcoes sao idempotentes
+        db = SessionLocal()
+        try:
+            n_users = seed_usuarios(db)
+            n_regras = seed_regras_motor(db)
+            if n_users:
+                logger.info("[SEED] %d usuario(s) criado(s)", n_users)
+            if n_regras:
+                logger.info("[SEED] %d regra(s) do motor criada(s)", n_regras)
+        finally:
+            db.close()
+    except Exception as e:
+        logger.error("[STARTUP] DB init failed: %s", e)
 
     yield
-    # Nenhum cleanup necessario por ora
 
 
 # ---------------------------------------------------------------------------
@@ -112,6 +117,13 @@ _ORIGINS_ENV = os.getenv(
     "http://localhost:3000,http://127.0.0.1:3000",
 )
 _ORIGINS = [o.strip() for o in _ORIGINS_ENV.split(",") if o.strip()]
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    """Catch-all — loga traceback mas nunca expoe ao cliente."""
+    logger.error("Unhandled: %s", traceback.format_exc())
+    return JSONResponse(status_code=500, content={"error": "Erro interno do servidor."})
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -164,3 +176,5 @@ def health():
 @app.get("/", tags=["Sistema"], include_in_schema=False)
 def root():
     return {"mensagem": "CRM VITAO360 API — acesse /docs para a documentação."}
+
+
