@@ -452,52 +452,68 @@ function ChatPanel({
 
         {!loadingMensagens && mensagens.length === 0 && (
           <div className="flex flex-col items-center justify-center h-32 text-center">
-            <p className="text-xs text-gray-400">Nenhum atendimento registrado</p>
-            <p className="text-[11px] text-gray-300 mt-1">Envie uma mensagem para iniciar</p>
+            <p className="text-xs text-gray-400">Nenhuma mensagem encontrada</p>
+            <p className="text-[11px] text-gray-300 mt-1">Envie uma mensagem para iniciar a conversa</p>
           </div>
         )}
 
-        {!loadingMensagens && mensagens.map((m) => (
-          <div
-            key={m.id}
-            className={`flex ${m.enviado ? 'justify-end' : 'justify-start'}`}
-          >
-            {!m.enviado && (
-              <div
-                className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0
-                           text-white text-[9px] font-bold mr-2 mt-auto mb-0.5"
-                style={{ backgroundColor: '#6B7280' }}
-              >
-                C
-              </div>
-            )}
-            <div className="max-w-xs lg:max-w-sm xl:max-w-md">
-              <div
-                className={`px-3 py-2 text-xs leading-relaxed shadow-sm
-                  ${m.enviado
-                    ? 'text-white'
-                    : 'bg-white text-gray-800 border border-gray-200'
-                  }`}
-                style={{
-                  borderRadius: m.enviado
-                    ? '16px 16px 4px 16px'
-                    : '16px 16px 16px 4px',
-                  backgroundColor: m.enviado ? '#00B050' : undefined,
-                }}
-              >
-                {m.tipo === 'atendimento' && !m.enviado && (
-                  <span className="block text-[9px] font-semibold text-gray-400 mb-0.5 uppercase tracking-wide">
-                    Atendimento Registrado
+        {!loadingMensagens && mensagens.map((m) => {
+          const isAtendimento = m.tipo === 'atendimento';
+          return (
+            <div
+              key={m.id}
+              className={`flex ${m.enviado ? 'justify-end' : 'justify-start'}`}
+            >
+              {!m.enviado && (
+                <div
+                  className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0
+                             text-white text-[9px] font-bold mr-2 mt-auto mb-0.5"
+                  style={{ backgroundColor: isAtendimento ? '#6366F1' : '#6B7280' }}
+                  title={isAtendimento ? 'Atendimento CRM' : 'WhatsApp'}
+                >
+                  {isAtendimento ? 'A' : 'W'}
+                </div>
+              )}
+              <div className="max-w-xs lg:max-w-sm xl:max-w-md">
+                {isAtendimento && (
+                  <span className="block text-[9px] font-semibold text-indigo-400 mb-0.5 uppercase tracking-wide ml-1">
+                    Registro CRM
                   </span>
                 )}
-                {m.texto}
+                <div
+                  className={`px-3 py-2 text-xs leading-relaxed shadow-sm
+                    ${m.enviado
+                      ? 'text-white'
+                      : isAtendimento
+                        ? 'bg-indigo-50 text-gray-800 border border-indigo-200'
+                        : 'bg-white text-gray-800 border border-gray-200'
+                    }`}
+                  style={{
+                    borderRadius: m.enviado
+                      ? '16px 16px 4px 16px'
+                      : '16px 16px 16px 4px',
+                    backgroundColor: m.enviado ? '#00B050' : undefined,
+                  }}
+                >
+                  {m.texto}
+                </div>
+                <div className={`flex items-center gap-1.5 mt-0.5 ${m.enviado ? 'justify-end' : 'justify-start'}`}>
+                  {!isAtendimento && !m.enviado && (
+                    <span className="text-[8px] text-green-500 font-medium">WA</span>
+                  )}
+                  <span className="text-[9px] text-gray-400">
+                    {formatTime(m.timestamp)}
+                  </span>
+                  {m.enviado && (
+                    <svg className="w-3 h-3 text-green-200" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+                    </svg>
+                  )}
+                </div>
               </div>
-              <p className={`text-[9px] text-gray-400 mt-0.5 ${m.enviado ? 'text-right' : 'text-left'}`}>
-                {formatTime(m.timestamp)}
-              </p>
             </div>
-          </div>
-        ))}
+          );
+        })}
         <div ref={messagesEndRef} />
       </div>
 
@@ -848,7 +864,7 @@ export default function InboxPage() {
   }, [clientes]);
 
   // ---------------------------------------------------------------------------
-  // Select client -> load atendimentos + score
+  // Select client -> load WhatsApp messages (real) + fallback atendimentos + score
   // ---------------------------------------------------------------------------
 
   async function handleSelectCliente(c: Cliente) {
@@ -858,29 +874,66 @@ export default function InboxPage() {
     setScore(null);
     setInputTexto('');
 
-    // Load atendimentos
+    // Load WhatsApp conversation (Deskrio real) + CRM atendimentos in parallel
     setLoadingMensagens(true);
     try {
-      const data = await apiFetch<{ atendimentos: Atendimento[] }>(
-        `/api/atendimentos?cnpj=${c.cnpj}&limit=20`
-      );
-      const atts = data.atendimentos ?? [];
-      const msgs: Mensagem[] = atts
-        .slice()
-        .reverse()
-        .map((a) => ({
-          id: String(a.id),
-          texto: a.descricao,
-          enviado: false,
-          timestamp: a.data_atendimento,
-          tipo: 'atendimento' as const,
-        }));
-      setMensagens(msgs);
+      const [conversaResult, atendResult] = await Promise.allSettled([
+        apiFetch<{
+          configurado: boolean;
+          contato: { id: number; nome: string; numero: string } | null;
+          ticket: { id: number; status: string; criado_em: string; atualizado_em: string; ultima_mensagem: string } | null;
+          mensagens: Array<{ id: string | number; texto: string; de_cliente: boolean; timestamp: string; tipo: string; media_url?: string; nome_contato?: string }>;
+          total: number;
+        }>(`/api/whatsapp/conversa/${c.cnpj}`),
+        apiFetch<{ atendimentos: Atendimento[] }>(`/api/atendimentos?cnpj=${c.cnpj}&limit=20`),
+      ]);
 
-      // Update preview map
-      if (atts.length > 0) {
-        setAtendimentoMap((prev) => ({ ...prev, [c.cnpj]: atts[0] }));
+      const msgs: Mensagem[] = [];
+
+      // 1. Real WhatsApp messages from Deskrio (priority)
+      if (conversaResult.status === 'fulfilled' && conversaResult.value.mensagens.length > 0) {
+        for (const m of conversaResult.value.mensagens) {
+          msgs.push({
+            id: String(m.id ?? `wa-${msgs.length}`),
+            texto: m.texto || (m.tipo !== 'chat' ? `[${m.tipo}]` : ''),
+            enviado: !m.de_cliente,
+            timestamp: m.timestamp,
+            tipo: 'texto',
+          });
+        }
       }
+
+      // 2. CRM atendimentos as fallback / supplement
+      if (atendResult.status === 'fulfilled') {
+        const atts = atendResult.value.atendimentos ?? [];
+
+        // If we got WA messages, only add atendimentos that don't overlap
+        // If no WA messages, show all atendimentos as before
+        const waTimestamps = new Set(msgs.map((m) => m.timestamp.slice(0, 10)));
+        const attsToShow = msgs.length > 0
+          ? atts.filter((a) => !waTimestamps.has(a.data_atendimento?.slice(0, 10)))
+          : atts;
+
+        for (const a of attsToShow.slice().reverse()) {
+          msgs.push({
+            id: `crm-${a.id}`,
+            texto: a.descricao,
+            enviado: false,
+            timestamp: a.data_atendimento,
+            tipo: 'atendimento',
+          });
+        }
+
+        // Update preview map
+        if (atts.length > 0) {
+          setAtendimentoMap((prev) => ({ ...prev, [c.cnpj]: atts[0] }));
+        }
+      }
+
+      // Sort all messages by timestamp (oldest first)
+      msgs.sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
+
+      setMensagens(msgs);
     } catch {
       // show empty state
     } finally {
@@ -922,29 +975,11 @@ export default function InboxPage() {
     setSending(true);
 
     try {
-      // Try to get WA connection and phone
-      let conexaoId: number | null = null;
-      const numero = selectedCliente.telefone ?? '';
-
-      try {
-        const statusData = await apiFetch<{ configurado: boolean; conexoes: Array<{ id: number; nome: string; status: string; numero: string }> }>(
-          '/api/whatsapp/status'
-        );
-        if (statusData.configurado && statusData.conexoes.length > 0) {
-          conexaoId = statusData.conexoes[0].id;
-        }
-      } catch {
-        // no WA configured
-      }
-
-      // If we have connection + phone, send via WA
-      if (conexaoId && numero) {
-        await apiFetch('/api/whatsapp/enviar', {
-          method: 'POST',
-          body: JSON.stringify({ conexao_id: conexaoId, numero, mensagem: texto }),
-        });
-      }
-      // Message remains optimistic either way
+      // Send via Deskrio WhatsApp (backend resolves CNPJ -> phone number)
+      await apiFetch<{ enviado: boolean; erro?: string }>('/api/whatsapp/enviar', {
+        method: 'POST',
+        body: JSON.stringify({ cnpj: selectedCliente.cnpj, mensagem: texto }),
+      });
     } catch {
       // Revert optimistic on hard error
       setMensagens((prev) => prev.filter((m) => m.id !== tempId));
