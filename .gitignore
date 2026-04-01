@@ -85,3 +85,15 @@ data/crm_vitao360.db-shm
 data/crm_vitao360.db-wal
 
 .vercel
+.env*.local
+
+# Dados sensíveis extraídos (CNPJs, contatos, tickets)
+data/*.json
+data/.extraction_*
+data/.mercos_*
+data/.node_ready.txt
+data/MERCOS_*.md
+data/MERCOS_*.json
+data/deskrio_*.json
+data/mercos_*.json
+data/sales_hunter/**/*.csv
