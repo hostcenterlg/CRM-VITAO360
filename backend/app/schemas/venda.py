@@ -116,9 +116,67 @@ class VendaResponse(BaseModel):
         default=None,
         description='Periodo de referencia no formato "AAAA-MM". Atencao R6: Mercos mente nos nomes.',
     )
+    status_pedido: str = Field(
+        default="DIGITADO",
+        description="Status do pedido: DIGITADO, LIBERADO, FATURADO, ENTREGUE ou CANCELADO.",
+    )
+    condicao_pagamento: str | None = Field(
+        default=None,
+        description="Condicao de pagamento negociada (ex.: 'Boleto 30/60/90', 'PIX a vista').",
+    )
+    observacao: str | None = Field(
+        default=None,
+        description="Observacoes livres sobre o pedido.",
+    )
     created_at: datetime
 
     model_config = {"from_attributes": True}
+
+
+class VendaStatusTransition(BaseModel):
+    """
+    Payload para transição de status de pedido (PATCH /api/vendas/{id}/status).
+
+    Transições válidas:
+      DIGITADO  → LIBERADO   (admin ou gerente)
+      LIBERADO  → FATURADO   (admin)
+      FATURADO  → ENTREGUE   (admin)
+      qualquer  → CANCELADO  (admin)
+    """
+
+    novo_status: str = Field(
+        ...,
+        description=(
+            "Novo status do pedido. "
+            "Valores: DIGITADO, LIBERADO, FATURADO, ENTREGUE, CANCELADO."
+        ),
+        examples=["LIBERADO"],
+    )
+    motivo: str | None = Field(
+        default=None,
+        max_length=255,
+        description="Motivo da transição (obrigatório para CANCELADO).",
+        examples=["Cliente solicitou cancelamento"],
+    )
+
+    @field_validator("novo_status")
+    @classmethod
+    def status_valido(cls, v: str) -> str:
+        validos = {"DIGITADO", "LIBERADO", "FATURADO", "ENTREGUE", "CANCELADO"}
+        v_upper = v.upper()
+        if v_upper not in validos:
+            raise ValueError(
+                f"Status invalido: {v!r}. Valores permitidos: {sorted(validos)}"
+            )
+        return v_upper
+
+
+class VendaPorStatus(BaseModel):
+    """Contagem de pedidos agrupada por status_pedido."""
+
+    status: str
+    quantidade: int
+    valor_total: float = Field(description="Soma de valor_pedido R$ para este status")
 
 
 class VendaTotais(BaseModel):

@@ -12,10 +12,12 @@ R7 — Faturamento baseline: R$ 2.091.000 (CORRIGIDO 2026-03-23).
 R8 — classificacao_3tier = REAL por padrao. ALUCINACAO nunca em producao.
 
 Endpoints:
-  POST /api/vendas              — registrar nova venda (consultor ou admin)
-  GET  /api/vendas              — listar com filtros e paginacao
-  GET  /api/vendas/totais       — faturamento agregado (somente admin)
-  GET  /api/vendas/{id}         — detalhe de uma venda
+  POST  /api/vendas              — registrar nova venda (consultor ou admin)
+  GET   /api/vendas              — listar com filtros e paginacao
+  GET   /api/vendas/totais       — faturamento agregado (somente admin)
+  GET   /api/vendas/por-status   — contagem de pedidos por status_pedido (admin)
+  GET   /api/vendas/{id}         — detalhe de uma venda
+  PATCH /api/vendas/{id}/status  — transicao de status do pedido (admin/gerente)
 """
 
 from __future__ import annotations
@@ -27,12 +29,24 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
-from backend.app.api.deps import get_current_user, require_admin, require_consultor_or_admin
+from backend.app.api.deps import (
+    get_current_user,
+    require_admin,
+    require_admin_or_gerente,
+    require_consultor_or_admin,
+)
 from backend.app.database import get_db
+from backend.app.models.audit_log import AuditLog
 from backend.app.models.cliente import Cliente
 from backend.app.models.usuario import Usuario
 from backend.app.models.venda import Venda
-from backend.app.schemas.venda import VendaCreate, VendaResponse, VendaTotais
+from backend.app.schemas.venda import (
+    VendaCreate,
+    VendaPorStatus,
+    VendaResponse,
+    VendaStatusTransition,
+    VendaTotais,
+)
 
 router = APIRouter(prefix="/api/vendas", tags=["Vendas"])
 
@@ -45,6 +59,26 @@ _CONSULTORES_VALIDOS = {"MANU", "LARISSA", "DAIANE", "JULIO"}
 
 # Classificacoes que entram no calculo de faturamento (R8: excluir ALUCINACAO)
 _TIERS_VALIDOS_PARA_CALCULO = ("REAL", "SINTETICO")
+
+# Mapa de transicoes validas de status_pedido:
+#   chave   = status atual
+#   valor   = set de status para os quais pode transitar
+# Regras de negocio:
+#   DIGITADO  → LIBERADO   (admin ou gerente aprovam o pedido)
+#   LIBERADO  → FATURADO   (admin emite NF no SAP)
+#   FATURADO  → ENTREGUE   (admin confirma entrega)
+#   qualquer  → CANCELADO  (admin, estado terminal)
+#   CANCELADO → (nenhum)   (terminal, nao pode reabrir)
+_TRANSICOES_VALIDAS: dict[str, set[str]] = {
+    "DIGITADO":  {"LIBERADO", "CANCELADO"},
+    "LIBERADO":  {"FATURADO", "CANCELADO"},
+    "FATURADO":  {"ENTREGUE", "CANCELADO"},
+    "ENTREGUE":  {"CANCELADO"},
+    "CANCELADO": set(),  # terminal
+}
+
+# Transicoes que exigem role admin (gerente nao pode executar)
+_REQUER_ADMIN = {"FATURADO", "ENTREGUE"}
 
 
 def _resolver_consultor(payload_consultor: str | None, usuario: Usuario) -> str:
@@ -338,7 +372,157 @@ def totais_faturamento(
 
 
 # ---------------------------------------------------------------------------
+# GET /api/vendas/por-status — contagem de pedidos por status (admin)
+# NOTE: This MUST be registered BEFORE /{venda_id} to avoid FastAPI treating
+#       "por-status" as a path parameter (int) and returning a 422 type error.
+# ---------------------------------------------------------------------------
+
+@router.get(
+    "/por-status",
+    response_model=list[VendaPorStatus],
+    summary="Contagem de pedidos por status (admin)",
+    description=(
+        "Retorna contagem e valor total de pedidos agrupados por status_pedido. "
+        "Restrito a administradores."
+    ),
+)
+def vendas_por_status(
+    db: Session = Depends(get_db),
+    _: Usuario = Depends(require_admin),
+) -> list[VendaPorStatus]:
+    """
+    Agrega vendas por status_pedido.
+
+    Útil para o painel gerencial monitorar o funil de pedidos:
+    quantos estão em DIGITADO, LIBERADO, FATURADO, ENTREGUE, CANCELADO.
+    """
+    stmt = (
+        select(
+            Venda.status_pedido.label("status"),
+            func.count().label("quantidade"),
+            func.coalesce(func.sum(Venda.valor_pedido), 0.0).label("valor_total"),
+        )
+        .group_by(Venda.status_pedido)
+        .order_by(Venda.status_pedido.asc())
+    )
+    rows = db.execute(stmt).all()
+
+    return [
+        VendaPorStatus(
+            status=r.status,
+            quantidade=int(r.quantidade),
+            valor_total=round(float(r.valor_total), 2),
+        )
+        for r in rows
+    ]
+
+
+# ---------------------------------------------------------------------------
+# PATCH /api/vendas/{id}/status — transicao de status do pedido
+# ---------------------------------------------------------------------------
+
+@router.patch(
+    "/{venda_id}/status",
+    response_model=VendaResponse,
+    summary="Transicao de status do pedido",
+    description=(
+        "Realiza uma transicao de status_pedido com validacao de fluxo. "
+        "Transicoes validas: DIGITADO→LIBERADO, LIBERADO→FATURADO, "
+        "FATURADO→ENTREGUE, qualquer→CANCELADO. "
+        "Requer admin ou gerente. CANCELADO e estado terminal."
+    ),
+)
+def transicionar_status(
+    venda_id: int,
+    payload: VendaStatusTransition,
+    db: Session = Depends(get_db),
+    usuario: Usuario = Depends(require_admin_or_gerente),
+) -> VendaResponse:
+    """
+    Transiciona o status_pedido de uma venda com validacao de fluxo.
+
+    Regras de autorização:
+      - gerente pode aprovar DIGITADO → LIBERADO e cancelar
+      - admin pode executar todas as transicoes
+      - Transicoes para FATURADO e ENTREGUE exigem admin
+
+    Cada transicao gera um registro em AuditLog para rastreabilidade.
+
+    Raises:
+      HTTPException 404 — venda nao encontrada
+      HTTPException 422 — transicao invalida (fluxo ou autorizacao)
+    """
+    venda = db.scalar(select(Venda).where(Venda.id == venda_id))
+    if venda is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Venda com id={venda_id} nao encontrada.",
+        )
+
+    status_atual = venda.status_pedido
+    novo_status = payload.novo_status
+
+    # Validar se a transicao e permitida no fluxo
+    transicoes_permitidas = _TRANSICOES_VALIDAS.get(status_atual, set())
+    if novo_status not in transicoes_permitidas:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail=(
+                f"Transicao invalida: {status_atual!r} → {novo_status!r}. "
+                f"Transicoes permitidas a partir de {status_atual!r}: "
+                f"{sorted(transicoes_permitidas) or 'nenhuma (estado terminal)'}."
+            ),
+        )
+
+    # Validar autorizacao extra para transicoes que exigem admin
+    if novo_status in _REQUER_ADMIN and usuario.role != "admin":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=(
+                f"Transicao para {novo_status!r} requer role 'admin'. "
+                f"Usuario {usuario.nome!r} tem role {usuario.role!r}."
+            ),
+        )
+
+    # Motivo obrigatorio para cancelamento
+    if novo_status == "CANCELADO" and not payload.motivo:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="Campo 'motivo' e obrigatorio para cancelamento de pedido.",
+        )
+
+    # Executar a transicao
+    venda.status_pedido = novo_status
+    if payload.motivo:
+        # Acrescentar motivo nas observacoes sem sobrescrever observacoes existentes
+        prefixo = f"[{novo_status}] {payload.motivo}"
+        venda.observacao = (
+            f"{venda.observacao}\n{prefixo}" if venda.observacao else prefixo
+        )
+
+    # Registrar em AuditLog para rastreabilidade (R12)
+    audit = AuditLog(
+        cnpj=venda.cnpj,
+        campo="status_pedido",
+        valor_anterior=status_atual,
+        valor_novo=novo_status,
+        usuario_id=usuario.id,
+        usuario_nome=usuario.nome,
+    )
+    db.add(audit)
+
+    db.commit()
+    db.refresh(venda)
+
+    nome_fantasia = venda.cliente.nome_fantasia if venda.cliente else None
+    return _montar_venda_response(venda, nome_fantasia)
+
+
+# ---------------------------------------------------------------------------
 # GET /api/vendas/{id} — detalhe de uma venda
+# NOTE: Registered LAST among GET routes so static paths (/totais, /por-status)
+#       are matched first. FastAPI would try to cast "por-status" to int and
+#       raise a 422 if this were registered before those routes.
 # ---------------------------------------------------------------------------
 
 @router.get(

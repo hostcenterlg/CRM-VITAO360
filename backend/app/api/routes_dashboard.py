@@ -9,6 +9,8 @@ Endpoints KPI para o painel gerencial:
   GET /api/dashboard/projecao      — projecao: realizado vs meta por consultor
   GET /api/dashboard/funil         — pipeline por estagio de funil
   GET /api/dashboard/tendencias    — tendencias mensais dos ultimos 12 meses
+  GET /api/dashboard/atividades    — contagens de log_interacoes por tipo, consultor e mes
+  GET /api/dashboard/positivacao   — clientes que compraram em determinado mes/ano
 
 Faturamento baseline: R$ 2.091.000 (CORRIGIDO 2026-03-23, R7).
 Todos os valores monetarios sao Float; o frontend formata como R$.
@@ -20,7 +22,7 @@ from __future__ import annotations
 from datetime import date, timedelta
 from typing import Optional
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from pydantic import BaseModel, ConfigDict
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
@@ -28,6 +30,7 @@ from sqlalchemy.orm import Session
 from backend.app.api.deps import get_current_user
 from backend.app.database import get_db
 from backend.app.models.cliente import Cliente
+from backend.app.models.log_interacao import LogInteracao
 from backend.app.models.usuario import Usuario
 from backend.app.models.venda import Venda
 
@@ -51,6 +54,10 @@ class KPIsResponse(BaseModel):
     clientes_alerta: int        # sinaleiro VERMELHO ou AMARELO
     clientes_criticos: int      # temperatura CRITICO
     followups_vencidos: int
+    # Activity fields — sourced from log_interacoes (Two-Base: no monetary values)
+    total_atividades: int       # COUNT(*) log_interacoes (all time)
+    atividades_mes_atual: int   # COUNT(*) log_interacoes WHERE data_interacao in current month
+    taxa_positivacao: float     # % clientes positivados no mes atual (vendas table only)
 
 
 class DistribuicaoItem(BaseModel):
@@ -184,6 +191,48 @@ def kpis(
         .where(Cliente.followup_vencido == True)  # noqa: E712
     ) or 0
 
+    # --- Activity counts (log_interacoes — Two-Base: zero monetary values) ---
+    total_atividades = db.scalar(
+        select(func.count()).select_from(LogInteracao)
+    ) or 0
+
+    hoje = date.today()
+    mes_inicio_atual = hoje.replace(day=1)
+    # Last day of current month: first day of next month minus 1 day
+    if hoje.month == 12:
+        mes_fim_atual = hoje.replace(year=hoje.year + 1, month=1, day=1) - timedelta(days=1)
+    else:
+        mes_fim_atual = hoje.replace(month=hoje.month + 1, day=1) - timedelta(days=1)
+
+    atividades_mes_atual = db.scalar(
+        select(func.count())
+        .select_from(LogInteracao)
+        .where(
+            func.date(LogInteracao.data_interacao) >= mes_inicio_atual,
+            func.date(LogInteracao.data_interacao) <= mes_fim_atual,
+        )
+    ) or 0
+
+    # --- Positivacao current month (vendas table only — Two-Base: R1) ---
+    # Distinct CNPJs with at least one venda in the current month (non-ALUCINACAO)
+    positivados_mes = db.scalar(
+        select(func.count(func.distinct(Venda.cnpj)))
+        .where(
+            Venda.classificacao_3tier.in_(["REAL", "SINTETICO"]),
+            func.date(Venda.data_pedido) >= mes_inicio_atual,
+            func.date(Venda.data_pedido) <= mes_fim_atual,
+        )
+    ) or 0
+
+    # Total carteira excludes ALUCINACAO clients
+    total_carteira = db.scalar(
+        select(func.count())
+        .select_from(Cliente)
+        .where(Cliente.classificacao_3tier != "ALUCINACAO")
+    ) or 0
+
+    taxa_positivacao = round(positivados_mes / total_carteira * 100, 1) if total_carteira > 0 else 0.0
+
     return KPIsResponse(
         total_clientes=total,
         total_ativos=total_ativos,
@@ -194,6 +243,9 @@ def kpis(
         clientes_alerta=clientes_alerta,
         clientes_criticos=clientes_criticos,
         followups_vencidos=followups_vencidos,
+        total_atividades=total_atividades,
+        atividades_mes_atual=atividades_mes_atual,
+        taxa_positivacao=taxa_positivacao,
     )
 
 
@@ -536,3 +588,311 @@ def tendencias(
         )
 
     return TendenciasResponse(meses=resultado)
+
+
+# ---------------------------------------------------------------------------
+# Atividades — schemas e endpoint
+# Two-Base: log_interacoes NEVER has monetary values (R1/R4)
+# ---------------------------------------------------------------------------
+
+class AtividadeTipoItem(BaseModel):
+    tipo: str
+    quantidade: int
+
+
+class AtividadeConsultorItem(BaseModel):
+    consultor: str
+    quantidade: int
+    tipos: dict[str, int]
+
+
+class AtividadeMesItem(BaseModel):
+    mes: str     # "YYYY-MM"
+    quantidade: int
+
+
+class AtividadesResponse(BaseModel):
+    total_atividades: int
+    por_tipo: list[AtividadeTipoItem]
+    por_consultor: list[AtividadeConsultorItem]
+    por_mes: list[AtividadeMesItem]
+
+
+@router.get(
+    "/atividades",
+    response_model=AtividadesResponse,
+    summary="Contagens de atividades (log_interacoes) por tipo, consultor e mes",
+)
+def atividades(
+    consultor: Optional[str] = Query(default=None, description="Filtrar por consultor (MANU, LARISSA, DAIANE, JULIO)"),
+    data_inicio: Optional[date] = Query(default=None, description="Data inicial (YYYY-MM-DD, inclusive)"),
+    data_fim: Optional[date] = Query(default=None, description="Data final (YYYY-MM-DD, inclusive)"),
+    user: Usuario = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> AtividadesResponse:
+    """
+    Retorna contagens de interacoes do log_interacoes agrupadas por:
+      - tipo_contato (LIGACAO, WHATSAPP, VISITA, EMAIL, ...)
+      - consultor com breakdown por tipo_contato
+      - mes (formato YYYY-MM) para tendencia
+
+    Two-Base: esta tabela nao contem valores R$ — apenas contagens de interacoes.
+    Requer autenticacao JWT.
+    """
+
+    # Build shared WHERE clauses for optional filters
+    def _base_filters():
+        filters = []
+        if consultor:
+            filters.append(LogInteracao.consultor == consultor)
+        if data_inicio:
+            filters.append(func.date(LogInteracao.data_interacao) >= data_inicio)
+        if data_fim:
+            filters.append(func.date(LogInteracao.data_interacao) <= data_fim)
+        return filters
+
+    base_filters = _base_filters()
+
+    # --- Total atividades ---
+    total_atividades = db.scalar(
+        select(func.count())
+        .select_from(LogInteracao)
+        .where(*base_filters)
+    ) or 0
+
+    # --- Por tipo_contato ---
+    tipo_rows = db.execute(
+        select(
+            LogInteracao.tipo_contato,
+            func.count().label("qt"),
+        )
+        .where(*base_filters)
+        .group_by(LogInteracao.tipo_contato)
+        .order_by(func.count().desc())
+    ).all()
+
+    por_tipo = [
+        AtividadeTipoItem(tipo=r[0] or "NAO_INFORMADO", quantidade=r[1])
+        for r in tipo_rows
+    ]
+
+    # --- Por consultor com breakdown de tipos ---
+    # Step 1: all (consultor, tipo_contato, count) combinations
+    consultor_tipo_rows = db.execute(
+        select(
+            LogInteracao.consultor,
+            LogInteracao.tipo_contato,
+            func.count().label("qt"),
+        )
+        .where(*base_filters)
+        .group_by(LogInteracao.consultor, LogInteracao.tipo_contato)
+        .order_by(LogInteracao.consultor, func.count().desc())
+    ).all()
+
+    # Step 2: aggregate into consultor buckets
+    consultor_map: dict[str, dict] = {}
+    for row in consultor_tipo_rows:
+        cons = row[0] or "NAO_INFORMADO"
+        tipo = row[1] or "NAO_INFORMADO"
+        qt = row[2]
+        if cons not in consultor_map:
+            consultor_map[cons] = {"total": 0, "tipos": {}}
+        consultor_map[cons]["total"] += qt
+        consultor_map[cons]["tipos"][tipo] = qt
+
+    por_consultor = [
+        AtividadeConsultorItem(
+            consultor=cons,
+            quantidade=data["total"],
+            tipos=data["tipos"],
+        )
+        for cons, data in sorted(
+            consultor_map.items(), key=lambda x: x[1]["total"], reverse=True
+        )
+    ]
+
+    # --- Por mes (YYYY-MM derived from data_interacao) ---
+    # SQLite: strftime; PostgreSQL: to_char. Use func.strftime for portability
+    # with SQLite dev db; for Postgres in prod the same call works via cast.
+    mes_rows = db.execute(
+        select(
+            func.strftime("%Y-%m", LogInteracao.data_interacao).label("mes"),
+            func.count().label("qt"),
+        )
+        .where(*base_filters)
+        .group_by(func.strftime("%Y-%m", LogInteracao.data_interacao))
+        .order_by(func.strftime("%Y-%m", LogInteracao.data_interacao).asc())
+    ).all()
+
+    por_mes = [
+        AtividadeMesItem(mes=r[0] or "DESCONHECIDO", quantidade=r[1])
+        for r in mes_rows
+    ]
+
+    return AtividadesResponse(
+        total_atividades=total_atividades,
+        por_tipo=por_tipo,
+        por_consultor=por_consultor,
+        por_mes=por_mes,
+    )
+
+
+# ---------------------------------------------------------------------------
+# Positivacao — schemas e endpoint
+# Two-Base: positivacao usa APENAS a tabela vendas (R1/R4)
+# ---------------------------------------------------------------------------
+
+class PositivacaoSituacaoItem(BaseModel):
+    situacao: str
+    quantidade: int
+    pct: float
+
+
+class PositivacaoConsultorItem(BaseModel):
+    consultor: str
+    total_carteira: int
+    positivados: int
+    taxa: float
+
+
+class PositivacaoResponse(BaseModel):
+    periodo: str                              # "YYYY-MM"
+    total_carteira: int
+    positivados: int
+    taxa_positivacao: float
+    por_situacao: list[PositivacaoSituacaoItem]
+    por_consultor: list[PositivacaoConsultorItem]
+
+
+@router.get(
+    "/positivacao",
+    response_model=PositivacaoResponse,
+    summary="Clientes positivados (ao menos 1 venda) em determinado mes/ano",
+)
+def positivacao(
+    mes: int = Query(default=None, ge=1, le=12, description="Mes (1-12). Padrao: mes atual."),
+    ano: int = Query(default=None, ge=2020, description="Ano (ex.: 2026). Padrao: ano atual."),
+    consultor: Optional[str] = Query(default=None, description="Filtrar por consultor"),
+    user: Usuario = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> PositivacaoResponse:
+    """
+    Retorna positivacao para o periodo indicado.
+
+    Positivacao: cliente com ao menos 1 venda no mes/ano selecionado.
+    Two-Base: usa APENAS a tabela vendas (nunca log_interacoes).
+    Exclui clientes com classificacao_3tier = 'ALUCINACAO' (R8).
+
+    Requer autenticacao JWT.
+    """
+    hoje = date.today()
+    mes_ref = mes if mes is not None else hoje.month
+    ano_ref = ano if ano is not None else hoje.year
+
+    periodo_str = f"{ano_ref:04d}-{mes_ref:02d}"
+
+    # Date range for the requested month
+    data_inicio_periodo = date(ano_ref, mes_ref, 1)
+    if mes_ref == 12:
+        data_fim_periodo = date(ano_ref + 1, 1, 1) - timedelta(days=1)
+    else:
+        data_fim_periodo = date(ano_ref, mes_ref + 1, 1) - timedelta(days=1)
+
+    # --- Total carteira (non-ALUCINACAO) ---
+    carteira_q = (
+        select(func.count())
+        .select_from(Cliente)
+        .where(Cliente.classificacao_3tier != "ALUCINACAO")
+    )
+    if consultor:
+        carteira_q = carteira_q.where(Cliente.consultor == consultor)
+    total_carteira = db.scalar(carteira_q) or 0
+
+    # --- CNPJs positivados: distinct CNPJs with >= 1 venda in period ---
+    positivados_q = (
+        select(func.count(func.distinct(Venda.cnpj)))
+        .where(
+            Venda.classificacao_3tier.in_(["REAL", "SINTETICO"]),
+            Venda.data_pedido >= data_inicio_periodo,
+            Venda.data_pedido <= data_fim_periodo,
+        )
+    )
+    if consultor:
+        positivados_q = positivados_q.where(Venda.consultor == consultor)
+    positivados = db.scalar(positivados_q) or 0
+
+    taxa_positivacao = round(positivados / total_carteira * 100, 1) if total_carteira > 0 else 0.0
+
+    # --- Breakdown por situacao do cliente ---
+    # Join vendas <-> clientes to get situacao of positivated clients
+    situacao_rows = db.execute(
+        select(
+            Cliente.situacao,
+            func.count(func.distinct(Venda.cnpj)).label("qt"),
+        )
+        .join(Cliente, Venda.cnpj == Cliente.cnpj)
+        .where(
+            Venda.classificacao_3tier.in_(["REAL", "SINTETICO"]),
+            Venda.data_pedido >= data_inicio_periodo,
+            Venda.data_pedido <= data_fim_periodo,
+            Cliente.classificacao_3tier != "ALUCINACAO",
+        )
+        .group_by(Cliente.situacao)
+        .order_by(func.count(func.distinct(Venda.cnpj)).desc())
+    ).all()
+
+    por_situacao = [
+        PositivacaoSituacaoItem(
+            situacao=r[0] or "NAO_INFORMADO",
+            quantidade=r[1],
+            pct=round(r[1] / positivados * 100, 2) if positivados > 0 else 0.0,
+        )
+        for r in situacao_rows
+    ]
+
+    # --- Breakdown por consultor ---
+    consultores_alvo = ["MANU", "LARISSA", "DAIANE", "JULIO"]
+    # If a specific consultor is requested, restrict to that one
+    if consultor:
+        consultores_alvo = [consultor]
+
+    por_consultor: list[PositivacaoConsultorItem] = []
+    for cons in consultores_alvo:
+        carteira_cons = db.scalar(
+            select(func.count())
+            .select_from(Cliente)
+            .where(
+                Cliente.consultor == cons,
+                Cliente.classificacao_3tier != "ALUCINACAO",
+            )
+        ) or 0
+
+        positivados_cons = db.scalar(
+            select(func.count(func.distinct(Venda.cnpj)))
+            .where(
+                Venda.consultor == cons,
+                Venda.classificacao_3tier.in_(["REAL", "SINTETICO"]),
+                Venda.data_pedido >= data_inicio_periodo,
+                Venda.data_pedido <= data_fim_periodo,
+            )
+        ) or 0
+
+        taxa_cons = round(positivados_cons / carteira_cons * 100, 1) if carteira_cons > 0 else 0.0
+
+        por_consultor.append(
+            PositivacaoConsultorItem(
+                consultor=cons,
+                total_carteira=carteira_cons,
+                positivados=positivados_cons,
+                taxa=taxa_cons,
+            )
+        )
+
+    return PositivacaoResponse(
+        periodo=periodo_str,
+        total_carteira=total_carteira,
+        positivados=positivados,
+        taxa_positivacao=taxa_positivacao,
+        por_situacao=por_situacao,
+        por_consultor=por_consultor,
+    )
