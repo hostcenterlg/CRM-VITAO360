@@ -889,3 +889,101 @@ export async function fetchWhatsAppTickets(
 export async function fetchWhatsAppConexoes(): Promise<ConexaoWA[]> {
   return fetchJson<ConexaoWA[]>('/api/whatsapp/conexoes');
 }
+
+// ---------------------------------------------------------------------------
+// Atividades — dados reais de contato por tipo/resultado (substitui mock data)
+// ---------------------------------------------------------------------------
+
+export interface AtividadePorTipo {
+  tipo: string;
+  quantidade: number;
+}
+
+export interface AtividadePorResultado {
+  resultado: string;
+  quantidade: number;
+}
+
+export interface AtividadePorConsultor {
+  consultor: string;
+  total: number;
+  whatsapp: number;
+  ligacao: number;
+  email: number;
+  presencial: number;
+}
+
+export interface AtividadesResponse {
+  total: number;
+  por_tipo: AtividadePorTipo[];
+  por_resultado: AtividadePorResultado[];
+  por_consultor: AtividadePorConsultor[];
+  periodo: {
+    inicio: string;
+    fim: string;
+  };
+}
+
+export interface AtividadesParams {
+  consultor?: string;
+  data_inicio?: string;
+  data_fim?: string;
+}
+
+export async function fetchAtividades(
+  params?: AtividadesParams
+): Promise<AtividadesResponse> {
+  const searchParams = new URLSearchParams();
+  if (params?.consultor) searchParams.set('consultor', params.consultor);
+  if (params?.data_inicio) searchParams.set('data_inicio', params.data_inicio);
+  if (params?.data_fim) searchParams.set('data_fim', params.data_fim);
+  const query = searchParams.toString();
+  return fetchJson<AtividadesResponse>(
+    `/api/dashboard/atividades${query ? `?${query}` : ''}`
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Positivacao — clientes que compraram no periodo (substitui mock data)
+// ---------------------------------------------------------------------------
+
+export interface PositivacaoPorSituacao {
+  situacao: string;
+  quantidade: number;
+  pct: number;
+}
+
+export interface PositivacaoPorConsultor {
+  consultor: string;
+  total_carteira: number;
+  positivados: number;
+  pct_positivacao: number;
+}
+
+export interface PositivacaoResponse {
+  total_carteira: number;
+  total_positivados: number;
+  pct_positivacao: number;
+  por_situacao: PositivacaoPorSituacao[];
+  por_consultor: PositivacaoPorConsultor[];
+  mes_referencia: string;
+}
+
+export interface PositivacaoParams {
+  mes?: number;
+  ano?: number;
+  consultor?: string;
+}
+
+export async function fetchPositivacao(
+  params?: PositivacaoParams
+): Promise<PositivacaoResponse> {
+  const searchParams = new URLSearchParams();
+  if (params?.mes !== undefined) searchParams.set('mes', String(params.mes));
+  if (params?.ano !== undefined) searchParams.set('ano', String(params.ano));
+  if (params?.consultor) searchParams.set('consultor', params.consultor);
+  const query = searchParams.toString();
+  return fetchJson<PositivacaoResponse>(
+    `/api/dashboard/positivacao${query ? `?${query}` : ''}`
+  );
+}

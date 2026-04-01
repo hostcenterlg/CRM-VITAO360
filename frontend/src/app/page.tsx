@@ -25,6 +25,8 @@ import {
   fetchTendencias,
   fetchSinaleiro,
   fetchRNC,
+  fetchAtividades,
+  fetchPositivacao,
   KPIs,
   Distribuicao,
   Top10Cliente,
@@ -33,6 +35,8 @@ import {
   TendenciasResponse,
   SinaleiroResponse,
   RNCResponse,
+  AtividadesResponse,
+  PositivacaoResponse,
   formatBRL,
   formatPercent,
 } from '@/lib/api';
@@ -184,6 +188,8 @@ export default function DashboardPage() {
   const [tendencias, setTendencias]    = useState<TendenciasResponse | null>(null);
   const [sinaleiro, setSinaleiro]      = useState<SinaleiroResponse | null>(null);
   const [rnc, setRnc]                  = useState<RNCResponse | null>(null);
+  const [atividades, setAtividades]    = useState<AtividadesResponse | null>(null);
+  const [positivacao, setPositivacao]  = useState<PositivacaoResponse | null>(null);
 
   // Loading / error
   const [loading, setLoading]          = useState(true);
@@ -198,6 +204,9 @@ export default function DashboardPage() {
   const loadData = useCallback(() => {
     setLoading(true);
     setError(null);
+
+    const consultorParam = undefined as string | undefined; // filter applied per-tab via filteredPerf
+
     Promise.all([
       fetchKPIs(),
       fetchDistribuicao(),
@@ -207,8 +216,10 @@ export default function DashboardPage() {
       fetchTendencias(),
       fetchSinaleiro({ limit: 200 }),
       fetchRNC(),
+      fetchAtividades({ consultor: consultorParam }).catch(() => null),
+      fetchPositivacao({ consultor: consultorParam }).catch(() => null),
     ])
-      .then(([k, d, t, p, pr, tr, sn, rn]) => {
+      .then(([k, d, t, p, pr, tr, sn, rn, atv, pos]) => {
         setKpis(k);
         setDistribuicao(d);
         setTop10(t);
@@ -217,6 +228,8 @@ export default function DashboardPage() {
         setTendencias(tr);
         setSinaleiro(sn);
         setRnc(rn);
+        setAtividades(atv as AtividadesResponse | null);
+        setPositivacao(pos as PositivacaoResponse | null);
       })
       .catch((e: Error) => setError(e.message))
       .finally(() => setLoading(false));
@@ -404,6 +417,8 @@ export default function DashboardPage() {
           <TabOperacional
             kpis={kpis}
             performance={filteredPerf}
+            atividades={atividades}
+            positivacao={positivacao}
             loading={loading}
           />
         )}
@@ -411,6 +426,7 @@ export default function DashboardPage() {
           <TabFunil
             kpis={kpis}
             distribuicao={distribuicao}
+            atividades={atividades}
             loading={loading}
             totalContatos={totalContatos}
             totalVendas={totalVendas}
@@ -429,6 +445,7 @@ export default function DashboardPage() {
           <TabSaude
             kpis={kpis}
             distribuicao={distribuicao}
+            positivacao={positivacao}
             loading={loading}
             totalInativos={totalInativos}
           />
@@ -640,73 +657,93 @@ function TabResumo({
 interface TabOperacionalProps {
   kpis: KPIs | null;
   performance: PerformanceConsultor[];
+  atividades: AtividadesResponse | null;
+  positivacao: PositivacaoResponse | null;
   loading: boolean;
 }
 
-function TabOperacional({ kpis, performance, loading }: TabOperacionalProps) {
-  // Tipo contato mock derived from available KPIs
-  const tipoData = kpis
-    ? [
-        { tipo: 'WhatsApp',  count: Math.round((kpis.total_clientes ?? 0) * 0.4) },
-        { tipo: 'Ligacao',   count: Math.round((kpis.total_clientes ?? 0) * 0.35) },
-        { tipo: 'Email',     count: Math.round((kpis.total_clientes ?? 0) * 0.15) },
-        { tipo: 'Presencial', count: Math.round((kpis.total_clientes ?? 0) * 0.1) },
-      ]
+function TabOperacional({ kpis, performance, atividades, positivacao, loading }: TabOperacionalProps) {
+  const atividadesDisponivel = atividades !== null && atividades.total > 0;
+
+  // Tipo contato — usa dados reais de atividades, sem fallback fabricado
+  const tipoData: { tipo: string; count: number }[] = atividadesDisponivel
+    ? atividades.por_tipo.map((t) => ({ tipo: t.tipo, count: t.quantidade }))
     : [];
 
-  const resultadoData = kpis
-    ? [
-        { resultado: 'Venda',      count: kpis.total_ativos ?? 0 },
-        { resultado: 'Orcamento',  count: kpis.total_prospects ?? 0 },
-        { resultado: 'Nao Atende', count: kpis.clientes_alerta ?? 0 },
-        { resultado: 'Recusou',    count: Math.round((kpis.total_clientes ?? 0) * 0.05) },
-      ]
+  // Resultado — usa dados reais de atividades, sem fallback fabricado
+  const resultadoData: { resultado: string; count: number }[] = atividadesDisponivel
+    ? atividades.por_resultado.map((r) => ({ resultado: r.resultado, count: r.quantidade }))
     : [];
+
+  // Positivacao por consultor — somente se dados reais disponíveis
+  const positivacaoConsultorData: { consultor: string; positivados: number; total: number; pct: number }[] =
+    positivacao?.por_consultor?.map((p) => ({
+      consultor: p.consultor,
+      positivados: p.positivados,
+      total: p.total_carteira,
+      pct: p.pct_positivacao,
+    })) ?? [];
 
   return (
     <div className="space-y-6">
+      {/* Aviso se atividades ainda nao disponíveis */}
+      {!loading && !atividadesDisponivel && (
+        <div className="flex items-center gap-3 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+          <svg className="w-4 h-4 text-amber-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <p className="text-xs text-amber-800">
+            Dados de atividades por canal indisponíveis — endpoint
+            <code className="mx-1 font-mono bg-amber-100 px-1 rounded">/api/dashboard/atividades</code>
+            ainda nao implementado no backend.
+          </p>
+        </div>
+      )}
+
       {/* Matriz resumo */}
       <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
         <SectionHeader label="Matriz Tipo Contato x Resultado" accentColor="#7c3aed" />
         <div className="mt-4 overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="bg-gray-50">
-                <th className="px-4 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase">Tipo</th>
-                <th className="px-4 py-2 text-right text-[10px] font-semibold text-gray-500 uppercase">Qtd</th>
-                <th className="px-4 py-2 text-right text-[10px] font-semibold text-gray-500 uppercase">% Total</th>
-                <th className="px-4 py-2 text-right text-[10px] font-semibold text-gray-500 uppercase">Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {loading ? (
-                Array.from({ length: 4 }).map((_, i) => (
-                  <tr key={i}>
-                    <td colSpan={4} className="px-4 py-2">
-                      <div className="h-5 bg-gray-100 animate-pulse rounded" />
-                    </td>
-                  </tr>
-                ))
-              ) : tipoData.map((row) => {
-                const total = tipoData.reduce((s, r) => s + r.count, 0);
-                const pct   = total > 0 ? (row.count / total) * 100 : 0;
-                return (
-                  <tr key={row.tipo} className="border-t border-gray-50 hover:bg-gray-50 transition-colors">
-                    <td className="px-4 py-2.5 font-medium text-gray-900">{row.tipo}</td>
-                    <td className="px-4 py-2.5 text-right text-gray-700 font-mono">
-                      {row.count.toLocaleString('pt-BR')}
-                    </td>
-                    <td className="px-4 py-2.5 text-right text-gray-500">
-                      {pct.toFixed(1)}%
-                    </td>
-                    <td className="px-4 py-2.5 text-right">
-                      <span className="text-[10px] text-gray-400 italic">Em breve</span>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+          {loading ? (
+            <div className="space-y-2">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="h-8 bg-gray-100 animate-pulse rounded" />
+              ))}
+            </div>
+          ) : !atividadesDisponivel ? (
+            <div className="py-8 text-center">
+              <p className="text-sm text-gray-400">Dados indisponíveis</p>
+              <p className="text-xs text-gray-300 mt-1">Aguardando endpoint de atividades</p>
+            </div>
+          ) : (
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="bg-gray-50">
+                  <th className="px-4 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase">Tipo</th>
+                  <th className="px-4 py-2 text-right text-[10px] font-semibold text-gray-500 uppercase">Qtd</th>
+                  <th className="px-4 py-2 text-right text-[10px] font-semibold text-gray-500 uppercase">% Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                {tipoData.map((row) => {
+                  const total = tipoData.reduce((s, r) => s + r.count, 0);
+                  const pct   = total > 0 ? (row.count / total) * 100 : 0;
+                  return (
+                    <tr key={row.tipo} className="border-t border-gray-50 hover:bg-gray-50 transition-colors">
+                      <td className="px-4 py-2.5 font-medium text-gray-900">{row.tipo}</td>
+                      <td className="px-4 py-2.5 text-right text-gray-700 font-mono">
+                        {row.count.toLocaleString('pt-BR')}
+                      </td>
+                      <td className="px-4 py-2.5 text-right text-gray-500">
+                        {pct.toFixed(1)}%
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          )}
         </div>
       </div>
 
@@ -716,6 +753,10 @@ function TabOperacional({ kpis, performance, loading }: TabOperacionalProps) {
           <SectionHeader label="Por Tipo de Contato" accentColor="#0891b2" />
           {loading ? (
             <ChartSkeleton />
+          ) : !atividadesDisponivel ? (
+            <div className="mt-4 py-10 text-center">
+              <p className="text-sm text-gray-400">Dados indisponíveis</p>
+            </div>
           ) : (
             <div className="mt-4 h-56">
               <ResponsiveContainer width="100%" height="100%">
@@ -735,6 +776,10 @@ function TabOperacional({ kpis, performance, loading }: TabOperacionalProps) {
           <SectionHeader label="Por Resultado" accentColor={VERDE} />
           {loading ? (
             <ChartSkeleton />
+          ) : !atividadesDisponivel ? (
+            <div className="mt-4 py-10 text-center">
+              <p className="text-sm text-gray-400">Dados indisponíveis</p>
+            </div>
           ) : (
             <div className="mt-4 h-56">
               <ResponsiveContainer width="100%" height="100%">
@@ -756,6 +801,59 @@ function TabOperacional({ kpis, performance, loading }: TabOperacionalProps) {
         </div>
       </div>
 
+      {/* Positivacao section */}
+      {positivacao !== null && (
+        <div className="space-y-4">
+          {/* KPI de positivacao */}
+          <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
+            <SectionHeader label="Positivacao de Clientes" accentColor={VERDE} />
+            <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div className="rounded-lg p-4 border-l-4 border-green-500 bg-green-50">
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-green-700">Positivados</p>
+                <p className="text-2xl font-bold text-gray-900 mt-1">
+                  {positivacao.total_positivados.toLocaleString('pt-BR')}
+                </p>
+                <p className="text-xs text-gray-500 mt-0.5">clientes com compra no período</p>
+              </div>
+              <div className="rounded-lg p-4 border-l-4 border-blue-400 bg-blue-50">
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-blue-700">Total Carteira</p>
+                <p className="text-2xl font-bold text-gray-900 mt-1">
+                  {positivacao.total_carteira.toLocaleString('pt-BR')}
+                </p>
+                <p className="text-xs text-gray-500 mt-0.5">clientes na base ativa</p>
+              </div>
+              <div className="rounded-lg p-4 border-l-4 border-purple-400 bg-purple-50">
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-purple-700">% Positivacao</p>
+                <p className="text-2xl font-bold text-gray-900 mt-1">
+                  {positivacao.pct_positivacao.toFixed(1)}%
+                </p>
+                <p className="text-xs text-gray-500 mt-0.5">dos clientes compraram este mês</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Positivacao por consultor */}
+          {positivacaoConsultorData.length > 0 && (
+            <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
+              <SectionHeader label="Positivacao por Consultor" accentColor="#7c3aed" />
+              <div className="mt-4 h-56">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={positivacaoConsultorData}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                    <XAxis dataKey="consultor" tick={{ fontSize: 11 }} />
+                    <YAxis tick={{ fontSize: 11 }} />
+                    <Tooltip content={<CustomTooltip />} />
+                    <Legend />
+                    <Bar dataKey="positivados" name="Positivados" fill={VERDE} radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="total" name="Total Carteira" fill="#d1d5db" radius={[4, 4, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Performance table */}
       <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
         <div className="px-5 py-4 border-b border-gray-100">
@@ -774,6 +872,7 @@ function TabOperacional({ kpis, performance, loading }: TabOperacionalProps) {
 interface TabFunilProps {
   kpis: KPIs | null;
   distribuicao: Distribuicao | null;
+  atividades: AtividadesResponse | null;
   loading: boolean;
   totalContatos: number;
   totalVendas: number;
@@ -782,53 +881,78 @@ interface TabFunilProps {
 }
 
 function TabFunil({
+  atividades,
   loading,
   totalContatos,
   totalVendas,
   totalProspects,
   naoAtende,
 }: TabFunilProps) {
-  const funnelStages = [
-    { label: 'Contatos',   value: totalContatos,  color: '#2563eb', pct: 100 },
-    { label: 'Abordados',  value: Math.round(totalContatos * 0.7), color: '#0891b2', pct: 70 },
-    { label: 'Interessados', value: totalProspects, color: AMARELO, pct: totalContatos > 0 ? (totalProspects / totalContatos) * 100 : 0 },
-    { label: 'Vendas',     value: totalVendas,    color: VERDE,    pct: totalContatos > 0 ? (totalVendas / totalContatos) * 100 : 0 },
-  ];
+  const atividadesDisponivel = atividades !== null && atividades.total > 0;
 
-  const channelData = [
-    { canal: 'WhatsApp',    qtd: Math.round(totalContatos * 0.42), color: '#25D366' },
-    { canal: 'Ligacao',     qtd: Math.round(totalContatos * 0.35), color: '#2563eb' },
-    { canal: 'Atendida',    qtd: Math.round(totalContatos * 0.55), color: VERDE },
-    { canal: 'Nao Atendida', qtd: naoAtende,                      color: VERMELHO },
-  ];
+  // Funil: só inclui estágio "Abordados" se temos dado real de atividades
+  const funnelStages = atividadesDisponivel
+    ? [
+        { label: 'Contatos',    value: totalContatos,    color: '#2563eb', pct: 100 },
+        { label: 'Abordados',   value: atividades.total, color: '#0891b2', pct: totalContatos > 0 ? (atividades.total / totalContatos) * 100 : 0 },
+        { label: 'Interessados', value: totalProspects,  color: AMARELO,   pct: totalContatos > 0 ? (totalProspects / totalContatos) * 100 : 0 },
+        { label: 'Vendas',      value: totalVendas,      color: VERDE,     pct: totalContatos > 0 ? (totalVendas / totalContatos) * 100 : 0 },
+      ]
+    : [
+        { label: 'Contatos',    value: totalContatos,  color: '#2563eb', pct: 100 },
+        { label: 'Interessados', value: totalProspects, color: AMARELO,   pct: totalContatos > 0 ? (totalProspects / totalContatos) * 100 : 0 },
+        { label: 'Vendas',      value: totalVendas,    color: VERDE,     pct: totalContatos > 0 ? (totalVendas / totalContatos) * 100 : 0 },
+      ];
+
+  // Canais: usa dados reais de atividades quando disponíveis
+  const channelData: { canal: string; qtd: number; color: string }[] = atividadesDisponivel
+    ? [
+        ...atividades.por_tipo.map((t) => ({
+          canal: t.tipo,
+          qtd: t.quantidade,
+          color: t.tipo === 'WHATSAPP' ? '#25D366'
+               : t.tipo === 'LIGACAO'  ? '#2563eb'
+               : t.tipo === 'EMAIL'    ? '#7c3aed'
+               : '#9ca3af',
+        })),
+        { canal: 'Nao Atendida', qtd: naoAtende, color: VERMELHO },
+      ]
+    : [];
 
   const conversionRate = totalContatos > 0 ? ((totalVendas / totalContatos) * 100).toFixed(1) : '0.0';
   const prospectRate   = totalContatos > 0 ? ((totalProspects / totalContatos) * 100).toFixed(1) : '0.0';
 
   return (
     <div className="space-y-6">
-      {/* Channel cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        {channelData.map((ch) => (
-          <div
-            key={ch.canal}
-            className="bg-white rounded-xl border border-gray-100 shadow-sm p-4"
-          >
-            <p className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: ch.color }}>
-              {ch.canal}
-            </p>
-            {loading ? (
-              <div className="h-7 w-16 mt-1 bg-gray-100 animate-pulse rounded" />
-            ) : (
-              <p className="text-2xl font-bold text-gray-900 mt-1">{ch.qtd.toLocaleString('pt-BR')}</p>
-            )}
-          </div>
-        ))}
-      </div>
+      {/* Channel cards — só mostra quando há dados reais */}
+      {atividadesDisponivel && (
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          {channelData.map((ch) => (
+            <div
+              key={ch.canal}
+              className="bg-white rounded-xl border border-gray-100 shadow-sm p-4"
+            >
+              <p className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: ch.color }}>
+                {ch.canal}
+              </p>
+              {loading ? (
+                <div className="h-7 w-16 mt-1 bg-gray-100 animate-pulse rounded" />
+              ) : (
+                <p className="text-2xl font-bold text-gray-900 mt-1">{ch.qtd.toLocaleString('pt-BR')}</p>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* Funnel visualization */}
       <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
         <SectionHeader label="Funil de Conversao" accentColor={VERDE} />
+        {!atividadesDisponivel && !loading && (
+          <p className="text-[10px] text-amber-600 mt-1 italic">
+            Etapa &quot;Abordados&quot; omitida — dados de atividades indisponíveis
+          </p>
+        )}
         <div className="mt-6 space-y-3">
           {funnelStages.map((stage, i) => (
             <div key={stage.label} className="flex items-center gap-4">
@@ -867,6 +991,11 @@ function TabFunil({
         <SectionHeader label="Volume por Canal" accentColor="#0891b2" />
         {loading ? (
           <ChartSkeleton />
+        ) : !atividadesDisponivel ? (
+          <div className="mt-4 py-10 text-center">
+            <p className="text-sm text-gray-400">Dados indisponíveis</p>
+            <p className="text-xs text-gray-300 mt-1">Aguardando endpoint de atividades</p>
+          </div>
         ) : (
           <div className="mt-4 h-56">
             <ResponsiveContainer width="100%" height="100%">
@@ -990,43 +1119,45 @@ function TabPerformance({ performance, projecao, loading }: TabPerformanceProps)
 interface TabSaudeProps {
   kpis: KPIs | null;
   distribuicao: Distribuicao | null;
+  positivacao: PositivacaoResponse | null;
   loading: boolean;
   totalInativos: number;
 }
 
-function TabSaude({ kpis, distribuicao, loading, totalInativos }: TabSaudeProps) {
+function TabSaude({ kpis, distribuicao, positivacao, loading, totalInativos }: TabSaudeProps) {
   // ABC distribution from distribuicao.por_prioridade
   const abcData = distribuicao?.por_prioridade ?? [];
   const pieData = abcData
     .filter((d) => ['A', 'B', 'C'].includes(d.label.toUpperCase()))
     .map((d) => ({ name: d.label, value: d.count }));
 
-  // Recompra bars — derived from kpis
-  const recompraData = kpis
-    ? [
-        { label: '0-30 dias',  count: Math.round((kpis.total_ativos ?? 0) * 0.35) },
-        { label: '31-60 dias', count: Math.round((kpis.total_ativos ?? 0) * 0.28) },
-        { label: '61-90 dias', count: Math.round((kpis.total_ativos ?? 0) * 0.20) },
-        { label: '90+ dias',   count: Math.round((kpis.total_ativos ?? 0) * 0.17) },
-      ]
-    : [];
-
-  // Inatividade pipeline
+  // Inatividade pipeline — usa situacao real do distribuicao quando possível
   const inativoTotal = totalInativos;
-  const inativoRec   = Math.round(inativoTotal * 0.4);
-  const inativoAnt   = inativoTotal - inativoRec;
+  const situacoes = distribuicao?.por_situacao ?? [];
+  const inativoRecReal = situacoes.find((s) => s.label.toUpperCase() === 'INAT.REC')?.count
+    ?? situacoes.find((s) => s.label.toUpperCase().includes('INAT') && s.label.toUpperCase().includes('REC'))?.count
+    ?? null;
+  const inativoAntReal = situacoes.find((s) => s.label.toUpperCase() === 'INAT.ANT')?.count
+    ?? situacoes.find((s) => s.label.toUpperCase().includes('INAT') && s.label.toUpperCase().includes('ANT'))?.count
+    ?? null;
+  const inativoDataDisponivel = inativoRecReal !== null;
+  const inativoRecDisplay = inativoRecReal ?? 0;
+  const inativoAntDisplay = inativoAntReal ?? (inativoRecReal !== null ? inativoTotal - inativoRecReal : 0);
+
+  // Positivacao por consultor para card de recompra (dados reais quando disponíveis)
+  const positivacaoConsultorData = positivacao?.por_consultor ?? [];
 
   return (
     <div className="space-y-6">
       {/* Situacao cards */}
       <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-3">
         {[
-          { label: 'ATIVO',      value: kpis?.total_ativos ?? 0,     color: VERDE },
-          { label: 'PROSPECT',   value: kpis?.total_prospects ?? 0,  color: ROXO },
-          { label: 'INAT.REC',   value: Math.round(inativoTotal * 0.4), color: AMARELO },
-          { label: 'INAT.ANT',   value: Math.round(inativoTotal * 0.6), color: VERMELHO },
-          { label: 'ALERTA',     value: kpis?.clientes_alerta ?? 0,  color: LARANJA },
-          { label: 'CRITICO',    value: kpis?.clientes_criticos ?? 0, color: '#991b1b' },
+          { label: 'ATIVO',    value: kpis?.total_ativos ?? 0,    color: VERDE },
+          { label: 'PROSPECT', value: kpis?.total_prospects ?? 0, color: ROXO },
+          { label: 'INAT.REC', value: inativoRecDisplay,          color: AMARELO },
+          { label: 'INAT.ANT', value: inativoAntDisplay,          color: VERMELHO },
+          { label: 'ALERTA',   value: kpis?.clientes_alerta ?? 0, color: LARANJA },
+          { label: 'CRITICO',  value: kpis?.clientes_criticos ?? 0, color: '#991b1b' },
         ].map((item) => (
           <div
             key={item.label}
@@ -1080,37 +1211,44 @@ function TabSaude({ kpis, distribuicao, loading, totalInativos }: TabSaudeProps)
           )}
         </div>
 
-        {/* Recompra bars */}
+        {/* Positivacao por consultor — substitui ciclo de recompra fabricado */}
         <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
-          <SectionHeader label="Ciclo de Recompra" accentColor="#0891b2" />
+          <SectionHeader label="Positivacao por Consultor" accentColor="#0891b2" />
           {loading ? (
             <ChartSkeleton />
+          ) : positivacaoConsultorData.length === 0 ? (
+            <div className="mt-4 py-10 text-center">
+              <p className="text-sm text-gray-400">Dados indisponíveis</p>
+              <p className="text-xs text-gray-300 mt-1">Aguardando endpoint de positivacao</p>
+            </div>
           ) : (
             <div className="mt-4 h-56">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={recompraData}>
+                <BarChart data={positivacaoConsultorData}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                  <XAxis dataKey="label" tick={{ fontSize: 10 }} />
-                  <YAxis tick={{ fontSize: 11 }} />
+                  <XAxis dataKey="consultor" tick={{ fontSize: 11 }} />
+                  <YAxis tick={{ fontSize: 11 }} tickFormatter={(v: number) => `${v}%`} domain={[0, 100]} />
                   <Tooltip content={<CustomTooltip />} />
-                  <Bar dataKey="count" name="Clientes" fill="#0891b2" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="pct_positivacao" name="% Positivados" fill="#0891b2" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
           )}
-          <p className="text-[10px] text-gray-400 mt-2 text-center italic">
-            Derivado de clientes ativos — dados reais em breve
-          </p>
         </div>
       </div>
 
       {/* Pipeline inatividade */}
       <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
         <SectionHeader label="Pipeline de Inatividade" accentColor={LARANJA} />
+        {!inativoDataDisponivel && !loading && (
+          <p className="text-[10px] text-amber-600 mt-1 italic">
+            Distribuicao INAT.REC / INAT.ANT derivada do total — dado granular disponível via distribuicao
+          </p>
+        )}
         <div className="mt-4 space-y-3">
           {[
-            { label: 'INAT. RECENTE (ate 90 dias)', value: inativoRec, color: AMARELO },
-            { label: 'INAT. ANTIGO (mais de 90 dias)', value: inativoAnt, color: VERMELHO },
+            { label: 'INAT. RECENTE (ate 90 dias)',   value: inativoRecDisplay, color: AMARELO },
+            { label: 'INAT. ANTIGO (mais de 90 dias)', value: inativoAntDisplay, color: VERMELHO },
           ].map((row) => {
             const pct = inativoTotal > 0 ? (row.value / inativoTotal) * 100 : 0;
             return (
@@ -1153,12 +1291,16 @@ interface TabRedesProps {
 function TabRedes({ sinaleiro, loading }: TabRedesProps) {
   const sinaleiroResumo = sinaleiro?.resumo ?? [];
 
-  // Maturidade pie from distribuicao
-  const maturidadeData = [
-    { name: 'Maduro',     value: Math.round((sinaleiro?.total ?? 0) * 0.3) },
-    { name: 'Crescimento', value: Math.round((sinaleiro?.total ?? 0) * 0.45) },
-    { name: 'Inicial',    value: Math.round((sinaleiro?.total ?? 0) * 0.25) },
-  ].filter((d) => d.value > 0);
+  // Maturidade derivada do campo maturidade nos itens do sinaleiro (dados reais)
+  const maturidadeMap: Record<string, number> = {};
+  for (const item of sinaleiro?.itens ?? []) {
+    const key = item.maturidade ?? 'Nao informado';
+    maturidadeMap[key] = (maturidadeMap[key] ?? 0) + 1;
+  }
+  const maturidadeData = Object.entries(maturidadeMap)
+    .filter(([, v]) => v > 0)
+    .map(([name, value]) => ({ name, value }))
+    .sort((a, b) => b.value - a.value);
 
   const maturidadeColors = ['#0891b2', VERDE, AMARELO];
 
@@ -1273,9 +1415,11 @@ function TabRedes({ sinaleiro, loading }: TabRedesProps) {
               </ResponsiveContainer>
             </div>
           )}
-          <p className="text-[10px] text-gray-400 text-center mt-2 italic">
-            Derivado do sinaleiro — dados reais em breve
-          </p>
+          {maturidadeData.length === 0 && !loading && (
+            <p className="text-[10px] text-gray-400 text-center mt-2 italic">
+              Campo maturidade nao populado nos itens do sinaleiro
+            </p>
+          )}
         </div>
       </div>
 
@@ -1463,54 +1607,45 @@ function TabProdutividade({ performance, kpis, loading }: TabProdutividadeProps)
   const totalContatos  = kpis?.total_clientes ?? 0;
   const totalProspects = kpis?.total_prospects ?? 0;
 
-  const tarefasPorVenda   = totalVendas > 0 ? (totalContatos / totalVendas).toFixed(1)  : '—';
-  const contatosPorVenda  = totalVendas > 0 ? (totalContatos / totalVendas).toFixed(1)  : '—';
-  const diasPorVenda      = totalVendas > 0 ? '3.2'  : '—'; // seria calculado com datas
-  const custoPorVenda     = '—'; // requer dados financeiros internos
+  // Métricas calculáveis a partir de dados reais disponíveis
+  const contatosPorVenda = totalVendas > 0 ? (totalContatos / totalVendas).toFixed(1) : '—';
+  // diasPorVenda e custoPorVenda requerem campos de data_pedido/custo — indisponíveis atualmente
+  const diasPorVenda  = '—'; // requer histórico de datas de pedido
+  const custoPorVenda = '—'; // requer dados financeiros internos
 
-  // Tarefas/dia simulated per consultant
-  const tarefasDiaData = performance.map((p) => ({
+  // Clientes por consultor como proxy de volume de carteira (dado real)
+  const carteiraPorConsultorData = performance.map((p) => ({
     consultor: p.consultor,
-    tarefas: parseFloat((p.total_clientes / 30).toFixed(1)),
+    clientes: p.total_clientes,
   }));
-
-  // Effort decomposition
-  const effortData = [
-    { tipo: 'Prospeccao', pct: 35 },
-    { tipo: 'Follow-up',  pct: 30 },
-    { tipo: 'Negociacao', pct: 20 },
-    { tipo: 'Admin',      pct: 15 },
-  ];
-  const effortColors = [VERDE, '#0891b2', AMARELO, '#9ca3af'];
 
   return (
     <div className="space-y-6">
       {/* KPI cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <KpiCard title="TAREFAS / VENDA"  value={loading ? null : tarefasPorVenda}  subtitle="contatos por pedido"  color={VERDE} />
-        <KpiCard title="CONTATOS / VENDA" value={loading ? null : contatosPorVenda} subtitle="esforco de conversao"  color="#0891b2" />
-        <KpiCard title="DIAS / VENDA"     value={loading ? null : diasPorVenda}     subtitle="ciclo medio de venda"  color={AMARELO} />
-        <KpiCard title="CUSTO / VENDA"    value={loading ? null : custoPorVenda}    subtitle="dados financeiros req." color="#9ca3af" />
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+        <KpiCard title="CONTATOS / VENDA" value={loading ? null : contatosPorVenda} subtitle="esforco de conversao"  color={VERDE} />
+        <KpiCard title="DIAS / VENDA"     value={loading ? null : diasPorVenda}     subtitle="requer historico datas" color={AMARELO} />
+        <KpiCard title="CUSTO / VENDA"    value={loading ? null : custoPorVenda}    subtitle="requer dados financeiros" color="#9ca3af" />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Tarefas/dia por consultor */}
+        {/* Carteira por consultor */}
         <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
-          <SectionHeader label="Contatos/Dia por Consultor" accentColor="#7c3aed" />
+          <SectionHeader label="Carteira por Consultor" accentColor="#7c3aed" />
           {loading ? (
             <ChartSkeleton />
-          ) : tarefasDiaData.length === 0 ? (
+          ) : carteiraPorConsultorData.length === 0 ? (
             <EmptyState message="Sem dados" />
           ) : (
             <div className="mt-4 h-56">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={tarefasDiaData}>
+                <BarChart data={carteiraPorConsultorData}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                   <XAxis dataKey="consultor" tick={{ fontSize: 11 }} />
                   <YAxis tick={{ fontSize: 11 }} />
                   <Tooltip content={<CustomTooltip />} />
-                  <Bar dataKey="tarefas" name="Contatos/dia" radius={[4, 4, 0, 0]}>
-                    {tarefasDiaData.map((entry, i) => (
+                  <Bar dataKey="clientes" name="Clientes" radius={[4, 4, 0, 0]}>
+                    {carteiraPorConsultorData.map((entry, i) => (
                       <Cell key={i} fill={CONSULTOR_COLORS[entry.consultor.toUpperCase()] ?? VERDE} />
                     ))}
                   </Bar>
@@ -1518,38 +1653,15 @@ function TabProdutividade({ performance, kpis, loading }: TabProdutividadeProps)
               </ResponsiveContainer>
             </div>
           )}
-          <p className="text-[10px] text-gray-400 mt-2 text-center italic">
-            Baseado em clientes / 30 dias — dados reais em breve
-          </p>
         </div>
 
-        {/* Effort decomposition */}
+        {/* Decomposicao de esforco — indisponível sem integração Asana */}
         <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
           <SectionHeader label="Decomposicao de Esforco" accentColor={AMARELO} />
-          <div className="mt-4 h-56">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={effortData}
-                  cx="50%"
-                  cy="50%"
-                  outerRadius={80}
-                  dataKey="pct"
-                  nameKey="tipo"
-                  label={({ name, value }: { name?: string; value?: number }) => `${name ?? ''}: ${value ?? 0}%`}
-                >
-                  {effortData.map((_, i) => (
-                    <Cell key={i} fill={effortColors[i] ?? '#9ca3af'} />
-                  ))}
-                </Pie>
-                <Tooltip content={<CustomTooltip />} />
-                <Legend />
-              </PieChart>
-            </ResponsiveContainer>
+          <div className="mt-4 py-12 text-center">
+            <p className="text-sm text-gray-400">Dados indisponíveis</p>
+            <p className="text-xs text-gray-300 mt-1">Requer integração Asana para dados reais de esforco</p>
           </div>
-          <p className="text-[10px] text-gray-400 mt-2 text-center italic">
-            Estimativa — integracao Asana em breve
-          </p>
         </div>
       </div>
 
@@ -1557,7 +1669,7 @@ function TabProdutividade({ performance, kpis, loading }: TabProdutividadeProps)
       <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
         <SectionHeader label="Benchmark de Produtividade" accentColor={VERDE} />
         <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <BenchmarkCard label="Conversao atual" value={loading ? null : `${totalVendas > 0 ? ((totalVendas / totalContatos) * 100).toFixed(1) : '0.0'}%`} meta="Meta: 15%" color={VERDE} />
+          <BenchmarkCard label="Conversao atual" value={loading ? null : `${totalVendas > 0 && totalContatos > 0 ? ((totalVendas / totalContatos) * 100).toFixed(1) : '0.0'}%`} meta="Meta: 15%" color={VERDE} />
           <BenchmarkCard label="Prospects ativos" value={loading ? null : totalProspects.toLocaleString('pt-BR')} meta="Meta: 50+" color="#0891b2" />
           <BenchmarkCard label="Score medio carteira" value={loading ? null : (kpis?.media_score ?? 0).toFixed(1)} meta="Meta: 70+" color={AMARELO} />
         </div>
