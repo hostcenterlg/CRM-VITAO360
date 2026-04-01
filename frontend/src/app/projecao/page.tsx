@@ -56,7 +56,7 @@ export default function ProjecaoPage() {
   const realizadoYTD = data?.resumo.faturamento_realizado ?? 0;
   const pctQ1 = meta2026 > 0 ? (realizadoYTD / meta2026) * 100 : 0;
   const pctQ1Color =
-    pctQ1 >= 25 ? '#00B050' : pctQ1 >= 15 ? '#FFC000' : '#FF0000';
+    pctQ1 >= 25 ? '#00B050' : pctQ1 >= 12 ? '#FFC000' : '#FF0000';
 
   return (
     <div className="space-y-6">
@@ -230,7 +230,7 @@ export default function ProjecaoPage() {
               <span className="font-semibold">Meta:</span>{' '}
               {formatBRL(detalhe.meta_total)}
             </span>
-            <span style={{ color: detalhe.pct_alcancado >= 80 ? '#00B050' : detalhe.pct_alcancado >= 50 ? '#FFC000' : '#FF0000' }}>
+            <span style={{ color: detalhe.pct_alcancado >= 75 ? '#00B050' : detalhe.pct_alcancado >= 50 ? '#FFC000' : '#FF0000' }}>
               <span className="font-semibold">% Atingido:</span>{' '}
               {formatPercent(detalhe.pct_alcancado)}
             </span>
@@ -275,15 +275,9 @@ export default function ProjecaoPage() {
                 {porConsultor.map((row) => {
                   const pct = row.pct_alcancado;
                   const color =
-                    pct >= 80 ? '#00B050' : pct >= 50 ? '#FFC000' : '#FF0000';
+                    pct >= 75 ? '#00B050' : pct >= 50 ? '#FFC000' : '#FF0000';
                   const status =
-                    pct >= 100
-                      ? 'Meta atingida'
-                      : pct >= 80
-                      ? 'Proximo da meta'
-                      : pct >= 50
-                      ? 'Em andamento'
-                      : 'Abaixo da meta';
+                    pct >= 75 ? 'BOM' : pct >= 50 ? 'ATENCAO' : 'CRITICO';
 
                   return (
                     <tr key={row.consultor} className="border-t border-gray-50 hover:bg-gray-50 transition-colors">
@@ -419,7 +413,7 @@ function GroupedBarChart({ data }: { data: MesData[] }) {
           const realH = maxVal > 0 ? (d.faturamento / maxVal) * CHART_H : 0;
           const pct = d.meta > 0 ? (d.faturamento / d.meta) * 100 : 0;
           const barColor =
-            pct >= 80 ? '#00B050' : pct >= 50 ? '#FFC000' : '#FF4500';
+            pct >= 75 ? '#00B050' : pct >= 50 ? '#FFC000' : '#FF4500';
 
           const mesNum = parseInt(d.mes_referencia.split('-')[1] ?? '1', 10) - 1;
           const mesLabel = MESES_LABELS[mesNum] ?? d.mes_referencia;

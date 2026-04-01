@@ -31,7 +31,7 @@ const PRIORIDADES_URGENTES = new Set(['P0', 'P1', 'P2', 'P3']);
 // ---------------------------------------------------------------------------
 
 function formatDate(date: Date): string {
-  const dias = ['Domingo', 'Segunda', 'Terca', 'Quarta', 'Quinta', 'Sexta', 'Sabado'];
+  const dias = ['Domingo', 'Segunda-feira', 'Terca-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sabado'];
   const meses = [
     'Janeiro', 'Fevereiro', 'Marco', 'Abril', 'Maio', 'Junho',
     'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro',
@@ -980,46 +980,47 @@ export default function AgendaPage() {
           />
         )}
 
-        {/* Tabs de consultor */}
-        <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
-          {/* Tab bar */}
-          <div className="flex border-b border-gray-200 overflow-x-auto">
-            {CONSULTORES.map((c) => {
-              const count = agendaByConsultor[c]?.length;
-              const pendentes = count !== undefined
-                ? count - ((concluidosByConsultor[c]?.size) ?? 0)
-                : undefined;
+        {/* Seletor de Consultor — botoes grandes */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+          {CONSULTORES.map((c) => {
+            const count = agendaByConsultor[c]?.length;
+            const pendentes = count !== undefined
+              ? count - ((concluidosByConsultor[c]?.size) ?? 0)
+              : undefined;
+            const isActive = activeTab === c;
 
-              return (
-                <button
-                  key={c}
-                  type="button"
-                  onClick={() => handleTabChange(c)}
-                  className={`
-                    flex-shrink-0 px-5 py-3 text-sm font-medium border-b-2 transition-colors focus:outline-none focus:ring-2 focus:ring-inset focus:ring-green-500
-                    ${activeTab === c
-                      ? 'border-green-500 text-green-700 bg-green-50/50'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-50'
-                    }
-                  `}
-                >
-                  {c}
-                  {pendentes !== undefined && (
-                    <span
-                      className={`ml-2 inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full text-[10px] font-bold ${
-                        pendentes > 0
-                          ? 'bg-gray-200 text-gray-700'
-                          : 'bg-green-100 text-green-700'
-                      }`}
-                    >
-                      {pendentes > 0 ? pendentes : '✓'}
-                    </span>
-                  )}
-                </button>
-              );
-            })}
-          </div>
+            return (
+              <button
+                key={c}
+                type="button"
+                onClick={() => handleTabChange(c)}
+                className="flex flex-col items-center justify-center gap-1 px-4 py-3 rounded-xl border-2 font-semibold text-sm transition-all focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1"
+                style={{
+                  backgroundColor: isActive ? '#00B050' : '#ffffff',
+                  borderColor: isActive ? '#00B050' : '#E5E7EB',
+                  color: isActive ? '#ffffff' : '#374151',
+                  boxShadow: isActive ? '0 2px 8px rgba(0,176,80,0.25)' : '0 1px 3px rgba(0,0,0,0.06)',
+                }}
+              >
+                <span>{c}</span>
+                {pendentes !== undefined && (
+                  <span
+                    className="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full text-[10px] font-bold"
+                    style={{
+                      backgroundColor: isActive ? 'rgba(255,255,255,0.25)' : (pendentes > 0 ? '#F3F4F6' : '#DCFCE7'),
+                      color: isActive ? '#fff' : (pendentes > 0 ? '#374151' : '#15803D'),
+                    }}
+                  >
+                    {pendentes > 0 ? pendentes : '✓'}
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </div>
 
+        {/* Agenda do consultor selecionado */}
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
           {/* Filtros */}
           <div className="flex flex-wrap items-center gap-2 px-4 py-3 bg-gray-50 border-b border-gray-100">
             {/* Busca */}
@@ -1115,19 +1116,11 @@ export default function AgendaPage() {
                 <p className="text-sm font-medium text-gray-600">
                   {temFiltrosAtivos
                     ? 'Nenhum item com esses filtros'
-                    : 'Agenda vazia'}
+                    : 'Nenhum atendimento agendado para hoje.'}
                 </p>
                 {!temFiltrosAtivos && (
                   <p className="text-xs text-gray-400 mt-1 mb-3">
-                    Clique em &quot;Gerar Agenda&quot; ou{' '}
-                    <a
-                      href="/admin/import"
-                      className="font-semibold underline"
-                      style={{ color: '#00B050' }}
-                    >
-                      importe dados primeiro
-                    </a>
-                    .
+                    Clique em &quot;Gerar Agenda&quot; para criar a agenda do dia.
                   </p>
                 )}
                 {temFiltrosAtivos ? (
@@ -1167,7 +1160,7 @@ export default function AgendaPage() {
                     <div className="flex items-center gap-3 mb-3">
                       <div className="h-px flex-1 bg-red-200" />
                       <span className="flex-shrink-0 text-[11px] font-bold text-red-600 uppercase tracking-wider px-2 py-0.5 rounded border border-red-200 bg-red-50">
-                        Prioritarios (pula fila)
+                        Prioritarios (P0-P3)
                       </span>
                       <div className="h-px flex-1 bg-red-200" />
                     </div>
@@ -1193,7 +1186,7 @@ export default function AgendaPage() {
                       <div className="flex items-center gap-3 mb-3 mt-5">
                         <div className="h-px flex-1 bg-gray-200" />
                         <span className="flex-shrink-0 text-[11px] font-semibold text-gray-500 uppercase tracking-wider px-2 py-0.5 rounded border border-gray-200 bg-gray-50">
-                          Regular
+                          Outros Clientes (P4-P7)
                         </span>
                         <div className="h-px flex-1 bg-gray-200" />
                       </div>

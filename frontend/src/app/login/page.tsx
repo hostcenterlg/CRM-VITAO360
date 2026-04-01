@@ -48,7 +48,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+    <div className="min-h-screen flex items-center justify-center px-4" style={{ background: 'linear-gradient(160deg, #f0fdf4 0%, #f9fafb 50%, #ffffff 100%)' }}>
       <div className="w-full max-w-sm">
         {/* Logo / brand */}
         <div className="flex flex-col items-center mb-8">
@@ -66,7 +66,7 @@ export default function LoginPage() {
         </div>
 
         {/* Card de login */}
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+        <div className="bg-white rounded-xl border border-gray-200 shadow-lg p-6">
           <h2 className="text-base font-semibold text-gray-900 mb-5">
             Acesso ao sistema
           </h2>
@@ -147,10 +147,9 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={submitting || !email || !senha}
-              className="w-full py-2.5 px-4 text-sm font-semibold text-white rounded-lg
+              className="w-full py-2.5 px-4 text-sm font-semibold text-white rounded-lg gradient-vitao
                          transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500
                          disabled:opacity-50 disabled:cursor-not-allowed hover:opacity-90 active:scale-[0.99]"
-              style={{ backgroundColor: '#00B050' }}
             >
               {submitting ? (
                 <span className="flex items-center justify-center gap-2">

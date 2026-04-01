@@ -20,7 +20,7 @@ const SITUACOES   = ['ATIVO', 'INAT.REC', 'INAT.ANT', 'PROSPECT'];
 const SINALEIROS  = ['VERDE', 'AMARELO', 'LARANJA', 'VERMELHO', 'ROXO'];
 const ABCS        = ['A', 'B', 'C'];
 const TEMPERATURAS = ['QUENTE', 'MORNO', 'FRIO', 'CRITICO', 'PERDIDO'];
-const PRIORIDADES  = ['P0', 'P1', 'P2', 'P3', 'P4', 'P5'];
+const PRIORIDADES  = ['P0', 'P1', 'P2', 'P3', 'P4', 'P5', 'P6', 'P7'];
 const UFS = [
   'AC','AL','AM','AP','BA','CE','DF','ES','GO','MA','MG','MS','MT',
   'PA','PB','PE','PI','PR','RJ','RN','RO','RR','RS','SC','SE','SP','TO',
@@ -296,7 +296,7 @@ function CarteiraInner() {
           <h1 className="text-lg sm:text-xl font-bold text-gray-900">Carteira de Clientes</h1>
           <p className="text-xs text-gray-500 mt-0.5">
             {response
-              ? `${mostrando} de ${response.total.toLocaleString('pt-BR')} clientes`
+              ? `Mostrando ${mostrando} de ${response.total.toLocaleString('pt-BR')} clientes`
               : 'Carregando...'}
           </p>
         </div>
@@ -518,15 +518,17 @@ function CarteiraInner() {
           sort={sort}
           onSort={handleSort}
           showFaturamento={!isExternoJulio}
+          hasActiveFilters={ativo}
+          onResetFilters={handleLimpar}
         />
 
         {/* Paginação */}
         {response && response.total > PAGE_SIZE && (
           <div className="flex items-center justify-between px-3 sm:px-4 py-2.5 border-t border-gray-100 bg-gray-50 gap-3">
             <p className="text-xs text-gray-500 min-w-0">
-              <span className="hidden sm:inline">{mostrando} de {response.total.toLocaleString('pt-BR')} clientes — </span>
-              <span className="sm:hidden">{mostrando} — </span>
-              Pag. {currentPage}/{totalPages}
+              <span className="hidden sm:inline">Mostrando {mostrando} de {response.total.toLocaleString('pt-BR')} clientes — </span>
+              <span className="sm:hidden">{mostrando} de {response.total.toLocaleString('pt-BR')} — </span>
+              Pág. {currentPage}/{totalPages}
             </p>
             <div className="flex gap-2 flex-shrink-0">
               <PaginationButton

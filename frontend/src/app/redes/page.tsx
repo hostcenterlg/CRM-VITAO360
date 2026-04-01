@@ -64,8 +64,16 @@ function CorBadge({ cor }: { cor: string }) {
   );
 }
 
+// Cor de penetracao: ROXO <1%, VERMELHO 1-40%, AMARELO 40-60%, VERDE >60%
+function penetracaoColor(pct: number): string {
+  if (pct < 1) return '#7030A0';
+  if (pct < 40) return '#FF0000';
+  if (pct <= 60) return '#FFC000';
+  return '#00B050';
+}
+
 function ProgressBar({ pct }: { pct: number }) {
-  const color = pct >= 100 ? '#00B050' : pct >= 80 ? '#FFC000' : pct >= 50 ? '#FF6600' : '#FF0000';
+  const color = penetracaoColor(pct);
   return (
     <div className="flex items-center gap-2">
       <div className="flex-1 h-1.5 bg-gray-200 rounded-full overflow-hidden">
@@ -87,6 +95,7 @@ function DistribuicaoMini({ dist }: { dist: RedeItem['distribuicao'] }) {
       {Object.entries(dist).map(([cor, qtd]) => {
         if (qtd === 0) return null;
         const cfg = COR_COLORS[cor];
+        if (!cfg) return null;
         return (
           <span key={cor} className="flex items-center gap-0.5">
             <span className="inline-block w-2 h-2 rounded-full" style={{ backgroundColor: cfg.bg }} />
@@ -132,14 +141,43 @@ export default function RedesPage() {
   const redes = data?.redes ?? [];
   const criticas = redes.filter(r => r.pct_ating < 40);
 
+  // Media de penetracao
+  const mediaPenetracao = redes.length > 0
+    ? redes.reduce((acc, r) => acc + r.pct_ating, 0) / redes.length
+    : 0;
+
   return (
     <div className="space-y-5">
       {/* Titulo */}
       <div>
         <h1 className="text-lg font-bold text-gray-900">Redes e Franquias</h1>
         <p className="text-xs text-gray-500 mt-0.5">
-          {data?.total_redes ?? 0} redes | {data?.total_lojas ?? 0} lojas
+          Monitoramento de penetracao e faturamento por rede/franquia
         </p>
+      </div>
+
+      {/* Cards de resumo */}
+      <div className="grid grid-cols-3 gap-3">
+        <div className="bg-white rounded-xl border border-gray-200 p-4 shadow-sm flex flex-col gap-1"
+          style={{ borderLeftColor: '#00B050', borderLeftWidth: '4px' }}>
+          <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Total Redes</p>
+          <p className="text-2xl font-bold text-gray-900">{loading ? '—' : (data?.total_redes ?? 0)}</p>
+          <p className="text-[10px] text-gray-400">redes cadastradas</p>
+        </div>
+        <div className="bg-white rounded-xl border border-gray-200 p-4 shadow-sm flex flex-col gap-1"
+          style={{ borderLeftColor: '#2563eb', borderLeftWidth: '4px' }}>
+          <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Total Lojas</p>
+          <p className="text-2xl font-bold text-gray-900">{loading ? '—' : (data?.total_lojas ?? 0)}</p>
+          <p className="text-[10px] text-gray-400">unidades monitoradas</p>
+        </div>
+        <div className="bg-white rounded-xl border border-gray-200 p-4 shadow-sm flex flex-col gap-1"
+          style={{ borderLeftColor: penetracaoColor(mediaPenetracao), borderLeftWidth: '4px' }}>
+          <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Penetracao Media</p>
+          <p className="text-2xl font-bold" style={{ color: penetracaoColor(mediaPenetracao) }}>
+            {loading ? '—' : `${mediaPenetracao.toFixed(1)}%`}
+          </p>
+          <p className="text-[10px] text-gray-400">media das redes</p>
+        </div>
       </div>
 
       {/* Erro */}
@@ -167,7 +205,7 @@ export default function RedesPage() {
       )}
 
       {/* Tabela principal */}
-      <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
         {loading ? (
           <div className="flex items-center justify-center py-16">
             <div className="w-5 h-5 border-2 border-gray-300 border-t-green-600 rounded-full animate-spin" />
@@ -280,12 +318,7 @@ export default function RedesPage() {
                           <div className="flex items-center gap-2">
                             <span
                               className="text-[10px] font-semibold tabular-nums"
-                              style={{
-                                color: loja.pct_ating >= 100 ? '#00B050'
-                                  : loja.pct_ating >= 80 ? '#FFC000'
-                                  : loja.pct_ating >= 50 ? '#FF6600'
-                                  : '#FF0000'
-                              }}
+                              style={{ color: penetracaoColor(loja.pct_ating) }}
                             >
                               {loja.pct_ating}%
                             </span>
