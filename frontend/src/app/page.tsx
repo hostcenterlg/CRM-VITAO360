@@ -686,7 +686,7 @@ function TabOperacional({ performance, atividades, positivacao, loading }: TabOp
 
   return (
     <div className="space-y-6">
-      {/* Aviso se atividades ainda nao disponíveis */}
+      {/* Aviso se atividades sem dados */}
       {!loading && !atividadesDisponivel && (
         <div className="flex items-center gap-3 p-3 bg-amber-50 border border-amber-200 rounded-lg">
           <svg className="w-4 h-4 text-amber-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -694,9 +694,7 @@ function TabOperacional({ performance, atividades, positivacao, loading }: TabOp
               d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
           <p className="text-xs text-amber-800">
-            Dados de atividades por canal indisponíveis — endpoint
-            <code className="mx-1 font-mono bg-amber-100 px-1 rounded">/api/dashboard/atividades</code>
-            ainda nao implementado no backend.
+            Nenhuma atividade registrada para o período selecionado.
           </p>
         </div>
       )}
@@ -714,7 +712,7 @@ function TabOperacional({ performance, atividades, positivacao, loading }: TabOp
           ) : !atividadesDisponivel ? (
             <div className="py-8 text-center">
               <p className="text-sm text-gray-400">Dados indisponíveis</p>
-              <p className="text-xs text-gray-300 mt-1">Aguardando endpoint de atividades</p>
+              <p className="text-xs text-gray-300 mt-1">Registre atividades para ver os dados aqui</p>
             </div>
           ) : (
             <table className="w-full text-sm">
@@ -994,7 +992,7 @@ function TabFunil({
         ) : !atividadesDisponivel ? (
           <div className="mt-4 py-10 text-center">
             <p className="text-sm text-gray-400">Dados indisponíveis</p>
-            <p className="text-xs text-gray-300 mt-1">Aguardando endpoint de atividades</p>
+            <p className="text-xs text-gray-300 mt-1">Registre atividades para ver os dados aqui</p>
           </div>
         ) : (
           <div className="mt-4 h-56">
@@ -1219,7 +1217,7 @@ function TabSaude({ kpis, distribuicao, positivacao, loading, totalInativos }: T
           ) : positivacaoConsultorData.length === 0 ? (
             <div className="mt-4 py-10 text-center">
               <p className="text-sm text-gray-400">Dados indisponíveis</p>
-              <p className="text-xs text-gray-300 mt-1">Aguardando endpoint de positivacao</p>
+              <p className="text-xs text-gray-300 mt-1">Registre vendas para ver positivação aqui</p>
             </div>
           ) : (
             <div className="mt-4 h-56">

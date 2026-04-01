@@ -611,11 +611,18 @@ class AtividadeMesItem(BaseModel):
     quantidade: int
 
 
+class AtividadeResultadoItem(BaseModel):
+    resultado: str
+    quantidade: int
+
+
 class AtividadesResponse(BaseModel):
-    total_atividades: int
+    total: int
     por_tipo: list[AtividadeTipoItem]
+    por_resultado: list[AtividadeResultadoItem]
     por_consultor: list[AtividadeConsultorItem]
     por_mes: list[AtividadeMesItem]
+    periodo: dict[str, str]  # {"inicio": "YYYY-MM-DD", "fim": "YYYY-MM-DD"}
 
 
 @router.get(
@@ -676,6 +683,22 @@ def atividades(
         for r in tipo_rows
     ]
 
+    # --- Por resultado (VENDA, ORCAMENTO, etc.) ---
+    resultado_rows = db.execute(
+        select(
+            LogInteracao.resultado,
+            func.count().label("qt"),
+        )
+        .where(*base_filters)
+        .group_by(LogInteracao.resultado)
+        .order_by(func.count().desc())
+    ).all()
+
+    por_resultado = [
+        AtividadeResultadoItem(resultado=r[0] or "NAO_INFORMADO", quantidade=r[1])
+        for r in resultado_rows
+    ]
+
     # --- Por consultor com breakdown de tipos ---
     # Step 1: all (consultor, tipo_contato, count) combinations
     consultor_tipo_rows = db.execute(
@@ -729,11 +752,19 @@ def atividades(
         for r in mes_rows
     ]
 
+    # Build periodo dict
+    periodo_dict = {
+        "inicio": str(data_inicio) if data_inicio else "",
+        "fim": str(data_fim) if data_fim else "",
+    }
+
     return AtividadesResponse(
-        total_atividades=total_atividades,
+        total=total_atividades,
         por_tipo=por_tipo,
+        por_resultado=por_resultado,
         por_consultor=por_consultor,
         por_mes=por_mes,
+        periodo=periodo_dict,
     )
 
 

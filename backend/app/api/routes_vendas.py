@@ -466,7 +466,7 @@ def transicionar_status(
     transicoes_permitidas = _TRANSICOES_VALIDAS.get(status_atual, set())
     if novo_status not in transicoes_permitidas:
         raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
             detail=(
                 f"Transicao invalida: {status_atual!r} → {novo_status!r}. "
                 f"Transicoes permitidas a partir de {status_atual!r}: "
@@ -487,7 +487,7 @@ def transicionar_status(
     # Motivo obrigatorio para cancelamento
     if novo_status == "CANCELADO" and not payload.motivo:
         raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
             detail="Campo 'motivo' e obrigatorio para cancelamento de pedido.",
         )
 

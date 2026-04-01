@@ -906,11 +906,8 @@ export interface AtividadePorResultado {
 
 export interface AtividadePorConsultor {
   consultor: string;
-  total: number;
-  whatsapp: number;
-  ligacao: number;
-  email: number;
-  presencial: number;
+  quantidade: number;
+  tipos: Record<string, number>;
 }
 
 export interface AtividadesResponse {
@@ -918,6 +915,7 @@ export interface AtividadesResponse {
   por_tipo: AtividadePorTipo[];
   por_resultado: AtividadePorResultado[];
   por_consultor: AtividadePorConsultor[];
+  por_mes: { mes: string; quantidade: number }[];
   periodo: {
     inicio: string;
     fim: string;
