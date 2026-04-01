@@ -662,7 +662,7 @@ interface TabOperacionalProps {
   loading: boolean;
 }
 
-function TabOperacional({ kpis, performance, atividades, positivacao, loading }: TabOperacionalProps) {
+function TabOperacional({ performance, atividades, positivacao, loading }: TabOperacionalProps) {
   const atividadesDisponivel = atividades !== null && atividades.total > 0;
 
   // Tipo contato — usa dados reais de atividades, sem fallback fabricado
