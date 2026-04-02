@@ -318,10 +318,10 @@ function ClienteDetailPanel({ cnpj, onClose }: ClienteDetailPanelProps) {
                     Financeiro
                   </h3>
                   <dl className="space-y-1.5">
-                    <DetailRow label="Faturamento Total" value={cliente.faturamento_total != null ? formatBRL(cliente.faturamento_total) : undefined} />
-                    <DetailRow label="Faturamento 2026"  value={cliente.faturamento_2026 != null ? formatBRL(cliente.faturamento_2026) : undefined} />
-                    <DetailRow label="Ticket Medio"      value={cliente.ticket_medio != null ? formatBRL(cliente.ticket_medio) : undefined} />
+                    <DetailRow label="Ult. Pedido"       value={cliente.valor_ultimo_pedido != null ? formatBRL(cliente.valor_ultimo_pedido) : undefined} />
+                    <DetailRow label="Fat. Acumulado"    value={cliente.faturamento_total != null ? formatBRL(cliente.faturamento_total) : undefined} />
                     <DetailRow label="Meta Anual"        value={cliente.meta_anual != null ? formatBRL(cliente.meta_anual) : undefined} />
+                    <DetailRow label="Meta Mensal"       value={cliente.meta_anual != null ? formatBRL(cliente.meta_anual / 12) : undefined} />
                   </dl>
                 </section>
               )}
@@ -400,9 +400,9 @@ function KanbanCard({ cliente, onDragStart, onClick, isDragging }: KanbanCardPro
           {cliente.score != null ? Math.round(cliente.score) : '—'}
         </span>
 
-        {!isExterno && cliente.faturamento_total != null && cliente.faturamento_total > 0 && (
-          <span className="text-[10px] text-gray-500 font-medium">
-            {formatBRL(cliente.faturamento_total)}
+        {!isExterno && (cliente.valor_ultimo_pedido ?? 0) > 0 && (
+          <span className="text-[10px] text-gray-500 font-medium" title="Valor do ultimo pedido">
+            {formatBRL(cliente.valor_ultimo_pedido!)}
           </span>
         )}
 
@@ -456,7 +456,8 @@ function KanbanColumn({
   draggingCnpj,
   onCardClick,
 }: KanbanColumnProps) {
-  const totalValor = cards.reduce((acc, c) => acc + (c.faturamento_total ?? 0), 0);
+  // Sum of valor_ultimo_pedido (last order per client) — NOT annual cumulative
+  const totalUltimoPedido = cards.reduce((acc, c) => acc + (c.valor_ultimo_pedido ?? 0), 0);
 
   return (
     <div
@@ -488,8 +489,11 @@ function KanbanColumn({
             {cards.length}
           </span>
         </div>
-        {totalValor > 0 && (
-          <p className="text-[10px] text-gray-400 font-medium">{formatBRL(totalValor)}</p>
+        {totalUltimoPedido > 0 && (
+          <p className="text-[10px] text-gray-400 font-medium" title="Soma do ultimo pedido de cada cliente neste estagio">
+            {formatBRL(totalUltimoPedido)}
+            <span className="text-gray-300 ml-1">ult.ped</span>
+          </p>
         )}
       </div>
 
@@ -533,7 +537,8 @@ function KanbanColumn({
 
 interface SummaryBarProps {
   totalOportunidades: number;
-  totalValor: number;
+  totalUltPedido: number;
+  totalFatAcumulado: number;
   totalClientes: number;
   filtroConsultor: string;
   onFiltroConsultor: (v: string) => void;
@@ -542,7 +547,8 @@ interface SummaryBarProps {
 
 function SummaryBar({
   totalOportunidades,
-  totalValor,
+  totalUltPedido,
+  totalFatAcumulado,
   totalClientes,
   filtroConsultor,
   onFiltroConsultor,
@@ -573,13 +579,13 @@ function SummaryBar({
 
           <div className="flex flex-col">
             <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
-              Valor Pipeline
+              Ult. Pedidos
             </span>
             {loading ? (
               <div className="h-6 w-28 bg-gray-100 animate-pulse rounded" />
             ) : (
               <span className="text-xl font-bold" style={{ color: '#00B050' }}>
-                {formatBRL(totalValor)}
+                {formatBRL(totalUltPedido)}
               </span>
             )}
           </div>
@@ -588,7 +594,22 @@ function SummaryBar({
 
           <div className="flex flex-col">
             <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
-              Taxa de Engajamento
+              Fat. Acumulado
+            </span>
+            {loading ? (
+              <div className="h-6 w-28 bg-gray-100 animate-pulse rounded" />
+            ) : (
+              <span className="text-lg font-bold text-gray-600">
+                {formatBRL(totalFatAcumulado)}
+              </span>
+            )}
+          </div>
+
+          <div className="w-px h-8 bg-gray-200 flex-shrink-0" />
+
+          <div className="flex flex-col">
+            <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
+              Engajamento
             </span>
             {loading ? (
               <div className="h-6 w-14 bg-gray-100 animate-pulse rounded" />
@@ -721,7 +742,8 @@ export default function PipelinePage() {
     return stage !== '' && STAGE_IDS.includes(stage);
   }).length;
 
-  const totalValor = allClientes.reduce((acc, c) => acc + (c.faturamento_total ?? 0), 0);
+  const totalUltPedido = allClientes.reduce((acc, c) => acc + (c.valor_ultimo_pedido ?? 0), 0);
+  const totalFatAcumulado = allClientes.reduce((acc, c) => acc + (c.faturamento_total ?? 0), 0);
 
   // ---------------------------------------------------------------------------
   // Drag-and-drop handlers
@@ -811,7 +833,8 @@ export default function PipelinePage() {
       {/* Summary bar */}
       <SummaryBar
         totalOportunidades={totalOportunidades}
-        totalValor={totalValor}
+        totalUltPedido={totalUltPedido}
+        totalFatAcumulado={totalFatAcumulado}
         totalClientes={allClientes.length}
         filtroConsultor={filtroConsultor}
         onFiltroConsultor={setFiltroConsultor}

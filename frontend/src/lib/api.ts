@@ -238,6 +238,8 @@ export interface ClienteRegistro {
   ticket_medio?: number;
   meta_mensal?: number;
   ciclo_medio?: number;
+  valor_ultimo_pedido?: number;
+  n_compras?: number;
   temperatura?: string;
   fase?: string;
   estagio_funil?: string;
@@ -602,12 +604,23 @@ export interface RegraMotor {
   acao_futura: string;
   temperatura: string;
   follow_up_dias: number | null;
-  grupo_dashboard: string;
-  tipo_acao: string;
+  followup_dias?: number | null;
+  grupo_dash: string | null;
+  tipo_acao: string | null;
+  chave: string;
+}
+
+interface MotorRegrasResponse {
+  total: number;
+  regras: RegraMotor[];
 }
 
 export async function fetchMotorRegras(): Promise<RegraMotor[]> {
-  return fetchJson<RegraMotor[]>('/api/motor/regras');
+  const data = await fetchJson<MotorRegrasResponse>('/api/motor/regras');
+  return (data.regras ?? []).map(r => ({
+    ...r,
+    follow_up_dias: r.follow_up_dias ?? r.followup_dias ?? null,
+  }));
 }
 
 // ---------------------------------------------------------------------------
