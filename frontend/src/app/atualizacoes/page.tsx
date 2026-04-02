@@ -268,12 +268,32 @@ const ITEMS: Item[] = [
   },
   {
     id: 'P-005',
-    pedido: 'Migrar Neon para Supabase (opcional)',
-    descricao: 'Neon funciona. Supabase é opcional — basta trocar DATABASE_URL quando quiser.',
-    status: 'pending',
+    pedido: 'Banco de dados — Neon PostgreSQL mantido (decisão final)',
+    descricao: 'Neon funciona perfeitamente. Supabase descartado — zero benefício para trocar.',
+    status: 'done',
     categoria: 'infra',
-    sessao: 'Pendência',
-    detalhes: 'Migração cosmética. Supabase tem dashboard melhor. Zero impacto no código. Fazer quando Leandro decidir.',
+    sessao: '01/Abr/2026',
+    detalhes: 'Decisão: manter Neon PostgreSQL. Funciona, é estável, connection pooling OK. Supabase exigiria migração + nova config sem ganho real. DATABASE_URL segue inalterado.',
+  },
+  {
+    id: 'P-007',
+    pedido: '46 clientes DESCONHECIDO reclassificados',
+    descricao: 'Todos os clientes sem consultor atribuídos: 38→LARISSA, 6→DAIANE (redes), 2→MANU (PR).',
+    status: 'done',
+    categoria: 'data',
+    sessao: '01/Abr/2026',
+    detalhes: 'Script fix_desconhecido.py. DE-PARA: PR/SC/RS→MANU, redes BIOMUNDO/MUNDO VERDE→DAIANE, resto→LARISSA. Distribuição final: LARISSA 646, MANU 644, DAIANE 199, JULIO 92. Zero DESCONHECIDO.',
+    commits: ['pending'],
+  },
+  {
+    id: 'P-008',
+    pedido: 'seed_data.json atualizado com dados corrigidos',
+    descricao: '16.5 MB — 1.581 clientes, 21.305 LOG, 1.231 vendas, 242 produtos, 92 regras motor.',
+    status: 'done',
+    categoria: 'data',
+    sessao: '01/Abr/2026',
+    detalhes: 'Regenerado após fix DESCONHECIDO + products import. Todas tabelas: clientes, vendas, metas, log_interacoes, redes, regras_motor, agenda_items, score_historico, produtos, usuarios.',
+    commits: ['pending'],
   },
   {
     id: 'P-006',
@@ -484,7 +504,7 @@ export default function AtualizacoesPage() {
       {/* Footer */}
       <div className="mt-8 mb-4 p-4 bg-gray-50 rounded-xl border border-gray-200 text-center">
         <p className="text-xs text-gray-500">
-          CRM VITAO360 — Atualizado: 01/Abr/2026 22:00 — {ITEMS.length} itens rastreados
+          CRM VITAO360 — Atualizado: 01/Abr/2026 23:30 — {ITEMS.length} itens rastreados
         </p>
       </div>
     </div>
