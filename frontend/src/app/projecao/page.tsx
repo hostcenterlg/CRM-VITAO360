@@ -90,7 +90,7 @@ export default function ProjecaoPage() {
 
       {/* Destaque — 4 cards principais */}
       <section>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* Baseline 2025 */}
           <div
             className="bg-white rounded-lg border border-gray-200 p-4 flex flex-col gap-1 shadow-sm"
@@ -111,7 +111,7 @@ export default function ProjecaoPage() {
                 </svg>
               </span>
             </div>
-            <p className="text-2xl font-bold text-gray-900 leading-tight">
+            <p className="text-2xl font-bold text-gray-900 leading-tight tabular-nums">
               {loading ? '—' : formatBRL(baseline2025)}
             </p>
             <p className="text-xs text-gray-400 mt-0.5">
@@ -127,7 +127,7 @@ export default function ProjecaoPage() {
             <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
               Meta 2026
             </p>
-            <p className="text-2xl font-bold text-gray-900 leading-tight">
+            <p className="text-2xl font-bold text-gray-900 leading-tight tabular-nums">
               {formatBRL(meta2026)}
             </p>
             <p className="text-xs text-gray-400 mt-0.5">
@@ -143,7 +143,7 @@ export default function ProjecaoPage() {
             <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
               Realizado 2026 YTD
             </p>
-            <p className="text-2xl font-bold text-gray-900 leading-tight">
+            <p className="text-2xl font-bold text-gray-900 leading-tight tabular-nums">
               {loading ? '—' : formatBRL(realizadoYTD)}
             </p>
             <p className="text-xs mt-0.5" style={{ color: pctQ1Color }}>
@@ -159,7 +159,7 @@ export default function ProjecaoPage() {
             <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
               Projecao 2026
             </p>
-            <p className="text-2xl font-bold text-gray-900 leading-tight">
+            <p className="text-2xl font-bold text-gray-900 leading-tight tabular-nums">
               {loading ? '—' : formatBRL(projecao2026)}
             </p>
             <p className="text-xs text-gray-400 mt-0.5">
@@ -192,7 +192,7 @@ export default function ProjecaoPage() {
         </div>
 
         {detalheLoading ? (
-          <div className="h-64 flex items-end gap-1.5 px-2 pb-8">
+          <div className="h-64 min-h-[200px] flex items-end gap-1.5 px-2 pb-8">
             {Array.from({ length: 12 }).map((_, i) => (
               <div key={i} className="flex-1 flex gap-0.5 items-end">
                 <div
@@ -209,7 +209,7 @@ export default function ProjecaoPage() {
         ) : detalhe?.mensal?.length ? (
           <GroupedBarChart data={detalhe.mensal} />
         ) : (
-          <div className="h-64 flex items-center justify-center text-sm text-gray-400">
+          <div className="h-64 min-h-[200px] flex items-center justify-center text-sm text-gray-400">
             <div className="text-center">
               <svg className="w-10 h-10 mx-auto mb-3 text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}

@@ -70,16 +70,24 @@ interface BlocoProps {
   onToggle: () => void;
   children: React.ReactNode;
   badge?: React.ReactNode;
+  id?: string;
 }
 
-function Bloco({ title, open, onToggle, children, badge }: BlocoProps) {
+function Bloco({ title, open, onToggle, children, badge, id }: BlocoProps) {
+  // Gera ID estavel baseado no titulo para aria-labelledby
+  const sectionId = id ?? `bloco-${title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')}`;
+  const btnId = `${sectionId}-btn`;
+  const panelId = `${sectionId}-panel`;
+
   return (
     <div className="border border-gray-200 rounded-lg overflow-hidden">
       <button
+        id={btnId}
         type="button"
         onClick={onToggle}
         className="w-full flex items-center justify-between px-4 py-3 bg-gray-50 hover:bg-gray-100 transition-colors text-left"
         aria-expanded={open}
+        aria-controls={panelId}
       >
         <div className="flex items-center gap-2">
           <span className="text-[11px] font-semibold text-gray-600 uppercase tracking-wider">
@@ -98,6 +106,9 @@ function Bloco({ title, open, onToggle, children, badge }: BlocoProps) {
         </svg>
       </button>
       <div
+        id={panelId}
+        role="region"
+        aria-labelledby={btnId}
         className={`transition-all duration-200 overflow-hidden ${open ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'}`}
         aria-hidden={!open}
       >

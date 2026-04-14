@@ -154,6 +154,9 @@ export default function AdminMotorPage() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full" role="table">
+              <caption className="sr-only">
+                {regras.length} regras do Motor de Inteligencia Comercial
+              </caption>
               <thead>
                 <tr className="border-b border-gray-200 bg-gray-50">
                   <th scope="col" className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-8">#</th>
@@ -177,7 +180,7 @@ export default function AdminMotorPage() {
                   </tr>
                 ) : (
                   regrasFiltradas.map(regra => (
-                    <tr key={regra.id} className="hover:bg-gray-50 transition-colors">
+                    <tr key={regra.id} className="hover:bg-green-50/40 transition-colors">
                       <td className="px-3 py-2 text-[10px] text-gray-400 tabular-nums">{regra.id}</td>
                       <td className="px-3 py-2">
                         <SitBadge value={regra.situacao} />
@@ -186,7 +189,7 @@ export default function AdminMotorPage() {
                       <td className="px-3 py-2 text-xs text-gray-600">{regra.estagio_funil}</td>
                       <td className="px-3 py-2 text-xs text-gray-600">{regra.fase}</td>
                       <td className="px-3 py-2 text-xs text-gray-500">{regra.tipo_contato}</td>
-                      <td className="px-3 py-2 text-xs text-gray-700 max-w-xs">{regra.acao_futura}</td>
+                      <td className="px-3 py-2 text-xs text-gray-700 max-w-xs break-words whitespace-normal">{regra.acao_futura}</td>
                       <td className="px-3 py-2">
                         <TempCell value={regra.temperatura} />
                       </td>

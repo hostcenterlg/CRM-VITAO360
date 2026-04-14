@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import Skeleton from '@/components/Skeleton';
 import {
   fetchConsultorResumo,
   fetchClientes,
@@ -357,9 +358,10 @@ export default function RedistribuirCarteiraPage() {
           Distribuicao Atual
         </p>
         {loadingResumos ? (
-          <div className="flex items-center gap-2 py-4">
-            <div className="w-4 h-4 border-2 border-gray-300 border-t-green-600 rounded-full animate-spin" />
-            <span className="text-xs text-gray-400">Carregando distribuicao...</span>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <Skeleton.Kpi key={i} />
+            ))}
           </div>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
