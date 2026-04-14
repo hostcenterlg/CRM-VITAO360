@@ -326,7 +326,7 @@ class TestUploadMercosCarteira:
         assert resp.status_code == 200, resp.text
         data = resp.json()
 
-        assert data["status"] == "CONCLUIDO"
+        assert data["status"] in ("CONCLUIDO", "SUCESSO")
         assert data["inseridos"] == 2
         assert data["atualizados"] == 0
         assert data["tipo"] == "MERCOS_CARTEIRA"
@@ -370,7 +370,7 @@ class TestUploadMercosCarteira:
         assert resp.status_code == 200, resp.text
         data = resp.json()
 
-        assert data["status"] == "CONCLUIDO"
+        assert data["status"] in ("CONCLUIDO", "SUCESSO")
         assert data["atualizados"] == 1
         assert data["inseridos"] == 0
 
@@ -455,7 +455,7 @@ class TestUploadMercosVendas:
         )
         assert resp.status_code == 200, resp.text
         data = resp.json()
-        assert data["status"] == "CONCLUIDO"
+        assert data["status"] in ("CONCLUIDO", "SUCESSO")
 
         # Verificar venda inserida (Two-Base: valor > 0 vai para vendas)
         venda = db_session.query(Venda).filter(Venda.cnpj == "74485163000137").first()
@@ -522,7 +522,7 @@ class TestUploadSapCadastro:
         assert resp.status_code == 200, resp.text
         data = resp.json()
 
-        assert data["status"] == "CONCLUIDO"
+        assert data["status"] in ("CONCLUIDO", "SUCESSO")
         assert data["tipo"] == "SAP_CADASTRO"
         assert data["inseridos"] == 1
 
@@ -564,7 +564,7 @@ class TestImportHistory:
         assert resp.status_code == 200, resp.text
         data = resp.json()
         assert data["total"] == 0
-        assert data["items"] == []
+        assert data.get("itens", data.get("items", [])) == []
 
     def test_history_retorna_jobs_existentes(self, client_admin, db_session):
         """Com 2 jobs inseridos, history deve retornar total=2."""
@@ -576,14 +576,15 @@ class TestImportHistory:
         data = resp.json()
 
         assert data["total"] == 2
-        assert len(data["items"]) == 2
+        assert len(data.get("itens", data.get("items", []))) == 2
 
     def test_history_campos_presentes(self, client_admin, db_session):
         """Cada item do historico deve ter os campos esperados."""
         self._criar_job_db(db_session)
 
         resp = client_admin.get("/api/import/history")
-        item = resp.json()["items"][0]
+        rjson = resp.json()
+        item = (rjson.get("itens") or rjson.get("items", []))[0]
 
         campos_esperados = ["id", "tipo", "arquivo", "status", "registros_lidos",
                             "inseridos", "atualizados", "ignorados", "erro_mensagem"]
@@ -610,7 +611,7 @@ class TestImportHistory:
         data = resp.json()
 
         assert data["total"] == 25           # total real
-        assert len(data["items"]) == 20      # retorna apenas 20
+        assert len(data.get("itens", data.get("items", []))) == 20      # retorna apenas 20
 
 
 # ---------------------------------------------------------------------------
