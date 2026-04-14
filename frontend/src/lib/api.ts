@@ -706,11 +706,12 @@ export interface ImportResult {
 
 export interface ImportHistoryItem {
   id: number;
-  data_import: string;
-  arquivo: string;
+  data_import: string | null;
+  arquivo: string | null;
   registros_lidos: number;
   inseridos: number;
   atualizados: number;
+  ignorados: number;
   erros: number;
   status: 'SUCESSO' | 'SUCESSO_COM_ERROS' | 'FALHA';
 }

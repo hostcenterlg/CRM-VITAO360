@@ -356,10 +356,10 @@ function HistoryTable({ items, loading }: { items: ImportHistoryItem[]; loading:
               className="border-t border-gray-50 hover:bg-gray-50 transition-colors"
             >
               <td className="px-4 py-2.5 text-xs text-gray-600 whitespace-nowrap font-mono">
-                {formatDateBR(item.data_import)}
+                {item.data_import ? formatDateBR(item.data_import) : '—'}
               </td>
-              <td className="px-4 py-2.5 text-gray-800 max-w-[200px] truncate" title={item.arquivo}>
-                {item.arquivo}
+              <td className="px-4 py-2.5 text-gray-800 max-w-[200px] truncate" title={item.arquivo ?? undefined}>
+                {item.arquivo ?? '—'}
               </td>
               <td className="px-4 py-2.5 text-center text-gray-700 font-mono">
                 {item.registros_lidos.toLocaleString('pt-BR')}

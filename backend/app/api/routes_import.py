@@ -110,14 +110,47 @@ _TIPO_MERCOS_VENDAS = "MERCOS_VENDAS"
 _TIPO_MERCOS_CARTEIRA = "MERCOS_CARTEIRA"
 _TIPO_SAP_CADASTRO = "SAP_CADASTRO"
 
+# ---------------------------------------------------------------------------
+# Status mapping: interno (banco) -> frontend
+# ---------------------------------------------------------------------------
+
+def _mapear_status_frontend(status_interno: str, erros: int) -> str:
+    """
+    Converte status interno do banco para o vocabulario do frontend.
+
+    Banco:    CONCLUIDO | PROCESSANDO | PENDENTE | ERRO
+    Frontend: SUCESSO   | SUCESSO_COM_ERROS      | FALHA
+
+    Args:
+        status_interno: Status salvo no banco (ImportJob.status).
+        erros: Contagem de registros com erro no processamento.
+
+    Returns:
+        String no vocabulario frontend.
+    """
+    if status_interno in ("ERRO", "PENDENTE"):
+        return "FALHA"
+    if status_interno == "CONCLUIDO":
+        return "SUCESSO_COM_ERROS" if erros > 0 else "SUCESSO"
+    # PROCESSANDO ou qualquer outro valor desconhecido
+    return "FALHA"
+
 
 # ---------------------------------------------------------------------------
 # Schemas de resposta
 # ---------------------------------------------------------------------------
 
 class ImportJobResponse(BaseModel):
-    """Resposta do endpoint de upload — resultado do job de importacao."""
+    """
+    Resposta do endpoint de upload — resultado do job de importacao.
+
+    status: mapeado para o vocabulario do frontend:
+      CONCLUIDO sem erros -> SUCESSO
+      CONCLUIDO com erros -> SUCESSO_COM_ERROS
+      ERRO                -> FALHA
+    """
     job_id: int
+    # Status no vocabulario do frontend: SUCESSO | SUCESSO_COM_ERROS | FALHA
     status: str
     tipo: str
     arquivo: Optional[str]
@@ -126,6 +159,8 @@ class ImportJobResponse(BaseModel):
     atualizados: int
     ignorados: int
     erros: int
+    # Lista de mensagens de erro individuais (max 50 itens) para exibicao no frontend
+    detalhes_erros: list[str] = []
     tempo_ms: float
     erro_mensagem: Optional[str] = None
 
@@ -133,25 +168,38 @@ class ImportJobResponse(BaseModel):
 
 
 class ImportHistoryItem(BaseModel):
-    """Item de historico de importacao."""
+    """
+    Item de historico de importacao.
+
+    data_import: alias de created_at para o frontend.
+    status: mapeado para SUCESSO | SUCESSO_COM_ERROS | FALHA.
+    """
     id: int
     tipo: str
+    # arquivo: alias de arquivo_nome no ORM
     arquivo: Optional[str]
+    # data_import: timestamp criacao — alias para created_at
+    data_import: Optional[str]
+    # status no vocabulario do frontend
     status: str
     registros_lidos: int
     inseridos: int
     atualizados: int
     ignorados: int
+    erros: int
     erro_mensagem: Optional[str]
-    created_at: Optional[datetime]
 
     model_config = {"from_attributes": True}
 
 
 class ImportHistoryResponse(BaseModel):
-    """Resposta do endpoint de historico."""
+    """
+    Resposta do endpoint de historico.
+
+    itens: lista de jobs (campo 'itens' alinhado com o frontend).
+    """
     total: int
-    items: list[ImportHistoryItem]
+    itens: list[ImportHistoryItem]
 
 
 # ---------------------------------------------------------------------------
@@ -353,6 +401,7 @@ def _processar_mercos_vendas(
     db: Session,
     job: ImportJob,
     cnpjs_afetados: "set[str] | None" = None,
+    detalhes_erros: "list[str] | None" = None,
 ) -> tuple[int, int, int, int]:
     """
     Processa arquivo de vendas do Mercos.
@@ -468,7 +517,8 @@ def _processar_mercos_vendas(
         except Exception as exc:
             erros_count += 1
             # Nao interrompe o loop — registra o erro e continua
-            _ = exc  # usado apenas para nao suprimir silenciosamente em debug
+            if detalhes_erros is not None and len(detalhes_erros) < 50:
+                detalhes_erros.append(f"Linha {job.registros_lidos}: {exc}")
 
     return inseridos, atualizados, ignorados, erros_count
 
@@ -478,6 +528,7 @@ def _processar_mercos_carteira(
     db: Session,
     job: ImportJob,
     cnpjs_afetados: "set[str] | None" = None,
+    detalhes_erros: "list[str] | None" = None,
 ) -> tuple[int, int, int, int]:
     """
     Processa arquivo de carteira do Mercos.
@@ -589,8 +640,10 @@ def _processar_mercos_carteira(
             if cnpjs_afetados is not None:
                 cnpjs_afetados.add(cnpj)
 
-        except Exception:
+        except Exception as exc:
             erros_count += 1
+            if detalhes_erros is not None and len(detalhes_erros) < 50:
+                detalhes_erros.append(f"Linha {job.registros_lidos}: {exc}")
 
     return inseridos, atualizados, ignorados, erros_count
 
@@ -600,6 +653,7 @@ def _processar_sap_cadastro(
     db: Session,
     job: ImportJob,
     cnpjs_afetados: "set[str] | None" = None,
+    detalhes_erros: "list[str] | None" = None,
 ) -> tuple[int, int, int, int]:
     """
     Processa arquivo de cadastro de clientes do SAP.
@@ -705,8 +759,10 @@ def _processar_sap_cadastro(
             if cnpjs_afetados is not None:
                 cnpjs_afetados.add(cnpj)
 
-        except Exception:
+        except Exception as exc:
             erros_count += 1
+            if detalhes_erros is not None and len(detalhes_erros) < 50:
+                detalhes_erros.append(f"Linha {job.registros_lidos}: {exc}")
 
     return inseridos, atualizados, ignorados, erros_count
 
@@ -841,6 +897,10 @@ async def upload_xlsx(
 
     erros_count = 0
     tipo_detectado = "DESCONHECIDO"
+    detalhes_erros: list[str] = []
+    inseridos = 0
+    atualizados = 0
+    ignorados = 0
 
     try:
         # --- Abrir planilha com openpyxl ---
@@ -872,17 +932,19 @@ async def upload_xlsx(
         # --- Processar de acordo com o tipo ---
         # cnpjs_afetados e populado pelos processadores para evitar re-iteracao do xlsx
         cnpjs_afetados: set[str] = set()
+        # detalhes_erros ja inicializado antes do try (evita UnboundLocalError no except)
+
         if tipo_detectado == _TIPO_MERCOS_VENDAS:
             inseridos, atualizados, ignorados, erros_count = _processar_mercos_vendas(
-                ws, db, job, cnpjs_afetados
+                ws, db, job, cnpjs_afetados, detalhes_erros
             )
         elif tipo_detectado == _TIPO_MERCOS_CARTEIRA:
             inseridos, atualizados, ignorados, erros_count = _processar_mercos_carteira(
-                ws, db, job, cnpjs_afetados
+                ws, db, job, cnpjs_afetados, detalhes_erros
             )
         else:  # _TIPO_SAP_CADASTRO
             inseridos, atualizados, ignorados, erros_count = _processar_sap_cadastro(
-                ws, db, job, cnpjs_afetados
+                ws, db, job, cnpjs_afetados, detalhes_erros
             )
 
         # --- Recalcular inteligencia para clientes afetados ---
@@ -934,7 +996,7 @@ async def upload_xlsx(
         t_fim = time.perf_counter()
         return ImportJobResponse(
             job_id=job_erro.id,
-            status="ERRO",
+            status="FALHA",
             tipo=tipo_detectado,
             arquivo=nome_arquivo,
             registros_lidos=0,
@@ -942,6 +1004,7 @@ async def upload_xlsx(
             atualizados=0,
             ignorados=0,
             erros=1,
+            detalhes_erros=[str(exc)[:200]],
             tempo_ms=round((t_fim - t_inicio) * 1000, 1),
             erro_mensagem=str(exc)[:500],
         )
@@ -949,9 +1012,11 @@ async def upload_xlsx(
     db.refresh(job)
     t_fim = time.perf_counter()
 
+    status_frontend = _mapear_status_frontend(job.status, erros_count)
+
     return ImportJobResponse(
         job_id=job.id,
-        status=job.status,
+        status=status_frontend,
         tipo=job.tipo,
         arquivo=job.arquivo_nome,
         registros_lidos=job.registros_lidos,
@@ -959,6 +1024,7 @@ async def upload_xlsx(
         atualizados=job.registros_atualizados,
         ignorados=job.registros_ignorados,
         erros=erros_count,
+        detalhes_erros=detalhes_erros,
         tempo_ms=round((t_fim - t_inicio) * 1000, 1),
         erro_mensagem=job.erro_mensagem,
     )
@@ -996,20 +1062,24 @@ def listar_historico_import(
 
     total = db.query(ImportJob).count()
 
-    items = [
+    # erros no historico: usamos registros_ignorados como proxy pois
+    # o campo erros nao e persistido no banco (so retornado na resposta do upload).
+    # status e mapeado do vocabulario interno para o vocabulario do frontend.
+    itens = [
         ImportHistoryItem(
             id=j.id,
             tipo=j.tipo,
             arquivo=j.arquivo_nome,
-            status=j.status,
+            data_import=j.created_at.isoformat() if j.created_at else None,
+            status=_mapear_status_frontend(j.status, 0),
             registros_lidos=j.registros_lidos or 0,
             inseridos=j.registros_inseridos or 0,
             atualizados=j.registros_atualizados or 0,
             ignorados=j.registros_ignorados or 0,
+            erros=0,
             erro_mensagem=j.erro_mensagem,
-            created_at=j.created_at,
         )
         for j in jobs
     ]
 
-    return ImportHistoryResponse(total=total, items=items)
+    return ImportHistoryResponse(total=total, itens=itens)
