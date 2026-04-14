@@ -1392,3 +1392,67 @@ export async function fetchChurnRisk(cnpj: string): Promise<ChurnRiskResponse> {
 export async function fetchSugestaoProduto(cnpj: string): Promise<SugestaoProdutoResponse> {
   return fetchJson<SugestaoProdutoResponse>(`/api/ia/sugestao-produto/${encodeURIComponent(cnpj)}`);
 }
+
+// ---------------------------------------------------------------------------
+// Notificacoes
+// ---------------------------------------------------------------------------
+
+export interface Alerta {
+  tipo: 'CHURN' | 'FOLLOWUP_VENCIDO' | 'SINALEIRO_VERMELHO' | 'META_RISCO';
+  prioridade: 'ALTA' | 'MEDIA' | 'BAIXA';
+  cnpj: string;
+  nome: string;
+  mensagem: string;
+  acao: string;
+}
+
+export interface NotificacoesResponse {
+  total: number;
+  alertas: Alerta[];
+}
+
+export async function fetchNotificacoes(): Promise<NotificacoesResponse> {
+  return fetchJson<NotificacoesResponse>('/api/notificacoes');
+}
+
+// ---------------------------------------------------------------------------
+// Pipeline admin
+// ---------------------------------------------------------------------------
+
+export interface PipelineStatus {
+  ultimo_run: string | null;
+  duracao_ms: number | null;
+  resultado: string | null;
+  proximo_agendado: string | null;
+}
+
+export interface PipelineEtapa {
+  nome: string;
+  status: string;
+  duracao_ms: number;
+  detalhes?: string;
+}
+
+export interface PipelineRunResult {
+  status: string;
+  etapas: PipelineEtapa[];
+  duracao_total_ms: number;
+}
+
+export interface PipelineLogEntry {
+  timestamp: string;
+  nivel: string;
+  mensagem: string;
+}
+
+export async function fetchPipelineStatus(): Promise<PipelineStatus> {
+  return fetchJson<PipelineStatus>('/api/pipeline/status');
+}
+
+export async function runPipeline(): Promise<PipelineRunResult> {
+  return mutateJson<PipelineRunResult>('/api/pipeline/run', 'POST');
+}
+
+export async function fetchPipelineLogs(): Promise<PipelineLogEntry[]> {
+  return fetchJson<PipelineLogEntry[]>('/api/pipeline/logs');
+}
