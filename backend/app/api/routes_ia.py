@@ -1,16 +1,19 @@
 """
 CRM VITAO360 — Rotas /api/ia
 
-Endpoints de Inteligência Artificial: geração de briefings, mensagens WhatsApp
-e resumos semanais usando o modelo Claude (Anthropic).
+Endpoints de Inteligência Artificial: briefing expandido, mensagens WhatsApp,
+resumo semanal, score de churn e sugestão de produtos cross-sell.
 
 Endpoints:
-  GET  /api/ia/briefing/{cnpj}          — briefing pré-ligação para um cliente
-  POST /api/ia/mensagem/{cnpj}          — rascunho de mensagem WhatsApp
-  GET  /api/ia/resumo-semanal/{consultor} — resumo executivo semanal do consultor
+  GET  /api/ia/briefing/{cnpj}             — briefing pré-ligação expandido
+  GET  /api/ia/mensagem-wa/{cnpj}          — mensagem WA automática por situação
+  POST /api/ia/mensagem/{cnpj}             — rascunho de mensagem WhatsApp (objetivo livre)
+  GET  /api/ia/resumo-semanal/{consultor}  — resumo executivo semanal do consultor
+  GET  /api/ia/churn-risk/{cnpj}           — score de risco de churn
+  GET  /api/ia/sugestao-produto/{cnpj}     — sugestão de cross-sell/up-sell
 
 Comportamento sem ANTHROPIC_API_KEY configurada:
-  - Retorna HTTP 200 com campo 'ia_configurada: false' e mensagem explicativa.
+  - Retorna HTTP 200 com campo 'ia_configurada: false' e conteúdo via template local.
   - O CRM continua funcional — a IA é um recurso adicional, não um bloqueador.
 
 Autenticação: todos os endpoints exigem JWT válido (Bearer token).
@@ -44,7 +47,7 @@ router = APIRouter(prefix="/api/ia", tags=["Inteligência Artificial"])
 # ---------------------------------------------------------------------------
 
 class MensagemWhatsAppInput(BaseModel):
-    """Payload para geração de mensagem WhatsApp."""
+    """Payload para geração de mensagem WhatsApp com objetivo livre."""
 
     objetivo: str = Field(
         ...,
@@ -63,7 +66,7 @@ class MensagemWhatsAppInput(BaseModel):
 # ---------------------------------------------------------------------------
 
 class BriefingResponse(BaseModel):
-    """Resposta do endpoint de briefing pré-ligação."""
+    """Resposta do endpoint de briefing pré-ligação expandido."""
 
     cnpj: str
     nome_cliente: str
@@ -74,7 +77,7 @@ class BriefingResponse(BaseModel):
 
 
 class MensagemWhatsAppResponse(BaseModel):
-    """Resposta do endpoint de geração de mensagem WhatsApp."""
+    """Resposta do endpoint de geração de mensagem WhatsApp (objetivo livre)."""
 
     cnpj: str
     nome_cliente: str
@@ -83,14 +86,29 @@ class MensagemWhatsAppResponse(BaseModel):
     ia_configurada: bool
 
 
+class MensagemWAAutomaticaResponse(BaseModel):
+    """Resposta do endpoint de mensagem WA automática por situação."""
+
+    cnpj: str
+    nome_cliente: str
+    mensagem: str
+    tom: str
+    contexto: str
+    tokens_usados: int
+    ia_configurada: bool
+
+
 class MetricasSemanaisResponse(BaseModel):
     """Métricas brutas que alimentaram o resumo semanal."""
 
     total_carteira: int
+    clientes_contactados_semana: int
     vendas_semana_qtd: int
     vendas_semana_volume: float
     clientes_em_risco: int
     followups_vencidos: int
+    pipeline: dict
+    top3_proxima_semana: list
 
 
 class ResumoSemanalResponse(BaseModel):
@@ -104,6 +122,40 @@ class ResumoSemanalResponse(BaseModel):
     ia_configurada: bool
 
 
+class ChurnRiskResponse(BaseModel):
+    """Resposta do endpoint de score de risco de churn."""
+
+    cnpj: str
+    nome_cliente: str
+    risco_pct: float
+    nivel: str
+    fatores: list
+    recomendacao: str
+    ia_configurada: bool
+
+
+class ProdutoSugeridoItem(BaseModel):
+    """Item individual da lista de produtos sugeridos."""
+
+    id: int
+    codigo: str
+    nome: str
+    categoria: str
+    motivo: str
+    preco_tabela: float
+
+
+class SugestaoProdutoResponse(BaseModel):
+    """Resposta do endpoint de sugestão de produtos cross-sell/up-sell."""
+
+    cnpj: str
+    nome_cliente: str
+    produtos_sugeridos: list
+    estrategia: str
+    categorias_frequentes: list
+    ia_configurada: bool
+
+
 # ---------------------------------------------------------------------------
 # Endpoints
 # ---------------------------------------------------------------------------
@@ -111,11 +163,11 @@ class ResumoSemanalResponse(BaseModel):
 @router.get(
     "/briefing/{cnpj}",
     response_model=BriefingResponse,
-    summary="Briefing pré-ligação para um cliente",
+    summary="Briefing pré-ligação expandido para um cliente",
     description=(
-        "Gera um briefing conciso (máximo 150 palavras) com situação comercial do cliente, "
-        "histórico recente e ação recomendada para a ligação. "
-        "Se a chave ANTHROPIC_API_KEY não estiver configurada, retorna mensagem explicativa "
+        "Gera um briefing completo com histórico de compras (últimas 5), último contato, "
+        "score/prioridade/temperatura, sugestão de abordagem e script de venda sugerido. "
+        "Se ANTHROPIC_API_KEY não estiver configurada, retorna briefing via template local "
         "com HTTP 200 (graceful degradation)."
     ),
 )
@@ -125,7 +177,7 @@ async def get_briefing(
     db: Session = Depends(get_db),
 ) -> BriefingResponse:
     """
-    Gera briefing pré-ligação para o cliente identificado pelo CNPJ.
+    Gera briefing pré-ligação expandido para o cliente identificado pelo CNPJ.
 
     O CNPJ pode ser enviado com ou sem formatação (pontos, barras, traços);
     é normalizado automaticamente para 14 dígitos.
@@ -158,11 +210,63 @@ async def get_briefing(
     return BriefingResponse(**resultado)
 
 
+@router.get(
+    "/mensagem-wa/{cnpj}",
+    response_model=MensagemWAAutomaticaResponse,
+    summary="Mensagem WhatsApp automática por situação do cliente",
+    description=(
+        "Gera mensagem WhatsApp personalizada baseada automaticamente na situação atual "
+        "do cliente (ATIVO, INAT.REC, INAT.ANT, PROSPECT, EM_RISCO). "
+        "Sem necessidade de informar objetivo — o sistema determina o tom adequado. "
+        "Se ANTHROPIC_API_KEY não estiver configurada, usa template local por situação."
+    ),
+)
+async def get_mensagem_wa_automatica(
+    cnpj: str,
+    user: Usuario = Depends(require_consultor_or_admin),
+    db: Session = Depends(get_db),
+) -> MensagemWAAutomaticaResponse:
+    """
+    Gera mensagem WhatsApp automática contextual baseada na situação do cliente.
+
+    O CNPJ pode ser enviado formatado; é normalizado automaticamente.
+
+    Retorna 404 se o CNPJ não existir na base de clientes.
+
+    Requer autenticação JWT.
+    """
+    logger.info(
+        "Requisição de mensagem WA automática | cnpj=%s usuario=%s",
+        cnpj,
+        getattr(user, "email", user.id),
+    )
+
+    try:
+        resultado: dict[str, Any] = await ia_service.gerar_mensagem_wa_automatica(
+            cnpj=cnpj, db=db
+        )
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=str(exc),
+        ) from exc
+    except Exception as exc:
+        logger.exception(
+            "Erro inesperado ao gerar mensagem WA | cnpj=%s: %s", cnpj, exc
+        )
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Erro interno ao gerar mensagem — contate o administrador.",
+        ) from exc
+
+    return MensagemWAAutomaticaResponse(**resultado)
+
+
 @router.post(
     "/mensagem/{cnpj}",
     response_model=MensagemWhatsAppResponse,
     status_code=status.HTTP_200_OK,
-    summary="Rascunho de mensagem WhatsApp para um cliente",
+    summary="Rascunho de mensagem WhatsApp com objetivo livre",
     description=(
         "Gera um rascunho de mensagem WhatsApp personalizada para o objetivo informado. "
         "O consultor pode editar antes de enviar. "
@@ -219,8 +323,8 @@ async def post_mensagem_whatsapp(
     summary="Resumo executivo semanal de um consultor",
     description=(
         "Agrega dados da semana corrente (últimos 7 dias) para o consultor informado: "
-        "vendas realizadas, clientes em risco (VERMELHO/LARANJA), follow-ups vencidos "
-        "e top oportunidades por score. Gera texto executivo via Claude. "
+        "clientes contactados (log_interacoes), vendas realizadas, pipeline por estágio, "
+        "top 3 clientes para focar, clientes em risco (VERMELHO/LARANJA) e follow-ups vencidos. "
         "Consultores válidos: MANU, LARISSA, DAIANE, JULIO."
     ),
 )
@@ -269,3 +373,107 @@ async def get_resumo_semanal(
         metricas=MetricasSemanaisResponse(**resultado["metricas"]),
         ia_configurada=resultado["ia_configurada"],
     )
+
+
+@router.get(
+    "/churn-risk/{cnpj}",
+    response_model=ChurnRiskResponse,
+    summary="Score de risco de churn para um cliente",
+    description=(
+        "Calcula o percentual de risco de churn baseado em: dias sem compra vs ciclo médio, "
+        "sinaleiro atual, temperatura, situação comercial e tendência de ticket. "
+        "Retorna nível BAIXO/MEDIO/ALTO/CRITICO e lista de fatores de risco identificados. "
+        "Se ANTHROPIC_API_KEY não estiver configurada, gera recomendação via template local."
+    ),
+)
+async def get_churn_risk(
+    cnpj: str,
+    user: Usuario = Depends(require_consultor_or_admin),
+    db: Session = Depends(get_db),
+) -> ChurnRiskResponse:
+    """
+    Calcula o score de risco de churn para o cliente identificado pelo CNPJ.
+
+    O CNPJ pode ser enviado formatado; é normalizado automaticamente.
+
+    Retorna 404 se o CNPJ não existir na base de clientes.
+
+    Requer autenticação JWT.
+    """
+    logger.info(
+        "Requisição de churn risk | cnpj=%s usuario=%s",
+        cnpj,
+        getattr(user, "email", user.id),
+    )
+
+    try:
+        resultado: dict[str, Any] = await ia_service.calcular_churn_risk(
+            cnpj=cnpj, db=db
+        )
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=str(exc),
+        ) from exc
+    except Exception as exc:
+        logger.exception(
+            "Erro inesperado ao calcular churn risk | cnpj=%s: %s", cnpj, exc
+        )
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Erro interno ao calcular risco de churn — contate o administrador.",
+        ) from exc
+
+    return ChurnRiskResponse(**resultado)
+
+
+@router.get(
+    "/sugestao-produto/{cnpj}",
+    response_model=SugestaoProdutoResponse,
+    summary="Sugestão de produtos cross-sell/up-sell para um cliente",
+    description=(
+        "Analisa o histórico de compras do cliente (venda_itens + produtos), "
+        "identifica as categorias mais frequentes e sugere produtos complementares "
+        "que o cliente ainda não comprou. "
+        "Se ANTHROPIC_API_KEY não estiver configurada, gera estratégia via template local."
+    ),
+)
+async def get_sugestao_produto(
+    cnpj: str,
+    user: Usuario = Depends(require_consultor_or_admin),
+    db: Session = Depends(get_db),
+) -> SugestaoProdutoResponse:
+    """
+    Gera sugestão de produtos para cross-sell/up-sell baseado no histórico de compras.
+
+    O CNPJ pode ser enviado formatado; é normalizado automaticamente.
+
+    Retorna 404 se o CNPJ não existir na base de clientes.
+
+    Requer autenticação JWT.
+    """
+    logger.info(
+        "Requisição de sugestão de produto | cnpj=%s usuario=%s",
+        cnpj,
+        getattr(user, "email", user.id),
+    )
+
+    try:
+        resultado: dict[str, Any] = await ia_service.sugerir_produtos(
+            cnpj=cnpj, db=db
+        )
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=str(exc),
+        ) from exc
+    except Exception as exc:
+        logger.exception(
+            "Erro inesperado ao gerar sugestão de produto | cnpj=%s: %s", cnpj, exc
+        )
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Erro interno ao gerar sugestão — contate o administrador.",
+        ) from exc
+
+    return SugestaoProdutoResponse(**resultado)
