@@ -1578,3 +1578,4 @@ export async function fetchAlertaOportunidade(): Promise<AlertaOportunidadeRespo
 export async function fetchIADashboard(): Promise<IADashboardResponse> {
   return fetchJson<IADashboardResponse>('/api/ia/dashboard');
 }
+// redeploy trigger 1776136763
