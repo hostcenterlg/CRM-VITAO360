@@ -91,9 +91,20 @@ function ModalNovaRNC({ onClose, onSalvar }: ModalNovaRNCProps) {
 
   const areaAuto = TIPOS_PROBLEMA.find(t => t.value === form.tipo_problema)?.area ?? '';
 
+  // Verifica se o form e valido para habilitar o botao (sem setar errors visiveis)
+  const cnpjDigits = form.cliente_cnpj.replace(/\D/g, '');
+  const isFormValid =
+    cnpjDigits.length === 14 &&
+    !!form.tipo_problema &&
+    form.descricao.trim().length >= 10;
+
   function validate(): boolean {
     const e: Partial<Record<keyof NovaRNCForm, string>> = {};
-    if (!form.cliente_cnpj.trim()) e.cliente_cnpj = 'CNPJ obrigatorio';
+    if (!form.cliente_cnpj.trim()) {
+      e.cliente_cnpj = 'CNPJ obrigatorio';
+    } else if (cnpjDigits.length !== 14) {
+      e.cliente_cnpj = 'CNPJ deve ter 14 digitos';
+    }
     if (!form.tipo_problema) e.tipo_problema = 'Selecione o tipo de problema';
     if (form.descricao.trim().length < 10) e.descricao = 'Minimo 10 caracteres';
     setErrors(e);
@@ -240,11 +251,12 @@ function ModalNovaRNC({ onClose, onSalvar }: ModalNovaRNCProps) {
             </button>
             <button
               type="submit"
-              disabled={loading}
-              className="px-5 py-2 text-xs font-semibold text-white rounded transition-colors disabled:opacity-60"
-              style={{ backgroundColor: loading ? '#9CA3AF' : '#00B050' }}
+              disabled={loading || !isFormValid}
+              className="px-5 py-2 text-xs font-semibold text-white rounded transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+              style={{ backgroundColor: loading || !isFormValid ? '#9CA3AF' : '#00B050' }}
+              title={!isFormValid ? 'Preencha todos os campos obrigatorios corretamente' : undefined}
             >
-              {loading ? 'Salvando...' : 'Abrir RNC'}
+              {loading ? 'Salvando...' : 'Criar RNC'}
             </button>
           </div>
         </form>

@@ -7,6 +7,75 @@ import { downloadRelatorio } from '@/lib/api';
 // Relatorios — hub de download de relatórios xlsx por tipo e filtros
 // ---------------------------------------------------------------------------
 
+// ---------------------------------------------------------------------------
+// Toast simples
+// ---------------------------------------------------------------------------
+
+interface ToastMsg {
+  id: number;
+  tipo: 'sucesso' | 'erro';
+  texto: string;
+}
+
+function ToastContainer({ toasts, onRemove }: { toasts: ToastMsg[]; onRemove: (id: number) => void }) {
+  return (
+    <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-2 pointer-events-none">
+      {toasts.map((t) => (
+        <div
+          key={t.id}
+          role="status"
+          aria-live="polite"
+          className={`pointer-events-auto flex items-center gap-2 px-4 py-3 rounded-lg shadow-lg text-xs font-medium animate-fade-in ${
+            t.tipo === 'sucesso'
+              ? 'bg-green-50 border border-green-300 text-green-800'
+              : 'bg-red-50 border border-red-300 text-red-800'
+          }`}
+        >
+          {t.tipo === 'sucesso' ? (
+            <svg className="w-4 h-4 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
+          ) : (
+            <svg className="w-4 h-4 text-red-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          )}
+          <span className="flex-1">{t.texto}</span>
+          <button
+            type="button"
+            onClick={() => onRemove(t.id)}
+            className="ml-2 text-current opacity-60 hover:opacity-100 focus:outline-none"
+            aria-label="Fechar notificacao"
+          >
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function useToast() {
+  const [toasts, setToasts] = useState<ToastMsg[]>([]);
+  const nextId = useCallback(() => Date.now(), []);
+
+  const addToast = useCallback((tipo: ToastMsg['tipo'], texto: string) => {
+    const id = nextId();
+    setToasts((prev) => [...prev, { id, tipo, texto }]);
+    setTimeout(() => {
+      setToasts((prev) => prev.filter((t) => t.id !== id));
+    }, 4000);
+  }, [nextId]);
+
+  const removeToast = useCallback((id: number) => {
+    setToasts((prev) => prev.filter((t) => t.id !== id));
+  }, []);
+
+  return { toasts, addToast, removeToast };
+}
+
 const CONSULTORES = ['LARISSA', 'MANU', 'DAIANE', 'JULIO'];
 
 const MESES = [
@@ -283,6 +352,8 @@ export default function RelatoriosPage() {
   const [loadingMap, setLoadingMap] = useState<Record<string, boolean>>({});
   const [errorMap, setErrorMap] = useState<Record<string, string | null>>({});
 
+  const { toasts, addToast, removeToast } = useToast();
+
   // Filtros Vendas
   const [filtrosVendas, setFiltrosVendas] = useState<FiltrosVendas>({
     data_inicio: primeiroDiaMes(),
@@ -320,12 +391,15 @@ export default function RelatoriosPage() {
     setError(tipo, null);
     try {
       await triggerDownload(tipo, params);
+      addToast('sucesso', 'Relatorio gerado com sucesso');
     } catch (err: unknown) {
-      setError(tipo, err instanceof Error ? err.message : 'Erro ao baixar relatorio');
+      const msg = err instanceof Error ? err.message : 'Erro ao baixar relatorio';
+      setError(tipo, msg);
+      addToast('erro', msg);
     } finally {
       setLoading(tipo, false);
     }
-  }, []);
+  }, [addToast]);
 
   const consultorOptions = CONSULTORES.map((c) => ({ value: c, label: c }));
   const mesOptions = MESES;
@@ -504,6 +578,9 @@ export default function RelatoriosPage() {
       <p className="text-[10px] text-gray-400">
         Os arquivos sao gerados em tempo real com os dados mais recentes do sistema. Formato: .xlsx compativel com Microsoft Excel.
       </p>
+
+      {/* Toasts */}
+      <ToastContainer toasts={toasts} onRemove={removeToast} />
     </div>
   );
 }

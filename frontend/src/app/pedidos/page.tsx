@@ -114,18 +114,39 @@ interface ModalPedidoProps {
 function ModalPedido({ pedido, onClose, onTransicionar, isAdmin }: ModalPedidoProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [formDirty, setFormDirty] = useState(false);
+  const [confirmDescarte, setConfirmDescarte] = useState(false);
+
+  function tentarFechar() {
+    if (formDirty) {
+      setConfirmDescarte(true);
+    } else {
+      onClose();
+    }
+  }
 
   useEffect(() => {
-    function onKey(e: KeyboardEvent) { if (e.key === 'Escape') onClose(); }
+    function onKey(e: KeyboardEvent) {
+      if (e.key === 'Escape') {
+        if (confirmDescarte) {
+          setConfirmDescarte(false);
+        } else {
+          tentarFechar();
+        }
+      }
+    }
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [onClose]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [formDirty, confirmDescarte]);
 
   async function handleAcao(novoStatus: string) {
+    setFormDirty(true);
     setLoading(true);
     setError(null);
     try {
       await onTransicionar(pedido.id, novoStatus);
+      setFormDirty(false);
       onClose();
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Erro ao atualizar status');
@@ -142,7 +163,34 @@ function ModalPedido({ pedido, onClose, onTransicionar, isAdmin }: ModalPedidoPr
       aria-modal="true"
       aria-labelledby="modal-pedido-titulo"
     >
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-lg mx-4">
+      <div className="relative bg-white rounded-lg shadow-xl w-full max-w-lg mx-4">
+        {/* Mini-confirmacao de descarte */}
+        {confirmDescarte && (
+          <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/30 rounded-lg">
+            <div className="bg-white rounded-lg shadow-xl mx-6 p-5 w-full max-w-xs text-center">
+              <p className="text-sm font-semibold text-gray-900 mb-1">Descartar alteracoes?</p>
+              <p className="text-xs text-gray-500 mb-4">As mudancas nao salvas serao perdidas.</p>
+              <div className="flex gap-3 justify-center">
+                <button
+                  type="button"
+                  onClick={() => setConfirmDescarte(false)}
+                  className="px-4 py-2 text-xs font-medium text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  Continuar editando
+                </button>
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="px-4 py-2 text-xs font-semibold text-white rounded-lg transition-colors"
+                  style={{ backgroundColor: '#FF0000' }}
+                >
+                  Descartar
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
           <div>
@@ -153,7 +201,7 @@ function ModalPedido({ pedido, onClose, onTransicionar, isAdmin }: ModalPedidoPr
           </div>
           <button
             type="button"
-            onClick={onClose}
+            onClick={tentarFechar}
             className="text-gray-400 hover:text-gray-600 p-1 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
             aria-label="Fechar modal"
           >

@@ -309,15 +309,25 @@ interface NovaTarefaModalProps {
   onAdd: (t: Tarefa) => void;
 }
 
+const NOVA_TAREFA_FORM_PADRAO: NovaTarefaForm = {
+  descricao: '',
+  cliente: '',
+  due_date: '',
+  prioridade: 'P3',
+};
+
 function NovaTarefaModal({ open, onClose, onAdd }: NovaTarefaModalProps) {
   const { user } = useAuth();
-  const [form, setForm] = useState<NovaTarefaForm>({
-    descricao: '',
-    cliente: '',
-    due_date: '',
-    prioridade: 'P3',
-  });
+  const [form, setForm] = useState<NovaTarefaForm>(NOVA_TAREFA_FORM_PADRAO);
   const [submitting, setSubmitting] = useState(false);
+
+  // Resetar form sempre que o modal e aberto
+  useEffect(() => {
+    if (open) {
+      setForm(NOVA_TAREFA_FORM_PADRAO);
+      setSubmitting(false);
+    }
+  }, [open]);
 
   function handleChange(field: keyof NovaTarefaForm, value: string) {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -345,7 +355,7 @@ function NovaTarefaModal({ open, onClose, onAdd }: NovaTarefaModalProps) {
     };
 
     onAdd(newTask);
-    setForm({ descricao: '', cliente: '', due_date: '', prioridade: 'P3' });
+    setForm(NOVA_TAREFA_FORM_PADRAO);
     setSubmitting(false);
     onClose();
   }

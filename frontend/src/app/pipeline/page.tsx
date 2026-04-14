@@ -157,18 +157,24 @@ function ClienteDetailPanel({ cnpj, onClose }: ClienteDetailPanelProps) {
   const { user } = useAuth();
   const isExterno = user?.role === 'consultor_externo';
 
-  useEffect(() => {
-    if (!cnpj) {
-      setCliente(null);
-      return;
-    }
+  const doFetch = useCallback((targetCnpj: string) => {
     setLoading(true);
     setError(null);
-    fetchCliente(cnpj)
+    setCliente(null);
+    fetchCliente(targetCnpj)
       .then(setCliente)
       .catch((e: Error) => setError(e.message))
       .finally(() => setLoading(false));
-  }, [cnpj]);
+  }, []);
+
+  useEffect(() => {
+    if (!cnpj) {
+      setCliente(null);
+      setError(null);
+      return;
+    }
+    doFetch(cnpj);
+  }, [cnpj, doFetch]);
 
   // Close on Escape
   useEffect(() => {
@@ -211,8 +217,10 @@ function ClienteDetailPanel({ cnpj, onClose }: ClienteDetailPanelProps) {
                 </h2>
                 <p className="text-xs text-gray-400 mt-0.5">{formatCnpj(cliente.cnpj)}</p>
               </>
+            ) : error ? (
+              <h2 className="text-sm font-bold text-red-700">Erro ao carregar</h2>
             ) : (
-              <h2 className="text-sm font-bold text-gray-900">Carregando...</h2>
+              <div className="h-5 bg-gray-100 animate-pulse rounded w-40" />
             )}
           </div>
           <button
@@ -238,11 +246,24 @@ function ClienteDetailPanel({ cnpj, onClose }: ClienteDetailPanelProps) {
           )}
 
           {error && (
-            <div className="flex items-start gap-2 p-3 bg-red-50 border border-red-200 rounded-lg">
-              <svg className="w-4 h-4 text-red-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-              </svg>
-              <p className="text-xs text-red-700">{error}</p>
+            <div className="flex flex-col gap-2 p-3 bg-red-50 border border-red-200 rounded-lg" role="alert">
+              <div className="flex items-start gap-2">
+                <svg className="w-4 h-4 text-red-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+                <p className="text-xs text-red-700">
+                  <span className="font-semibold">Erro ao carregar detalhes:</span> {error}
+                </p>
+              </div>
+              {cnpj && (
+                <button
+                  type="button"
+                  onClick={() => doFetch(cnpj)}
+                  className="self-start px-3 py-1.5 text-[11px] font-semibold text-red-700 border border-red-300 rounded-lg hover:bg-red-100 transition-colors"
+                >
+                  Tentar novamente
+                </button>
+              )}
             </div>
           )}
 
