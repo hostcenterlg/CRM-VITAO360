@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import Skeleton from '@/components/Skeleton';
 import {
   AlertaOportunidadeResponse,
   BriefingIAResponse,
@@ -42,22 +43,11 @@ const CHURN_NIVEL_COLORS: Record<string, string> = {
 };
 
 // ---------------------------------------------------------------------------
-// Skeleton shimmer
+// Skeleton shimmer — usa componente reutilizavel de @/components/Skeleton
 // ---------------------------------------------------------------------------
 
-function SkeletonLine({ w = 'w-full' }: { w?: string }) {
-  return <div className={`h-3 bg-gray-100 animate-pulse rounded ${w}`} />;
-}
-
 function CardSkeleton() {
-  return (
-    <div className="space-y-2 py-2">
-      <SkeletonLine w="w-3/4" />
-      <SkeletonLine w="w-full" />
-      <SkeletonLine w="w-5/6" />
-      <SkeletonLine w="w-2/3" />
-    </div>
-  );
+  return <Skeleton.Card className="py-2 border-0 shadow-none p-0" />;
 }
 
 // ---------------------------------------------------------------------------

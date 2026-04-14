@@ -544,6 +544,8 @@ interface ChatPanelProps {
   lastRefreshed: Date | null;
   onRefresh: () => void;
   refreshingMensagens: boolean;
+  pollingAtivo: boolean;
+  fetchFalhou: boolean;
 }
 
 function ChatPanel({
@@ -559,6 +561,8 @@ function ChatPanel({
   lastRefreshed,
   onRefresh,
   refreshingMensagens,
+  pollingAtivo,
+  fetchFalhou,
 }: ChatPanelProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -633,6 +637,23 @@ function ChatPanel({
             {cliente.temperatura && (
               <TempBadge temperatura={cliente.temperatura} size="xs" />
             )}
+            {/* Connection status badge */}
+            {fetchFalhou ? (
+              <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-red-50 border border-red-200">
+                <span className="w-1.5 h-1.5 rounded-full bg-red-500 flex-shrink-0" />
+                <span className="text-[9px] font-medium text-red-600">Offline</span>
+              </span>
+            ) : refreshingMensagens ? (
+              <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-yellow-50 border border-yellow-200">
+                <span className="w-1.5 h-1.5 rounded-full bg-yellow-400 animate-pulse flex-shrink-0" />
+                <span className="text-[9px] font-medium text-yellow-700">Atualizando...</span>
+              </span>
+            ) : pollingAtivo ? (
+              <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-green-50 border border-green-200">
+                <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse flex-shrink-0" />
+                <span className="text-[9px] font-medium text-green-700">Ao vivo</span>
+              </span>
+            ) : null}
           </div>
         </div>
 
@@ -1054,6 +1075,7 @@ export default function InboxPage() {
   const [mensagens, setMensagens] = useState<Mensagem[]>([]);
   const [loadingMensagens, setLoadingMensagens] = useState(false);
   const [refreshingMensagens, setRefreshingMensagens] = useState(false);
+  const [mensagensFetchError, setMensagensFetchError] = useState(false);
 
   // Latest atendimento per client (for preview in list)
   const [atendimentoMap, setAtendimentoMap] = useState<Record<string, Atendimento | undefined>>({});
@@ -1207,8 +1229,10 @@ export default function InboxPage() {
 
       setMensagens(msgs);
       setLastRefreshed(new Date());
+      setMensagensFetchError(false);
     } catch {
       // show empty state with fallback messaging — do not throw
+      setMensagensFetchError(true);
     } finally {
       if (!silent) setLoadingMensagens(false);
       else setRefreshingMensagens(false);
@@ -1226,6 +1250,7 @@ export default function InboxPage() {
     setScore(null);
     setInputTexto('');
     setLastRefreshed(null);
+    setMensagensFetchError(false);
 
     await loadMensagens(c, false);
 
@@ -1372,6 +1397,8 @@ export default function InboxPage() {
           lastRefreshed={lastRefreshed}
           onRefresh={handleRefreshMensagens}
           refreshingMensagens={refreshingMensagens}
+          pollingAtivo={selectedCliente !== null}
+          fetchFalhou={mensagensFetchError}
         />
       </div>
 

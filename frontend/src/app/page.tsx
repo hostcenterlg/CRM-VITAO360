@@ -64,15 +64,15 @@ import StatusBadge from '@/components/StatusBadge';
 // ---------------------------------------------------------------------------
 
 const TABS = [
-  { id: 'resumo',       label: 'RESUMO' },
-  { id: 'operacional',  label: 'OPERACIONAL' },
-  { id: 'funil',        label: 'FUNIL + CANAIS' },
-  { id: 'performance',  label: 'PERFORMANCE' },
-  { id: 'saude',        label: 'SAUDE DA BASE' },
-  { id: 'redes',        label: 'REDES + SINALEIRO' },
-  { id: 'motivos',      label: 'MOTIVOS + RNC' },
-  { id: 'produtividade', label: 'PRODUTIVIDADE' },
-  { id: 'indicadores',  label: 'INDICADORES' },
+  { id: 'resumo',       label: 'RESUMO',           labelMobile: 'RES' },
+  { id: 'operacional',  label: 'OPERACIONAL',       labelMobile: 'OPR' },
+  { id: 'funil',        label: 'FUNIL + CANAIS',    labelMobile: 'FUN' },
+  { id: 'performance',  label: 'PERFORMANCE',       labelMobile: 'PRF' },
+  { id: 'saude',        label: 'SAUDE DA BASE',     labelMobile: 'SAD' },
+  { id: 'redes',        label: 'REDES + SINALEIRO', labelMobile: 'RED' },
+  { id: 'motivos',      label: 'MOTIVOS + RNC',     labelMobile: 'MOT' },
+  { id: 'produtividade', label: 'PRODUTIVIDADE',    labelMobile: 'PRD' },
+  { id: 'indicadores',  label: 'INDICADORES',       labelMobile: 'IND' },
 ] as const;
 
 type TabId = (typeof TABS)[number]['id'];
@@ -556,7 +556,7 @@ export default function DashboardPage() {
       {/* ------------------------------------------------------------------ */}
       {/* Tab navigation                                                       */}
       {/* ------------------------------------------------------------------ */}
-      <div className="overflow-x-auto mb-0 -mb-px">
+      <div className="overflow-x-auto scrollbar-hide mb-0 -mb-px">
         <div className="flex min-w-max border-b border-gray-200">
           {TABS.map((tab) => {
             const isActive = activeTab === tab.id;
@@ -566,13 +566,14 @@ export default function DashboardPage() {
                 type="button"
                 onClick={() => setActiveTab(tab.id)}
                 className={[
-                  'px-4 py-2.5 text-xs font-semibold uppercase tracking-wider whitespace-nowrap transition-all duration-150',
+                  'px-3 sm:px-4 py-2.5 text-xs font-semibold uppercase tracking-wider whitespace-nowrap transition-all duration-150',
                   isActive
                     ? 'text-green-700 bg-green-50 border-b-2 border-green-600'
                     : 'text-gray-500 hover:text-gray-800 hover:bg-gray-50 border-b-2 border-transparent',
                 ].join(' ')}
               >
-                {tab.label}
+                <span className="sm:hidden">{tab.labelMobile}</span>
+                <span className="hidden sm:inline">{tab.label}</span>
               </button>
             );
           })}

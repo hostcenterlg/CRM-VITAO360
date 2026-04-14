@@ -149,12 +149,15 @@ function SinoBell() {
                 <div className="w-5 h-5 border-2 border-green-500 border-t-transparent rounded-full animate-spin" />
               </div>
             ) : alertas.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-8 gap-2 text-gray-400">
-                <svg className="w-8 h-8 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
-                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <span className="text-sm">Sem alertas no momento</span>
+              <div className="flex flex-col items-center justify-center py-8 gap-2">
+                <div className="w-10 h-10 rounded-full bg-green-50 flex items-center justify-center">
+                  <svg className="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <span className="text-sm font-medium text-gray-700">Nenhuma notificacao pendente</span>
+                <span className="text-xs text-gray-400">Tudo em ordem por agora</span>
               </div>
             ) : (
               alertas.map((alerta, idx) => {

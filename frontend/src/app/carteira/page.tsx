@@ -105,6 +105,16 @@ function CarteiraInner() {
   // Export CSV
   const [exporting, setExporting] = useState(false);
 
+  // Toast inline (substitui alert())
+  const [toastMsg, setToastMsg] = useState<{ texto: string; tipo: 'erro' | 'sucesso' } | null>(null);
+  const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  function showToast(texto: string, tipo: 'erro' | 'sucesso' = 'erro') {
+    if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+    setToastMsg({ texto, tipo });
+    toastTimerRef.current = setTimeout(() => setToastMsg(null), 5000);
+  }
+
   // Filtros colapsados em mobile
   const [filtrosExpanded, setFiltrosExpanded] = useState(false);
 
@@ -215,9 +225,10 @@ function CarteiraInner() {
       link.click();
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
+      showToast('CSV exportado com sucesso.', 'sucesso');
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Erro ao exportar';
-      alert(`Erro ao exportar CSV: ${msg}`);
+      showToast(`Erro ao exportar CSV: ${msg}`, 'erro');
     } finally {
       setExporting(false);
     }
@@ -290,6 +301,29 @@ function CarteiraInner() {
 
   return (
     <div className="space-y-3">
+      {/* Toast inline — substitui alert() */}
+      {toastMsg && (
+        <div
+          role="alert"
+          className={`flex items-center justify-between gap-3 px-4 py-3 rounded-lg border text-sm font-medium
+            ${toastMsg.tipo === 'erro'
+              ? 'bg-red-50 border-red-200 text-red-700'
+              : 'bg-green-50 border-green-200 text-green-700'}`}
+        >
+          <span>{toastMsg.texto}</span>
+          <button
+            type="button"
+            onClick={() => setToastMsg(null)}
+            aria-label="Fechar"
+            className="flex-shrink-0 opacity-60 hover:opacity-100 transition-opacity"
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      )}
+
       {/* Cabeçalho */}
       <div className="flex items-start justify-between gap-3">
         <div>
