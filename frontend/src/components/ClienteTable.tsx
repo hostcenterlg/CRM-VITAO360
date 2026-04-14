@@ -1,5 +1,6 @@
 'use client';
 
+import { useRef, useState } from 'react';
 import { ClienteRegistro, formatBRL } from '@/lib/api';
 import StatusBadge from './StatusBadge';
 
@@ -116,6 +117,246 @@ function rowBorderStyle(sinaleiro?: string): string {
   return '';
 }
 
+// ---------------------------------------------------------------------------
+// Long-press context menu — mobile only
+// Shows actions: Ligar, WhatsApp, Ver detalhe
+// Triggers after 500ms press without significant movement
+// ---------------------------------------------------------------------------
+
+const LONGPRESS_DURATION = 500;
+const LONGPRESS_MOVE_THRESHOLD = 8; // px
+
+interface ContextMenuProps {
+  cliente: ClienteRegistro;
+  anchorY: number;
+  onClose: () => void;
+  onVerDetalhe: () => void;
+}
+
+function LongPressContextMenu({ cliente, anchorY, onClose, onVerDetalhe }: ContextMenuProps) {
+  const tel = cliente.cnpj; // Use CNPJ as identifier for calls when no phone available
+
+  return (
+    <>
+      {/* Overlay */}
+      <div
+        className="fixed inset-0 z-40"
+        onClick={onClose}
+        aria-hidden="true"
+      />
+      {/* Menu */}
+      <div
+        className="fixed left-4 right-4 z-50 bg-white border border-gray-200 rounded-xl shadow-xl overflow-hidden"
+        style={{ top: Math.min(anchorY, window.innerHeight - 200) }}
+        role="menu"
+        aria-label={`Acoes para ${cliente.nome_fantasia}`}
+      >
+        {/* Header */}
+        <div className="px-4 py-3 border-b border-gray-100 bg-gray-50">
+          <p className="text-sm font-bold text-gray-900 truncate">{cliente.nome_fantasia ?? 'Cliente'}</p>
+          <p className="text-[11px] text-gray-400 font-mono mt-0.5">{formatCnpj(cliente.cnpj)}</p>
+        </div>
+
+        {/* Actions */}
+        <div className="py-1">
+          {/* Ligar */}
+          <a
+            href={`tel:${tel}`}
+            role="menuitem"
+            className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors"
+            onClick={onClose}
+          >
+            <div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center flex-shrink-0">
+              <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                  d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+              </svg>
+            </div>
+            <span className="text-sm font-medium text-gray-800">Ligar</span>
+          </a>
+
+          {/* WhatsApp */}
+          <a
+            href={`https://wa.me/55${tel.replace(/\D/g, '')}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            role="menuitem"
+            className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors"
+            onClick={onClose}
+          >
+            <div className="w-8 h-8 rounded-full bg-green-50 flex items-center justify-center flex-shrink-0">
+              <svg className="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
+                <path d="M12 0C5.373 0 0 5.373 0 12c0 2.139.558 4.144 1.535 5.879L.057 23.55a.5.5 0 00.608.608l5.693-1.479A11.952 11.952 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.96 0-3.799-.56-5.354-1.527l-.383-.231-3.979 1.034 1.054-3.867-.252-.4A9.956 9.956 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z" />
+              </svg>
+            </div>
+            <span className="text-sm font-medium text-gray-800">WhatsApp</span>
+          </a>
+
+          {/* Ver detalhe */}
+          <button
+            type="button"
+            role="menuitem"
+            className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors"
+            onClick={() => { onClose(); onVerDetalhe(); }}
+          >
+            <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
+              <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+              </svg>
+            </div>
+            <span className="text-sm font-medium text-gray-800">Ver detalhe</span>
+          </button>
+        </div>
+      </div>
+    </>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// ClienteRow — individual row with long-press detection on touch devices
+// ---------------------------------------------------------------------------
+
+interface ClienteRowProps {
+  cliente: ClienteRegistro;
+  idx: number;
+  onRowClick?: (c: ClienteRegistro) => void;
+  showFaturamento: boolean;
+}
+
+function ClienteRow({ cliente: c, idx, onRowClick, showFaturamento }: ClienteRowProps) {
+  const [contextMenu, setContextMenu] = useState<{ y: number } | null>(null);
+  const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const touchStartPos = useRef<{ x: number; y: number } | null>(null);
+  const longPressTriggered = useRef(false);
+
+  function handleTouchStart(e: React.TouchEvent<HTMLTableRowElement>) {
+    const touch = e.touches[0];
+    touchStartPos.current = { x: touch.clientX, y: touch.clientY };
+    longPressTriggered.current = false;
+
+    longPressTimer.current = setTimeout(() => {
+      longPressTriggered.current = true;
+      setContextMenu({ y: touch.clientY });
+    }, LONGPRESS_DURATION);
+  }
+
+  function handleTouchMove(e: React.TouchEvent<HTMLTableRowElement>) {
+    if (!touchStartPos.current || !longPressTimer.current) return;
+    const touch = e.touches[0];
+    const dx = Math.abs(touch.clientX - touchStartPos.current.x);
+    const dy = Math.abs(touch.clientY - touchStartPos.current.y);
+    if (dx > LONGPRESS_MOVE_THRESHOLD || dy > LONGPRESS_MOVE_THRESHOLD) {
+      clearTimeout(longPressTimer.current);
+      longPressTimer.current = null;
+    }
+  }
+
+  function handleTouchEnd() {
+    if (longPressTimer.current) {
+      clearTimeout(longPressTimer.current);
+      longPressTimer.current = null;
+    }
+  }
+
+  function handleClick() {
+    if (longPressTriggered.current) {
+      longPressTriggered.current = false;
+      return; // Long press already handled by context menu
+    }
+    onRowClick?.(c);
+  }
+
+  return (
+    <>
+      <tr
+        className={`border-t border-gray-100 transition-colors ${
+          idx % 2 === 1 ? 'bg-gray-50/50' : 'bg-white'
+        } ${
+          onRowClick
+            ? 'cursor-pointer hover:bg-green-50/60 active:bg-green-50'
+            : 'hover:bg-gray-50'
+        } ${rowBorderStyle(c.sinaleiro)}`}
+        onClick={handleClick}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+      >
+        {/* CNPJ */}
+        <td className="px-3 py-2.5 font-mono text-xs text-gray-500 whitespace-nowrap">
+          {formatCnpj(c.cnpj)}
+        </td>
+        {/* Cliente */}
+        <td className="px-3 py-2.5 max-w-[200px]">
+          <p className="font-medium text-gray-900 truncate">{c.nome_fantasia ?? '—'}</p>
+          {c.razao_social && c.razao_social !== c.nome_fantasia && (
+            <p className="text-[11px] text-gray-400 truncate">{c.razao_social}</p>
+          )}
+        </td>
+        {/* UF */}
+        <td className="px-3 py-2.5 text-gray-600 whitespace-nowrap text-xs">
+          {c.uf ?? '—'}
+        </td>
+        {/* Consultor */}
+        <td className="px-3 py-2.5 text-gray-700 whitespace-nowrap text-xs">
+          {c.consultor ?? '—'}
+        </td>
+        {/* Situacao */}
+        <td className="px-3 py-2.5 whitespace-nowrap">
+          <StatusBadge value={c.situacao} variant="situacao" small />
+        </td>
+        {/* Temperatura */}
+        <td className="px-3 py-2.5 whitespace-nowrap">
+          {c.temperatura ? (
+            <StatusBadge value={c.temperatura} variant="temperatura" small />
+          ) : (
+            <span className="text-gray-300">—</span>
+          )}
+        </td>
+        {/* Score */}
+        <td className="px-3 py-2.5 whitespace-nowrap">
+          <ScoreCell value={c.score} />
+        </td>
+        {/* ABC */}
+        <td className="px-3 py-2.5 whitespace-nowrap">
+          {c.curva_abc ? (
+            <StatusBadge value={c.curva_abc} variant="abc" small />
+          ) : (
+            <span className="text-gray-300">—</span>
+          )}
+        </td>
+        {/* Sinaleiro */}
+        <td className="px-3 py-2.5 whitespace-nowrap">
+          <SinaleiroDot value={c.sinaleiro} />
+        </td>
+        {/* Faturamento */}
+        {showFaturamento && (
+          <td className="px-3 py-2.5 text-right whitespace-nowrap font-mono text-xs text-gray-800">
+            {c.faturamento_total != null ? formatBRL(c.faturamento_total) : '—'}
+          </td>
+        )}
+      </tr>
+
+      {/* Context menu portal (rendered as sibling in tbody — positioned fixed) */}
+      {contextMenu && (
+        <tr className="sr-only" aria-hidden="true">
+          <td>
+            <LongPressContextMenu
+              cliente={c}
+              anchorY={contextMenu.y}
+              onClose={() => setContextMenu(null)}
+              onVerDetalhe={() => onRowClick?.(c)}
+            />
+          </td>
+        </tr>
+      )}
+    </>
+  );
+}
+
 export default function ClienteTable({
   registros,
   loading = false,
@@ -192,71 +433,13 @@ export default function ClienteTable({
         </thead>
         <tbody>
           {registros.map((c, idx) => (
-            <tr
+            <ClienteRow
               key={c.cnpj}
-              className={`border-t border-gray-100 transition-colors ${
-                idx % 2 === 1 ? 'bg-gray-50/50' : 'bg-white'
-              } ${
-                onRowClick
-                  ? 'cursor-pointer hover:bg-green-50/60 active:bg-green-50'
-                  : 'hover:bg-gray-50'
-              } ${rowBorderStyle(c.sinaleiro)}`}
-              onClick={() => onRowClick?.(c)}
-            >
-              {/* CNPJ */}
-              <td className="px-3 py-2.5 font-mono text-xs text-gray-500 whitespace-nowrap">
-                {formatCnpj(c.cnpj)}
-              </td>
-              {/* Cliente */}
-              <td className="px-3 py-2.5 max-w-[200px]">
-                <p className="font-medium text-gray-900 truncate">{c.nome_fantasia ?? '—'}</p>
-                {c.razao_social && c.razao_social !== c.nome_fantasia && (
-                  <p className="text-[11px] text-gray-400 truncate">{c.razao_social}</p>
-                )}
-              </td>
-              {/* UF */}
-              <td className="px-3 py-2.5 text-gray-600 whitespace-nowrap text-xs">
-                {c.uf ?? '—'}
-              </td>
-              {/* Consultor */}
-              <td className="px-3 py-2.5 text-gray-700 whitespace-nowrap text-xs">
-                {c.consultor ?? '—'}
-              </td>
-              {/* Situacao */}
-              <td className="px-3 py-2.5 whitespace-nowrap">
-                <StatusBadge value={c.situacao} variant="situacao" small />
-              </td>
-              {/* Temperatura */}
-              <td className="px-3 py-2.5 whitespace-nowrap">
-                {c.temperatura ? (
-                  <StatusBadge value={c.temperatura} variant="temperatura" small />
-                ) : (
-                  <span className="text-gray-300">—</span>
-                )}
-              </td>
-              {/* Score */}
-              <td className="px-3 py-2.5 whitespace-nowrap">
-                <ScoreCell value={c.score} />
-              </td>
-              {/* ABC */}
-              <td className="px-3 py-2.5 whitespace-nowrap">
-                {c.curva_abc ? (
-                  <StatusBadge value={c.curva_abc} variant="abc" small />
-                ) : (
-                  <span className="text-gray-300">—</span>
-                )}
-              </td>
-              {/* Sinaleiro */}
-              <td className="px-3 py-2.5 whitespace-nowrap">
-                <SinaleiroDot value={c.sinaleiro} />
-              </td>
-              {/* Faturamento */}
-              {showFaturamento && (
-                <td className="px-3 py-2.5 text-right whitespace-nowrap font-mono text-xs text-gray-800">
-                  {c.faturamento_total != null ? formatBRL(c.faturamento_total) : '—'}
-                </td>
-              )}
-            </tr>
+              cliente={c}
+              idx={idx}
+              onRowClick={onRowClick}
+              showFaturamento={showFaturamento}
+            />
           ))}
         </tbody>
       </table>

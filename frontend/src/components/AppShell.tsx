@@ -8,6 +8,9 @@ import { fetchNotificacoes, Alerta } from '@/lib/api';
 import SearchModal from './SearchModal';
 import Onboarding from './Onboarding';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
+import BottomNav from './BottomNav';
+import InstallPrompt from './InstallPrompt';
+import { registerServiceWorker } from '@/lib/register-sw';
 
 // ---------------------------------------------------------------------------
 // AppShell — sidebar + header com info do usuario + main content
@@ -328,6 +331,11 @@ export default function AppShell({ children, pageTitle }: AppShellProps) {
     setSidebarOpen(false);
   }, [pathname]);
 
+  // Registrar Service Worker uma unica vez no mount
+  useEffect(() => {
+    registerServiceWorker();
+  }, []);
+
   return (
     <div className="flex h-screen overflow-hidden bg-gray-50">
       {/* Sidebar */}
@@ -465,7 +473,8 @@ export default function AppShell({ children, pageTitle }: AppShellProps) {
         </header>
 
         {/* Conteudo da pagina — scrollavel */}
-        <main className="flex-1 overflow-y-auto scrollbar-thin">
+        {/* pb-14 em mobile reserva espaco para BottomNav (h-14) */}
+        <main className="flex-1 overflow-y-auto scrollbar-thin pb-14 md:pb-0">
           <div className="max-w-screen-2xl mx-auto p-3 md:p-4 lg:p-6">
             {children}
           </div>
@@ -477,6 +486,12 @@ export default function AppShell({ children, pageTitle }: AppShellProps) {
 
       {/* Tour de boas-vindas (primeiro login) */}
       <Onboarding />
+
+      {/* Mobile bottom navigation — md:hidden dentro do componente */}
+      <BottomNav />
+
+      {/* PWA install prompt — mobile only */}
+      <InstallPrompt />
     </div>
   );
 }

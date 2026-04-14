@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, TouchEvent } from 'react';
 import {
   fetchAgenda,
   gerarAgenda,
@@ -304,6 +304,9 @@ function AgendaSkeleton() {
 // Card de item de agenda
 // ---------------------------------------------------------------------------
 
+// Threshold em px para considerar um swipe esquerda valido
+const SWIPE_THRESHOLD = 100;
+
 interface AgendaCardProps {
   item: AgendaItem;
   concluido: boolean;
@@ -315,6 +318,74 @@ function AgendaCard({ item, concluido, onRegistrar, onWhatsApp }: AgendaCardProp
   const prio = (item.prioridade ?? '').toUpperCase();
   const sinal = (item.sinaleiro ?? '').toUpperCase();
   const isUrgente = PRIORIDADES_URGENTES.has(prio);
+
+  // ---------------------------------------------------------------------------
+  // Swipe state — touch events nativos, sem bibliotecas externas
+  // ---------------------------------------------------------------------------
+  const [swipeOffset, setSwipeOffset] = useState(0);
+  const [swipeRevealed, setSwipeRevealed] = useState(false);
+  const touchStartX = useRef<number>(0);
+  const touchStartY = useRef<number>(0);
+  const isDragging = useRef(false);
+
+  function handleTouchStart(e: TouchEvent<HTMLDivElement>) {
+    touchStartX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY;
+    isDragging.current = false;
+  }
+
+  function handleTouchMove(e: TouchEvent<HTMLDivElement>) {
+    const dx = e.touches[0].clientX - touchStartX.current;
+    const dy = e.touches[0].clientY - touchStartY.current;
+
+    // If vertical scroll is dominant, do not intercept
+    if (!isDragging.current && Math.abs(dy) > Math.abs(dx)) return;
+
+    if (Math.abs(dx) > 5) {
+      isDragging.current = true;
+    }
+
+    if (!isDragging.current) return;
+
+    // Allow left-swipe only (negative dx) unless already revealed (allow right to close)
+    if (swipeRevealed) {
+      const newOffset = Math.min(0, -SWIPE_THRESHOLD + dx);
+      setSwipeOffset(newOffset);
+    } else {
+      const newOffset = Math.min(0, dx);
+      setSwipeOffset(newOffset);
+    }
+  }
+
+  function handleTouchEnd() {
+    if (!isDragging.current) return;
+    isDragging.current = false;
+
+    if (swipeRevealed) {
+      // If swiped right enough, close
+      if (swipeOffset > -SWIPE_THRESHOLD / 2) {
+        setSwipeOffset(0);
+        setSwipeRevealed(false);
+      } else {
+        setSwipeOffset(-SWIPE_THRESHOLD);
+        setSwipeRevealed(true);
+      }
+    } else {
+      // If swiped left enough, reveal actions
+      if (swipeOffset < -SWIPE_THRESHOLD / 2) {
+        setSwipeOffset(-SWIPE_THRESHOLD);
+        setSwipeRevealed(true);
+      } else {
+        setSwipeOffset(0);
+        setSwipeRevealed(false);
+      }
+    }
+  }
+
+  function handleSwipeClose() {
+    setSwipeOffset(0);
+    setSwipeRevealed(false);
+  }
 
   // Cor da borda esquerda (por prioridade)
   const borderColorMap: Record<string, string> = {
@@ -340,19 +411,65 @@ function AgendaCard({ item, concluido, onRegistrar, onWhatsApp }: AgendaCardProp
   const acao = acaoStyle[sinal] ?? { bg: '#F9FAFB', border: '#D1D5DB' };
 
   return (
-    <article
-      aria-label={`Item ${item.posicao}: ${item.nome_fantasia}`}
-      className="relative rounded-lg border overflow-hidden transition-all duration-150"
-      style={{
-        borderColor: concluido ? '#E5E7EB' : (isUrgente ? borderColor : '#E5E7EB'),
-        borderWidth: isUrgente && !concluido ? '2px' : '1px',
-        borderLeftWidth: '4px',
-        borderLeftColor: borderColor,
-        backgroundColor: concluido ? '#F9FAFB' : '#FFFFFF',
-        opacity: concluido ? 0.6 : 1,
-        boxShadow: concluido ? 'none' : '0 1px 3px rgba(0,0,0,0.06)',
-      }}
+    <div
+      className="relative overflow-hidden rounded-lg"
+      onTouchStart={concluido ? undefined : handleTouchStart}
+      onTouchMove={concluido ? undefined : handleTouchMove}
+      onTouchEnd={concluido ? undefined : handleTouchEnd}
     >
+      {/* Swipe action buttons — revealed behind card on left swipe */}
+      {!concluido && (
+        <div
+          className="absolute inset-y-0 right-0 flex items-stretch"
+          aria-hidden={!swipeRevealed}
+          style={{ width: SWIPE_THRESHOLD }}
+        >
+          {/* Adiar */}
+          <button
+            type="button"
+            tabIndex={swipeRevealed ? 0 : -1}
+            onClick={() => { handleSwipeClose(); onRegistrar(item); }}
+            className="flex-1 flex flex-col items-center justify-center gap-0.5 bg-yellow-500 text-white text-[10px] font-bold"
+            aria-label={`Adiar ${item.nome_fantasia}`}
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            Adiar
+          </button>
+          {/* Concluir */}
+          <button
+            type="button"
+            tabIndex={swipeRevealed ? 0 : -1}
+            onClick={() => { handleSwipeClose(); onRegistrar(item); }}
+            className="flex-1 flex flex-col items-center justify-center gap-0.5 bg-green-600 text-white text-[10px] font-bold"
+            aria-label={`Registrar atendimento de ${item.nome_fantasia}`}
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
+            Feito
+          </button>
+        </div>
+      )}
+
+      {/* Card deslizavel */}
+      <article
+        aria-label={`Item ${item.posicao}: ${item.nome_fantasia}`}
+        className="relative rounded-lg border overflow-hidden"
+        style={{
+          transform: `translateX(${swipeOffset}px)`,
+          transition: isDragging.current ? 'none' : 'transform 0.2s ease-out',
+          borderColor: concluido ? '#E5E7EB' : (isUrgente ? borderColor : '#E5E7EB'),
+          borderWidth: isUrgente && !concluido ? '2px' : '1px',
+          borderLeftWidth: '4px',
+          borderLeftColor: borderColor,
+          backgroundColor: concluido ? '#F9FAFB' : '#FFFFFF',
+          opacity: concluido ? 0.6 : 1,
+          boxShadow: concluido ? 'none' : '0 1px 3px rgba(0,0,0,0.06)',
+        }}
+      >
       {/* Tag PRIORITARIO para P0/P1/P3 */}
       {isUrgente && !concluido && (
         <div
@@ -478,7 +595,8 @@ function AgendaCard({ item, concluido, onRegistrar, onWhatsApp }: AgendaCardProp
           )}
         </div>
       </div>
-    </article>
+      </article>
+    </div>
   );
 }
 
