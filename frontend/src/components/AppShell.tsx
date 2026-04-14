@@ -6,6 +6,7 @@ import Sidebar, { HamburgerButton } from './Sidebar';
 import { useAuth } from '@/contexts/AuthContext';
 import { fetchNotificacoes, Alerta } from '@/lib/api';
 import SearchModal from './SearchModal';
+import Onboarding from './Onboarding';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 
 // ---------------------------------------------------------------------------
@@ -223,6 +224,7 @@ const PAGE_TITLES: Record<string, string> = {
   '/admin/usuarios': 'Usuarios',
   '/admin/pipeline': 'Pipeline de Dados',
   '/atualizacoes':   'Atualizacoes & Pendencias',
+  '/docs':           'Manual do CRM VITAO360',
 };
 
 // Map pathname -> breadcrumb segments [{ label, href? }]
@@ -243,6 +245,7 @@ const BREADCRUMBS: Record<string, Array<{ label: string; href?: string }>> = {
   '/atualizacoes':   [{ label: 'Admin', href: '/' }, { label: 'Atualizacoes' }],
   '/admin/usuarios': [{ label: 'Admin', href: '/' }, { label: 'Usuarios' }],
   '/admin/pipeline': [{ label: 'Admin', href: '/' }, { label: 'Pipeline' }],
+  '/docs':           [{ label: 'Dashboard', href: '/' }, { label: 'Manual' }],
 };
 
 interface AppShellProps {
@@ -468,6 +471,9 @@ export default function AppShell({ children, pageTitle }: AppShellProps) {
 
       {/* Busca global modal */}
       <SearchModal open={searchOpen} onClose={handleCloseSearch} />
+
+      {/* Tour de boas-vindas (primeiro login) */}
+      <Onboarding />
     </div>
   );
 }

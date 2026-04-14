@@ -224,6 +224,22 @@ const ITEMS: Item[] = [
     commits: ['1bde8b3'],
   },
 
+  // ═══ SESSÃO 13/ABR/2026 ═══
+  { id: 'S3-001', pedido: 'Fix 80 vendas DESCONHECIDO', descricao: '80 vendas (R$183K) reclassificadas: LARISSA 60, DAIANE 11, MANU 8, JULIO 1.', status: 'done', categoria: 'data', sessao: '13/Abr/2026', detalhes: 'Script fix_vendas_desconhecido.py. JOIN vendas↔clientes. Zero DESCONHECIDO restante.', commits: ['631b0fd'] },
+  { id: 'S3-002', pedido: 'Metas 2026 distribuídas mensalmente', descricao: '488 metas anuais (mes=0) convertidas em 5.856 mensais. Projeção funcional.', status: 'done', categoria: 'data', sessao: '13/Abr/2026', detalhes: 'fix_metas_2026.py. Distribuição proporcional (meta_sap/12). Conservação R$0.00 diferença.', commits: ['631b0fd'] },
+  { id: 'S3-003', pedido: 'Sync Deskrio → DB', descricao: '15.590 contatos processados. 2.711 matches, 248 telefones atualizados, 40 logs Kanban.', status: 'done', categoria: 'integration', sessao: '13/Abr/2026', detalhes: 'sync_deskrio_to_db.py. Match por telefone + fuzzy nome. Two-Base respeitada. Idempotente.', commits: ['631b0fd'] },
+  { id: 'S3-004', pedido: 'Sync Mercos → DB', descricao: 'Indicadores + pedidos ativos. 3 telefones atualizados, 2 pedidos inseridos.', status: 'done', categoria: 'integration', sessao: '13/Abr/2026', detalhes: 'sync_mercos_to_db.py. Dados Mercos são sumários — extraiu máximo possível.', commits: ['ce581e6'] },
+  { id: 'S3-005', pedido: 'VendaItens — 3.621 registros', descricao: 'Itens de pedido populados. Two-Base: sum(itens)=sum(vendas) diff R$0.00.', status: 'done', categoria: 'data', sessao: '13/Abr/2026', detalhes: 'populate_venda_itens.py. 1.233 vendas cobertas. Escala proporcional com absorção residual.', commits: ['ce581e6'] },
+  { id: 'S3-006', pedido: 'Preços regionais — 6.534 registros', descricao: '242 produtos × 27 UFs. SUL base, SUDESTE +5%, NE +8%, CO +7%, NORTE +10%.', status: 'done', categoria: 'data', sessao: '13/Abr/2026', detalhes: 'populate_precos_regionais.py. Constraint UNIQUE(produto,uf) respeitada.', commits: ['ce581e6'] },
+  { id: 'S3-007', pedido: 'Import UI end-to-end', descricao: '5 bugs schema mismatch corrigidos. Upload xlsx → process → DB funcional.', status: 'done', categoria: 'fix', sessao: '13/Abr/2026', detalhes: 'Status mapping CONCLUIDO→SUCESSO, items→itens, detalhes_erros, data_import, null safety.', commits: ['203fdc8'] },
+  { id: 'S3-008', pedido: 'Recalcular Motor+Score+Sinaleiro+Agenda', descricao: '1.581 clientes recalculados. 140 agenda items. VERDE 82, AMARELO 41, VERMELHO 296, ROXO 1.151.', status: 'done', categoria: 'feature', sessao: '13/Abr/2026', detalhes: 'recalculate_all.py. Usa services do backend. Batch 500. Idempotente.', commits: ['7556f41'] },
+  { id: 'S3-009', pedido: 'Dashboard Indicadores Mercos — 6 gráficos + filtros', descricao: 'Nova aba INDICADORES: Evolução Vendas, Positivação Diária, por Vendedor, Atendimentos, Curva ABC, E-commerce.', status: 'done', categoria: 'feature', sessao: '13/Abr/2026', detalhes: '6 endpoints backend + 56 testes. Frontend: Recharts charts + filtros globais mês/ano/vendedor.', commits: ['f2ceb68', 'dfc00b2'] },
+  { id: 'S3-010', pedido: 'Central de IA — 9 agentes inteligentes', descricao: 'Página /ia com 9 cards: Briefing, Mensagem WA, Churn, Produto, Resumo, Sentimento, Previsão, Coach, Oportunidade.', status: 'done', categoria: 'feature', sessao: '13/Abr/2026', detalhes: '10 endpoints IA backend + 137 testes. Frontend: 9 cards interativos. Widget Insight do Dia no dashboard.', commits: ['884565c', '27eef1d', '3073f6e', '99df1ee'] },
+  { id: 'S3-011', pedido: 'Pipeline automático + Notificações + Webhook', descricao: 'Orchestrator sync, sino de alertas, /admin/pipeline, webhook Deskrio.', status: 'done', categoria: 'infra', sessao: '13/Abr/2026', detalhes: 'PipelineService thread-safe. 4 tipos alerta. Webhook público Two-Base. 35 testes.', commits: ['9676c7f', 'a31ca1d'] },
+  { id: 'S3-012', pedido: 'Mobile-first + Sidebar colapsável', descricao: 'Sidebar icon-only mode, hamburger mobile, ClienteDetalhe com timeline+compras+sparkline.', status: 'done', categoria: 'feature', sessao: '13/Abr/2026', detalhes: 'localStorage persist. Accordion sections. Score sparkline 40px.', commits: ['659c8a0'] },
+  { id: 'S3-013', pedido: 'Kanban drag-drop + Busca Ctrl+K + Atalhos', descricao: 'Pipeline HTML5 DnD, swimlanes, busca global multi-fonte, atalhos N/A/C/I.', status: 'done', categoria: 'feature', sessao: '13/Abr/2026', detalhes: 'Optimistic update. Mobile bottom sheet. SearchModal debounce 300ms. useKeyboardShortcuts hook.', commits: ['7d030d6'] },
+  { id: 'S3-014', pedido: 'Skeleton loading + ErrorBoundary + Performance', descricao: '8 variantes Skeleton. ErrorBoundary global. formatDateBR/formatNumber. Recharts tree-shake.', status: 'done', categoria: 'fix', sessao: '13/Abr/2026', detalhes: 'Skeleton.tsx reutilizável. ErrorBoundary class em layout.tsx. optimizePackageImports.', commits: ['25471ab'] },
+
   // ═══ PENDÊNCIAS RESTANTES ═══
 
   {
@@ -504,7 +520,7 @@ export default function AtualizacoesPage() {
       {/* Footer */}
       <div className="mt-8 mb-4 p-4 bg-gray-50 rounded-xl border border-gray-200 text-center">
         <p className="text-xs text-gray-500">
-          CRM VITAO360 — Atualizado: 01/Abr/2026 23:30 — {ITEMS.length} itens rastreados
+          CRM VITAO360 — Atualizado: 13/Abr/2026 — {ITEMS.length} itens rastreados
         </p>
       </div>
     </div>
