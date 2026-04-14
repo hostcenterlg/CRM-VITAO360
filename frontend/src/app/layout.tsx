@@ -4,6 +4,7 @@ import './globals.css';
 import { AuthProvider } from '@/contexts/AuthContext';
 import RouteGuard from '@/components/RouteGuard';
 import ErrorBoundary from '@/components/ErrorBoundary';
+import { Analytics } from '@vercel/analytics/react';
 
 // ---------------------------------------------------------------------------
 // Inter font via next/font/google — zero layout shift, self-hosted by Next.js
@@ -16,15 +17,36 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: 'CRM VITAO360',
-  description: 'Sistema de Inteligencia Comercial — VITAO Alimentos B2B',
-  robots: 'noindex, nofollow', // internal tool
+  title: {
+    default: 'CRM VITAO360',
+    template: '%s | CRM VITAO360',
+  },
+  description: 'CRM Inteligente para VITAO Alimentos — Inteligência Comercial B2B',
+  robots: 'noindex, nofollow', // internal tool — not meant for search engines
+  openGraph: {
+    title: 'CRM VITAO360',
+    description: 'Motor de Inteligência Comercial',
+    siteName: 'VITAO360',
+    type: 'website',
+  },
+  // PWA manifest declared here; <link rel="manifest"> injected by Next.js
+  manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'VITAO360',
+  },
+  icons: {
+    icon: '/icon-192.png',
+    apple: '/icon-192.png',
+  },
 };
 
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   maximumScale: 1,
+  themeColor: '#00B050',
 };
 
 export default function RootLayout({
@@ -45,6 +67,7 @@ export default function RootLayout({
             <RouteGuard>{children}</RouteGuard>
           </ErrorBoundary>
         </AuthProvider>
+        <Analytics />
       </body>
     </html>
   );

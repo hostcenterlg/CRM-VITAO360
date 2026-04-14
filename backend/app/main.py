@@ -39,6 +39,11 @@ import threading
 from collections import defaultdict
 from contextlib import asynccontextmanager
 
+# Setup structured logging BEFORE any other imports that create loggers.
+# JSON in production, human-readable in development.
+from backend.app.logging_config import setup_logging
+setup_logging()
+
 logger = logging.getLogger(__name__)
 
 import traceback
