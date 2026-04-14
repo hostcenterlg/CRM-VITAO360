@@ -1325,3 +1325,70 @@ export async function fetchEcommerce(
     `/api/dashboard/ecommerce${qs.toString() ? `?${qs.toString()}` : ''}`
   );
 }
+
+// ---------------------------------------------------------------------------
+// IA Central — endpoints avancados de inteligencia artificial
+// ---------------------------------------------------------------------------
+
+export interface BriefingIAResponse {
+  cnpj: string;
+  nome_cliente: string;
+  situacao: string;
+  score: number;
+  prioridade: string;
+  temperatura: string;
+  ultimas_compras: Array<{ data: string; valor: number; produtos?: string }>;
+  ultimo_contato: { data: string; resultado: string; canal: string } | null;
+  sugestao_abordagem: string;
+  script_venda: string;
+}
+
+export interface MensagemWAResponse {
+  mensagem: string;
+  tom: string;
+  contexto: string;
+}
+
+export interface ResumoSemanalIAResponse {
+  consultor: string;
+  periodo: string;
+  clientes_contactados: number;
+  vendas_fechadas: number;
+  valor_vendas: number;
+  pipeline: Array<{ estagio: string; qtd: number }>;
+  top_clientes: Array<{ cnpj: string; nome: string; score: number; motivo: string }>;
+}
+
+export interface ChurnRiskResponse {
+  cnpj: string;
+  risco_pct: number;
+  nivel: 'BAIXO' | 'MEDIO' | 'ALTO' | 'CRITICO';
+  fatores: string[];
+  recomendacao: string;
+}
+
+export interface SugestaoProdutoResponse {
+  cnpj: string;
+  produtos_sugeridos: Array<{ id: number; nome: string; categoria: string; motivo: string }>;
+  estrategia: string;
+}
+
+export async function fetchBriefingIA(cnpj: string): Promise<BriefingIAResponse> {
+  return fetchJson<BriefingIAResponse>(`/api/ia/briefing/${encodeURIComponent(cnpj)}`);
+}
+
+export async function fetchMensagemWA(cnpj: string): Promise<MensagemWAResponse> {
+  return fetchJson<MensagemWAResponse>(`/api/ia/mensagem-wa/${encodeURIComponent(cnpj)}`);
+}
+
+export async function fetchResumoSemanalIA(consultor: string): Promise<ResumoSemanalIAResponse> {
+  return fetchJson<ResumoSemanalIAResponse>(`/api/ia/resumo-semanal/${encodeURIComponent(consultor)}`);
+}
+
+export async function fetchChurnRisk(cnpj: string): Promise<ChurnRiskResponse> {
+  return fetchJson<ChurnRiskResponse>(`/api/ia/churn-risk/${encodeURIComponent(cnpj)}`);
+}
+
+export async function fetchSugestaoProduto(cnpj: string): Promise<SugestaoProdutoResponse> {
+  return fetchJson<SugestaoProdutoResponse>(`/api/ia/sugestao-produto/${encodeURIComponent(cnpj)}`);
+}

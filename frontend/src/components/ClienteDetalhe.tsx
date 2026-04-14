@@ -3,7 +3,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   AtendimentoHistoricoItem,
+  BriefingIAResponse,
   BriefingResponse,
+  ChurnRiskResponse,
   ClienteRegistro,
   ClienteScoreResponse,
   MensagemWhatsAppResponse,
@@ -13,6 +15,8 @@ import {
   WhatsAppStatus,
   enviarWhatsApp,
   fetchAtendimentosHistorico,
+  fetchBriefingIA,
+  fetchChurnRisk,
   fetchCliente,
   fetchClienteScore,
   fetchWhatsAppStatus,
@@ -805,6 +809,179 @@ function BlocoIA({ cnpj }: { cnpj: string }) {
 }
 
 // ---------------------------------------------------------------------------
+// BriefingLigacao — painel expandivel de preparacao de ligacao
+// ---------------------------------------------------------------------------
+
+const CHURN_NIVEL_COLORS: Record<string, string> = {
+  BAIXO:   '#00B050',
+  MEDIO:   '#FFC000',
+  ALTO:    '#FF6600',
+  CRITICO: '#FF0000',
+};
+
+function BriefingLigacaoPainel({ cnpj }: { cnpj: string }) {
+  const [briefing, setBriefing] = useState<BriefingIAResponse | null>(null);
+  const [churn, setChurn] = useState<ChurnRiskResponse | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [copiado, setCopiado] = useState(false);
+
+  useEffect(() => {
+    setLoading(true);
+    setError(null);
+    Promise.all([
+      fetchBriefingIA(cnpj),
+      fetchChurnRisk(cnpj),
+    ])
+      .then(([b, c]) => {
+        setBriefing(b);
+        setChurn(c);
+      })
+      .catch((e: Error) => setError(e.message))
+      .finally(() => setLoading(false));
+  }, [cnpj]);
+
+  const handleCopiarScript = async () => {
+    if (!briefing?.script_venda) return;
+    try {
+      await navigator.clipboard.writeText(briefing.script_venda);
+      setCopiado(true);
+      setTimeout(() => setCopiado(false), 2000);
+    } catch {
+      // fallback silencioso
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="mt-3 p-4 border border-blue-100 rounded-lg bg-blue-50 space-y-2">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <div
+            key={i}
+            className="h-3 bg-blue-100 animate-pulse rounded"
+            style={{ width: `${50 + (i * 15) % 40}%` }}
+          />
+        ))}
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="mt-3 p-3 border border-red-200 rounded-lg bg-red-50 text-xs text-red-700">
+        Erro ao preparar briefing: {error}
+      </div>
+    );
+  }
+
+  if (!briefing) return null;
+
+  const churnColor = churn ? (CHURN_NIVEL_COLORS[churn.nivel] ?? '#9CA3AF') : '#9CA3AF';
+
+  return (
+    <div className="mt-3 border border-blue-200 rounded-lg bg-blue-50 overflow-hidden">
+      {/* Header do painel */}
+      <div className="px-4 py-2.5 bg-blue-100 border-b border-blue-200 flex items-center justify-between">
+        <span className="text-xs font-semibold text-blue-800 uppercase tracking-wide">
+          Briefing de Ligacao
+        </span>
+        {churn && (
+          <span
+            className="text-[10px] font-bold px-2 py-0.5 rounded-full text-white"
+            style={{ backgroundColor: churnColor }}
+          >
+            Churn {churn.nivel} — {churn.risco_pct.toFixed(0)}%
+          </span>
+        )}
+      </div>
+
+      <div className="px-4 py-3 space-y-3">
+        {/* Abordagem sugerida */}
+        <div>
+          <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1">
+            Abordagem sugerida
+          </p>
+          <p className="text-xs text-gray-800 leading-relaxed">{briefing.sugestao_abordagem}</p>
+        </div>
+
+        {/* Ultimo contato */}
+        {briefing.ultimo_contato && (
+          <div>
+            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1">
+              Ultimo contato
+            </p>
+            <p className="text-xs text-gray-700">
+              {formatDate(briefing.ultimo_contato.data)} via {briefing.ultimo_contato.canal} —{' '}
+              <span className="font-medium">{briefing.ultimo_contato.resultado}</span>
+            </p>
+          </div>
+        )}
+
+        {/* Script de venda */}
+        <div>
+          <div className="flex items-center justify-between mb-1">
+            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+              Script de venda
+            </p>
+            <button
+              type="button"
+              onClick={handleCopiarScript}
+              className="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-semibold rounded transition-all focus:outline-none focus:ring-2 focus:ring-blue-500"
+              style={copiado
+                ? { backgroundColor: '#00B050', color: '#fff' }
+                : { backgroundColor: '#DBEAFE', color: '#1D4ED8' }
+              }
+            >
+              {copiado ? (
+                <>
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                  </svg>
+                  Copiado!
+                </>
+              ) : (
+                <>
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                      d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                  </svg>
+                  Copiar Script
+                </>
+              )}
+            </button>
+          </div>
+          <div className="p-2.5 bg-white border border-blue-100 rounded text-xs text-gray-800 leading-relaxed whitespace-pre-wrap">
+            {briefing.script_venda}
+          </div>
+        </div>
+
+        {/* Risco churn detalhado */}
+        {churn && churn.fatores.length > 0 && (
+          <div>
+            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1">
+              Fatores de risco
+            </p>
+            <ul className="space-y-0.5">
+              {churn.fatores.map((f, idx) => (
+                <li key={idx} className="flex items-start gap-1.5 text-xs text-gray-700">
+                  <span className="w-1.5 h-1.5 rounded-full flex-shrink-0 mt-1" style={{ backgroundColor: churnColor }} />
+                  {f}
+                </li>
+              ))}
+            </ul>
+            {churn.recomendacao && (
+              <p className="text-xs text-blue-800 font-medium mt-1.5 italic">
+                Recomendacao: {churn.recomendacao}
+              </p>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // Componente principal
 // ---------------------------------------------------------------------------
 
@@ -823,6 +1000,8 @@ export default function ClienteDetalhe({ cnpj, onClose }: ClienteDetalheProps) {
   const [atendimentoAberto, setAtendimentoAberto] = useState(false);
   // Chave para forcar re-render do HistoricoBloco apos salvar atendimento
   const [historicoKey, setHistoricoKey] = useState(0);
+  // Estado do painel de preparacao de ligacao
+  const [briefingLigacaoAberto, setBriefingLigacaoAberto] = useState(false);
 
   // Estado dos blocos colapsáveis — persistido em sessionStorage
   const [open, setOpen] = useState<Record<BlocoKey, boolean>>(() => {
@@ -957,6 +1136,33 @@ export default function ClienteDetalhe({ cnpj, onClose }: ClienteDetalheProps) {
             )}
           </div>
           <div className="flex items-center gap-2 flex-shrink-0">
+            {/* Botao Preparar Ligacao — abre painel de briefing IA */}
+            {cliente && !loading && (
+              <button
+                type="button"
+                onClick={() => setBriefingLigacaoAberto((v) => !v)}
+                aria-label="Preparar briefing de ligacao com IA"
+                aria-pressed={briefingLigacaoAberto}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-md transition-all hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
+                style={briefingLigacaoAberto
+                  ? { backgroundColor: '#1D4ED8', color: '#fff' }
+                  : { backgroundColor: '#DBEAFE', color: '#1D4ED8' }
+                }
+              >
+                <svg
+                  aria-hidden="true"
+                  className="w-3.5 h-3.5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  strokeWidth={2}
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round"
+                    d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                </svg>
+                {briefingLigacaoAberto ? 'Fechar Briefing' : 'Preparar Ligacao'}
+              </button>
+            )}
             {/* Botao de registrar atendimento — disponivel assim que o cliente carrega */}
             {cliente && !loading && (
               <button
@@ -991,6 +1197,13 @@ export default function ClienteDetalhe({ cnpj, onClose }: ClienteDetalheProps) {
             </button>
           </div>
         </div>
+
+        {/* Painel de briefing de ligacao — expande sob o header */}
+        {briefingLigacaoAberto && cnpj && (
+          <div className="px-4 pb-3 border-b border-gray-200 bg-white flex-shrink-0">
+            <BriefingLigacaoPainel cnpj={cnpj} />
+          </div>
+        )}
 
         {/* Corpo scrollável */}
         <div className="flex-1 overflow-y-auto py-3 px-4 space-y-3">
