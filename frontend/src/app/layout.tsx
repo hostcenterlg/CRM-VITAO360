@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import { AuthProvider } from '@/contexts/AuthContext';
 import RouteGuard from '@/components/RouteGuard';
+import ErrorBoundary from '@/components/ErrorBoundary';
 
 // ---------------------------------------------------------------------------
 // Inter font via next/font/google — zero layout shift, self-hosted by Next.js
@@ -40,7 +41,9 @@ export default function RootLayout({
           Ambos sao client components — layout.tsx (server) apenas os importa.
         */}
         <AuthProvider>
-          <RouteGuard>{children}</RouteGuard>
+          <ErrorBoundary>
+            <RouteGuard>{children}</RouteGuard>
+          </ErrorBoundary>
         </AuthProvider>
       </body>
     </html>
