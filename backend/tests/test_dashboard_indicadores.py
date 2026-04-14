@@ -461,14 +461,13 @@ class TestEvolucaoVendas:
         )
         assert resp.status_code == 200
         data = resp.json()
-        # Se a resposta contem valor total, ele deve ser baseado em vendas reais
-        if isinstance(data, dict) and "valor_total" in data:
-            # 3500 + 1200 = 4700 para MANU em abril (excluindo ALUCINACAO)
-            assert data["valor_total"] == pytest.approx(4700.0, rel=1e-2)
-        elif isinstance(data, list):
-            total = sum(item.get("valor_total", 0) or item.get("valor", 0) for item in data)
-            if total > 0:
-                assert total == pytest.approx(4700.0, rel=1e-2)
+        # Schema: EvolucaoVendasResponse — {periodo, dias, total_atual, total_mes_anterior, total_ano_anterior}
+        # MANU em abril/2026: PED-MANU-0401 (3500) + PED-MANU-0402 (1200) = 4700
+        assert isinstance(data, dict), f"Esperado dict, obtido {type(data)}"
+        assert "total_atual" in data, f"Campo 'total_atual' ausente: {list(data.keys())}"
+        assert data["total_atual"] == pytest.approx(4700.0, rel=1e-2), (
+            f"total_atual esperado 4700.0 (MANU abril/2026), obtido {data['total_atual']}"
+        )
 
     # --- Testes data quality (R8) ---
 
@@ -483,12 +482,15 @@ class TestEvolucaoVendas:
         )
         assert resp.status_code == 200
         data = resp.json()
-        # Verificar que nenhum item referencia o CNPJ de alucinacao
-        if isinstance(data, list):
-            for item in data:
-                assert item.get("cnpj") != "99999999999901", (
-                    "ALUCINACAO nao deve aparecer em evolucao-vendas"
-                )
+        # Schema: EvolucaoVendasResponse — {periodo, dias, total_atual, total_mes_anterior, total_ano_anterior}
+        # Seed abril/2026 sem filtro: MANU (4700) + LARISSA (2800) = 7500 REAL
+        # ALUCINACAO (50000) deve ser excluida
+        assert isinstance(data, dict)
+        assert "total_atual" in data
+        # total_atual deve ser 7500 (somente REAL), nao 57500 (incluindo ALUCINACAO)
+        assert data["total_atual"] == pytest.approx(7500.0, rel=1e-2), (
+            f"total_atual esperado 7500.0 (excluindo ALUCINACAO), obtido {data['total_atual']}"
+        )
 
 
 # ===========================================================================
@@ -506,35 +508,32 @@ class TestPositivacaoDiaria:
         )
         assert resp.status_code == 200
 
-    def test_resposta_e_lista(self, client_admin):
-        """Resposta deve ser uma lista (serie temporal de dias)."""
+    def test_resposta_e_dict_com_campo_dias(self, client_admin):
+        """Resposta deve ser um dict com campo 'dias' contendo a serie temporal."""
         resp = client_admin.get(
             "/api/dashboard/positivacao-diaria",
             params={"mes": 4, "ano": 2026},
         )
         assert resp.status_code == 200
         data = resp.json()
-        assert isinstance(data, list), f"Esperado lista, obtido {type(data)}"
+        # Schema: PositivacaoDiariaResponse — dict com {periodo, objetivo_diario, dias, total_positivados, total_novos}
+        assert isinstance(data, dict), f"Esperado dict, obtido {type(data)}"
+        assert "dias" in data, f"Campo 'dias' ausente. Campos presentes: {list(data.keys())}"
+        assert isinstance(data["dias"], list), "Campo 'dias' deve ser lista"
 
     def test_itens_contem_campos_obrigatorios(self, client_admin):
-        """Cada item deve conter data e quantidade de clientes positivados."""
+        """Cada item de 'dias' deve conter dia (int), positivados e novos."""
         resp = client_admin.get(
             "/api/dashboard/positivacao-diaria",
             params={"mes": 4, "ano": 2026},
         )
         data = resp.json()
-        for item in data:
+        # Schema: PositivacaoDiaDiaItem — {dia: int, positivados: int, novos: int}
+        for item in data["dias"]:
             assert isinstance(item, dict), "Cada item deve ser um dicionario"
-            # Deve ter um campo de data e um campo de contagem
-            tem_data = "data" in item or "dia" in item or "date" in item
-            tem_contagem = (
-                "total_clientes_positivados" in item
-                or "positivados" in item
-                or "total" in item
-                or "count" in item
-            )
-            assert tem_data, f"Item sem campo de data: {list(item.keys())}"
-            assert tem_contagem, f"Item sem campo de contagem: {list(item.keys())}"
+            assert "dia" in item, f"Campo 'dia' ausente: {list(item.keys())}"
+            assert "positivados" in item, f"Campo 'positivados' ausente: {list(item.keys())}"
+            assert "novos" in item, f"Campo 'novos' ausente: {list(item.keys())}"
 
     def test_sem_jwt_retorna_401(self, client_unauthenticated):
         """Sem autenticacao JWT deve retornar HTTP 401."""
@@ -567,7 +566,7 @@ class TestPositivacaoDiaria:
 
     def test_dias_com_venda_aparecem_na_lista(self, client_admin):
         """
-        Dias que tiveram vendas devem aparecer na lista com contagem > 0.
+        Dias que tiveram vendas devem aparecer em 'dias' com positivados > 0.
         Seed: MANU vendeu em 05/04 e 20/04; LARISSA em 10/04.
         """
         resp = client_admin.get(
@@ -576,17 +575,12 @@ class TestPositivacaoDiaria:
         )
         assert resp.status_code == 200
         data = resp.json()
-        if len(data) > 0:
-            # Deve haver pelo menos um dia com positivacao > 0
-            totais = [
-                item.get("total_clientes_positivados")
-                or item.get("positivados")
-                or item.get("total")
-                or item.get("count")
-                or 0
-                for item in data
-            ]
-            assert any(t > 0 for t in totais), "Nenhum dia com positivacao > 0 em abril/2026"
+        # Schema: PositivacaoDiariaResponse — {periodo, objetivo_diario, dias, total_positivados, total_novos}
+        dias = data["dias"]
+        assert len(dias) > 0, "Campo 'dias' nao pode ser vazio para abril/2026"
+        # Deve haver pelo menos um dia com positivados > 0
+        totais = [item["positivados"] for item in dias]
+        assert any(t > 0 for t in totais), "Nenhum dia com positivados > 0 em abril/2026"
 
     def test_alucinacao_excluida(self, client_admin):
         """R8: vendas ALUCINACAO nao contam para positivacao diaria."""
@@ -613,32 +607,31 @@ class TestPositivacaoVendedor:
         )
         assert resp.status_code == 200
 
-    def test_resposta_e_lista(self, client_admin):
-        """Resposta deve ser uma lista (um item por vendedor)."""
+    def test_resposta_e_dict_com_campo_vendedores(self, client_admin):
+        """Resposta deve ser um dict com campo 'vendedores' contendo a lista por consultor."""
         resp = client_admin.get(
             "/api/dashboard/positivacao-vendedor",
             params={"mes": 4, "ano": 2026},
         )
         data = resp.json()
-        assert isinstance(data, list)
+        # Schema: PositivacaoVendedorResponse — {periodo: str, vendedores: list}
+        assert isinstance(data, dict), f"Esperado dict, obtido {type(data)}"
+        assert "vendedores" in data, f"Campo 'vendedores' ausente. Campos: {list(data.keys())}"
+        assert isinstance(data["vendedores"], list)
 
     def test_itens_contem_consultor_e_total(self, client_admin):
-        """Cada item deve conter o nome do consultor e total de positivados."""
+        """Cada item de 'vendedores' deve conter consultor, positivados, objetivo e pct."""
         resp = client_admin.get(
             "/api/dashboard/positivacao-vendedor",
             params={"mes": 4, "ano": 2026},
         )
         data = resp.json()
-        for item in data:
-            tem_consultor = "consultor" in item or "vendedor" in item
-            tem_total = (
-                "total_positivados" in item
-                or "positivados" in item
-                or "total" in item
-                or "count" in item
-            )
-            assert tem_consultor, f"Item sem campo consultor: {list(item.keys())}"
-            assert tem_total, f"Item sem campo de total: {list(item.keys())}"
+        # Schema: PositivacaoVendedorItem — {consultor, positivados, objetivo, pct}
+        for item in data["vendedores"]:
+            assert isinstance(item, dict), f"Item deve ser dict: {item}"
+            assert "consultor" in item, f"Campo 'consultor' ausente: {list(item.keys())}"
+            assert "positivados" in item, f"Campo 'positivados' ausente: {list(item.keys())}"
+            assert "objetivo" in item, f"Campo 'objetivo' ausente: {list(item.keys())}"
 
     def test_sem_jwt_retorna_401(self, client_unauthenticated):
         """Sem JWT deve retornar 401."""
@@ -672,19 +665,17 @@ class TestPositivacaoVendedor:
     def test_manu_e_larissa_aparecem_em_abril(self, client_admin):
         """
         Seed: MANU tem 2 vendas e LARISSA tem 1 venda em abril/2026.
-        Ambos devem aparecer na lista de positivacao do vendedor.
+        Ambos devem aparecer em 'vendedores' com positivados > 0.
         """
         resp = client_admin.get(
             "/api/dashboard/positivacao-vendedor",
             params={"mes": 4, "ano": 2026},
         )
         data = resp.json()
-        consultores = [
-            item.get("consultor") or item.get("vendedor")
-            for item in data
-        ]
-        assert "MANU" in consultores, "MANU deveria aparecer com positivacao em abril/2026"
-        assert "LARISSA" in consultores, "LARISSA deveria aparecer com positivacao em abril/2026"
+        # Schema: PositivacaoVendedorResponse — {periodo, vendedores}
+        consultores = [item["consultor"] for item in data["vendedores"]]
+        assert "MANU" in consultores, "MANU deveria aparecer em vendedores em abril/2026"
+        assert "LARISSA" in consultores, "LARISSA deveria aparecer em vendedores em abril/2026"
 
     def test_alucinacao_excluida_dos_resultados(self, client_admin):
         """R8: vendas ALUCINACAO nao devem contar para positivacao do vendedor."""
@@ -697,22 +688,15 @@ class TestPositivacaoVendedor:
         # O CNPJ 99999999999901 tem venda ALUCINACAO em abril
         # Se o total de positivados da MANU vier correto (1 cliente, nao 2),
         # a ALUCINACAO foi excluida
-        for item in data:
-            consultor = item.get("consultor") or item.get("vendedor")
-            if consultor == "MANU":
-                total = (
-                    item.get("total_positivados")
-                    or item.get("positivados")
-                    or item.get("total")
-                    or item.get("count")
+        # Schema: PositivacaoVendedorResponse — {periodo, vendedores}
+        for item in data["vendedores"]:
+            if item["consultor"] == "MANU":
+                # MANU tem 1 cliente REAL positivado em abril (04067573000193)
+                # O cliente ALUCINACAO (99999999999901) nao deve contar
+                assert item["positivados"] <= 1, (
+                    f"MANU deveria ter <= 1 cliente REAL positivado, "
+                    f"mas obteve {item['positivados']} (ALUCINACAO pode estar incluida)"
                 )
-                if total is not None:
-                    # MANU tem 1 cliente REAL positivado em abril (04067573000193)
-                    # O cliente ALUCINACAO nao deve contar
-                    assert total <= 1, (
-                        f"MANU deveria ter <= 1 cliente REAL positivado, "
-                        f"mas obteve {total} (ALUCINACAO pode estar incluida)"
-                    )
 
 
 # ===========================================================================
@@ -730,33 +714,31 @@ class TestAtendimentosDiarios:
         )
         assert resp.status_code == 200
 
-    def test_resposta_e_lista(self, client_admin):
-        """Resposta deve ser uma lista (serie temporal de dias)."""
+    def test_resposta_e_dict_com_campo_dias(self, client_admin):
+        """Resposta deve ser um dict com campo 'dias' contendo a serie temporal."""
         resp = client_admin.get(
             "/api/dashboard/atendimentos-diarios",
             params={"mes": 4, "ano": 2026},
         )
         data = resp.json()
-        assert isinstance(data, list)
+        # Schema: AtendimentosDiariosResponse — {periodo, objetivo_diario, dias, total_atual, total_mes_anterior}
+        assert isinstance(data, dict), f"Esperado dict, obtido {type(data)}"
+        assert "dias" in data, f"Campo 'dias' ausente. Campos: {list(data.keys())}"
+        assert isinstance(data["dias"], list)
 
     def test_itens_contem_campos_obrigatorios(self, client_admin):
-        """Cada item deve conter data e total de atendimentos."""
+        """Cada item de 'dias' deve conter dia (int), atendimentos e atendimentos_mes_anterior."""
         resp = client_admin.get(
             "/api/dashboard/atendimentos-diarios",
             params={"mes": 4, "ano": 2026},
         )
         data = resp.json()
-        for item in data:
-            assert isinstance(item, dict)
-            tem_data = "data" in item or "dia" in item or "date" in item
-            tem_total = (
-                "total_atendimentos" in item
-                or "atendimentos" in item
-                or "total" in item
-                or "count" in item
-            )
-            assert tem_data, f"Item sem campo de data: {list(item.keys())}"
-            assert tem_total, f"Item sem campo de total: {list(item.keys())}"
+        # Schema: AtendimentoDiaItem — {dia: int, atendimentos: int, atendimentos_mes_anterior: int}
+        for item in data["dias"]:
+            assert isinstance(item, dict), f"Item deve ser dict: {item}"
+            assert "dia" in item, f"Campo 'dia' ausente: {list(item.keys())}"
+            assert "atendimentos" in item, f"Campo 'atendimentos' ausente: {list(item.keys())}"
+            assert "atendimentos_mes_anterior" in item, f"Campo 'atendimentos_mes_anterior' ausente: {list(item.keys())}"
 
     def test_sem_jwt_retorna_401(self, client_unauthenticated):
         """Sem JWT deve retornar 401."""
@@ -797,18 +779,12 @@ class TestAtendimentosDiarios:
             params={"mes": 4, "ano": 2026},
         )
         data = resp.json()
-        if len(data) > 0:
-            totais = [
-                item.get("total_atendimentos")
-                or item.get("atendimentos")
-                or item.get("total")
-                or item.get("count")
-                or 0
-                for item in data
-            ]
-            assert any(t > 0 for t in totais), (
-                "Nenhum atendimento encontrado em abril/2026, mas seed tem 4 logs"
-            )
+        # Schema: AtendimentosDiariosResponse — {periodo, objetivo_diario, dias, total_atual, total_mes_anterior}
+        dias = data["dias"]
+        totais = [item["atendimentos"] for item in dias]
+        assert any(t > 0 for t in totais), (
+            "Nenhum atendimento encontrado em abril/2026, mas seed tem 4 logs"
+        )
 
     # --- Teste Two-Base (R4) ---
 
@@ -824,32 +800,32 @@ class TestAtendimentosDiarios:
         )
         assert resp.status_code == 200
         data = resp.json()
-        # Nenhum item deve ter campo de valor monetario
-        for item in data:
-            assert "valor" not in item, "atendimentos-diarios nao deve ter campo 'valor' (Two-Base)"
-            assert "valor_pedido" not in item, "atendimentos-diarios nao deve ter 'valor_pedido'"
-            assert "faturamento" not in item, "atendimentos-diarios nao deve ter 'faturamento'"
+        # Schema: AtendimentosDiariosResponse — {periodo, objetivo_diario, dias, total_atual, total_mes_anterior}
+        # Nenhum campo da resposta ou dos itens de 'dias' deve ter valor monetario
+        campos_monetarios = {"valor", "valor_pedido", "faturamento", "receita", "ticket"}
+        for campo in campos_monetarios:
+            assert campo not in data, (
+                f"Campo monetario '{campo}' encontrado na raiz da resposta (Two-Base)"
+            )
+        for item in data["dias"]:
+            for campo in campos_monetarios:
+                assert campo not in item, (
+                    f"Campo monetario '{campo}' encontrado em item de 'dias' (Two-Base)"
+                )
 
     def test_total_atendimentos_abril_bate_com_seed(self, client_admin):
         """
         Seed tem 4 logs em abril/2026 (3 MANU + 1 LARISSA).
-        A soma de todos os dias deve ser 4.
+        O campo total_atual da resposta deve ser 4.
         """
         resp = client_admin.get(
             "/api/dashboard/atendimentos-diarios",
             params={"mes": 4, "ano": 2026},
         )
         data = resp.json()
-        total_somado = sum(
-            item.get("total_atendimentos")
-            or item.get("atendimentos")
-            or item.get("total")
-            or item.get("count")
-            or 0
-            for item in data
-        )
-        assert total_somado == 4, (
-            f"Esperados 4 atendimentos em abril/2026 (seed), obtido {total_somado}"
+        # Schema: AtendimentosDiariosResponse — total_atual = soma de atendimentos do mes
+        assert data["total_atual"] == 4, (
+            f"Esperados 4 atendimentos em abril/2026 (seed), obtido {data['total_atual']}"
         )
 
 
@@ -874,34 +850,26 @@ class TestCurvaAbcDetalhe:
         assert resp.status_code == 200
 
     def test_campos_obrigatorios_presentes(self, client_admin):
-        """Resposta deve conter dados de curva ABC (A, B, C)."""
+        """Resposta deve conter total_clientes e faixas (schema CurvaABCDetalheResponse)."""
         resp = client_admin.get("/api/dashboard/curva-abc-detalhe")
         assert resp.status_code == 200
         data = resp.json()
-        assert data is not None
+        # Schema: CurvaABCDetalheResponse — {total_clientes: int, faixas: list}
+        assert isinstance(data, dict), f"Esperado dict, obtido {type(data)}"
+        assert "total_clientes" in data, f"Campo 'total_clientes' ausente: {list(data.keys())}"
+        assert "faixas" in data, f"Campo 'faixas' ausente: {list(data.keys())}"
 
-    def test_buckets_abc_contem_total_clientes(self, client_admin):
-        """Cada bucket (A/B/C) deve conter total_clientes ou contagem equivalente."""
+    def test_faixas_contem_campos_curva_e_qtd(self, client_admin):
+        """Cada faixa deve conter curva, qtd, pct e faturamento."""
         resp = client_admin.get("/api/dashboard/curva-abc-detalhe")
         data = resp.json()
-        if isinstance(data, list):
-            for item in data:
-                assert isinstance(item, dict)
-                tem_curva = "curva" in item or "curva_abc" in item or "categoria" in item
-                tem_total = (
-                    "total_clientes" in item
-                    or "clientes" in item
-                    or "total" in item
-                    or "count" in item
-                )
-                assert tem_curva, f"Item sem campo de curva: {list(item.keys())}"
-                assert tem_total, f"Item sem campo de total: {list(item.keys())}"
-        elif isinstance(data, dict):
-            # Resposta pode ser dict {A: {...}, B: {...}, C: {...}}
-            for curva in ("A", "B", "C"):
-                if curva in data:
-                    bucket = data[curva]
-                    assert isinstance(bucket, dict)
+        # Schema: CurvaABCFaixaItem — {curva: str, qtd: int, pct: float, faturamento: float}
+        for item in data["faixas"]:
+            assert isinstance(item, dict), f"Faixa deve ser dict: {item}"
+            assert "curva" in item, f"Campo 'curva' ausente: {list(item.keys())}"
+            assert "qtd" in item, f"Campo 'qtd' ausente: {list(item.keys())}"
+            assert "pct" in item, f"Campo 'pct' ausente: {list(item.keys())}"
+            assert "faturamento" in item, f"Campo 'faturamento' ausente: {list(item.keys())}"
 
     def test_filtro_consultor_larissa_isola_dados(self, client_admin):
         """Filtro consultor=LARISSA retorna somente dados dos clientes de LARISSA."""
@@ -926,13 +894,15 @@ class TestCurvaAbcDetalhe:
         )
         assert resp.status_code == 200
         data = resp.json()
-        if isinstance(data, list):
-            # Lista vazia ou todos os totais zerados
-            totais = [
-                item.get("total_clientes") or item.get("total") or item.get("count") or 0
-                for item in data
-            ]
-            assert all(t == 0 for t in totais) or len(data) == 0
+        # Schema: CurvaABCDetalheResponse — {total_clientes: int, faixas: list}
+        assert isinstance(data, dict)
+        # Consultor fantasma nao tem clientes — total_clientes = 0 e faixas = []
+        assert data["total_clientes"] == 0, (
+            f"Consultor inexistente deve retornar total_clientes=0, obtido {data['total_clientes']}"
+        )
+        assert data["faixas"] == [], (
+            f"Consultor inexistente deve retornar faixas=[], obtido {data['faixas']}"
+        )
 
     def test_sem_jwt_retorna_401(self, client_unauthenticated):
         """Sem JWT deve retornar 401."""
@@ -943,14 +913,18 @@ class TestCurvaAbcDetalhe:
         assert resp.status_code == 401
 
     def test_alucinacao_excluida_do_detalhe(self, client_admin):
-        """R8: cliente ALUCINACAO nao deve aparecer no detalhe de curva ABC."""
+        """R8: cliente ALUCINACAO nao deve inflar os contadores de curva ABC."""
         resp = client_admin.get("/api/dashboard/curva-abc-detalhe")
         data = resp.json()
-        if isinstance(data, list):
-            for item in data:
-                assert item.get("cnpj") != "99999999999901", (
-                    "ALUCINACAO (99999999999901) nao deve aparecer em curva-abc-detalhe"
-                )
+        # Schema: CurvaABCDetalheResponse — {total_clientes, faixas}
+        # O seed tem 2 clientes REAL com curva_abc preenchida (MANU=A, LARISSA=B)
+        # O cliente ALUCINACAO (99999999999901) nao tem curva_abc preenchida no seed
+        # Mas, mesmo que tivesse, nao deve ser contado (classificacao_3tier='ALUCINACAO')
+        assert isinstance(data, dict)
+        # Total nao pode incluir o cliente ALUCINACAO
+        assert data["total_clientes"] <= 2, (
+            f"Esperado <= 2 clientes (excluindo ALUCINACAO), obtido {data['total_clientes']}"
+        )
 
 
 # ===========================================================================
@@ -969,16 +943,26 @@ class TestEcommerce:
         assert resp.status_code == 200
 
     def test_campos_obrigatorios_presentes(self, client_admin):
-        """Resposta deve conter campos de indicadores de ecommerce."""
+        """Resposta deve conter todos os campos do schema EcommerceResponse."""
         resp = client_admin.get(
             "/api/dashboard/ecommerce",
             params={"mes": 4, "ano": 2026},
         )
         assert resp.status_code == 200
         data = resp.json()
-        assert data is not None
-        # Resposta deve ser dict ou lista nao-vazia
-        assert isinstance(data, (dict, list))
+        # Schema: EcommerceResponse — {periodo, total_clientes_ecommerce, total_clientes,
+        #                               pct_ecommerce, pedidos_ecommerce, valor_ecommerce}
+        assert isinstance(data, dict), f"Esperado dict, obtido {type(data)}"
+        campos_obrigatorios = [
+            "periodo",
+            "total_clientes_ecommerce",
+            "total_clientes",
+            "pct_ecommerce",
+            "pedidos_ecommerce",
+            "valor_ecommerce",
+        ]
+        for campo in campos_obrigatorios:
+            assert campo in data, f"Campo '{campo}' ausente: {list(data.keys())}"
 
     def test_sem_jwt_retorna_401(self, client_unauthenticated):
         """Sem JWT deve retornar 401."""

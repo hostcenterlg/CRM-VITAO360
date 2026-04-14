@@ -1404,7 +1404,7 @@ def _vendas_por_dia(db: Session, ano: int, mes: int, consultor: Optional[str]) -
 
     stmt = (
         select(
-            func.cast(func.strftime("%d", Venda.data_pedido), func.Integer()).label("dia"),
+            func.strftime("%d", Venda.data_pedido).label("dia"),
             func.sum(Venda.valor_pedido).label("total"),
         )
         .where(
