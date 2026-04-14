@@ -9,6 +9,7 @@ import {
   VendasPorStatusResponse,
   formatBRL,
 } from '@/lib/api';
+import { exportToCSV } from '@/lib/export';
 import { useAuth } from '@/contexts/AuthContext';
 
 // ---------------------------------------------------------------------------
@@ -415,6 +416,7 @@ function PedidosInner() {
   const [filtrosExpanded, setFiltrosExpanded] = useState(false);
 
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [exporting, setExporting] = useState(false);
 
   const pushUrl = useCallback(
     (st: string, cons: string, di: string, df: string, b: string) => {
@@ -480,6 +482,33 @@ function PedidosInner() {
   const totalPedidos = response?.total ?? 0;
   const resumoStatus = response?.resumo_status ?? {};
 
+  async function handleExportCsv() {
+    setExporting(true);
+    try {
+      const hoje = new Date().toISOString().slice(0, 10);
+      const itensFiltrados = response?.itens ?? [];
+      exportToCSV(
+        itensFiltrados,
+        [
+          { label: 'Numero Pedido', value: (p) => p.numero_pedido },
+          { label: 'Data',         value: (p) => p.data_pedido?.slice(0, 10) ?? '' },
+          { label: 'Cliente',      value: (p) => p.cliente_nome ?? '' },
+          { label: 'CNPJ',         value: (p) => p.cliente_cnpj ?? '', forceText: true },
+          { label: 'Consultor',    value: (p) => p.consultor ?? '' },
+          { label: 'Status',       value: (p) => p.status ?? '' },
+          { label: 'Valor Total',  value: (p) => p.valor_total != null ? p.valor_total.toFixed(2) : '' },
+          { label: 'Cond. Pagamento', value: (p) => p.condicao_pagamento ?? '' },
+          { label: 'Itens',        value: (p) => p.itens_qtd ?? '' },
+        ],
+        `pedidos_vitao360_${hoje}`
+      );
+    } catch {
+      // silencioso — erro improvavel em export client-side
+    } finally {
+      setExporting(false);
+    }
+  }
+
   return (
     <div className="space-y-4">
       {/* Cabecalho */}
@@ -492,20 +521,43 @@ function PedidosInner() {
               : `${totalPedidos.toLocaleString('pt-BR')} pedido${totalPedidos !== 1 ? 's' : ''}`}
           </p>
         </div>
-        {/* Botao atualizar */}
-        <button
-          type="button"
-          onClick={load}
-          disabled={loading}
-          aria-label="Atualizar lista de pedidos"
-          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-gray-600 border border-gray-200 rounded-lg bg-white hover:bg-gray-50 transition-colors disabled:opacity-50 flex-shrink-0"
-        >
-          <svg className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-          </svg>
-          Atualizar
-        </button>
+        <div className="flex items-center gap-2 flex-shrink-0">
+          {/* Botao Exportar CSV */}
+          <button
+            type="button"
+            onClick={handleExportCsv}
+            disabled={exporting || loading || !response?.itens?.length}
+            aria-label="Exportar pedidos filtrados como CSV"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-green-700 border border-green-300 rounded-lg bg-white hover:bg-green-50 hover:border-green-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {exporting ? (
+              <svg className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+              </svg>
+            ) : (
+              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+            )}
+            CSV
+          </button>
+
+          {/* Botao atualizar */}
+          <button
+            type="button"
+            onClick={load}
+            disabled={loading}
+            aria-label="Atualizar lista de pedidos"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-gray-600 border border-gray-200 rounded-lg bg-white hover:bg-gray-50 transition-colors disabled:opacity-50"
+          >
+            <svg className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            Atualizar
+          </button>
+        </div>
       </div>
 
       {/* Resumo de status */}

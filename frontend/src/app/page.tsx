@@ -58,6 +58,7 @@ import {
   formatPercent,
 } from '@/lib/api';
 import StatusBadge from '@/components/StatusBadge';
+import ChartTooltip from '@/components/ChartTooltip';
 
 // ---------------------------------------------------------------------------
 // Tab definitions
@@ -162,41 +163,12 @@ interface Top10ClienteExtended extends Top10Cliente {
 }
 
 // ---------------------------------------------------------------------------
-// Custom recharts tooltip
+// Custom recharts tooltip — alias para ChartTooltip importado
 // ---------------------------------------------------------------------------
 
-interface TooltipPayloadItem {
-  name: string;
-  value: number;
-  color?: string;
-}
-
-function CustomTooltip({
-  active,
-  payload,
-  label,
-  isBRL = false,
-}: {
-  active?: boolean;
-  payload?: TooltipPayloadItem[];
-  label?: string;
-  isBRL?: boolean;
-}) {
-  if (!active || !payload?.length) return null;
-  return (
-    <div className="bg-white border border-gray-200 rounded-lg shadow-lg p-3 text-sm">
-      {label && <p className="font-semibold text-gray-700 mb-1">{label}</p>}
-      {payload.map((p, i) => (
-        <p key={i} className="text-gray-600">
-          <span className="font-medium" style={{ color: p.color ?? '#374151' }}>
-            {p.name}:{' '}
-          </span>
-          {isBRL ? formatCompact(p.value) : p.value.toLocaleString('pt-BR')}
-        </p>
-      ))}
-    </div>
-  );
-}
+// Alias local para manter compatibilidade com todas as referencias existentes
+// (ex: <Tooltip content={<CustomTooltip isBRL />} />)
+const CustomTooltip = ChartTooltip;
 
 // ---------------------------------------------------------------------------
 // Main DashboardPage
@@ -757,7 +729,7 @@ function TabResumo({
                 <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                 <XAxis dataKey="mes" tick={{ fontSize: 11 }} />
                 <YAxis tick={{ fontSize: 11 }} tickFormatter={(v: number) => formatCompact(v)} />
-                <Tooltip content={<CustomTooltip isBRL />} />
+                <Tooltip content={<CustomTooltip isBRL modoPerformance />} />
                 <Legend />
                 <Area type="monotone" dataKey="faturamento" name="Realizado" stroke={VERDE} fill={VERDE + '20'} strokeWidth={2} />
                 <Area type="monotone" dataKey="meta" name="Meta" stroke="#2563eb" fill="#2563eb20" strokeWidth={2} strokeDasharray="5 5" />
@@ -1039,7 +1011,7 @@ function TabOperacional({ performance, atividades, positivacao, loading }: TabOp
                     <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                     <XAxis dataKey="consultor" tick={{ fontSize: 11 }} />
                     <YAxis tick={{ fontSize: 11 }} />
-                    <Tooltip content={<CustomTooltip />} />
+                    <Tooltip content={<CustomTooltip modoPositivacao />} />
                     <Legend />
                     <Bar dataKey="positivados" name="Positivados" fill={VERDE} radius={[4, 4, 0, 0]} />
                     <Bar dataKey="total" name="Total Carteira" fill="#d1d5db" radius={[4, 4, 0, 0]} />
@@ -1288,7 +1260,7 @@ function TabPerformance({ performance, projecao, loading }: TabPerformanceProps)
                 <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                 <XAxis dataKey="consultor" tick={{ fontSize: 11 }} />
                 <YAxis tick={{ fontSize: 11 }} tickFormatter={(v: number) => formatCompact(v)} />
-                <Tooltip content={<CustomTooltip isBRL />} />
+                <Tooltip content={<CustomTooltip isBRL modoPerformance />} />
                 <Legend />
                 <Bar dataKey="faturamento" name="Realizado" fill={VERDE} radius={[4, 4, 0, 0]} />
                 <Bar dataKey="meta" name="Meta" fill="#2563eb" radius={[4, 4, 0, 0]} />
@@ -1960,7 +1932,7 @@ function TabIndicadores({
                   <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                   <XAxis dataKey="dia" tick={{ fontSize: 10 }} label={{ value: 'Dia', position: 'insideBottom', offset: -2, fontSize: 10 }} />
                   <YAxis tick={{ fontSize: 10 }} tickFormatter={(v: number) => formatCompact(v)} />
-                  <Tooltip content={<CustomTooltip isBRL />} />
+                  <Tooltip content={<CustomTooltip isBRL mostrarDeltaMesAnterior />} />
                   <Legend />
                   <Line
                     type="monotone"
@@ -2048,7 +2020,7 @@ function TabIndicadores({
                   <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                   <XAxis type="number" tick={{ fontSize: 10 }} />
                   <YAxis dataKey="consultor" type="category" tick={{ fontSize: 11 }} width={70} />
-                  <Tooltip content={<CustomTooltip />} />
+                  <Tooltip content={<CustomTooltip modoPositivacao />} />
                   <Legend />
                   <Bar dataKey="positivados" name="Positivados" radius={[0, 4, 4, 0]}>
                     {positivacaoVendedorItens.map((entry, i) => (

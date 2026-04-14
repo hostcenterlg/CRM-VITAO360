@@ -11,6 +11,7 @@ import {
   ProdutosResponse,
   formatBRL,
 } from '@/lib/api';
+import { exportToCSV } from '@/lib/export';
 
 // ---------------------------------------------------------------------------
 // Produtos — catálogo com filtros, ordenação, detalhe e mais vendidos
@@ -342,6 +343,7 @@ function ProdutosInner() {
   const [selectedId, setSelectedId] = useState<number | null>(null);
 
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [exporting, setExporting] = useState(false);
 
   // Carregar categorias uma vez
   useEffect(() => {
@@ -443,16 +445,64 @@ function ProdutosInner() {
   const currentPage = Math.floor(offset / PAGE_SIZE) + 1;
   const temFiltro = !!(busca || categoria || !apenasAtivos);
 
+  async function handleExportCsv() {
+    setExporting(true);
+    try {
+      const hoje = new Date().toISOString().slice(0, 10);
+      exportToCSV(
+        itensOrdenados,
+        [
+          { label: 'Codigo',     value: (p) => p.codigo ?? '' },
+          { label: 'Nome',       value: (p) => p.nome ?? '' },
+          { label: 'Categoria',  value: (p) => p.categoria ?? '' },
+          { label: 'Unidade',    value: (p) => p.unidade ?? '' },
+          { label: 'Preco Tabela', value: (p) => p.preco_tabela != null ? p.preco_tabela.toFixed(2) : '' },
+          { label: 'Comissao %', value: (p) => p.comissao_pct != null ? p.comissao_pct.toFixed(2) : '' },
+          { label: 'Ativo',      value: (p) => p.ativo ? 'Sim' : 'Nao' },
+          { label: 'Peso Liquido', value: (p) => p.peso_liquido ?? '' },
+          { label: 'Validade (dias)', value: (p) => p.validade_dias ?? '' },
+        ],
+        `catalogo_produtos_vitao360_${hoje}`
+      );
+    } catch {
+      // silencioso
+    } finally {
+      setExporting(false);
+    }
+  }
+
   return (
     <div className="space-y-4">
       {/* Cabecalho */}
-      <div>
-        <h1 className="text-lg sm:text-xl font-bold text-gray-900">Catalogo de Produtos</h1>
-        <p className="text-xs text-gray-500 mt-0.5">
-          {response
-            ? `${response.total.toLocaleString('pt-BR')} produto${response.total !== 1 ? 's' : ''} encontrado${response.total !== 1 ? 's' : ''}`
-            : 'Carregando...'}
-        </p>
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <h1 className="text-lg sm:text-xl font-bold text-gray-900">Catalogo de Produtos</h1>
+          <p className="text-xs text-gray-500 mt-0.5">
+            {response
+              ? `${response.total.toLocaleString('pt-BR')} produto${response.total !== 1 ? 's' : ''} encontrado${response.total !== 1 ? 's' : ''}`
+              : 'Carregando...'}
+          </p>
+        </div>
+        {/* Botao Exportar CSV */}
+        <button
+          type="button"
+          onClick={handleExportCsv}
+          disabled={exporting || loading || itensOrdenados.length === 0}
+          aria-label="Exportar catalogo filtrado como CSV"
+          className="flex items-center gap-1.5 min-h-11 sm:min-h-0 px-3 py-1.5 text-xs font-semibold text-green-700 border border-green-300 rounded-lg bg-white hover:bg-green-50 hover:border-green-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
+        >
+          {exporting ? (
+            <svg className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+            </svg>
+          ) : (
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            </svg>
+          )}
+          Exportar CSV
+        </button>
       </div>
 
       {/* Mais Vendidos */}
