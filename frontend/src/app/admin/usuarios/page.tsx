@@ -120,13 +120,12 @@ function ModalUsuario({ usuario, onClose, onSalvar }: ModalUsuarioProps) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center"
-      style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
       role="dialog"
       aria-modal="true"
       aria-labelledby="modal-usuario-titulo"
     >
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-md mx-4">
+      <div className="bg-white rounded-xl shadow-xl w-full max-w-md mx-4">
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
           <h2 id="modal-usuario-titulo" className="text-sm font-bold text-gray-900 uppercase tracking-wide">
@@ -366,7 +365,7 @@ export default function AdminUsuariosPage() {
       )}
 
       {/* Tabela */}
-      <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
         {loading ? (
           <div className="flex items-center justify-center py-16">
             <div className="w-5 h-5 border-2 border-gray-300 border-t-green-600 rounded-full animate-spin" />

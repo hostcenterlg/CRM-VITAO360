@@ -1251,7 +1251,7 @@ export default function CentralIAPage() {
               </svg>
             </div>
             <div>
-              <h1 className="text-xl font-bold text-gray-900">Central de IA</h1>
+              <h1 className="text-lg sm:text-xl font-bold text-gray-900">Central de IA</h1>
               <p className="text-sm text-gray-500 mt-0.5">
                 Inteligencia comercial para vender mais
               </p>

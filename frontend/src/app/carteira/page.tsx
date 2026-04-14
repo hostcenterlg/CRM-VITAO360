@@ -384,7 +384,7 @@ function CarteiraInner() {
       )}
 
       {/* Barra de filtros */}
-      <div className="bg-white rounded-lg border border-gray-200 p-3 shadow-sm">
+      <div className="bg-white rounded-xl border border-gray-200 p-3 shadow-sm">
         {/* Header da barra de filtros — com botao toggle em mobile */}
         <div className="flex items-center gap-2 mb-2 sm:mb-0">
           {/* Busca sempre visivel */}
@@ -544,7 +544,7 @@ function CarteiraInner() {
       </div>
 
       {/* Tabela */}
-      <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
+      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
         <ClienteTable
           registros={response?.registros ?? []}
           loading={loading}

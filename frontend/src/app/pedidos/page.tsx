@@ -157,13 +157,12 @@ function ModalPedido({ pedido, onClose, onTransicionar, isAdmin }: ModalPedidoPr
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center"
-      style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
       role="dialog"
       aria-modal="true"
       aria-labelledby="modal-pedido-titulo"
     >
-      <div className="relative bg-white rounded-lg shadow-xl w-full max-w-lg mx-4">
+      <div className="relative bg-white rounded-xl shadow-xl w-full max-w-lg mx-4">
         {/* Mini-confirmacao de descarte */}
         {confirmDescarte && (
           <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/30 rounded-lg">
@@ -370,7 +369,8 @@ function ResumoStatus({ resumo }: { resumo: Record<string, number> }) {
         const cfg = STATUS_CONFIG[status];
         const qtd = resumo[status] ?? 0;
         return (
-          <div key={status} className="bg-white rounded-lg border border-gray-200 p-3 text-center">
+          <div key={status} className="bg-white rounded-xl border border-gray-200 p-3 text-center shadow-sm"
+            style={{ borderLeftColor: cfg.bg, borderLeftWidth: '3px' }}>
             <p
               className="text-lg font-bold tabular-nums"
               style={{ color: cfg.bg }}
@@ -548,7 +548,7 @@ function PedidosInner() {
       )}
 
       {/* Filtros */}
-      <div className="bg-white rounded-lg border border-gray-200 p-3 shadow-sm">
+      <div className="bg-white rounded-xl border border-gray-200 p-3 shadow-sm">
         <div className="flex items-center gap-2 mb-2 sm:mb-0">
           {/* Busca — sempre visivel */}
           <div className="flex flex-col gap-1 flex-1 min-w-0">
@@ -698,7 +698,7 @@ function PedidosInner() {
           ))}
         </div>
       ) : grupos.length === 0 ? (
-        <div className="bg-white rounded-lg border border-gray-200 py-16 flex flex-col items-center gap-3">
+        <div className="bg-white rounded-xl border border-gray-200 py-16 flex flex-col items-center gap-3 shadow-sm">
           <svg className="w-10 h-10 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
               d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />

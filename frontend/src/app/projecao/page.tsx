@@ -62,8 +62,8 @@ export default function ProjecaoPage() {
     <div className="space-y-6">
       {/* Page heading */}
       <div>
-        <h1 className="text-xl font-bold text-gray-900">Projecao Comercial 2026</h1>
-        <p className="text-sm text-gray-500 mt-0.5">
+        <h1 className="text-lg sm:text-xl font-bold text-gray-900">Projecao Comercial 2026</h1>
+        <p className="text-xs text-gray-500 mt-0.5">
           Metas vs realizado por consultor e periodo
         </p>
       </div>
@@ -93,16 +93,16 @@ export default function ProjecaoPage() {
         <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* Baseline 2025 */}
           <div
-            className="bg-white rounded-lg border border-gray-200 p-4 flex flex-col gap-1 shadow-sm"
-            style={{ borderLeftColor: '#2563eb', borderLeftWidth: '4px' }}
+            className="bg-white rounded-xl border border-gray-200 p-4 flex flex-col gap-1 shadow-sm"
+            style={{ borderLeftColor: '#6B7280', borderLeftWidth: '4px' }}
           >
             <div className="flex items-center justify-between gap-2">
-              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
                 Baseline 2025
               </p>
               <span
                 className="w-7 h-7 rounded flex items-center justify-center flex-shrink-0"
-                style={{ backgroundColor: '#2563eb18', color: '#2563eb' }}
+                style={{ backgroundColor: '#6B728018', color: '#6B7280' }}
                 aria-hidden="true"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -114,55 +114,55 @@ export default function ProjecaoPage() {
             <p className="text-2xl font-bold text-gray-900 leading-tight tabular-nums">
               {loading ? '—' : formatBRL(baseline2025)}
             </p>
-            <p className="text-xs text-gray-400 mt-0.5">
+            <p className="text-[10px] text-gray-400 mt-0.5">
               Auditoria forense — PAINEL CEO
             </p>
           </div>
 
           {/* Meta 2026 */}
           <div
-            className="bg-white rounded-lg border border-gray-200 p-4 flex flex-col gap-1 shadow-sm"
+            className="bg-white rounded-xl border border-gray-200 p-4 flex flex-col gap-1 shadow-sm"
             style={{ borderLeftColor: '#00B050', borderLeftWidth: '4px' }}
           >
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
               Meta 2026
             </p>
             <p className="text-2xl font-bold text-gray-900 leading-tight tabular-nums">
               {formatBRL(meta2026)}
             </p>
-            <p className="text-xs text-gray-400 mt-0.5">
+            <p className="text-[10px] text-gray-400 mt-0.5">
               +{loading ? '—' : formatPercent(baseline2025 > 0 ? ((meta2026 - baseline2025) / baseline2025) * 100 : 0, 0)} vs Baseline
             </p>
           </div>
 
           {/* Realizado YTD */}
           <div
-            className="bg-white rounded-lg border border-gray-200 p-4 flex flex-col gap-1 shadow-sm"
+            className="bg-white rounded-xl border border-gray-200 p-4 flex flex-col gap-1 shadow-sm"
             style={{ borderLeftColor: pctQ1Color, borderLeftWidth: '4px' }}
           >
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
               Realizado 2026 YTD
             </p>
             <p className="text-2xl font-bold text-gray-900 leading-tight tabular-nums">
               {loading ? '—' : formatBRL(realizadoYTD)}
             </p>
-            <p className="text-xs mt-0.5" style={{ color: pctQ1Color }}>
+            <p className="text-[10px] mt-0.5" style={{ color: pctQ1Color }}>
               {loading ? '—' : formatPercent(pctQ1)} da meta anual
             </p>
           </div>
 
           {/* Projecao 2026 */}
           <div
-            className="bg-white rounded-lg border border-gray-200 p-4 flex flex-col gap-1 shadow-sm"
+            className="bg-white rounded-xl border border-gray-200 p-4 flex flex-col gap-1 shadow-sm"
             style={{ borderLeftColor: '#7c3aed', borderLeftWidth: '4px' }}
           >
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
               Projecao 2026
             </p>
             <p className="text-2xl font-bold text-gray-900 leading-tight tabular-nums">
               {loading ? '—' : formatBRL(projecao2026)}
             </p>
-            <p className="text-xs text-gray-400 mt-0.5">
+            <p className="text-[10px] text-gray-400 mt-0.5">
               {loading ? '—' : `+${formatPercent(baseline2025 > 0 ? ((projecao2026 - baseline2025) / baseline2025) * 100 : 0, 0)} vs Baseline`}
             </p>
           </div>
@@ -170,7 +170,7 @@ export default function ProjecaoPage() {
       </section>
 
       {/* Grafico Realizado vs Meta por Mes — por consultor */}
-      <section className="bg-white rounded-lg border border-gray-200 p-5 shadow-sm">
+      <section className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
         <div className="flex items-center justify-between flex-wrap gap-3 mb-4">
           <h2 className="text-sm font-semibold text-gray-700">
             Evolucao Mensal por Consultor (2026)
@@ -239,7 +239,7 @@ export default function ProjecaoPage() {
       </section>
 
       {/* Performance por Consultor */}
-      <section className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
+      <section className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
         <div className="px-4 py-3 border-b border-gray-100">
           <h2 className="text-sm font-semibold text-gray-700">
             Desempenho por Consultor

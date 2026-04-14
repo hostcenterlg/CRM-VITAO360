@@ -14,16 +14,16 @@ interface BadgeProps {
   large?: boolean;
 }
 
-// Situacao: ATIVO=#00B050, INAT.REC=#FFC000, INAT.ANT=#FF0000, PROSPECT=#808080
+// Situacao: ATIVO=#00B050, INAT.REC=#FFC000, INAT.ANT=#FF0000, PROSPECT=#3B82F6
 const situacaoMap: Record<string, { bg: string; text: string; label: string }> = {
   ATIVO:       { bg: '#00B050', text: '#fff',    label: 'ATIVO' },
   'INAT.REC':  { bg: '#FFC000', text: '#1a1a1a', label: 'INAT.REC' },
   'INAT.ANT':  { bg: '#FF0000', text: '#fff',    label: 'INAT.ANT' },
   INATIVO:     { bg: '#FF0000', text: '#fff',    label: 'INATIVO' },
-  PROSPECT:    { bg: '#808080', text: '#fff',    label: 'PROSPECT' },
-  'EM RISCO':  { bg: '#FF6600', text: '#fff',    label: 'EM RISCO' },
-  LEAD:        { bg: '#6366F1', text: '#fff',    label: 'LEAD' },
-  NOVO:        { bg: '#0EA5E9', text: '#fff',    label: 'NOVO' },
+  PROSPECT:    { bg: '#3B82F6', text: '#fff',    label: 'PROSPECT' },
+  'EM RISCO':  { bg: '#F97316', text: '#fff',    label: 'EM RISCO' },
+  LEAD:        { bg: '#8B5CF6', text: '#fff',    label: 'LEAD' },
+  NOVO:        { bg: '#06B6D4', text: '#fff',    label: 'NOVO' },
 };
 
 // Sinaleiro: VERDE=#00B050, AMARELO=#FFC000, VERMELHO=#FF0000, ROXO=#7030A0

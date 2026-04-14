@@ -82,13 +82,12 @@ function ModalConfirmacao({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center"
-      style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
       role="dialog"
       aria-modal="true"
       aria-labelledby="modal-confirm-titulo"
     >
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-sm mx-4">
+      <div className="bg-white rounded-xl shadow-xl w-full max-w-sm mx-4">
         <div className="px-6 py-5">
           {/* Icone de aviso */}
           <div className="flex items-center justify-center w-12 h-12 rounded-full bg-amber-100 mx-auto mb-4">
@@ -376,7 +375,7 @@ export default function RedistribuirCarteiraPage() {
       </div>
 
       {/* Selecao de origem e destino */}
-      <div className="bg-white rounded-lg border border-gray-200 p-4">
+      <div className="bg-white rounded-xl border border-gray-200 p-4">
         <p className="text-xs font-semibold text-gray-700 uppercase tracking-wider mb-4">
           Configurar Transferencia
         </p>
@@ -437,7 +436,7 @@ export default function RedistribuirCarteiraPage() {
       </div>
 
       {/* Tabela de clientes */}
-      <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
         {/* Cabecalho da tabela com acoes */}
         <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 bg-gray-50">
           <div className="flex items-center gap-3">

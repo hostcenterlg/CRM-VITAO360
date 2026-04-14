@@ -17,17 +17,17 @@ export default function KpiCard({
   title,
   value,
   subtitle,
-  accentColor = '#2563eb',
+  accentColor = '#00B050',
   loading = false,
   icon,
 }: KpiCardProps) {
   return (
     <div
-      className="bg-white rounded-lg border border-gray-200 p-3 sm:p-4 flex flex-col gap-1 shadow-sm"
+      className="bg-white rounded-xl border border-gray-200 p-3 sm:p-4 flex flex-col gap-1 shadow-sm"
       style={{ borderLeftColor: accentColor, borderLeftWidth: '4px' }}
     >
       <div className="flex items-center justify-between gap-2">
-        <p className="text-[11px] sm:text-xs font-medium text-gray-500 uppercase tracking-wide leading-tight">
+        <p className="text-[10px] sm:text-[11px] font-semibold text-gray-500 uppercase tracking-wider leading-tight">
           {title}
         </p>
         {icon && (

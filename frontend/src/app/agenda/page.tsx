@@ -500,7 +500,7 @@ function ProgressBar({ total, concluidos, consultor }: ProgressBarProps) {
     pct >= 20 ? '#FF8C00' : '#E5E7EB';
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 px-4 py-3 shadow-sm">
+    <div className="bg-white rounded-xl border border-gray-200 px-4 py-3 shadow-sm">
       <div className="flex items-center justify-between mb-2 gap-2">
         {/* Mobile: so mostra pct e consultor | Desktop: texto completo */}
         <p className="text-sm font-medium text-gray-700 min-w-0">
@@ -570,7 +570,7 @@ function ResumoSemanalIA({ consultorAtivo }: { consultorAtivo: string }) {
     val >= limiteAlerta ? '#FF0000' : '#374151';
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
+    <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
       {/* Header colapsavel */}
       <button
         type="button"
@@ -1219,7 +1219,7 @@ export default function AgendaPage() {
         </div>
 
         {/* Legenda de prioridades */}
-        <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
+        <div className="bg-white rounded-xl border border-gray-200 p-4 shadow-sm">
           <h2 className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-3">
             Legenda de Prioridade
           </h2>

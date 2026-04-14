@@ -135,13 +135,12 @@ function ModalNovaRNC({ onClose, onSalvar }: ModalNovaRNCProps) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center"
-      style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
       role="dialog"
       aria-modal="true"
       aria-labelledby="modal-rnc-titulo"
     >
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-lg mx-4">
+      <div className="bg-white rounded-xl shadow-xl w-full max-w-lg mx-4">
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
           <h2 id="modal-rnc-titulo" className="text-sm font-bold text-gray-900 uppercase tracking-wide">
@@ -367,26 +366,29 @@ export default function RNCPage() {
       {/* Cards resumo */}
       {resumo && (
         <div className="grid grid-cols-3 gap-4">
-          <div className="bg-white rounded-lg border border-gray-200 p-4">
-            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">Resolvido</p>
+          <div className="bg-white rounded-xl border border-gray-200 p-4 shadow-sm"
+            style={{ borderLeftColor: '#00B050', borderLeftWidth: '4px' }}>
+            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1">Resolvido</p>
             <p className="text-2xl font-bold" style={{ color: '#00B050' }}>{resumo.resolvido}</p>
-            <p className="text-xs text-gray-500 mt-1">{resumo.resolvido_pct.toFixed(0)}% do total</p>
+            <p className="text-[10px] text-gray-400 mt-1">{resumo.resolvido_pct.toFixed(0)}% do total</p>
           </div>
-          <div className="bg-white rounded-lg border border-gray-200 p-4">
-            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">Em Andamento</p>
+          <div className="bg-white rounded-xl border border-gray-200 p-4 shadow-sm"
+            style={{ borderLeftColor: '#FFC000', borderLeftWidth: '4px' }}>
+            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1">Em Andamento</p>
             <p className="text-2xl font-bold" style={{ color: '#FFC000' }}>{resumo.em_andamento}</p>
-            <p className="text-xs text-gray-500 mt-1">{resumo.em_andamento_pct.toFixed(0)}% do total</p>
+            <p className="text-[10px] text-gray-400 mt-1">{resumo.em_andamento_pct.toFixed(0)}% do total</p>
           </div>
-          <div className="bg-white rounded-lg border border-gray-200 p-4">
-            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">Pendente</p>
+          <div className="bg-white rounded-xl border border-gray-200 p-4 shadow-sm"
+            style={{ borderLeftColor: '#FF0000', borderLeftWidth: '4px' }}>
+            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1">Pendente</p>
             <p className="text-2xl font-bold" style={{ color: '#FF0000' }}>{resumo.pendente}</p>
-            <p className="text-xs text-gray-500 mt-1">{resumo.pendente_pct.toFixed(0)}% do total</p>
+            <p className="text-[10px] text-gray-400 mt-1">{resumo.pendente_pct.toFixed(0)}% do total</p>
           </div>
         </div>
       )}
 
       {/* Filtros */}
-      <div className="bg-white rounded-lg border border-gray-200 p-4">
+      <div className="bg-white rounded-xl border border-gray-200 p-4">
         <div className="flex flex-wrap items-center gap-3">
           <select
             value={filtroStatus}
@@ -439,7 +441,7 @@ export default function RNCPage() {
       </div>
 
       {/* Tabela */}
-      <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
         {loading ? (
           <div className="flex items-center justify-center py-16">
             <div className="w-5 h-5 border-2 border-gray-300 border-t-green-600 rounded-full animate-spin" />

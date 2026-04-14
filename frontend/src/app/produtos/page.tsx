@@ -103,13 +103,12 @@ function ModalProduto({ produtoId, onClose }: ModalProdutoProps) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center"
-      style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
       role="dialog"
       aria-modal="true"
       aria-labelledby="modal-produto-titulo"
     >
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-lg mx-4 max-h-[90vh] flex flex-col">
+      <div className="bg-white rounded-xl shadow-xl w-full max-w-lg mx-4 max-h-[90vh] flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 flex-shrink-0">
           <h2 id="modal-produto-titulo" className="text-sm font-bold text-gray-900 uppercase tracking-wide">
@@ -271,7 +270,7 @@ function MaisVendidosSection() {
   if (!loading && itens.length === 0) return null;
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-4">
+    <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4">
       <div className="flex items-center gap-2 mb-3">
         <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ color: '#FFC000' }}>
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
@@ -481,7 +480,7 @@ function ProdutosInner() {
       )}
 
       {/* Barra de filtros */}
-      <div className="bg-white rounded-lg border border-gray-200 p-3 shadow-sm">
+      <div className="bg-white rounded-xl border border-gray-200 p-3 shadow-sm">
         <div className="flex flex-wrap items-end gap-3">
           {/* Busca */}
           <div className="flex flex-col gap-1 flex-1 min-w-[160px]">
@@ -581,7 +580,7 @@ function ProdutosInner() {
       </div>
 
       {/* Tabela */}
-      <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
+      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full" role="table">
             <thead>

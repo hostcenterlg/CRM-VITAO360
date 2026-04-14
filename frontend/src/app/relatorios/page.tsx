@@ -271,7 +271,7 @@ interface CardRelatorioProps {
 
 function CardRelatorio({ icon, titulo, descricao, children, loading, error, onDownload }: CardRelatorioProps) {
   return (
-    <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-4 flex flex-col">
+    <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4 flex flex-col">
       {/* Header */}
       <div className="flex items-start gap-3 mb-3">
         <div

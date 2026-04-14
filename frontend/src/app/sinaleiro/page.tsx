@@ -272,7 +272,7 @@ export default function SinaleiroPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold text-gray-900">Sinaleiro de Penetracao</h1>
+          <h1 className="text-lg sm:text-xl font-bold text-gray-900">Sinaleiro de Penetracao</h1>
           <p className="text-sm text-gray-500 mt-0.5">
             {data
               ? `${data.total.toLocaleString('pt-BR')} clientes | Formula: Fat.Real / Potencial x 100`

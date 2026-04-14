@@ -22,12 +22,12 @@ const TEMP_COLORS: Record<string, { bg: string; text: string }> = {
 
 const SITUACAO_COLORS: Record<string, { bg: string; text: string }> = {
   ATIVO:       { bg: '#00B050', text: '#fff' },
-  'EM RISCO':  { bg: '#FF6600', text: '#fff' },
+  'EM RISCO':  { bg: '#F97316', text: '#fff' },
   'INAT.REC':  { bg: '#FFC000', text: '#1a1a1a' },
   'INAT.ANT':  { bg: '#FF0000', text: '#fff' },
-  PROSPECT:    { bg: '#808080', text: '#fff' },
-  LEAD:        { bg: '#6366F1', text: '#fff' },
-  NOVO:        { bg: '#0EA5E9', text: '#fff' },
+  PROSPECT:    { bg: '#3B82F6', text: '#fff' },
+  LEAD:        { bg: '#8B5CF6', text: '#fff' },
+  NOVO:        { bg: '#06B6D4', text: '#fff' },
 };
 
 function SitBadge({ value }: { value: string }) {
@@ -117,7 +117,7 @@ export default function AdminMotorPage() {
       )}
 
       {/* Filtro */}
-      <div className="bg-white rounded-lg border border-gray-200 p-4">
+      <div className="bg-white rounded-xl border border-gray-200 p-4">
         <div className="flex items-center gap-3">
           <select
             value={filtroSituacao}
@@ -146,7 +146,7 @@ export default function AdminMotorPage() {
       </div>
 
       {/* Tabela */}
-      <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
         {loading ? (
           <div className="flex items-center justify-center py-16">
             <div className="w-5 h-5 border-2 border-gray-300 border-t-green-600 rounded-full animate-spin" />

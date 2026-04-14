@@ -656,7 +656,7 @@ export default function TarefasPage() {
         {/* Page header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-xl font-bold text-gray-900">Tarefas</h1>
+            <h1 className="text-lg sm:text-xl font-bold text-gray-900">Tarefas</h1>
             <p className="text-sm text-gray-500 mt-0.5">
               Agenda, follow-ups vencidos e RNCs em aberto
             </p>

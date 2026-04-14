@@ -70,7 +70,7 @@ function ImportResultCard({
   const hasErros = result.erros > 0;
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-6 space-y-5">
+    <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 space-y-5">
       {/* Header */}
       <div className="flex items-start gap-3">
         <div
@@ -472,7 +472,7 @@ export default function ImportPage() {
       </div>
 
       {/* Upload area or result */}
-      <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
+      <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
         {result ? (
           <ImportResultCard result={result} onReset={handleReset} />
         ) : (
@@ -495,7 +495,7 @@ export default function ImportPage() {
       </div>
 
       {/* History */}
-      <section className="bg-white rounded-lg border border-gray-200 shadow-sm">
+      <section className="bg-white rounded-xl border border-gray-200 shadow-sm">
         <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
           <h2 className="text-sm font-semibold text-gray-700">Historico de Importacoes</h2>
           <button

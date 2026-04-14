@@ -208,7 +208,7 @@ export default function PipelinePage() {
     <AppShell>
       {/* Header da pagina */}
       <div className="mb-6">
-        <h1 className="text-xl font-bold text-gray-900">Pipeline de Dados</h1>
+        <h1 className="text-lg sm:text-xl font-bold text-gray-900">Pipeline de Dados</h1>
         <p className="text-sm text-gray-500 mt-0.5">
           Sincronizacao automatica Mercos / Deskrio
         </p>
