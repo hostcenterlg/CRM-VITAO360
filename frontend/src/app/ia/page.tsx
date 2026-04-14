@@ -2,21 +2,30 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
+  AlertaOportunidadeResponse,
   BriefingIAResponse,
   ChurnRiskResponse,
   ClienteRegistro,
+  CoachResponse,
   MensagemWAResponse,
+  PrevisaoFechamentoResponse,
   ResumoSemanalIAResponse,
+  SentimentoResponse,
   SugestaoProdutoResponse,
   enviarWhatsApp,
+  fetchAlertaOportunidade,
   fetchBriefingIA,
   fetchChurnRisk,
   fetchClientes,
+  fetchCoach,
   fetchMensagemWA,
+  fetchPrevisaoFechamento,
   fetchResumoSemanalIA,
+  fetchSentimento,
   fetchSugestaoProduto,
   formatBRL,
 } from '@/lib/api';
+import { useRouter } from 'next/navigation';
 
 // ---------------------------------------------------------------------------
 // Central de IA — 5 agentes de inteligencia comercial
@@ -715,6 +724,518 @@ function CardResumoSemanal() {
 }
 
 // ---------------------------------------------------------------------------
+// Mapeamento sentimento → emoji
+// ---------------------------------------------------------------------------
+
+const SENTIMENTO_EMOJI: Record<string, string> = {
+  POSITIVO: '😊',
+  NEUTRO:   '😐',
+  NEGATIVO: '😟',
+  CRITICO:  '🚨',
+};
+
+const SENTIMENTO_COLOR: Record<string, string> = {
+  POSITIVO: '#00B050',
+  NEUTRO:   '#FFC000',
+  NEGATIVO: '#FF6600',
+  CRITICO:  '#FF0000',
+};
+
+const FECHAMENTO_NIVEL_COLOR: Record<string, string> = {
+  ALTO:   '#00B050',
+  MEDIO:  '#FFC000',
+  BAIXO:  '#EF4444',
+};
+
+const OPORTUNIDADE_TIPO_COLOR: Record<string, string> = {
+  REATIVACAO:       '#7C3AED',
+  UPSELL:           '#2563EB',
+  PROSPECT_QUENTE:  '#D97706',
+  CROSS_SELL_REDE:  '#0891B2',
+};
+
+// ---------------------------------------------------------------------------
+// Card 6: Analise de Sentimento
+// ---------------------------------------------------------------------------
+
+function CardSentimento({ cnpj }: { cnpj: string | null }) {
+  const [data, setData] = useState<SentimentoResponse | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!cnpj) { setData(null); return; }
+    setLoading(true);
+    setError(null);
+    fetchSentimento(cnpj)
+      .then(setData)
+      .catch((e: Error) => setError(e.message))
+      .finally(() => setLoading(false));
+  }, [cnpj]);
+
+  const cor = data ? (SENTIMENTO_COLOR[data.sentimento] ?? '#9CA3AF') : '#EC4899';
+  const emoji = data ? (SENTIMENTO_EMOJI[data.sentimento] ?? '😐') : '';
+
+  return (
+    <AgentCard
+      title="Analise de Sentimento"
+      subtitle="Percepcao emocional do cliente"
+      accentColor="#EC4899"
+      disabled={!cnpj}
+      icon={
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+            d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+        </svg>
+      }
+    >
+      {!cnpj && <EmptyState msg="Selecione um cliente para analisar o sentimento." />}
+      {cnpj && loading && <CardSkeleton />}
+      {cnpj && error && <ErrorState msg={error} />}
+      {cnpj && data && !loading && (
+        <div className="space-y-3">
+          {/* Emoji + score */}
+          <div className="flex items-center gap-3">
+            <span className="text-3xl leading-none">{emoji}</span>
+            <div className="flex-1">
+              <div className="flex items-center justify-between mb-1">
+                <span
+                  className="text-xs font-bold px-2 py-0.5 rounded-full text-white"
+                  style={{ backgroundColor: cor }}
+                >
+                  {data.sentimento}
+                </span>
+                <span className="text-sm font-bold tabular-nums" style={{ color: cor }}>
+                  {data.score.toFixed(0)}%
+                </span>
+              </div>
+              <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                <div
+                  className="h-full rounded-full transition-all duration-500"
+                  style={{ width: `${Math.min(100, data.score)}%`, backgroundColor: cor }}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Tendencia */}
+          <div className="flex items-center gap-2 text-xs text-gray-700">
+            <span className="font-semibold text-gray-500">Tendencia:</span>
+            <span
+              className="font-bold"
+              style={{ color: data.tendencia === 'SUBINDO' ? '#00B050' : data.tendencia === 'DESCENDO' ? '#EF4444' : '#FFC000' }}
+            >
+              {data.tendencia === 'SUBINDO' ? '↑' : data.tendencia === 'DESCENDO' ? '↓' : '→'}{' '}
+              {data.tendencia}
+            </span>
+          </div>
+
+          {/* Historico mini */}
+          {data.historico.length > 0 && (
+            <div>
+              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1">
+                Historico recente
+              </p>
+              <ul className="space-y-0.5">
+                {data.historico.slice(0, 4).map((h, i) => (
+                  <li key={i} className="flex items-center justify-between text-xs text-gray-700 gap-2">
+                    <span className="text-gray-400 tabular-nums">{h.data}</span>
+                    <span className="truncate flex-1 text-gray-600">{h.resultado}</span>
+                    <span style={{ color: SENTIMENTO_COLOR[h.sentimento] ?? '#9CA3AF' }}>
+                      {SENTIMENTO_EMOJI[h.sentimento] ?? '—'}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {/* Recomendacao */}
+          {data.recomendacao && (
+            <div
+              className="p-2.5 rounded-lg border text-xs text-gray-800 leading-relaxed"
+              style={{ borderColor: '#EC4899' + '40', backgroundColor: '#EC489908' }}
+            >
+              <strong>Recomendacao:</strong> {data.recomendacao}
+            </div>
+          )}
+        </div>
+      )}
+    </AgentCard>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Card 7: Previsao de Fechamento
+// ---------------------------------------------------------------------------
+
+function CardPrevisaoFechamento({ cnpj }: { cnpj: string | null }) {
+  const [data, setData] = useState<PrevisaoFechamentoResponse | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!cnpj) { setData(null); return; }
+    setLoading(true);
+    setError(null);
+    fetchPrevisaoFechamento(cnpj)
+      .then(setData)
+      .catch((e: Error) => setError(e.message))
+      .finally(() => setLoading(false));
+  }, [cnpj]);
+
+  const cor = data ? (FECHAMENTO_NIVEL_COLOR[data.nivel] ?? '#9CA3AF') : '#10B981';
+  const pct = data ? Math.min(100, Math.max(0, data.probabilidade_pct)) : 0;
+
+  // Circulo SVG simples
+  const R = 28;
+  const CIRC = 2 * Math.PI * R;
+  const dashOffset = CIRC - (CIRC * pct) / 100;
+
+  return (
+    <AgentCard
+      title="Previsao de Fechamento"
+      subtitle="Probabilidade de conversao"
+      accentColor="#10B981"
+      disabled={!cnpj}
+      icon={
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+            d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+        </svg>
+      }
+    >
+      {!cnpj && <EmptyState msg="Selecione um cliente para ver a previsao." />}
+      {cnpj && loading && <CardSkeleton />}
+      {cnpj && error && <ErrorState msg={error} />}
+      {cnpj && data && !loading && (
+        <div className="space-y-3">
+          {/* Gauge circular + nivel */}
+          <div className="flex items-center gap-4">
+            <div className="relative w-16 h-16 flex-shrink-0">
+              <svg viewBox="0 0 72 72" className="w-full h-full -rotate-90">
+                <circle cx="36" cy="36" r={R} fill="none" stroke="#F3F4F6" strokeWidth="6" />
+                <circle
+                  cx="36" cy="36" r={R}
+                  fill="none"
+                  stroke={cor}
+                  strokeWidth="6"
+                  strokeDasharray={CIRC}
+                  strokeDashoffset={dashOffset}
+                  strokeLinecap="round"
+                  style={{ transition: 'stroke-dashoffset 600ms ease-out' }}
+                />
+              </svg>
+              <span
+                className="absolute inset-0 flex items-center justify-center text-sm font-bold tabular-nums"
+                style={{ color: cor }}
+              >
+                {pct.toFixed(0)}%
+              </span>
+            </div>
+            <div className="flex-1 space-y-1">
+              <span
+                className="text-xs font-bold px-2 py-0.5 rounded-full text-white"
+                style={{ backgroundColor: cor }}
+              >
+                {data.nivel}
+              </span>
+              <p className="text-xs text-gray-600">
+                Estimativa: <strong className="text-gray-900">{data.tempo_estimado_dias} dias</strong>
+              </p>
+            </div>
+          </div>
+
+          {/* Fatores como barras */}
+          {data.fatores.length > 0 && (
+            <div>
+              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
+                Fatores
+              </p>
+              <ul className="space-y-1.5">
+                {data.fatores.map((f, i) => (
+                  <li key={i}>
+                    <div className="flex items-center justify-between text-xs mb-0.5">
+                      <span className="text-gray-700 truncate pr-2">{f.nome}</span>
+                      <span className="font-semibold text-gray-900 tabular-nums flex-shrink-0">
+                        {f.contribuicao.toFixed(0)}%
+                      </span>
+                    </div>
+                    <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                      <div
+                        className="h-full rounded-full"
+                        style={{
+                          width: `${Math.min(100, Math.abs(f.contribuicao))}%`,
+                          backgroundColor: cor,
+                          opacity: 0.7 + (f.peso / 10) * 0.3,
+                        }}
+                      />
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {/* Recomendacao */}
+          {data.recomendacao && (
+            <div
+              className="p-2.5 rounded-lg border text-xs text-gray-800 leading-relaxed"
+              style={{ borderColor: '#10B981' + '40', backgroundColor: '#10B98108' }}
+            >
+              <strong>Recomendacao:</strong> {data.recomendacao}
+            </div>
+          )}
+        </div>
+      )}
+    </AgentCard>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Card 8: Coach de Vendas
+// ---------------------------------------------------------------------------
+
+function CardCoach() {
+  const [consultor, setConsultor] = useState<string>('LARISSA');
+  const [data, setData] = useState<CoachResponse | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const carregar = useCallback((c: string) => {
+    setLoading(true);
+    setError(null);
+    fetchCoach(c)
+      .then(setData)
+      .catch((e: Error) => setError(e.message))
+      .finally(() => setLoading(false));
+  }, []);
+
+  useEffect(() => { carregar(consultor); }, [consultor, carregar]);
+
+  return (
+    <AgentCard
+      title="Coach de Vendas"
+      subtitle="Analise de desempenho do consultor"
+      accentColor="#F59E0B"
+      icon={
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+            d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+        </svg>
+      }
+    >
+      {/* Selector */}
+      <div className="flex items-center gap-2 mb-3">
+        <label className="text-[11px] font-medium text-gray-600 flex-shrink-0">Consultor:</label>
+        <select
+          value={consultor}
+          onChange={(e) => setConsultor(e.target.value)}
+          className="text-xs border border-gray-300 rounded-md px-2 py-1 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-amber-500"
+        >
+          {CONSULTORES.map((c) => (
+            <option key={c} value={c}>{c}</option>
+          ))}
+        </select>
+      </div>
+
+      {loading && <CardSkeleton />}
+      {error && <ErrorState msg={error} />}
+      {data && !loading && (
+        <div className="space-y-3">
+          <p className="text-[11px] text-gray-500">Periodo: {data.periodo}</p>
+
+          {/* 4 KPI cards */}
+          <div className="grid grid-cols-2 gap-2">
+            <div className="text-center p-2 bg-amber-50 rounded-lg">
+              <p className="text-[10px] text-gray-500 leading-tight">Conversao</p>
+              <p className="text-base font-bold text-amber-700 tabular-nums">
+                {data.metricas.conversao_pct.toFixed(1)}%
+              </p>
+            </div>
+            <div className="text-center p-2 bg-green-50 rounded-lg">
+              <p className="text-[10px] text-gray-500 leading-tight">Ticket Medio</p>
+              <p className="text-sm font-bold text-green-700 tabular-nums">
+                {formatBRL(data.metricas.ticket_medio)}
+              </p>
+            </div>
+            <div className="text-center p-2 bg-blue-50 rounded-lg">
+              <p className="text-[10px] text-gray-500 leading-tight">Atend./Dia</p>
+              <p className="text-base font-bold text-blue-700 tabular-nums">
+                {data.metricas.atendimentos_dia.toFixed(1)}
+              </p>
+            </div>
+            <div className="text-center p-2 bg-purple-50 rounded-lg">
+              <p className="text-[10px] text-gray-500 leading-tight">Positivacao</p>
+              <p className="text-base font-bold text-purple-700 tabular-nums">
+                {data.metricas.positivacao_pct.toFixed(1)}%
+              </p>
+            </div>
+          </div>
+
+          {/* Pontos fortes / fracos */}
+          <div className="grid grid-cols-2 gap-2">
+            {data.pontos_fortes.length > 0 && (
+              <div>
+                <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1">
+                  Pontos fortes
+                </p>
+                <ul className="space-y-0.5">
+                  {data.pontos_fortes.map((p, i) => (
+                    <li key={i} className="flex items-start gap-1 text-xs text-gray-700">
+                      <span className="font-bold text-green-600 flex-shrink-0">✓</span>
+                      {p}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            {data.pontos_fracos.length > 0 && (
+              <div>
+                <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1">
+                  A melhorar
+                </p>
+                <ul className="space-y-0.5">
+                  {data.pontos_fracos.map((p, i) => (
+                    <li key={i} className="flex items-start gap-1 text-xs text-gray-700">
+                      <span className="font-bold text-red-500 flex-shrink-0">✗</span>
+                      {p}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+
+          {/* Recomendacoes */}
+          {data.recomendacoes.length > 0 && (
+            <div>
+              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1">
+                Recomendacoes
+              </p>
+              <ul className="space-y-1.5">
+                {data.recomendacoes.map((r, i) => (
+                  <li key={i} className="flex items-start gap-2 text-xs">
+                    <span
+                      className="text-[10px] font-bold px-1.5 py-0.5 rounded flex-shrink-0"
+                      style={{
+                        backgroundColor: r.prioridade === 'ALTA' ? '#FEE2E2' : r.prioridade === 'MEDIA' ? '#FEF3C7' : '#F0FDF4',
+                        color: r.prioridade === 'ALTA' ? '#DC2626' : r.prioridade === 'MEDIA' ? '#D97706' : '#15803D',
+                      }}
+                    >
+                      {r.prioridade}
+                    </span>
+                    <div className="min-w-0">
+                      <p className="text-gray-800 leading-snug">{r.acao}</p>
+                      <p className="text-[10px] text-amber-600 mt-0.5">{r.impacto_estimado}</p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {/* Meta sugerida */}
+          {data.meta_sugerida && (
+            <div className="p-2.5 rounded-lg border border-amber-200 bg-amber-50 text-xs text-gray-800">
+              <strong className="text-amber-700">Meta sugerida:</strong> {data.meta_sugerida}
+            </div>
+          )}
+        </div>
+      )}
+    </AgentCard>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Card 9: Alerta de Oportunidade
+// ---------------------------------------------------------------------------
+
+function CardAlertaOportunidade() {
+  const router = useRouter();
+  const [data, setData] = useState<AlertaOportunidadeResponse | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetchAlertaOportunidade()
+      .then(setData)
+      .catch((e: Error) => setError(e.message))
+      .finally(() => setLoading(false));
+  }, []);
+
+  return (
+    <AgentCard
+      title="Alertas de Oportunidade"
+      subtitle="Top oportunidades identificadas pela IA"
+      accentColor="#EF4444"
+      icon={
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+            d="M13 10V3L4 14h7v7l9-11h-7z" />
+        </svg>
+      }
+    >
+      {loading && <CardSkeleton />}
+      {error && <ErrorState msg={error} />}
+      {data && !loading && (
+        <div className="space-y-2">
+          <p className="text-[11px] text-gray-500">
+            {data.total} oportunidade{data.total !== 1 ? 's' : ''} identificada{data.total !== 1 ? 's' : ''}
+          </p>
+
+          {data.oportunidades.length === 0 && (
+            <EmptyState msg="Nenhuma oportunidade identificada no momento." />
+          )}
+
+          <ul className="space-y-2 max-h-72 overflow-y-auto pr-1">
+            {data.oportunidades.map((op, i) => (
+              <li
+                key={i}
+                className="p-2.5 rounded-lg border border-gray-100 bg-gray-50 hover:bg-red-50 hover:border-red-100 transition-colors"
+              >
+                <div className="flex items-start justify-between gap-2 mb-1">
+                  <div className="min-w-0">
+                    <p className="text-xs font-semibold text-gray-900 truncate leading-tight">
+                      {op.nome}
+                    </p>
+                    <p className="text-[10px] text-gray-500 font-mono">{op.cnpj}</p>
+                  </div>
+                  <div className="flex flex-col items-end gap-1 flex-shrink-0">
+                    <span
+                      className="text-[10px] font-bold px-1.5 py-0.5 rounded text-white"
+                      style={{ backgroundColor: OPORTUNIDADE_TIPO_COLOR[op.tipo] ?? '#6B7280' }}
+                    >
+                      {op.tipo.replace(/_/g, ' ')}
+                    </span>
+                    <span className="text-[10px] font-semibold text-green-700">
+                      {formatBRL(op.valor_potencial)}
+                    </span>
+                  </div>
+                </div>
+                <p className="text-[11px] text-gray-600 leading-snug mb-1.5">{op.motivo}</p>
+                <div className="flex items-center justify-between gap-2">
+                  <p className="text-[10px] text-amber-700 font-medium leading-snug flex-1">
+                    {op.acao_sugerida}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => router.push(`/carteira?cnpj=${op.cnpj}`)}
+                    className="flex-shrink-0 text-[10px] font-semibold px-2 py-1 rounded bg-red-100 text-red-700 hover:bg-red-200 transition-colors"
+                  >
+                    Ver cliente
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </AgentCard>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // Pagina principal /ia
 // ---------------------------------------------------------------------------
 
@@ -771,7 +1292,7 @@ export default function CentralIAPage() {
         </div>
       </div>
 
-      {/* Grid de cards */}
+      {/* Grid de cards — 3x3 com 9 agentes */}
       <div className="px-6 py-6">
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
           {/* Row 1 */}
@@ -783,6 +1304,16 @@ export default function CentralIAPage() {
           <CardSugestaoProduto cnpj={cnpj} />
           <div className="md:col-span-2 xl:col-span-2">
             <CardResumoSemanal />
+          </div>
+
+          {/* Row 3 — 4 novos agentes */}
+          <CardSentimento cnpj={cnpj} />
+          <CardPrevisaoFechamento cnpj={cnpj} />
+          <CardCoach />
+
+          {/* Row 4 — Alerta de Oportunidade ocupa faixa completa em telas medias */}
+          <div className="md:col-span-2 xl:col-span-3">
+            <CardAlertaOportunidade />
           </div>
         </div>
       </div>

@@ -1499,3 +1499,82 @@ export async function runPipeline(): Promise<PipelineRunResult> {
 export async function fetchPipelineLogs(): Promise<PipelineLogEntry[]> {
   return fetchJson<PipelineLogEntry[]>('/api/pipeline/logs');
 }
+
+// ---------------------------------------------------------------------------
+// IA — Novos agentes (Cards 6-9)
+// ---------------------------------------------------------------------------
+
+export interface SentimentoResponse {
+  cnpj: string;
+  sentimento: string;
+  score: number;
+  historico: Array<{ data: string; resultado: string; sentimento: string }>;
+  tendencia: string;
+  recomendacao: string;
+}
+
+export interface PrevisaoFechamentoResponse {
+  cnpj: string;
+  probabilidade_pct: number;
+  nivel: string;
+  fatores: Array<{ nome: string; peso: number; contribuicao: number }>;
+  tempo_estimado_dias: number;
+  recomendacao: string;
+}
+
+export interface CoachResponse {
+  consultor: string;
+  periodo: string;
+  metricas: {
+    conversao_pct: number;
+    ticket_medio: number;
+    atendimentos_dia: number;
+    positivacao_pct: number;
+  };
+  pontos_fortes: string[];
+  pontos_fracos: string[];
+  recomendacoes: Array<{ prioridade: string; acao: string; impacto_estimado: string }>;
+  meta_sugerida: string;
+}
+
+export interface AlertaOportunidadeResponse {
+  total: number;
+  oportunidades: Array<{
+    cnpj: string;
+    nome: string;
+    tipo: string;
+    prioridade: string;
+    valor_potencial: number;
+    motivo: string;
+    acao_sugerida: string;
+  }>;
+}
+
+export interface IADashboardResponse {
+  briefings_disponiveis: number;
+  alertas_ativos: number;
+  oportunidades: number;
+  clientes_em_risco: number;
+  consultor_destaque: { nome: string; motivo: string } | null;
+  insight_do_dia: string;
+}
+
+export async function fetchSentimento(cnpj: string): Promise<SentimentoResponse> {
+  return fetchJson<SentimentoResponse>(`/api/ia/sentimento/${encodeURIComponent(cnpj)}`);
+}
+
+export async function fetchPrevisaoFechamento(cnpj: string): Promise<PrevisaoFechamentoResponse> {
+  return fetchJson<PrevisaoFechamentoResponse>(`/api/ia/previsao-fechamento/${encodeURIComponent(cnpj)}`);
+}
+
+export async function fetchCoach(consultor: string): Promise<CoachResponse> {
+  return fetchJson<CoachResponse>(`/api/ia/coach/${encodeURIComponent(consultor)}`);
+}
+
+export async function fetchAlertaOportunidade(): Promise<AlertaOportunidadeResponse> {
+  return fetchJson<AlertaOportunidadeResponse>('/api/ia/alertas-oportunidade');
+}
+
+export async function fetchIADashboard(): Promise<IADashboardResponse> {
+  return fetchJson<IADashboardResponse>('/api/ia/dashboard');
+}
