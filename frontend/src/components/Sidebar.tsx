@@ -9,13 +9,14 @@ import { fetchJson } from '@/lib/api';
 // ---------------------------------------------------------------------------
 // Sidebar — navegacao CRM VITAO360, light theme only
 // Grupos: CRM (Inbox, Pipeline, Agenda, Tarefas, Carteira, Sinaleiro) | Gestao | Admin
+// Suporta: colapso em desktop (só ícones) + mobile drawer
 // ---------------------------------------------------------------------------
 
 interface NavItem {
   href: string;
   label: string;
   icon: React.ReactNode;
-  showTarefasBadge?: boolean; // renders TarefasBadge when true
+  showTarefasBadge?: boolean;
 }
 
 interface NavGroup {
@@ -33,7 +34,7 @@ interface RNCCountResponse {
   resumo?: { pendente?: number; em_andamento?: number };
 }
 
-function TarefasBadge({ active }: { active: boolean }) {
+function TarefasBadge({ active, collapsed }: { active: boolean; collapsed: boolean }) {
   const [count, setCount] = useState<number | null>(null);
 
   useEffect(() => {
@@ -54,6 +55,19 @@ function TarefasBadge({ active }: { active: boolean }) {
   }, []);
 
   if (!count || count === 0) return null;
+
+  if (collapsed) {
+    return (
+      <span
+        className="absolute -top-0.5 -right-0.5 flex items-center justify-center
+                   min-w-[14px] h-3.5 px-0.5 rounded-full text-white text-[8px] font-bold leading-none"
+        style={{ backgroundColor: '#ef4444' }}
+        aria-label={`${count} tarefas pendentes`}
+      >
+        {count > 9 ? '9+' : count}
+      </span>
+    );
+  }
 
   return (
     <span
@@ -268,7 +282,7 @@ const navGroups: NavGroup[] = [
       },
       {
         href: '/atualizacoes',
-        label: 'Atualizações',
+        label: 'Atualizacoes',
         icon: (
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
@@ -280,12 +294,70 @@ const navGroups: NavGroup[] = [
   },
 ];
 
-interface SidebarProps {
-  mobileOpen: boolean;
+// ---------------------------------------------------------------------------
+// NavItemCollapsed — ícone só com tooltip no hover
+// ---------------------------------------------------------------------------
+
+interface NavItemCollapsedProps {
+  item: NavItem;
+  active: boolean;
   onClose: () => void;
 }
 
-export default function Sidebar({ mobileOpen, onClose }: SidebarProps) {
+function NavItemCollapsed({ item, active, onClose }: NavItemCollapsedProps) {
+  return (
+    <li className="relative group">
+      <Link
+        href={item.href}
+        onClick={onClose}
+        title={item.label}
+        className={`
+          relative flex items-center justify-center w-9 h-9 rounded-lg transition-colors mx-auto
+          ${active
+            ? 'text-green-700'
+            : 'text-gray-500 hover:bg-gray-100 hover:text-gray-900'
+          }
+        `}
+        style={active ? { backgroundColor: '#00B05018' } : undefined}
+        aria-label={item.label}
+        aria-current={active ? 'page' : undefined}
+      >
+        <span style={active ? { color: '#00B050' } : undefined}>
+          {item.icon}
+        </span>
+        {item.showTarefasBadge && (
+          <TarefasBadge active={active} collapsed />
+        )}
+      </Link>
+
+      {/* Tooltip — aparece no hover */}
+      <div
+        className="
+          pointer-events-none absolute left-full top-1/2 -translate-y-1/2 ml-2 z-50
+          bg-gray-900 text-white text-xs font-medium px-2 py-1 rounded whitespace-nowrap
+          opacity-0 group-hover:opacity-100 transition-opacity duration-150
+        "
+        role="tooltip"
+      >
+        {item.label}
+        <span className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-gray-900" />
+      </div>
+    </li>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Sidebar props
+// ---------------------------------------------------------------------------
+
+interface SidebarProps {
+  mobileOpen: boolean;
+  onClose: () => void;
+  collapsed?: boolean;
+  onToggleCollapse?: () => void;
+}
+
+export default function Sidebar({ mobileOpen, onClose, collapsed = false, onToggleCollapse }: SidebarProps) {
   const pathname = usePathname();
   const { user, isAdmin } = useAuth();
 
@@ -307,7 +379,7 @@ export default function Sidebar({ mobileOpen, onClose }: SidebarProps) {
       {/* Mobile overlay */}
       {mobileOpen && (
         <div
-          className="fixed inset-0 bg-black/30 z-20 lg:hidden"
+          className="fixed inset-0 bg-black/30 z-20 md:hidden"
           onClick={onClose}
           aria-hidden="true"
         />
@@ -318,39 +390,57 @@ export default function Sidebar({ mobileOpen, onClose }: SidebarProps) {
         className={`
           fixed top-0 left-0 h-full z-30
           bg-white border-r border-gray-200
-          w-56 flex flex-col
-          sidebar-transition
-          lg:static lg:translate-x-0
-          ${mobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+          flex flex-col
+          transition-all duration-200
+          md:static md:translate-x-0
+          ${mobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+          ${collapsed ? 'w-14' : 'w-56'}
         `}
         role="navigation"
         aria-label="Menu principal"
       >
         {/* Brand */}
-        <div className="flex items-center gap-3 px-4 py-4 border-b border-gray-100 gradient-vitao">
-          <div
-            className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 bg-white/20"
-          >
+        <div className={`flex items-center border-b border-gray-100 gradient-vitao flex-shrink-0 ${collapsed ? 'justify-center px-2 py-4' : 'gap-3 px-4 py-4'}`}>
+          <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 bg-white/20">
             <span className="text-white font-bold text-sm">V</span>
           </div>
-          <div className="min-w-0">
-            <p className="font-bold text-white text-sm leading-tight">CRM VITAO360</p>
-            <p className="text-[10px] text-white/70 leading-tight">Inteligencia Comercial</p>
-          </div>
+          {!collapsed && (
+            <div className="min-w-0 flex-1">
+              <p className="font-bold text-white text-sm leading-tight">CRM VITAO360</p>
+              <p className="text-[10px] text-white/70 leading-tight">Inteligencia Comercial</p>
+            </div>
+          )}
         </div>
 
         {/* Nav por grupos */}
-        <nav className="flex-1 py-3 px-2 overflow-y-auto space-y-1">
+        <nav className={`flex-1 py-3 overflow-y-auto space-y-1 ${collapsed ? 'px-1' : 'px-2'}`}>
           {navGroups.map((group) => {
             if (!shouldShowGroup(group)) return null;
             return (
               <div key={group.label}>
-                <p className="px-3 mb-1 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
-                  {group.label}
-                </p>
+                {!collapsed && (
+                  <p className="px-3 mb-1 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
+                    {group.label}
+                  </p>
+                )}
+                {collapsed && (
+                  <div className="h-px bg-gray-100 my-1.5 mx-1" aria-hidden="true" />
+                )}
                 <ul className="space-y-0.5">
                   {group.items.map((item) => {
                     const active = isActive(item.href);
+
+                    if (collapsed) {
+                      return (
+                        <NavItemCollapsed
+                          key={item.href}
+                          item={item}
+                          active={active}
+                          onClose={onClose}
+                        />
+                      );
+                    }
+
                     return (
                       <li key={item.href}>
                         <Link
@@ -358,10 +448,9 @@ export default function Sidebar({ mobileOpen, onClose }: SidebarProps) {
                           onClick={onClose}
                           className={`
                             flex items-center gap-3 px-3 py-2 rounded text-sm font-medium transition-colors
-                            ${
-                              active
-                                ? 'text-green-700'
-                                : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                            ${active
+                              ? 'text-green-700'
+                              : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                             }
                           `}
                           style={
@@ -369,6 +458,7 @@ export default function Sidebar({ mobileOpen, onClose }: SidebarProps) {
                               ? { backgroundColor: '#00B05018', borderLeft: '3px solid #00B050', paddingLeft: '10px' }
                               : undefined
                           }
+                          aria-current={active ? 'page' : undefined}
                         >
                           <span
                             className={active ? '' : 'text-gray-400'}
@@ -378,7 +468,7 @@ export default function Sidebar({ mobileOpen, onClose }: SidebarProps) {
                           </span>
                           <span className="flex-1 leading-tight">{item.label}</span>
                           {item.showTarefasBadge && (
-                            <TarefasBadge active={active} />
+                            <TarefasBadge active={active} collapsed={false} />
                           )}
                         </Link>
                       </li>
@@ -390,10 +480,40 @@ export default function Sidebar({ mobileOpen, onClose }: SidebarProps) {
           })}
         </nav>
 
-        {/* Footer */}
-        <div className="px-4 py-3 border-t border-gray-100">
-          <p className="text-[10px] text-gray-400">VITAO Alimentos B2B</p>
-          <p className="text-[10px] text-gray-300">v1.0 — 2026</p>
+        {/* Collapse toggle (desktop only) + Footer */}
+        <div className={`border-t border-gray-100 flex-shrink-0 ${collapsed ? 'px-1 py-2' : 'px-4 py-3'}`}>
+          {/* Botao colapsar — desktop only */}
+          {onToggleCollapse && (
+            <button
+              type="button"
+              onClick={onToggleCollapse}
+              title={collapsed ? 'Expandir menu' : 'Recolher menu'}
+              aria-label={collapsed ? 'Expandir menu' : 'Recolher menu'}
+              className={`
+                hidden md:flex items-center justify-center rounded-lg transition-colors
+                text-gray-400 hover:text-gray-700 hover:bg-gray-100
+                ${collapsed ? 'w-9 h-9 mx-auto' : 'w-full h-8 gap-2 text-xs font-medium mb-2'}
+              `}
+            >
+              <svg
+                className={`w-4 h-4 transition-transform duration-200 ${collapsed ? 'rotate-180' : ''}`}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                  d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
+              </svg>
+              {!collapsed && <span>Recolher</span>}
+            </button>
+          )}
+
+          {!collapsed && (
+            <>
+              <p className="text-[10px] text-gray-400">VITAO Alimentos B2B</p>
+              <p className="text-[10px] text-gray-300">v1.0 — 2026</p>
+            </>
+          )}
         </div>
       </aside>
     </>
@@ -409,7 +529,7 @@ export function HamburgerButton({ onClick }: { onClick: () => void }) {
     <button
       type="button"
       onClick={onClick}
-      className="lg:hidden p-2 rounded text-gray-500 hover:text-gray-900 hover:bg-gray-100"
+      className="md:hidden p-2 rounded text-gray-500 hover:text-gray-900 hover:bg-gray-100 transition-colors"
       aria-label="Abrir menu"
     >
       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

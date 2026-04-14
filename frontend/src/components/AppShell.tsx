@@ -1,10 +1,12 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Sidebar, { HamburgerButton } from './Sidebar';
 import { useAuth } from '@/contexts/AuthContext';
 import { fetchNotificacoes, Alerta } from '@/lib/api';
+import SearchModal from './SearchModal';
+import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 
 // ---------------------------------------------------------------------------
 // AppShell — sidebar + header com info do usuario + main content
@@ -266,8 +268,27 @@ function RoleBadge({ role }: { role: string }) {
   );
 }
 
+const SIDEBAR_COLLAPSED_KEY = 'crm_sidebar_collapsed';
+
 export default function AppShell({ children, pageTitle }: AppShellProps) {
+  // Mobile drawer state (hidden by default)
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  // Desktop collapsed state — persisted in localStorage
+  const [sidebarCollapsed, setSidebarCollapsed] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return false;
+    try {
+      return localStorage.getItem(SIDEBAR_COLLAPSED_KEY) === 'true';
+    } catch {
+      return false;
+    }
+  });
+
+  // Busca global
+  const [searchOpen, setSearchOpen] = useState(false);
+  const handleOpenSearch = useCallback(() => setSearchOpen(true), []);
+  const handleCloseSearch = useCallback(() => setSearchOpen(false), []);
+
   const { user, logout } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
@@ -276,10 +297,30 @@ export default function AppShell({ children, pageTitle }: AppShellProps) {
   const resolvedTitle = pageTitle ?? PAGE_TITLES[pathname] ?? undefined;
   const breadcrumbs = BREADCRUMBS[pathname] ?? null;
 
+  // Atalhos de teclado globais
+  useKeyboardShortcuts({ onOpenSearch: handleOpenSearch });
+
   function handleLogout() {
     logout();
     router.replace('/login');
   }
+
+  function handleToggleCollapse() {
+    setSidebarCollapsed((prev) => {
+      const next = !prev;
+      try {
+        localStorage.setItem(SIDEBAR_COLLAPSED_KEY, String(next));
+      } catch {
+        // fallback silencioso
+      }
+      return next;
+    });
+  }
+
+  // Fechar sidebar mobile quando rota muda
+  useEffect(() => {
+    setSidebarOpen(false);
+  }, [pathname]);
 
   return (
     <div className="flex h-screen overflow-hidden bg-gray-50">
@@ -287,19 +328,31 @@ export default function AppShell({ children, pageTitle }: AppShellProps) {
       <Sidebar
         mobileOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
+        collapsed={sidebarCollapsed}
+        onToggleCollapse={handleToggleCollapse}
       />
+
+      {/* Overlay escuro para mobile quando sidebar aberta */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black/40 z-20 md:hidden"
+          onClick={() => setSidebarOpen(false)}
+          aria-hidden="true"
+        />
+      )}
 
       {/* Coluna principal */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        {/* Header */}
-        <header className="flex-shrink-0 bg-white border-b border-gray-200 px-4 py-2.5 flex items-center gap-3 shadow-sm">
+        {/* Header compacto em mobile, completo em desktop */}
+        <header className="flex-shrink-0 bg-white border-b border-gray-200 px-3 md:px-4 py-2.5 flex items-center gap-2 md:gap-3 shadow-sm">
           {/* Hamburger mobile */}
           <HamburgerButton onClick={() => setSidebarOpen(true)} />
 
-          {/* Breadcrumb + titulo */}
+          {/* Titulo da pagina */}
           <div className="flex items-center gap-1 min-w-0">
+            {/* Desktop: breadcrumbs quando disponivel */}
             {breadcrumbs && breadcrumbs.length > 1 ? (
-              <>
+              <div className="hidden sm:flex items-center gap-1">
                 {breadcrumbs.map((crumb, idx) => (
                   <span key={idx} className="flex items-center gap-1">
                     {idx > 0 && (
@@ -325,22 +378,48 @@ export default function AppShell({ children, pageTitle }: AppShellProps) {
                     )}
                   </span>
                 ))}
-              </>
-            ) : resolvedTitle ? (
-              <h1 className="text-base font-semibold text-gray-900">{resolvedTitle}</h1>
+              </div>
             ) : null}
+
+            {/* Mobile: apenas titulo da pagina, sem breadcrumbs */}
+            {resolvedTitle && (
+              <h1 className={`text-sm font-semibold text-gray-900 truncate ${breadcrumbs && breadcrumbs.length > 1 ? 'sm:hidden' : ''}`}>
+                {resolvedTitle}
+              </h1>
+            )}
           </div>
 
           {/* Spacer */}
           <div className="flex-1" />
+
+          {/* Busca global — desktop: hint Ctrl+K; mobile: icone lupa */}
+          <button
+            type="button"
+            onClick={handleOpenSearch}
+            aria-label="Busca global (Ctrl+K)"
+            className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg border border-gray-200 text-gray-400
+                       hover:text-gray-700 hover:border-gray-300 hover:bg-gray-50 transition-colors
+                       focus:outline-none focus:ring-2 focus:ring-green-500"
+          >
+            <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <span className="hidden md:flex items-center gap-1.5 text-xs text-gray-400">
+              Buscar
+              <kbd className="px-1 py-0.5 rounded bg-gray-100 border border-gray-200 font-mono text-[9px] leading-none">
+                Ctrl+K
+              </kbd>
+            </span>
+          </button>
 
           {/* Sino de notificacoes */}
           <SinoBell />
 
           {/* Info do usuario autenticado */}
           {user && (
-            <div className="flex items-center gap-3">
-              {/* Nome + role */}
+            <div className="flex items-center gap-2 md:gap-3">
+              {/* Nome + role — oculto em mobile */}
               <div className="hidden sm:flex flex-col items-end gap-0.5">
                 <div className="flex items-center gap-1.5">
                   <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse-dot flex-shrink-0" />
@@ -365,7 +444,7 @@ export default function AppShell({ children, pageTitle }: AppShellProps) {
                 type="button"
                 onClick={handleLogout}
                 title="Sair"
-                className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium text-gray-600
+                className="flex items-center gap-1.5 px-2 md:px-2.5 py-1.5 text-xs font-medium text-gray-600
                            border border-gray-200 rounded-lg hover:bg-gray-50 hover:text-gray-900
                            transition-colors focus:outline-none focus:ring-2 focus:ring-green-500"
               >
@@ -381,11 +460,14 @@ export default function AppShell({ children, pageTitle }: AppShellProps) {
 
         {/* Conteudo da pagina — scrollavel */}
         <main className="flex-1 overflow-y-auto scrollbar-thin">
-          <div className="max-w-screen-2xl mx-auto p-3 lg:p-6">
+          <div className="max-w-screen-2xl mx-auto p-3 md:p-4 lg:p-6">
             {children}
           </div>
         </main>
       </div>
+
+      {/* Busca global modal */}
+      <SearchModal open={searchOpen} onClose={handleCloseSearch} />
     </div>
   );
 }

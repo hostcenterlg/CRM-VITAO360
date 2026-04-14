@@ -11,6 +11,7 @@ import {
   MensagemWhatsAppResponse,
   ScoreBreakdown,
   VendaMensal,
+  VendaPedidoItem,
   WhatsAppEnviarResponse,
   WhatsAppStatus,
   enviarWhatsApp,
@@ -19,6 +20,7 @@ import {
   fetchChurnRisk,
   fetchCliente,
   fetchClienteScore,
+  fetchVendasCliente,
   fetchWhatsAppStatus,
   formatBRL,
   getBriefing,
@@ -27,10 +29,11 @@ import {
 import { useAuth } from '@/contexts/AuthContext';
 import StatusBadge from './StatusBadge';
 import AtendimentoForm from './AtendimentoForm';
+import { LineChart, Line, ResponsiveContainer, Tooltip } from 'recharts';
 
 // ---------------------------------------------------------------------------
 // ClienteDetalhe — drawer lateral com ficha completa do cliente
-// 4 blocos colapsáveis: Identidade, Status, Financeiro, Histórico
+// Blocos colapsáveis: Identidade, Status, Financeiro, Timeline, Compras, Score, Histórico, IA
 // Bloco Financeiro oculto para consultor_externo (Julio)
 // ---------------------------------------------------------------------------
 
@@ -51,7 +54,6 @@ function formatCnpj(cnpj: string): string {
 
 function formatDate(value?: string): string {
   if (!value) return '—';
-  // Aceita ISO "2026-03-25" ou "2026-03-25T..."
   const [datePart] = value.split('T');
   const parts = datePart.split('-');
   if (parts.length !== 3) return value;
@@ -59,7 +61,7 @@ function formatDate(value?: string): string {
 }
 
 // ---------------------------------------------------------------------------
-// Bloco colapsável
+// Bloco colapsável genérico
 // ---------------------------------------------------------------------------
 
 interface BlocoProps {
@@ -67,9 +69,10 @@ interface BlocoProps {
   open: boolean;
   onToggle: () => void;
   children: React.ReactNode;
+  badge?: React.ReactNode;
 }
 
-function Bloco({ title, open, onToggle, children }: BlocoProps) {
+function Bloco({ title, open, onToggle, children, badge }: BlocoProps) {
   return (
     <div className="border border-gray-200 rounded-lg overflow-hidden">
       <button
@@ -78,9 +81,12 @@ function Bloco({ title, open, onToggle, children }: BlocoProps) {
         className="w-full flex items-center justify-between px-4 py-3 bg-gray-50 hover:bg-gray-100 transition-colors text-left"
         aria-expanded={open}
       >
-        <span className="text-[11px] font-semibold text-gray-600 uppercase tracking-wider">
-          {title}
-        </span>
+        <div className="flex items-center gap-2">
+          <span className="text-[11px] font-semibold text-gray-600 uppercase tracking-wider">
+            {title}
+          </span>
+          {badge}
+        </div>
         <svg
           className={`w-4 h-4 text-gray-400 flex-shrink-0 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
           fill="none"
@@ -271,7 +277,7 @@ function VendasMiniChart({ vendas }: { vendas: VendaMensal[] }) {
 
   return (
     <div className="pt-1">
-      <p className="text-[11px] text-gray-500 mb-1.5 font-medium">Vendas mês a mês</p>
+      <p className="text-[11px] text-gray-500 mb-1.5 font-medium">Vendas mes a mes</p>
       <div className="flex items-end gap-0.5 h-12">
         {vendas.map((v) => {
           const pct = v.valor > 0 ? (v.valor / max) * 100 : 0;
@@ -302,7 +308,306 @@ function VendasMiniChart({ vendas }: { vendas: VendaMensal[] }) {
 }
 
 // ---------------------------------------------------------------------------
-// Bloco Histórico — timeline de atendimentos
+// Score Sparkline — mini gráfico Recharts (100x40)
+// Usa vendas mensais como proxy de evolucao quando nao ha historico de score
+// ---------------------------------------------------------------------------
+
+interface ScoreSparklineProps {
+  vendas: VendaMensal[];
+  score: number;
+}
+
+function ScoreSparkline({ vendas, score }: ScoreSparklineProps) {
+  if (!vendas || vendas.length < 2) return null;
+
+  const scoreColor = score >= 70 ? '#00B050' : score >= 40 ? '#FFC000' : '#FF0000';
+
+  // Normalizar valores para exibir evolucao relativa
+  const data = vendas.map((v) => ({ mes: v.mes, valor: v.valor }));
+
+  return (
+    <div className="pt-1">
+      <p className="text-[11px] text-gray-500 mb-1 font-medium">Evolucao faturamento</p>
+      <div style={{ width: '100%', height: 40 }}>
+        <ResponsiveContainer width="100%" height={40}>
+          <LineChart data={data} margin={{ top: 2, right: 2, bottom: 2, left: 2 }}>
+            <Line
+              type="monotone"
+              dataKey="valor"
+              stroke={scoreColor}
+              strokeWidth={1.5}
+              dot={false}
+              isAnimationActive={false}
+            />
+            <Tooltip
+              contentStyle={{ fontSize: 10, padding: '2px 6px', borderRadius: 4 }}
+              formatter={(value) => [formatBRL(Number(value ?? 0)), '']}
+              labelFormatter={(label) => String(label ?? '')}
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Ultimas Compras — tabela compacta com ultimos pedidos do cliente
+// ---------------------------------------------------------------------------
+
+interface UltimasComprasProps {
+  cnpj: string;
+}
+
+const STATUS_VENDA_COLORS: Record<string, string> = {
+  DIGITADO:  '#6B7280',
+  LIBERADO:  '#2563EB',
+  FATURADO:  '#7C3AED',
+  ENTREGUE:  '#00B050',
+  CANCELADO: '#EF4444',
+};
+
+function UltimasComprasBloco({ cnpj }: UltimasComprasProps) {
+  const [vendas, setVendas] = useState<VendaPedidoItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    setLoading(true);
+    setError(null);
+    fetchVendasCliente(cnpj, 5)
+      .then(setVendas)
+      .catch((e: Error) => setError(e.message))
+      .finally(() => setLoading(false));
+  }, [cnpj]);
+
+  if (loading) {
+    return (
+      <div className="space-y-2 py-1">
+        {Array.from({ length: 3 }).map((_, i) => (
+          <div key={i} className="h-8 bg-gray-100 animate-pulse rounded" />
+        ))}
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <p className="text-xs text-red-600 py-2">
+        Erro ao carregar compras: {error}
+      </p>
+    );
+  }
+
+  if (vendas.length === 0) {
+    return (
+      <p className="text-xs text-gray-400 py-2 italic">
+        Nenhum pedido encontrado para este cliente.
+      </p>
+    );
+  }
+
+  return (
+    <div className="overflow-x-auto -mx-1">
+      <table className="w-full text-xs">
+        <thead>
+          <tr className="border-b border-gray-100">
+            <th className="text-left text-[10px] font-semibold text-gray-500 uppercase py-1.5 px-1">Data</th>
+            <th className="text-right text-[10px] font-semibold text-gray-500 uppercase py-1.5 px-1">Valor</th>
+            <th className="text-right text-[10px] font-semibold text-gray-500 uppercase py-1.5 px-1">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {vendas.map((v) => {
+            const cor = STATUS_VENDA_COLORS[v.status] ?? '#9CA3AF';
+            return (
+              <tr key={v.id} className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
+                <td className="py-1.5 px-1 text-gray-700 whitespace-nowrap">
+                  {formatDate(v.data_pedido)}
+                </td>
+                <td className="py-1.5 px-1 text-right font-medium text-gray-900 tabular-nums whitespace-nowrap">
+                  {formatBRL(v.valor_total)}
+                </td>
+                <td className="py-1.5 px-1 text-right whitespace-nowrap">
+                  <span
+                    className="inline-block text-[10px] font-semibold px-1.5 py-0.5 rounded"
+                    style={{ backgroundColor: cor + '18', color: cor }}
+                  >
+                    {v.status}
+                  </span>
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Timeline Visual — ultimos 10 eventos em ordem cronologica
+// ---------------------------------------------------------------------------
+
+const TIMELINE_COLORS: Record<string, string> = {
+  VENDA:    '#00B050',
+  LIGACAO:  '#1D4ED8',
+  LIGAÇÃO:  '#1D4ED8',
+  WHATSAPP: '#25D366',
+  EMAIL:    '#6B7280',
+  VISITA:   '#7C3AED',
+};
+
+const TIMELINE_LABELS: Record<string, string> = {
+  VENDA:    'Venda',
+  LIGACAO:  'Ligacao',
+  LIGAÇÃO:  'Ligacao',
+  WHATSAPP: 'Whatsapp',
+  EMAIL:    'Email',
+  VISITA:   'Visita',
+};
+
+interface TimelineEventProps {
+  item: AtendimentoHistoricoItem;
+}
+
+function TimelineEvent({ item }: TimelineEventProps) {
+  const [expanded, setExpanded] = useState(false);
+
+  const tipo = item.via_whatsapp ? 'WHATSAPP' : item.via_ligacao ? 'LIGACAO' : 'LIGACAO';
+  const cor = TIMELINE_COLORS[tipo] ?? '#9CA3AF';
+  const label = TIMELINE_LABELS[tipo] ?? 'Log';
+  const maxLen = 70;
+  const needsExpand = item.descricao.length > maxLen;
+
+  return (
+    <div className="flex gap-3 relative">
+      {/* Linha vertical da timeline */}
+      <div className="flex flex-col items-center flex-shrink-0">
+        <div
+          className="w-2.5 h-2.5 rounded-full ring-2 ring-white flex-shrink-0 mt-0.5 z-10 relative"
+          style={{ backgroundColor: cor }}
+          aria-hidden="true"
+        />
+        <div className="w-px flex-1 bg-gray-100 min-h-[16px]" aria-hidden="true" />
+      </div>
+
+      {/* Conteudo do evento */}
+      <div className="flex-1 min-w-0 pb-3">
+        <div className="flex items-start justify-between gap-2 flex-wrap">
+          <div className="flex items-center gap-1.5 flex-wrap">
+            <span
+              className="text-[10px] font-bold px-1.5 py-0.5 rounded"
+              style={{ backgroundColor: cor + '18', color: cor }}
+            >
+              {label}
+            </span>
+            <StatusBadge value={item.resultado} small />
+          </div>
+          <span className="text-[10px] text-gray-400 flex-shrink-0 tabular-nums">
+            {formatDate(item.data_registro)}
+          </span>
+        </div>
+
+        {item.consultor && (
+          <p className="text-[11px] text-gray-500 mt-0.5">{item.consultor}</p>
+        )}
+
+        <button
+          type="button"
+          className="mt-0.5 text-left w-full"
+          onClick={() => needsExpand && setExpanded((v) => !v)}
+          aria-expanded={needsExpand ? expanded : undefined}
+        >
+          <p className={`text-[11px] text-gray-600 italic leading-relaxed ${needsExpand && !expanded ? 'line-clamp-2' : ''}`}>
+            &quot;{item.descricao}&quot;
+          </p>
+        </button>
+
+        {needsExpand && (
+          <button
+            type="button"
+            onClick={() => setExpanded((v) => !v)}
+            className="text-[10px] text-green-600 hover:underline mt-0.5"
+          >
+            {expanded ? 'Ver menos' : 'Ver mais'}
+          </button>
+        )}
+
+        {item.acao_futura && (
+          <p className="text-[11px] text-gray-500 mt-0.5">
+            <span className="text-gray-400">Acao futura:</span> {item.acao_futura}
+          </p>
+        )}
+      </div>
+    </div>
+  );
+}
+
+interface TimelineVisualProps {
+  cnpj: string;
+}
+
+function TimelineVisual({ cnpj }: TimelineVisualProps) {
+  const [itens, setItens] = useState<AtendimentoHistoricoItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    setLoading(true);
+    setError(null);
+    fetchAtendimentosHistorico(cnpj, 1, 10)
+      .then((res) => setItens(res.itens))
+      .catch((e: Error) => setError(e.message))
+      .finally(() => setLoading(false));
+  }, [cnpj]);
+
+  if (loading) {
+    return (
+      <div className="space-y-3 py-1">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <div key={i} className="flex gap-3">
+            <div className="w-2.5 h-2.5 rounded-full bg-gray-100 animate-pulse mt-0.5 flex-shrink-0" />
+            <div className="flex-1 space-y-1">
+              <div className="h-3 bg-gray-100 animate-pulse rounded w-2/3" />
+              <div className="h-3 bg-gray-100 animate-pulse rounded w-full" />
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <p className="text-xs text-red-600 py-2">
+        Erro ao carregar timeline: {error}
+      </p>
+    );
+  }
+
+  if (itens.length === 0) {
+    return (
+      <p className="text-xs text-gray-400 py-2 italic">
+        Nenhum evento registrado.
+      </p>
+    );
+  }
+
+  return (
+    <div className="pt-1">
+      {itens.map((item) => (
+        <TimelineEvent key={item.id} item={item} />
+      ))}
+      <p className="text-[10px] text-gray-400 mt-1 text-right">
+        Ultimos {itens.length} eventos
+      </p>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Bloco Histórico completo — timeline de atendimentos com paginacao
 // ---------------------------------------------------------------------------
 
 const TIPO_CONTATO_COLORS: Record<string, string> = {
@@ -322,7 +627,7 @@ const TIPO_LABELS: Record<string, string> = {
 function inferTipo(item: AtendimentoHistoricoItem): string {
   if (item.via_whatsapp) return 'WHATSAPP';
   if (item.via_ligacao) return 'LIGACAO';
-  return 'LIGACAO'; // default
+  return 'LIGACAO';
 }
 
 function TimelineItem({ item }: { item: AtendimentoHistoricoItem }) {
@@ -485,10 +790,6 @@ function HistoricoBloco({ cnpj }: { cnpj: string }) {
 // Bloco IA — Briefing + Gerador de mensagem WhatsApp
 // ---------------------------------------------------------------------------
 
-// ---------------------------------------------------------------------------
-// Indicador de status WhatsApp (dot verde/vermelho)
-// ---------------------------------------------------------------------------
-
 function WhatsAppStatusDot({ status }: { status: WhatsAppStatus | null; loading: boolean }) {
   if (status === null) return null;
   if (!status.configurado) {
@@ -519,26 +820,22 @@ function WhatsAppStatusDot({ status }: { status: WhatsAppStatus | null; loading:
 }
 
 function BlocoIA({ cnpj }: { cnpj: string }) {
-  // Estado do briefing
   const [briefing, setBriefing] = useState<BriefingResponse | null>(null);
   const [loadingBriefing, setLoadingBriefing] = useState(false);
   const [erroBriefing, setErroBriefing] = useState<string | null>(null);
 
-  // Estado do gerador de mensagem WA
   const [objetivo, setObjetivo] = useState('');
   const [mensagem, setMensagem] = useState<MensagemWhatsAppResponse | null>(null);
   const [loadingMensagem, setLoadingMensagem] = useState(false);
   const [erroMensagem, setErroMensagem] = useState<string | null>(null);
   const [copiado, setCopiado] = useState(false);
 
-  // Estado do envio real via Deskrio
   const [waStatus, setWaStatus] = useState<WhatsAppStatus | null>(null);
   const [loadingWaStatus, setLoadingWaStatus] = useState(false);
   const [enviando, setEnviando] = useState(false);
   const [resultadoEnvio, setResultadoEnvio] = useState<WhatsAppEnviarResponse | null>(null);
   const [erroEnvio, setErroEnvio] = useState<string | null>(null);
 
-  // Carregar status WA ao montar o bloco
   useEffect(() => {
     setLoadingWaStatus(true);
     fetchWhatsAppStatus()
@@ -584,7 +881,7 @@ function BlocoIA({ cnpj }: { cnpj: string }) {
       setCopiado(true);
       setTimeout(() => setCopiado(false), 2000);
     } catch {
-      // fallback: selecionar texto manualmente
+      // fallback silencioso
     }
   };
 
@@ -743,7 +1040,6 @@ function BlocoIA({ cnpj }: { cnpj: string }) {
               </button>
             </div>
 
-            {/* Botao de envio real via Deskrio */}
             <div className="flex items-center justify-between gap-2 pt-1">
               <button
                 type="button"
@@ -789,7 +1085,6 @@ function BlocoIA({ cnpj }: { cnpj: string }) {
               )}
             </div>
 
-            {/* Feedback de envio */}
             {erroEnvio && (
               <p className="text-xs text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2">
                 {erroEnvio}
@@ -880,7 +1175,6 @@ function BriefingLigacaoPainel({ cnpj }: { cnpj: string }) {
 
   return (
     <div className="mt-3 border border-blue-200 rounded-lg bg-blue-50 overflow-hidden">
-      {/* Header do painel */}
       <div className="px-4 py-2.5 bg-blue-100 border-b border-blue-200 flex items-center justify-between">
         <span className="text-xs font-semibold text-blue-800 uppercase tracking-wide">
           Briefing de Ligacao
@@ -896,7 +1190,6 @@ function BriefingLigacaoPainel({ cnpj }: { cnpj: string }) {
       </div>
 
       <div className="px-4 py-3 space-y-3">
-        {/* Abordagem sugerida */}
         <div>
           <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1">
             Abordagem sugerida
@@ -904,7 +1197,6 @@ function BriefingLigacaoPainel({ cnpj }: { cnpj: string }) {
           <p className="text-xs text-gray-800 leading-relaxed">{briefing.sugestao_abordagem}</p>
         </div>
 
-        {/* Ultimo contato */}
         {briefing.ultimo_contato && (
           <div>
             <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1">
@@ -917,7 +1209,6 @@ function BriefingLigacaoPainel({ cnpj }: { cnpj: string }) {
           </div>
         )}
 
-        {/* Script de venda */}
         <div>
           <div className="flex items-center justify-between mb-1">
             <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
@@ -955,7 +1246,6 @@ function BriefingLigacaoPainel({ cnpj }: { cnpj: string }) {
           </div>
         </div>
 
-        {/* Risco churn detalhado */}
         {churn && churn.fatores.length > 0 && (
           <div>
             <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1">
@@ -985,7 +1275,17 @@ function BriefingLigacaoPainel({ cnpj }: { cnpj: string }) {
 // Componente principal
 // ---------------------------------------------------------------------------
 
-type BlocoKey = 'identidade' | 'status' | 'financeiro' | 'historico' | 'ia';
+type BlocoKey = 'identidade' | 'status' | 'financeiro' | 'timeline' | 'compras' | 'historico' | 'ia';
+
+const BLOCO_DEFAULTS: Record<BlocoKey, boolean> = {
+  identidade: true,
+  status:     true,
+  financeiro: false,
+  timeline:   true,
+  compras:    false,
+  historico:  false,
+  ia:         false,
+};
 
 export default function ClienteDetalhe({ cnpj, onClose }: ClienteDetalheProps) {
   const { user } = useAuth();
@@ -996,36 +1296,31 @@ export default function ClienteDetalhe({ cnpj, onClose }: ClienteDetalheProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Estado do modal de atendimento
   const [atendimentoAberto, setAtendimentoAberto] = useState(false);
-  // Chave para forcar re-render do HistoricoBloco apos salvar atendimento
   const [historicoKey, setHistoricoKey] = useState(0);
-  // Estado do painel de preparacao de ligacao
   const [briefingLigacaoAberto, setBriefingLigacaoAberto] = useState(false);
 
   // Estado dos blocos colapsáveis — persistido em sessionStorage
   const [open, setOpen] = useState<Record<BlocoKey, boolean>>(() => {
-    if (typeof window === 'undefined') {
-      return { identidade: true, status: true, financeiro: false, historico: false, ia: false };
-    }
+    if (typeof window === 'undefined') return BLOCO_DEFAULTS;
     try {
-      const saved = sessionStorage.getItem('crm_detalhe_blocos');
+      const saved = sessionStorage.getItem('crm_detalhe_blocos_v2');
       if (saved) {
-        const parsed = JSON.parse(saved) as Record<BlocoKey, boolean>;
-        // Garantir que 'ia' existe mesmo em estado salvo antes desta versao
-        const merged: Record<BlocoKey, boolean> = {
-          identidade: parsed.identidade ?? true,
-          status: parsed.status ?? true,
-          financeiro: parsed.financeiro ?? false,
-          historico: parsed.historico ?? false,
-          ia: parsed.ia ?? false,
+        const parsed = JSON.parse(saved) as Partial<Record<BlocoKey, boolean>>;
+        return {
+          identidade: parsed.identidade ?? BLOCO_DEFAULTS.identidade,
+          status:     parsed.status     ?? BLOCO_DEFAULTS.status,
+          financeiro: parsed.financeiro ?? BLOCO_DEFAULTS.financeiro,
+          timeline:   parsed.timeline   ?? BLOCO_DEFAULTS.timeline,
+          compras:    parsed.compras    ?? BLOCO_DEFAULTS.compras,
+          historico:  parsed.historico  ?? BLOCO_DEFAULTS.historico,
+          ia:         parsed.ia         ?? BLOCO_DEFAULTS.ia,
         };
-        return merged;
       }
     } catch {
       // fallback silencioso
     }
-    return { identidade: true, status: true, financeiro: false, historico: false, ia: false };
+    return BLOCO_DEFAULTS;
   });
 
   const drawerRef = useRef<HTMLElement>(null);
@@ -1063,7 +1358,6 @@ export default function ClienteDetalhe({ cnpj, onClose }: ClienteDetalheProps) {
     ])
       .then(([clienteData, scoreData]) => {
         setCliente(clienteData);
-        // Mapear estrutura do endpoint /score para ScoreBreakdown
         if (scoreData?.fatores) {
           setScoreBreakdown({
             urgencia:  scoreData.fatores.urgencia.valor,
@@ -1085,7 +1379,7 @@ export default function ClienteDetalhe({ cnpj, onClose }: ClienteDetalheProps) {
     setOpen((prev) => {
       const next = { ...prev, [key]: !prev[key] };
       try {
-        sessionStorage.setItem('crm_detalhe_blocos', JSON.stringify(next));
+        sessionStorage.setItem('crm_detalhe_blocos_v2', JSON.stringify(next));
       } catch {
         // fallback silencioso
       }
@@ -1114,8 +1408,8 @@ export default function ClienteDetalhe({ cnpj, onClose }: ClienteDetalheProps) {
         className="fixed top-0 right-0 h-full w-full max-w-lg bg-white z-50 shadow-2xl flex flex-col outline-none"
       >
         {/* Cabeçalho fixo */}
-        <div className="flex items-start justify-between px-5 py-4 border-b border-gray-200 bg-white flex-shrink-0">
-          <div className="min-w-0 flex-1 pr-3">
+        <div className="flex items-start justify-between px-4 md:px-5 py-3 md:py-4 border-b border-gray-200 bg-white flex-shrink-0">
+          <div className="min-w-0 flex-1 pr-2">
             <h2
               id="detalhe-titulo"
               className="font-bold text-gray-900 text-base leading-tight truncate"
@@ -1135,15 +1429,15 @@ export default function ClienteDetalhe({ cnpj, onClose }: ClienteDetalheProps) {
               </div>
             )}
           </div>
-          <div className="flex items-center gap-2 flex-shrink-0">
-            {/* Botao Preparar Ligacao — abre painel de briefing IA */}
+          <div className="flex items-center gap-1.5 flex-shrink-0">
+            {/* Botao Preparar Ligacao */}
             {cliente && !loading && (
               <button
                 type="button"
                 onClick={() => setBriefingLigacaoAberto((v) => !v)}
                 aria-label="Preparar briefing de ligacao com IA"
                 aria-pressed={briefingLigacaoAberto}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-md transition-all hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
+                className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-md transition-all hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
                 style={briefingLigacaoAberto
                   ? { backgroundColor: '#1D4ED8', color: '#fff' }
                   : { backgroundColor: '#DBEAFE', color: '#1D4ED8' }
@@ -1160,16 +1454,16 @@ export default function ClienteDetalhe({ cnpj, onClose }: ClienteDetalheProps) {
                   <path strokeLinecap="round" strokeLinejoin="round"
                     d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                 </svg>
-                {briefingLigacaoAberto ? 'Fechar Briefing' : 'Preparar Ligacao'}
+                {briefingLigacaoAberto ? 'Fechar' : 'Ligar'}
               </button>
             )}
-            {/* Botao de registrar atendimento — disponivel assim que o cliente carrega */}
+            {/* Botao registrar atendimento */}
             {cliente && !loading && (
               <button
                 type="button"
                 onClick={() => setAtendimentoAberto(true)}
                 aria-label={`Registrar atendimento de ${cliente.nome_fantasia}`}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white rounded-md transition-all hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1"
+                className="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-semibold text-white rounded-md transition-all hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1"
                 style={{ backgroundColor: '#00B050' }}
               >
                 <svg
@@ -1182,13 +1476,13 @@ export default function ClienteDetalhe({ cnpj, onClose }: ClienteDetalheProps) {
                 >
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
                 </svg>
-                Registrar
+                <span className="hidden sm:inline">Registrar</span>
               </button>
             )}
             <button
               type="button"
               onClick={onClose}
-              className="p-2 rounded hover:bg-gray-100 text-gray-500"
+              className="p-2 rounded hover:bg-gray-100 text-gray-500 transition-colors"
               aria-label="Fechar ficha do cliente"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1206,7 +1500,7 @@ export default function ClienteDetalhe({ cnpj, onClose }: ClienteDetalheProps) {
         )}
 
         {/* Corpo scrollável */}
-        <div className="flex-1 overflow-y-auto py-3 px-4 space-y-3">
+        <div className="flex-1 overflow-y-auto py-3 px-3 md:px-4 space-y-3">
 
           {/* Estado de loading */}
           {loading && (
@@ -1269,7 +1563,6 @@ export default function ClienteDetalhe({ cnpj, onClose }: ClienteDetalheProps) {
                 open={open.status}
                 onToggle={() => toggleBloco('status')}
               >
-                {/* Badges de status em grade */}
                 <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 pb-2">
                   <FieldRow
                     label="Situacao"
@@ -1306,7 +1599,6 @@ export default function ClienteDetalhe({ cnpj, onClose }: ClienteDetalheProps) {
                   />
                 </div>
 
-                {/* Score breakdown */}
                 {cliente.score != null && (
                   <div className="pt-1">
                     <ScoreBreakdownDisplay
@@ -1340,7 +1632,6 @@ export default function ClienteDetalhe({ cnpj, onClose }: ClienteDetalheProps) {
                   <FieldRow label="Faturamento 2026 (YTD)" value={cliente.faturamento_2026} money />
                   <FieldRow label="Meta Anual" value={cliente.meta_anual} money />
 
-                  {/* Gap e % alcancado */}
                   {cliente.meta_anual != null && cliente.faturamento_2026 != null && (() => {
                     const gap = cliente.faturamento_2026 - cliente.meta_anual;
                     const pct = cliente.meta_anual > 0
@@ -1388,20 +1679,50 @@ export default function ClienteDetalhe({ cnpj, onClose }: ClienteDetalheProps) {
                   {cliente.vendas_mensais && cliente.vendas_mensais.length > 0 && (
                     <VendasMiniChart vendas={cliente.vendas_mensais} />
                   )}
+
+                  {/* Score sparkline usando vendas mensais como proxy */}
+                  {cliente.vendas_mensais && cliente.vendas_mensais.length >= 2 && cliente.score != null && (
+                    <ScoreSparkline vendas={cliente.vendas_mensais} score={cliente.score} />
+                  )}
                 </Bloco>
               )}
 
-              {/* BLOCO 4: HISTÓRICO */}
+              {/* BLOCO 4: TIMELINE VISUAL — ultimos 10 eventos */}
+              <Bloco
+                title="Timeline de Eventos"
+                open={open.timeline}
+                onToggle={() => toggleBloco('timeline')}
+                badge={
+                  <span className="text-[10px] font-medium text-gray-400">(ultimos 10)</span>
+                }
+              >
+                <TimelineVisual cnpj={cnpj} />
+              </Bloco>
+
+              {/* BLOCO 5: ULTIMAS COMPRAS */}
+              {!isExternoJulio && (
+                <Bloco
+                  title="Ultimas Compras"
+                  open={open.compras}
+                  onToggle={() => toggleBloco('compras')}
+                  badge={
+                    <span className="text-[10px] font-medium text-gray-400">(max 5)</span>
+                  }
+                >
+                  <UltimasComprasBloco cnpj={cnpj} />
+                </Bloco>
+              )}
+
+              {/* BLOCO 6: HISTÓRICO COMPLETO */}
               <Bloco
                 title="Historico de Atendimentos"
                 open={open.historico}
                 onToggle={() => toggleBloco('historico')}
               >
-                {/* historicoKey forca remontagem apos novo atendimento ser registrado */}
                 <HistoricoBloco key={historicoKey} cnpj={cnpj} />
               </Bloco>
 
-              {/* BLOCO 5: INTELIGÊNCIA ARTIFICIAL */}
+              {/* BLOCO 7: INTELIGÊNCIA ARTIFICIAL */}
               <Bloco
                 title="Inteligencia Artificial"
                 open={open.ia}
@@ -1429,13 +1750,11 @@ export default function ClienteDetalhe({ cnpj, onClose }: ClienteDetalheProps) {
           }}
           onClose={() => setAtendimentoAberto(false)}
           onSaved={() => {
-            // Incrementar key forca HistoricoBloco a recarregar do backend
             setHistoricoKey((k) => k + 1);
-            // Abrir bloco de historico se estiver fechado
             setOpen((prev) => {
-              const next = { ...prev, historico: true };
+              const next = { ...prev, historico: true, timeline: true };
               try {
-                sessionStorage.setItem('crm_detalhe_blocos', JSON.stringify(next));
+                sessionStorage.setItem('crm_detalhe_blocos_v2', JSON.stringify(next));
               } catch {
                 // fallback silencioso
               }

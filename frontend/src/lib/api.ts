@@ -68,6 +68,31 @@ export function formatPercent(value: number, decimals = 1): string {
   return `${value.toFixed(decimals)}%`;
 }
 
+/**
+ * Formata uma string ISO (yyyy-mm-dd ou yyyy-mm-ddTHH:MM:SS) para dd/mm/yyyy.
+ * Retorna '—' se o valor for nulo, undefined ou invalido.
+ */
+export function formatDateBR(dateStr?: string | null): string {
+  if (!dateStr) return '—';
+  const datePart = dateStr.split('T')[0];
+  const parts = datePart.split('-');
+  if (parts.length !== 3) return dateStr;
+  const [year, month, day] = parts;
+  if (!year || !month || !day) return dateStr;
+  return `${day}/${month}/${year}`;
+}
+
+/**
+ * Formata um numero com separador de milhar em pt-BR (ex: 1.234.567).
+ * Util para contagens e quantidades (sem cifrao).
+ */
+export function formatNumber(value: number, decimals = 0): string {
+  return new Intl.NumberFormat('pt-BR', {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+  }).format(value);
+}
+
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
@@ -449,6 +474,13 @@ export interface ClienteScoreResponse {
 
 export async function fetchClienteScore(cnpj: string): Promise<ClienteScoreResponse> {
   return fetchJson<ClienteScoreResponse>(`/api/clientes/${cnpj}/score`);
+}
+
+export async function atualizarEstagioCliente(
+  cnpj: string,
+  estagio_funil: string
+): Promise<ClienteRegistro> {
+  return mutateJson<ClienteRegistro>(`/api/clientes/${cnpj}`, 'PATCH', { estagio_funil });
 }
 
 // ---------------------------------------------------------------------------
@@ -1095,6 +1127,17 @@ export interface VendasParams {
   busca?: string;
   limit?: number;
   offset?: number;
+}
+
+// Busca ultimas vendas/pedidos de um cliente especifico por CNPJ
+export async function fetchVendasCliente(
+  cnpj: string,
+  limit = 5
+): Promise<VendaPedidoItem[]> {
+  const qs = new URLSearchParams({ busca: cnpj, limit: String(limit) });
+  const res = await fetchJson<VendasPorStatusResponse>(`/api/vendas?${qs.toString()}`);
+  // Filtrar pelo CNPJ exato para garantir que nao retorne outros clientes
+  return (res.itens ?? []).filter((v) => v.cliente_cnpj === cnpj).slice(0, limit);
 }
 
 export async function fetchVendasPorStatus(
