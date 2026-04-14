@@ -1161,3 +1161,167 @@ export async function downloadRelatorio(
   }
   return res.blob();
 }
+
+// ---------------------------------------------------------------------------
+// Indicadores Mercos — novos endpoints
+// ---------------------------------------------------------------------------
+
+// Parametros comuns para filtros globais de mes/ano/consultor
+export interface FiltroMesAnoConsultor {
+  mes?: number;
+  ano?: number;
+  consultor?: string;
+}
+
+// Helper interno para montar URLSearchParams a partir de filtros comuns
+function buildFiltroQS(params: FiltroMesAnoConsultor): URLSearchParams {
+  const qs = new URLSearchParams();
+  if (params.mes !== undefined) qs.set('mes', String(params.mes));
+  if (params.ano !== undefined) qs.set('ano', String(params.ano));
+  if (params.consultor) qs.set('consultor', params.consultor);
+  return qs;
+}
+
+// --- Evolucao Vendas ---
+
+export interface EvolucaoVendasSerie {
+  dia: number;
+  mes_atual: number;
+  mes_anterior: number;
+  ano_anterior: number;
+}
+
+export interface EvolucaoVendasResponse {
+  mes_referencia: string;
+  consultor?: string;
+  serie: EvolucaoVendasSerie[];
+}
+
+export async function fetchEvolucaoVendas(
+  params: FiltroMesAnoConsultor = {}
+): Promise<EvolucaoVendasResponse> {
+  const qs = buildFiltroQS(params);
+  return fetchJson<EvolucaoVendasResponse>(
+    `/api/dashboard/evolucao-vendas${qs.toString() ? `?${qs.toString()}` : ''}`
+  );
+}
+
+// --- Positivacao Diaria ---
+
+export interface PositivacaoDiariaItem {
+  dia: number;
+  positivados: number;
+  objetivo: number;
+}
+
+export interface PositivacaoDiariaResponse {
+  mes_referencia: string;
+  objetivo_diario: number;
+  itens: PositivacaoDiariaItem[];
+}
+
+export async function fetchPositivacaoDiaria(
+  params: FiltroMesAnoConsultor = {}
+): Promise<PositivacaoDiariaResponse> {
+  const qs = buildFiltroQS(params);
+  return fetchJson<PositivacaoDiariaResponse>(
+    `/api/dashboard/positivacao-diaria${qs.toString() ? `?${qs.toString()}` : ''}`
+  );
+}
+
+// --- Positivacao por Vendedor ---
+
+export interface PositivacaoVendedorItem {
+  consultor: string;
+  positivados: number;
+  objetivo: number;
+  pct: number;
+}
+
+export interface PositivacaoVendedorResponse {
+  mes_referencia: string;
+  itens: PositivacaoVendedorItem[];
+}
+
+export async function fetchPositivacaoVendedor(
+  params: Pick<FiltroMesAnoConsultor, 'mes' | 'ano'> = {}
+): Promise<PositivacaoVendedorResponse> {
+  const qs = new URLSearchParams();
+  if (params.mes !== undefined) qs.set('mes', String(params.mes));
+  if (params.ano !== undefined) qs.set('ano', String(params.ano));
+  return fetchJson<PositivacaoVendedorResponse>(
+    `/api/dashboard/positivacao-vendedor${qs.toString() ? `?${qs.toString()}` : ''}`
+  );
+}
+
+// --- Atendimentos Diarios ---
+
+export interface AtendimentoDiarioItem {
+  dia: number;
+  mes_atual: number;
+  mes_anterior: number;
+  objetivo: number;
+}
+
+export interface AtendimentosDiariosResponse {
+  mes_referencia: string;
+  objetivo_diario: number;
+  itens: AtendimentoDiarioItem[];
+}
+
+export async function fetchAtendimentosDiarios(
+  params: FiltroMesAnoConsultor = {}
+): Promise<AtendimentosDiariosResponse> {
+  const qs = buildFiltroQS(params);
+  return fetchJson<AtendimentosDiariosResponse>(
+    `/api/dashboard/atendimentos-diarios${qs.toString() ? `?${qs.toString()}` : ''}`
+  );
+}
+
+// --- Curva ABC Detalhe ---
+
+export interface CurvaABCDetalheItem {
+  curva: string;
+  total_clientes: number;
+  faturamento: number;
+  pct_clientes: number;
+  pct_faturamento: number;
+}
+
+export interface CurvaABCDetalheResponse {
+  consultor?: string;
+  total_clientes: number;
+  total_faturamento: number;
+  itens: CurvaABCDetalheItem[];
+}
+
+export async function fetchCurvaABCDetalhe(
+  params: Pick<FiltroMesAnoConsultor, 'consultor'> = {}
+): Promise<CurvaABCDetalheResponse> {
+  const qs = new URLSearchParams();
+  if (params.consultor) qs.set('consultor', params.consultor);
+  return fetchJson<CurvaABCDetalheResponse>(
+    `/api/dashboard/curva-abc-detalhe${qs.toString() ? `?${qs.toString()}` : ''}`
+  );
+}
+
+// --- E-commerce ---
+
+export interface EcommerceResponse {
+  mes_referencia: string;
+  total_clientes_ecommerce: number;
+  pct_do_total: number;
+  total_pedidos: number;
+  valor_total: number;
+}
+
+export async function fetchEcommerce(
+  params: Pick<FiltroMesAnoConsultor, 'mes' | 'ano'> = {}
+): Promise<EcommerceResponse> {
+  const qs = new URLSearchParams();
+  if (params.mes !== undefined) qs.set('mes', String(params.mes));
+  if (params.ano !== undefined) qs.set('ano', String(params.ano));
+  return fetchJson<EcommerceResponse>(
+    `/api/dashboard/ecommerce${qs.toString() ? `?${qs.toString()}` : ''}`
+  );
+}

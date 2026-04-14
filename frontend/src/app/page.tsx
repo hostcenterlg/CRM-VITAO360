@@ -15,6 +15,9 @@ import {
   AreaChart,
   Area,
   Legend,
+  LineChart,
+  Line,
+  ReferenceLine,
 } from 'recharts';
 import {
   fetchKPIs,
@@ -27,6 +30,12 @@ import {
   fetchRNC,
   fetchAtividades,
   fetchPositivacao,
+  fetchEvolucaoVendas,
+  fetchPositivacaoDiaria,
+  fetchPositivacaoVendedor,
+  fetchAtendimentosDiarios,
+  fetchCurvaABCDetalhe,
+  fetchEcommerce,
   KPIs,
   Distribuicao,
   Top10Cliente,
@@ -37,6 +46,12 @@ import {
   RNCResponse,
   AtividadesResponse,
   PositivacaoResponse,
+  EvolucaoVendasResponse,
+  PositivacaoDiariaResponse,
+  PositivacaoVendedorResponse,
+  AtendimentosDiariosResponse,
+  CurvaABCDetalheResponse,
+  EcommerceResponse,
   formatBRL,
   formatPercent,
 } from '@/lib/api';
@@ -55,6 +70,7 @@ const TABS = [
   { id: 'redes',        label: 'REDES + SINALEIRO' },
   { id: 'motivos',      label: 'MOTIVOS + RNC' },
   { id: 'produtividade', label: 'PRODUTIVIDADE' },
+  { id: 'indicadores',  label: 'INDICADORES' },
 ] as const;
 
 type TabId = (typeof TABS)[number]['id'];
@@ -99,6 +115,14 @@ const CONSULTOR_COLORS: Record<string, string> = {
   LARISSA: '#2563eb',
   DAIANE:  '#0891b2',
   JULIO:   '#d97706',
+};
+
+// Cores dos consultores para graficos de Indicadores (especificacao)
+const INDICADORES_CONSULTOR_COLORS: Record<string, string> = {
+  MANU:    '#1D4ED8',
+  LARISSA: '#15803D',
+  DAIANE:  '#C2410C',
+  JULIO:   '#7C3AED',
 };
 
 const ABC_COLORS: Record<string, string> = {
@@ -176,6 +200,22 @@ function CustomTooltip({
 // Main DashboardPage
 // ---------------------------------------------------------------------------
 
+// Nomes dos meses em pt-BR para os dropdowns
+const MESES = [
+  { value: 1,  label: 'Janeiro'   },
+  { value: 2,  label: 'Fevereiro' },
+  { value: 3,  label: 'Marco'     },
+  { value: 4,  label: 'Abril'     },
+  { value: 5,  label: 'Maio'      },
+  { value: 6,  label: 'Junho'     },
+  { value: 7,  label: 'Julho'     },
+  { value: 8,  label: 'Agosto'    },
+  { value: 9,  label: 'Setembro'  },
+  { value: 10, label: 'Outubro'   },
+  { value: 11, label: 'Novembro'  },
+  { value: 12, label: 'Dezembro'  },
+];
+
 export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState<TabId>('resumo');
 
@@ -191,15 +231,29 @@ export default function DashboardPage() {
   const [atividades, setAtividades]    = useState<AtividadesResponse | null>(null);
   const [positivacao, setPositivacao]  = useState<PositivacaoResponse | null>(null);
 
+  // Indicadores Mercos state
+  const [evolucaoVendas, setEvolucaoVendas]       = useState<EvolucaoVendasResponse | null>(null);
+  const [positivacaoDiaria, setPositivacaoDiaria] = useState<PositivacaoDiariaResponse | null>(null);
+  const [positivacaoVendedor, setPositivacaoVendedor] = useState<PositivacaoVendedorResponse | null>(null);
+  const [atendimentosDiarios, setAtendimentosDiarios] = useState<AtendimentosDiariosResponse | null>(null);
+  const [curvaABCDetalhe, setCurvaABCDetalhe]     = useState<CurvaABCDetalheResponse | null>(null);
+  const [ecommerce, setEcommerce]                 = useState<EcommerceResponse | null>(null);
+  const [loadingIndicadores, setLoadingIndicadores] = useState(false);
+
   // Loading / error
   const [loading, setLoading]          = useState(true);
   const [error, setError]              = useState<string | null>(null);
 
-  // Filters
+  // Filters — existentes
   const defaultRange = defaultDateRange();
   const [consultor, setConsultor]      = useState<Consultor>('TODOS');
   const [dataInicio, setDataInicio]    = useState(defaultRange.inicio);
   const [dataFim, setDataFim]          = useState(defaultRange.fim);
+
+  // Filtros globais Mes/Ano para indicadores
+  const now = new Date();
+  const [filtroMes, setFiltroMes]      = useState<number>(now.getMonth() + 1);
+  const [filtroAno, setFiltroAno]      = useState<number>(now.getFullYear());
 
   const loadData = useCallback(() => {
     setLoading(true);
@@ -235,7 +289,38 @@ export default function DashboardPage() {
       .finally(() => setLoading(false));
   }, []);
 
+  const loadIndicadores = useCallback(() => {
+    setLoadingIndicadores(true);
+    const consultorParam = consultor !== 'TODOS' ? consultor : undefined;
+    const params = { mes: filtroMes, ano: filtroAno, consultor: consultorParam };
+
+    Promise.all([
+      fetchEvolucaoVendas(params).catch(() => null),
+      fetchPositivacaoDiaria(params).catch(() => null),
+      fetchPositivacaoVendedor({ mes: filtroMes, ano: filtroAno }).catch(() => null),
+      fetchAtendimentosDiarios(params).catch(() => null),
+      fetchCurvaABCDetalhe({ consultor: consultorParam }).catch(() => null),
+      fetchEcommerce({ mes: filtroMes, ano: filtroAno }).catch(() => null),
+    ])
+      .then(([ev, pd, pv, ad, abc, ec]) => {
+        setEvolucaoVendas(ev as EvolucaoVendasResponse | null);
+        setPositivacaoDiaria(pd as PositivacaoDiariaResponse | null);
+        setPositivacaoVendedor(pv as PositivacaoVendedorResponse | null);
+        setAtendimentosDiarios(ad as AtendimentosDiariosResponse | null);
+        setCurvaABCDetalhe(abc as CurvaABCDetalheResponse | null);
+        setEcommerce(ec as EcommerceResponse | null);
+      })
+      .finally(() => setLoadingIndicadores(false));
+  }, [consultor, filtroMes, filtroAno]);
+
   useEffect(() => { loadData(); }, [loadData]);
+
+  // Carrega indicadores quando a aba for ativada ou filtros mudarem
+  useEffect(() => {
+    if (activeTab === 'indicadores') {
+      loadIndicadores();
+    }
+  }, [activeTab, loadIndicadores]);
 
   // Derived values
   const totalContatos  = kpis?.total_clientes ?? 0;
@@ -314,6 +399,36 @@ export default function DashboardPage() {
             >
               {CONSULTORES.map((c) => (
                 <option key={c} value={c}>{c}</option>
+              ))}
+            </select>
+          </div>
+          <div className="flex flex-col gap-1 min-w-[140px]">
+            <label htmlFor="filtro-mes" className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+              Mes
+            </label>
+            <select
+              id="filtro-mes"
+              value={filtroMes}
+              onChange={(e) => setFiltroMes(Number(e.target.value))}
+              className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-colors"
+            >
+              {MESES.map((m) => (
+                <option key={m.value} value={m.value}>{m.label}</option>
+              ))}
+            </select>
+          </div>
+          <div className="flex flex-col gap-1 min-w-[100px]">
+            <label htmlFor="filtro-ano" className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+              Ano
+            </label>
+            <select
+              id="filtro-ano"
+              value={filtroAno}
+              onChange={(e) => setFiltroAno(Number(e.target.value))}
+              className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-colors"
+            >
+              {[2025, 2026].map((ano) => (
+                <option key={ano} value={ano}>{ano}</option>
               ))}
             </select>
           </div>
@@ -468,6 +583,19 @@ export default function DashboardPage() {
             performance={filteredPerf}
             kpis={kpis}
             loading={loading}
+          />
+        )}
+        {activeTab === 'indicadores' && (
+          <TabIndicadores
+            evolucaoVendas={evolucaoVendas}
+            positivacaoDiaria={positivacaoDiaria}
+            positivacaoVendedor={positivacaoVendedor}
+            atendimentosDiarios={atendimentosDiarios}
+            curvaABCDetalhe={curvaABCDetalhe}
+            ecommerce={ecommerce}
+            loading={loadingIndicadores}
+            filtroMes={filtroMes}
+            filtroAno={filtroAno}
           />
         )}
       </div>
@@ -1671,6 +1799,365 @@ function TabProdutividade({ performance, kpis, loading }: TabProdutividadeProps)
           <BenchmarkCard label="Prospects ativos" value={loading ? null : totalProspects.toLocaleString('pt-BR')} meta="Meta: 50+" color="#0891b2" />
           <BenchmarkCard label="Score medio carteira" value={loading ? null : (kpis?.media_score ?? 0).toFixed(1)} meta="Meta: 70+" color={AMARELO} />
         </div>
+      </div>
+    </div>
+  );
+}
+
+// ===========================================================================
+// TAB 9: INDICADORES MERCOS
+// ===========================================================================
+
+interface TabIndicadoresProps {
+  evolucaoVendas: EvolucaoVendasResponse | null;
+  positivacaoDiaria: PositivacaoDiariaResponse | null;
+  positivacaoVendedor: PositivacaoVendedorResponse | null;
+  atendimentosDiarios: AtendimentosDiariosResponse | null;
+  curvaABCDetalhe: CurvaABCDetalheResponse | null;
+  ecommerce: EcommerceResponse | null;
+  loading: boolean;
+  filtroMes: number;
+  filtroAno: number;
+}
+
+function TabIndicadores({
+  evolucaoVendas,
+  positivacaoDiaria,
+  positivacaoVendedor,
+  atendimentosDiarios,
+  curvaABCDetalhe,
+  ecommerce,
+  loading,
+  filtroMes,
+  filtroAno,
+}: TabIndicadoresProps) {
+  const nomeMes = MESES.find((m) => m.value === filtroMes)?.label ?? String(filtroMes);
+
+  // Dados Evolucao Vendas para LineChart
+  const evolucaoSerie = evolucaoVendas?.serie ?? [];
+
+  // Dados Positivacao Diaria
+  const positivacaoDiariaItens = positivacaoDiaria?.itens ?? [];
+  const objetivoDiario = positivacaoDiaria?.objetivo_diario ?? 0;
+
+  // Dados Positivacao por Vendedor
+  const positivacaoVendedorItens = positivacaoVendedor?.itens ?? [];
+
+  // Dados Atendimentos Diarios
+  const atendimentosDiariosItens = atendimentosDiarios?.itens ?? [];
+  const objetivoAtendimentos = atendimentosDiarios?.objetivo_diario ?? 0;
+
+  // Dados Curva ABC
+  const abcItens = curvaABCDetalhe?.itens ?? [];
+  const abcPieData = abcItens.map((item) => ({
+    name: item.curva,
+    value: item.total_clientes,
+    faturamento: item.faturamento,
+  }));
+
+  return (
+    <div className="space-y-6">
+      {/* Header do periodo */}
+      <div className="flex items-center gap-3 p-3 bg-blue-50 border border-blue-100 rounded-lg">
+        <svg className="w-4 h-4 text-blue-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+        <p className="text-sm font-semibold text-blue-800">
+          Periodo: {nomeMes} / {filtroAno} — Indicadores Mercos
+        </p>
+      </div>
+
+      {/* Grid 2x3 — 6 graficos */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+        {/* 3.1 Evolucao de Vendas */}
+        <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
+          <SectionHeader label="Evolucao de Vendas" accentColor={VERDE} />
+          <p className="text-[10px] text-gray-400 mt-1">Acumulado diario — mes atual vs anterior vs ano anterior</p>
+          {loading ? (
+            <ChartSkeleton />
+          ) : evolucaoSerie.length === 0 ? (
+            <div className="mt-4 py-10 text-center">
+              <p className="text-sm text-gray-400">Dados indisponíveis</p>
+              <p className="text-xs text-gray-300 mt-1">Endpoint /api/dashboard/evolucao-vendas nao disponivel</p>
+            </div>
+          ) : (
+            <div className="mt-4 h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={evolucaoSerie}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                  <XAxis dataKey="dia" tick={{ fontSize: 10 }} label={{ value: 'Dia', position: 'insideBottom', offset: -2, fontSize: 10 }} />
+                  <YAxis tick={{ fontSize: 10 }} tickFormatter={(v: number) => formatCompact(v)} />
+                  <Tooltip content={<CustomTooltip isBRL />} />
+                  <Legend />
+                  <Line
+                    type="monotone"
+                    dataKey="mes_atual"
+                    name="Mes atual"
+                    stroke={VERDE}
+                    strokeWidth={2}
+                    dot={false}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="mes_anterior"
+                    name="Mes anterior"
+                    stroke="#9ca3af"
+                    strokeWidth={2}
+                    dot={false}
+                    strokeDasharray="4 4"
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="ano_anterior"
+                    name="Ano anterior"
+                    stroke="#93c5fd"
+                    strokeWidth={2}
+                    dot={false}
+                    strokeDasharray="2 3"
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          )}
+        </div>
+
+        {/* 3.2 Positivacao Diaria */}
+        <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
+          <SectionHeader label="Positivacao Diaria" accentColor="#0891b2" />
+          <p className="text-[10px] text-gray-400 mt-1">Clientes positivados por dia vs objetivo</p>
+          {loading ? (
+            <ChartSkeleton />
+          ) : positivacaoDiariaItens.length === 0 ? (
+            <div className="mt-4 py-10 text-center">
+              <p className="text-sm text-gray-400">Dados indisponíveis</p>
+              <p className="text-xs text-gray-300 mt-1">Endpoint /api/dashboard/positivacao-diaria nao disponivel</p>
+            </div>
+          ) : (
+            <div className="mt-4 h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={positivacaoDiariaItens}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                  <XAxis dataKey="dia" tick={{ fontSize: 10 }} />
+                  <YAxis tick={{ fontSize: 10 }} />
+                  <Tooltip content={<CustomTooltip />} />
+                  {objetivoDiario > 0 && (
+                    <ReferenceLine y={objetivoDiario} stroke={VERMELHO} strokeDasharray="4 4" label={{ value: 'Objetivo', fontSize: 10, fill: VERMELHO }} />
+                  )}
+                  <Bar dataKey="positivados" name="Positivados" radius={[4, 4, 0, 0]}>
+                    {positivacaoDiariaItens.map((entry, i) => (
+                      <Cell
+                        key={i}
+                        fill={entry.positivados >= entry.objetivo ? VERDE : AMARELO}
+                      />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          )}
+        </div>
+
+        {/* 3.3 Positivacao por Vendedor */}
+        <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
+          <SectionHeader label="Positivacao por Vendedor" accentColor={ROXO} />
+          <p className="text-[10px] text-gray-400 mt-1">Positivados vs objetivo por consultor</p>
+          {loading ? (
+            <ChartSkeleton />
+          ) : positivacaoVendedorItens.length === 0 ? (
+            <div className="mt-4 py-10 text-center">
+              <p className="text-sm text-gray-400">Dados indisponíveis</p>
+              <p className="text-xs text-gray-300 mt-1">Endpoint /api/dashboard/positivacao-vendedor nao disponivel</p>
+            </div>
+          ) : (
+            <div className="mt-4 h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={positivacaoVendedorItens} layout="vertical">
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                  <XAxis type="number" tick={{ fontSize: 10 }} />
+                  <YAxis dataKey="consultor" type="category" tick={{ fontSize: 11 }} width={70} />
+                  <Tooltip content={<CustomTooltip />} />
+                  <Legend />
+                  <Bar dataKey="positivados" name="Positivados" radius={[0, 4, 4, 0]}>
+                    {positivacaoVendedorItens.map((entry, i) => (
+                      <Cell
+                        key={i}
+                        fill={INDICADORES_CONSULTOR_COLORS[entry.consultor.toUpperCase()] ?? VERDE}
+                      />
+                    ))}
+                  </Bar>
+                  <Bar dataKey="objetivo" name="Objetivo" fill="#d1d5db" radius={[0, 4, 4, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          )}
+        </div>
+
+        {/* 3.4 Volume de Atendimentos Diario */}
+        <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
+          <SectionHeader label="Volume de Atendimentos" accentColor={AMARELO} />
+          <p className="text-[10px] text-gray-400 mt-1">Atendimentos diarios — mes atual vs anterior</p>
+          {loading ? (
+            <ChartSkeleton />
+          ) : atendimentosDiariosItens.length === 0 ? (
+            <div className="mt-4 py-10 text-center">
+              <p className="text-sm text-gray-400">Dados indisponíveis</p>
+              <p className="text-xs text-gray-300 mt-1">Endpoint /api/dashboard/atendimentos-diarios nao disponivel</p>
+            </div>
+          ) : (
+            <div className="mt-4 h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={atendimentosDiariosItens}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                  <XAxis dataKey="dia" tick={{ fontSize: 10 }} />
+                  <YAxis tick={{ fontSize: 10 }} />
+                  <Tooltip content={<CustomTooltip />} />
+                  <Legend />
+                  {objetivoAtendimentos > 0 && (
+                    <ReferenceLine y={objetivoAtendimentos} stroke={VERMELHO} strokeDasharray="4 4" label={{ value: 'Meta', fontSize: 10, fill: VERMELHO }} />
+                  )}
+                  <Line
+                    type="monotone"
+                    dataKey="mes_atual"
+                    name="Mes atual"
+                    stroke={AMARELO}
+                    strokeWidth={2}
+                    dot={false}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="mes_anterior"
+                    name="Mes anterior"
+                    stroke="#d1d5db"
+                    strokeWidth={2}
+                    dot={false}
+                    strokeDasharray="4 4"
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          )}
+        </div>
+
+        {/* 3.5 Curva ABC Detalhe */}
+        <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
+          <SectionHeader label="Curva ABC Detalhada" accentColor={VERDE} />
+          <p className="text-[10px] text-gray-400 mt-1">Distribuicao de clientes e faturamento por curva</p>
+          {loading ? (
+            <ChartSkeleton />
+          ) : abcPieData.length === 0 ? (
+            <div className="mt-4 py-10 text-center">
+              <p className="text-sm text-gray-400">Dados indisponíveis</p>
+              <p className="text-xs text-gray-300 mt-1">Endpoint /api/dashboard/curva-abc-detalhe nao disponivel</p>
+            </div>
+          ) : (
+            <div className="mt-4 h-64 flex flex-col items-center">
+              <ResponsiveContainer width="100%" height="80%">
+                <PieChart>
+                  <Pie
+                    data={abcPieData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={50}
+                    outerRadius={80}
+                    dataKey="value"
+                    nameKey="name"
+                    label={({ name, percent }: { name?: string; percent?: number }) =>
+                      `${name ?? ''}: ${((percent ?? 0) * 100).toFixed(0)}%`
+                    }
+                  >
+                    {abcPieData.map((entry, i) => (
+                      <Cell key={i} fill={ABC_COLORS[entry.name.toUpperCase()] ?? '#9ca3af'} />
+                    ))}
+                  </Pie>
+                  <Tooltip
+                    content={({ active, payload }) => {
+                      if (!active || !payload?.length) return null;
+                      const d = payload[0]?.payload as { name: string; value: number; faturamento: number } | undefined;
+                      if (!d) return null;
+                      return (
+                        <div className="bg-white border border-gray-200 rounded-lg shadow-lg p-3 text-sm">
+                          <p className="font-semibold text-gray-700 mb-1">Curva {d.name}</p>
+                          <p className="text-gray-600">Clientes: <span className="font-medium">{d.value.toLocaleString('pt-BR')}</span></p>
+                          <p className="text-gray-600">Faturamento: <span className="font-medium">{formatCompact(d.faturamento)}</span></p>
+                        </div>
+                      );
+                    }}
+                  />
+                  <Legend />
+                </PieChart>
+              </ResponsiveContainer>
+              {/* Links para carteira filtrada */}
+              <div className="flex gap-2 mt-1">
+                {abcPieData.map((item) => (
+                  <a
+                    key={item.name}
+                    href={`/carteira?curva_abc=${item.name}`}
+                    className="px-2 py-1 text-[10px] font-semibold rounded border transition-colors hover:opacity-80"
+                    style={{
+                      borderColor: ABC_COLORS[item.name.toUpperCase()] ?? '#9ca3af',
+                      color: ABC_COLORS[item.name.toUpperCase()] ?? '#9ca3af',
+                      backgroundColor: (ABC_COLORS[item.name.toUpperCase()] ?? '#9ca3af') + '15',
+                    }}
+                  >
+                    Ver Curva {item.name}
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* 3.6 E-commerce B2B */}
+        <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
+          <SectionHeader label="E-commerce B2B" accentColor="#7c3aed" />
+          <p className="text-[10px] text-gray-400 mt-1">Indicadores do canal e-commerce no periodo</p>
+          {loading ? (
+            <div className="mt-4 grid grid-cols-2 gap-3">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="h-20 bg-gray-100 animate-pulse rounded-lg" />
+              ))}
+            </div>
+          ) : !ecommerce ? (
+            <div className="mt-4 py-10 text-center">
+              <p className="text-sm text-gray-400">Dados indisponíveis</p>
+              <p className="text-xs text-gray-300 mt-1">Endpoint /api/dashboard/ecommerce nao disponivel</p>
+            </div>
+          ) : (
+            <div className="mt-4 grid grid-cols-2 gap-3">
+              <div className="rounded-lg p-4 border-l-4 border-purple-500 bg-purple-50">
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-purple-700">Clientes E-comm</p>
+                <p className="text-2xl font-bold text-gray-900 mt-1">
+                  {ecommerce.total_clientes_ecommerce.toLocaleString('pt-BR')}
+                </p>
+                <p className="text-xs text-gray-500 mt-0.5">clientes ativos no canal</p>
+              </div>
+              <div className="rounded-lg p-4 border-l-4 border-blue-400 bg-blue-50">
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-blue-700">% do Total</p>
+                <p className="text-2xl font-bold text-gray-900 mt-1">
+                  {ecommerce.pct_do_total.toFixed(1)}%
+                </p>
+                <p className="text-xs text-gray-500 mt-0.5">da carteira total</p>
+              </div>
+              <div className="rounded-lg p-4 border-l-4 border-green-500 bg-green-50">
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-green-700">Pedidos</p>
+                <p className="text-2xl font-bold text-gray-900 mt-1">
+                  {ecommerce.total_pedidos.toLocaleString('pt-BR')}
+                </p>
+                <p className="text-xs text-gray-500 mt-0.5">pedidos no periodo</p>
+              </div>
+              <div className="rounded-lg p-4 border-l-4 border-amber-500 bg-amber-50">
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-amber-700">Valor Total</p>
+                <p className="text-2xl font-bold text-gray-900 mt-1">
+                  {formatCompact(ecommerce.valor_total)}
+                </p>
+                <p className="text-xs text-gray-500 mt-0.5">faturamento e-commerce</p>
+              </div>
+            </div>
+          )}
+        </div>
+
       </div>
     </div>
   );
