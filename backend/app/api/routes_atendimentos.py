@@ -20,6 +20,7 @@ R5 — CNPJ: validado em AtendimentoCreate (min/max 14 chars).
 from __future__ import annotations
 
 from fastapi import APIRouter, Depends, HTTPException, Query
+from pydantic import BaseModel, Field, model_validator
 from sqlalchemy import desc, func
 from sqlalchemy.orm import Session
 
@@ -28,6 +29,7 @@ from backend.app.database import get_db
 from backend.app.models.cliente import Cliente
 from backend.app.models.log_interacao import LogInteracao
 from backend.app.models.usuario import Usuario
+from backend.app.utils.cache import cache
 from backend.app.schemas.atendimento import (
     AtendimentoCreate,
     AtendimentoListItem,
@@ -157,6 +159,10 @@ def registrar_atendimento(
         )
         db.commit()
         db.refresh(log)
+        # Invalidar cache de dashboard e notificacoes — novo atendimento afeta KPIs
+        cache.invalidate_prefix("/api/dashboard")
+        cache.invalidate_prefix("/api/notificacoes")
+        cache.invalidate_prefix("/api/sinaleiro")
     except ValueError as exc:
         db.rollback()
         raise HTTPException(status_code=404, detail=str(exc)) from exc
@@ -256,6 +262,164 @@ def listar_atendimentos(
         )
         for log in logs
     ]
+
+
+# ---------------------------------------------------------------------------
+# POST /bulk — Registro de múltiplos atendimentos em lote
+# ---------------------------------------------------------------------------
+
+class AtendimentoBulkItem(BaseModel):
+    """
+    Item de atendimento para registro em batch.
+
+    R4 — Two-Base: LogInteracao NUNCA tem campo de valor monetario (R$ = 0.00).
+    R5 — CNPJ: 14 digitos numericos, sem pontuacao.
+    """
+
+    cnpj: str = Field(
+        ...,
+        min_length=14,
+        max_length=14,
+        description="CNPJ do cliente — 14 digitos numericos, sem pontuacao",
+    )
+    resultado: str = Field(
+        ...,
+        description="Resultado da interacao (valores validos: ver RESULTADOS_VALIDOS)",
+    )
+    descricao: str = Field(
+        default="",
+        description="Observacoes livres do consultor",
+    )
+    tipo_contato: str | None = Field(
+        default=None,
+        description="Canal de comunicacao (LIGACAO/WHATSAPP/VISITA/EMAIL/VIDEOCHAMADA)",
+    )
+
+
+class AtendimentoBulkPayload(BaseModel):
+    """
+    Payload para registro de múltiplos atendimentos em lote.
+
+    Máximo 50 atendimentos por batch.
+    R4 — Two-Base: todos os logs são criados com R$ 0.00 (sem valor monetario).
+    """
+
+    atendimentos: list[AtendimentoBulkItem] = Field(
+        ...,
+        description="Lista de atendimentos a registrar (max 50 por batch)",
+    )
+
+    @model_validator(mode="after")
+    def validar_batch_size(self):
+        if not self.atendimentos:
+            raise ValueError("atendimentos nao pode ser vazio")
+        if len(self.atendimentos) > 50:
+            raise ValueError(f"Maximo 50 atendimentos por batch (recebido: {len(self.atendimentos)})")
+        return self
+
+
+class AtendimentoBulkResponse(BaseModel):
+    """Resultado do registro em batch de atendimentos."""
+
+    total_recebidos: int
+    total_inseridos: int
+    erros: list[dict]
+    """Lista de erros: [{index, cnpj, erro}]"""
+
+
+@router.post(
+    "/bulk",
+    response_model=AtendimentoBulkResponse,
+    status_code=201,
+    summary="Registro de multiplos atendimentos em lote (max 50)",
+)
+def bulk_atendimentos(
+    body: AtendimentoBulkPayload,
+    user: Usuario = Depends(require_consultor_or_admin),
+    db: Session = Depends(get_db),
+) -> AtendimentoBulkResponse:
+    """
+    Registra múltiplos atendimentos em uma única requisição (max 50 por batch).
+
+    Regras:
+      - R4 — Two-Base: LogInteracao criada NUNCA tem campo de valor monetário.
+      - R5 — CNPJ: 14 dígitos, sem pontuação.
+      - Consultor extraído do JWT (mesmo que registrar_atendimento individual).
+      - Resultados inválidos geram erro por item, sem abortar o batch.
+      - CNPJs não encontrados geram erro por item, sem abortar o batch.
+      - Motor de Regras executado para cada atendimento individualmente.
+      - Cache invalidado após todos os inserts (somente se houver inserts).
+
+    Retorna contagem de inseridos e lista de erros por índice.
+    """
+    consultor = user.consultor_nome or "ADMIN"
+    total_inseridos = 0
+    erros: list[dict] = []
+
+    for idx, item in enumerate(body.atendimentos):
+        # Validar resultado
+        if item.resultado not in RESULTADOS_VALIDOS:
+            erros.append({
+                "index": idx,
+                "cnpj": item.cnpj,
+                "erro": f"Resultado invalido: {item.resultado!r}. Validos: {RESULTADOS_VALIDOS}",
+            })
+            continue
+
+        # Validar tipo_contato se informado
+        if item.tipo_contato is not None:
+            tc_upper = item.tipo_contato.upper()
+            if tc_upper not in TIPOS_CONTATO_VALIDOS:
+                erros.append({
+                    "index": idx,
+                    "cnpj": item.cnpj,
+                    "erro": f"tipo_contato invalido: {item.tipo_contato!r}. Validos: {sorted(TIPOS_CONTATO_VALIDOS)}",
+                })
+                continue
+            tipo_contato_norm: str | None = tc_upper
+        else:
+            tipo_contato_norm = None
+
+        try:
+            log = motor_service.registrar_atendimento(
+                db=db,
+                cnpj=item.cnpj,
+                resultado=item.resultado,
+                descricao=item.descricao,
+                consultor=consultor,
+                user_id=user.id,
+                tipo_contato_override=tipo_contato_norm,
+            )
+            db.flush()  # flush sem commit para manter transacao atomica
+            total_inseridos += 1
+        except ValueError as exc:
+            erros.append({"index": idx, "cnpj": item.cnpj, "erro": str(exc)})
+        except Exception as exc:
+            erros.append({"index": idx, "cnpj": item.cnpj, "erro": f"Erro interno: {exc!s}"})
+
+    # Commit único para todos os inserts bem-sucedidos
+    if total_inseridos > 0:
+        try:
+            db.commit()
+            # Invalidar cache de dashboard e notificacoes
+            cache.invalidate_prefix("/api/dashboard")
+            cache.invalidate_prefix("/api/notificacoes")
+            cache.invalidate_prefix("/api/sinaleiro")
+        except Exception as exc:
+            db.rollback()
+            raise HTTPException(
+                status_code=500,
+                detail=f"Erro ao persistir batch: {exc!s}",
+            ) from exc
+    else:
+        # Nenhum insert bem-sucedido — rollback para limpar qualquer estado
+        db.rollback()
+
+    return AtendimentoBulkResponse(
+        total_recebidos=len(body.atendimentos),
+        total_inseridos=total_inseridos,
+        erros=erros,
+    )
 
 
 # ---------------------------------------------------------------------------

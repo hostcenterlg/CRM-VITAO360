@@ -27,7 +27,7 @@ import re
 from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, model_validator
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
@@ -38,6 +38,7 @@ from backend.app.models.cliente import Cliente
 from backend.app.models.log_interacao import LogInteracao
 from backend.app.models.usuario import Usuario
 from backend.app.models.venda import Venda
+from backend.app.schemas.pagination import PaginationParams, PaginatedResponse
 from backend.app.services.score_service import PESOS, score_service
 
 router = APIRouter(prefix="/api/clientes", tags=["Clientes"])
@@ -102,9 +103,21 @@ class ClienteDetalhe(ClienteResumo):
 
 
 class ListagemResponse(BaseModel):
+    """
+    Resposta de listagem de clientes com paginação.
+
+    Mantém backward compatibility com limit/offset enquanto expõe
+    o formato page/per_page padronizado.
+    """
     total: int
     limit: int
     offset: int
+    # Campos de paginação padronizada (adicionados sem quebrar o frontend existente)
+    page: int = 1
+    per_page: int = 50
+    pages: int = 1
+    has_next: bool = False
+    has_prev: bool = False
     registros: list[ClienteResumo]
 
 
@@ -194,6 +207,68 @@ class ConsultorResumo(BaseModel):
 
 
 # ---------------------------------------------------------------------------
+# Schemas para bulk operations
+# ---------------------------------------------------------------------------
+
+# Campos permitidos para atualização em massa (subconjunto do PATCH individual)
+_CAMPOS_BULK_PERMITIDOS = {
+    "consultor",
+    "rede_regional",
+    "telefone",
+    "email",
+    "cidade",
+    "uf",
+    "situacao",
+    "temperatura",
+}
+
+
+class BulkUpdatePayload(BaseModel):
+    """
+    Payload para atualização em massa de clientes (admin only).
+
+    R5: CNPJs normalizados para 14 dígitos (aceita com ou sem pontuação).
+    R12 — L3: operação de massa requer role=admin (aprovado Leandro).
+
+    Campos atualizáveis em massa:
+      consultor, rede_regional, telefone, email, cidade, uf, situacao, temperatura
+
+    Operações que alteram dados de faturamento ou estrutura de tabela NÃO são
+    permitidas via bulk (R12 — L3): usar endpoints individuais.
+    """
+
+    cnpjs: list[str]
+    """Lista de CNPJs a atualizar (1 a 200 por batch)."""
+
+    updates: dict[str, str]
+    """Campos a atualizar: {campo: novo_valor}. Campos inválidos são ignorados."""
+
+    @model_validator(mode="after")
+    def validar_batch(self):
+        if not self.cnpjs:
+            raise ValueError("cnpjs nao pode ser vazio")
+        if len(self.cnpjs) > 200:
+            raise ValueError(f"Maximo 200 CNPJs por batch (recebido: {len(self.cnpjs)})")
+        if not self.updates:
+            raise ValueError("updates nao pode ser vazio")
+        campos_invalidos = set(self.updates.keys()) - _CAMPOS_BULK_PERMITIDOS
+        if campos_invalidos:
+            raise ValueError(
+                f"Campos nao permitidos em bulk: {campos_invalidos}. "
+                f"Permitidos: {_CAMPOS_BULK_PERMITIDOS}"
+            )
+        return self
+
+
+class BulkUpdateResponse(BaseModel):
+    """Resultado da operação de bulk update."""
+
+    total_recebidos: int
+    total_atualizados: int
+    erros: list[str]
+
+
+# ---------------------------------------------------------------------------
 # Endpoints
 # ---------------------------------------------------------------------------
 
@@ -207,8 +282,12 @@ def listar_clientes(
     prioridade: Optional[str] = Query(None, description="Filtrar por prioridade (P0-P7)"),
     uf: Optional[str] = Query(None, description="Filtrar por UF (ex.: SP, RS, RJ)"),
     busca: Optional[str] = Query(None, description="Busca por nome fantasia ou razao social (contem)"),
-    limit: int = Query(50, ge=1, le=500, description="Registros por pagina"),
-    offset: int = Query(0, ge=0, description="Offset para paginacao"),
+    # Paginacao padronizada (page/per_page) — preferida
+    page: Optional[int] = Query(None, ge=1, description="Pagina atual (1-based). Tem precedencia sobre offset."),
+    per_page: Optional[int] = Query(None, ge=1, le=200, description="Itens por pagina (max 200). Tem precedencia sobre limit."),
+    # Paginacao legada (limit/offset) — mantida para backward compat com frontend existente
+    limit: int = Query(50, ge=1, le=500, description="Registros por pagina (legado: usar per_page)"),
+    offset: int = Query(0, ge=0, description="Offset para paginacao (legado: usar page)"),
     user: Usuario = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> ListagemResponse:
@@ -224,6 +303,14 @@ def listar_clientes(
 
     Requer autenticacao JWT.
     """
+    # Resolver parametros de paginacao: page/per_page tem precedencia sobre limit/offset
+    pagination = PaginationParams.from_limit_offset(
+        limit=limit,
+        offset=offset,
+        per_page=per_page,
+        page=page,
+    )
+
     stmt = select(Cliente)
 
     # Filtro automatico por carteira para role=consultor
@@ -250,18 +337,26 @@ def listar_clientes(
         )
 
     # Total antes da paginação
-    total = db.scalar(select(func.count()).select_from(stmt.subquery()))
+    total = db.scalar(select(func.count()).select_from(stmt.subquery())) or 0
 
     # Ordenação padrão: score desc para surfar os mais prioritários primeiro
     stmt = stmt.order_by(Cliente.score.desc().nulls_last(), Cliente.nome_fantasia)
-    stmt = stmt.limit(limit).offset(offset)
+    stmt = stmt.limit(pagination.limit).offset(pagination.offset)
 
     clientes = db.scalars(stmt).all()
 
+    import math
+    pages = max(math.ceil(total / pagination.per_page) if pagination.per_page else 1, 1)
+
     return ListagemResponse(
-        total=total or 0,
-        limit=limit,
-        offset=offset,
+        total=total,
+        limit=pagination.per_page,
+        offset=pagination.offset,
+        page=pagination.page,
+        per_page=pagination.per_page,
+        pages=pages,
+        has_next=pagination.page < pages,
+        has_prev=pagination.page > 1,
         registros=[ClienteResumo.model_validate(c) for c in clientes],
     )
 
@@ -411,6 +506,110 @@ def redistribuir_carteira(
 
     return RedistribuirResponse(
         total_processados=total_processados,
+        total_atualizados=total_atualizados,
+        erros=erros,
+    )
+
+
+# ---------------------------------------------------------------------------
+# POST /api/clientes/bulk-update — atualização em massa (admin only)
+# ---------------------------------------------------------------------------
+
+# Normalizadores por campo (aplicados nos updates do bulk)
+_CAMPO_NORMALIZADORES: dict[str, object] = {
+    "consultor": str.upper,
+    "rede_regional": lambda v: v.strip(),
+    "telefone": lambda v: v.strip()[:20],
+    "email": lambda v: v.strip()[:255],
+    "cidade": lambda v: v.strip()[:100],
+    "uf": lambda v: v.strip().upper()[:2],
+    "situacao": str.upper,
+    "temperatura": str.upper,
+}
+
+
+@router.post(
+    "/bulk-update",
+    response_model=BulkUpdateResponse,
+    status_code=200,
+    summary="Atualizacao em massa de clientes (admin only)",
+)
+def bulk_update_clientes(
+    body: BulkUpdatePayload,
+    user: Usuario = Depends(require_admin),
+    db: Session = Depends(get_db),
+) -> BulkUpdateResponse:
+    """
+    Atualiza múltiplos clientes em uma única operação (admin only).
+
+    Regras:
+      - Máximo 200 CNPJs por batch.
+      - Campos permitidos: consultor, rede_regional, telefone, email, cidade, uf, situacao, temperatura.
+      - R5: CNPJs normalizados para 14 dígitos.
+      - Cada campo alterado gera registro em audit_logs.
+      - CNPJs não encontrados são listados em erros sem abortar o batch.
+      - R12 — L3: operação aprovada pelo Leandro (admin only).
+
+    Retorna contagem de atualizados e lista de erros por CNPJ.
+    """
+    total_recebidos = len(body.cnpjs)
+    total_atualizados = 0
+    erros: list[str] = []
+
+    # Filtrar campos válidos e normalizar valores
+    updates_validos: dict[str, str] = {}
+    for campo, valor in body.updates.items():
+        if campo not in _CAMPOS_BULK_PERMITIDOS:
+            continue
+        normalizador = _CAMPO_NORMALIZADORES.get(campo, lambda v: v)
+        updates_validos[campo] = normalizador(valor)
+
+    if not updates_validos:
+        raise HTTPException(
+            status_code=422,
+            detail=f"Nenhum campo valido em updates. Campos permitidos: {_CAMPOS_BULK_PERMITIDOS}",
+        )
+
+    for cnpj_raw in body.cnpjs:
+        # R5: normalizar CNPJ
+        cnpj_n = re.sub(r"\D", "", str(cnpj_raw)).zfill(14)
+
+        try:
+            cliente = db.scalar(select(Cliente).where(Cliente.cnpj == cnpj_n))
+            if not cliente:
+                erros.append(f"CNPJ {cnpj_n} nao encontrado")
+                continue
+
+            campos_alterados = []
+            for campo, valor_novo in updates_validos.items():
+                valor_anterior = getattr(cliente, campo, None)
+                if valor_anterior == valor_novo:
+                    continue  # sem mudanca real — evitar audit noise
+
+                setattr(cliente, campo, valor_novo)
+                campos_alterados.append(campo)
+
+                audit = AuditLog(
+                    cnpj=cnpj_n,
+                    campo=campo,
+                    valor_anterior=str(valor_anterior) if valor_anterior is not None else None,
+                    valor_novo=valor_novo,
+                    usuario_id=user.id,
+                    usuario_nome=getattr(user, "nome", None) or getattr(user, "email", None),
+                )
+                db.add(audit)
+
+            if campos_alterados:
+                total_atualizados += 1
+
+        except Exception as exc:
+            erros.append(f"CNPJ {cnpj_n} erro: {exc!s}")
+            continue
+
+    db.commit()
+
+    return BulkUpdateResponse(
+        total_recebidos=total_recebidos,
         total_atualizados=total_atualizados,
         erros=erros,
     )

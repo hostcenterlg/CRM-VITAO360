@@ -526,7 +526,8 @@ class TestIsolamentoPorConsultor:
         resp = client_manu.get("/api/vendas")
 
         assert resp.status_code == 200, resp.text
-        vendas = resp.json()
+        data = resp.json()
+        vendas = data["items"]  # formato paginado
 
         assert len(vendas) == 1
         assert all(v["consultor"] == "MANU" for v in vendas)
@@ -540,7 +541,8 @@ class TestIsolamentoPorConsultor:
         resp = client_admin.get("/api/vendas")
 
         assert resp.status_code == 200, resp.text
-        vendas = resp.json()
+        data = resp.json()
+        vendas = data["items"]  # formato paginado
 
         assert len(vendas) == 3
 

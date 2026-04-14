@@ -23,6 +23,7 @@ from typing import Optional
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy import func
 from sqlalchemy.orm import Session
+from backend.app.utils.cache import cache, cached
 
 from backend.app.api.deps import get_current_user, require_admin
 from backend.app.database import get_db
@@ -51,6 +52,7 @@ def _pct_safe(num: float, den: float) -> float:
     "",
     summary="Lista clientes com sinaleiro, maturidade e acao recomendada",
 )
+@cached(ttl_seconds=120, key_prefix="/api/sinaleiro")
 def sinaleiro_lista(
     cor: Optional[str] = Query(None, description="Filtrar por cor: VERDE/AMARELO/LARANJA/VERMELHO/ROXO"),
     consultor: Optional[str] = Query(None, description="Filtrar por consultor (MANU/LARISSA/DAIANE/JULIO)"),

@@ -35,11 +35,13 @@ from backend.app.api.deps import (
     require_admin_or_gerente,
     require_consultor_or_admin,
 )
+from backend.app.schemas.pagination import PaginationParams, PaginatedResponse
 from backend.app.database import get_db
 from backend.app.models.audit_log import AuditLog
 from backend.app.models.cliente import Cliente
 from backend.app.models.usuario import Usuario
 from backend.app.models.venda import Venda
+from backend.app.utils.cache import cache
 from backend.app.schemas.venda import (
     VendaCreate,
     VendaPorStatus,
@@ -189,6 +191,8 @@ def registrar_venda(
     db.add(venda)
     db.commit()
     db.refresh(venda)
+    # Invalidar todo o cache — nova venda afeta faturamento, KPIs, sinaleiro, projecao
+    cache.clear()
 
     return _montar_venda_response(venda, cliente.nome_fantasia)
 
@@ -197,15 +201,20 @@ def registrar_venda(
 # GET /api/vendas — listar vendas com filtros e paginacao
 # ---------------------------------------------------------------------------
 
+class VendasPaginatedResponse(PaginatedResponse[VendaResponse]):
+    """Resposta paginada de vendas (envelope padronizado)."""
+
+
 @router.get(
     "",
-    response_model=list[VendaResponse],
+    response_model=VendasPaginatedResponse,
     summary="Listar vendas",
     description=(
-        "Retorna lista de vendas com filtros opcionais. "
+        "Retorna lista paginada de vendas com filtros opcionais. "
         "Consultores veem apenas seus proprios registros. "
         "Admins veem todos os registros. "
-        "Ordenado por data_pedido desc."
+        "Ordenado por data_pedido desc. "
+        "Aceita page/per_page (preferido) ou limit/offset (backward compat)."
     ),
 )
 def listar_vendas(
@@ -214,57 +223,75 @@ def listar_vendas(
     fonte: Optional[str] = Query(None, description="Filtrar por fonte (MERCOS, SAP, MANUAL)"),
     data_inicio: Optional[date] = Query(None, description="Data inicio (YYYY-MM-DD), inclusivo"),
     data_fim: Optional[date] = Query(None, description="Data fim (YYYY-MM-DD), inclusivo"),
-    limit: int = Query(default=50, ge=1, le=500, description="Numero maximo de registros por pagina"),
-    offset: int = Query(default=0, ge=0, description="Numero de registros a pular (paginacao)"),
+    # Paginacao padronizada (page/per_page) — preferida
+    page: Optional[int] = Query(None, ge=1, description="Pagina atual (1-based). Tem precedencia sobre offset."),
+    per_page: Optional[int] = Query(None, ge=1, le=200, description="Itens por pagina (max 200). Tem precedencia sobre limit."),
+    # Paginacao legada (limit/offset) — mantida para backward compat
+    limit: int = Query(default=50, ge=1, le=500, description="Numero maximo de registros por pagina (legado: usar per_page)"),
+    offset: int = Query(default=0, ge=0, description="Numero de registros a pular (legado: usar page)"),
     db: Session = Depends(get_db),
     usuario: Usuario = Depends(get_current_user),
-) -> list[VendaResponse]:
+) -> VendasPaginatedResponse:
     """
-    Lista vendas com paginacao e filtros opcionais.
+    Lista vendas com paginacao padronizada e filtros opcionais.
 
     Isolamento por role:
       - consultor: ve apenas os proprios registros (filtro automatico por consultor)
       - admin:     ve todos os registros sem restricao
       - viewer:    acesso somente leitura (sem filtro de consultor)
 
+    Paginacao: aceita page/per_page (padrao) ou limit/offset (backward compat).
     Todos os filtros sao opcionais e combinaveis.
     """
-    stmt = select(Venda).order_by(Venda.data_pedido.desc())
+    # Resolver parametros de paginacao
+    pagination = PaginationParams.from_limit_offset(
+        limit=limit,
+        offset=offset,
+        per_page=per_page,
+        page=page,
+    )
+
+    # Query base (sem paginacao — para contar total)
+    base_stmt = select(Venda).order_by(Venda.data_pedido.desc())
 
     # Isolamento automatico por consultor — consultor ve apenas seus registros
     if usuario.role == "consultor":
         nome_consultor = (usuario.consultor_nome or usuario.nome or "").upper()
-        stmt = stmt.where(Venda.consultor == nome_consultor)
+        base_stmt = base_stmt.where(Venda.consultor == nome_consultor)
 
     # Filtros opcionais
     if cnpj:
-        stmt = stmt.where(Venda.cnpj == cnpj)
+        base_stmt = base_stmt.where(Venda.cnpj == cnpj)
 
     if consultor:
         # Admins podem filtrar por qualquer consultor;
         # consultores ja tem filtro automatico acima — este parametro e ignorado para eles
         if usuario.role != "consultor":
-            stmt = stmt.where(Venda.consultor == consultor.upper())
+            base_stmt = base_stmt.where(Venda.consultor == consultor.upper())
 
     if fonte:
-        stmt = stmt.where(Venda.fonte == fonte.upper())
+        base_stmt = base_stmt.where(Venda.fonte == fonte.upper())
 
     if data_inicio:
-        stmt = stmt.where(Venda.data_pedido >= data_inicio)
+        base_stmt = base_stmt.where(Venda.data_pedido >= data_inicio)
 
     if data_fim:
-        stmt = stmt.where(Venda.data_pedido <= data_fim)
+        base_stmt = base_stmt.where(Venda.data_pedido <= data_fim)
 
-    stmt = stmt.limit(limit).offset(offset)
-    vendas = db.scalars(stmt).all()
+    # Total para calculo de paginas
+    total = db.scalar(select(func.count()).select_from(base_stmt.subquery())) or 0
+
+    # Aplicar paginacao
+    paginated_stmt = base_stmt.limit(pagination.limit).offset(pagination.offset)
+    vendas = db.scalars(paginated_stmt).all()
 
     # Enriquecer com nome_fantasia via JOIN lazy (relationship ja configurado no model)
-    resultado: list[VendaResponse] = []
+    items: list[VendaResponse] = []
     for v in vendas:
         nome = v.cliente.nome_fantasia if v.cliente else None
-        resultado.append(_montar_venda_response(v, nome))
+        items.append(_montar_venda_response(v, nome))
 
-    return resultado
+    return VendasPaginatedResponse.build(items=items, total=total, params=pagination)
 
 
 # ---------------------------------------------------------------------------

@@ -30,6 +30,7 @@ from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from pydantic import BaseModel, Field
+from backend.app.utils.cache import cache, cached
 from sqlalchemy.orm import Session
 
 from backend.app.api.deps import get_current_user, require_admin
@@ -141,6 +142,8 @@ def run_pipeline(
 
     logger.info("Pipeline: run manual disparado por admin")
     result = pipeline_service.run_full_pipeline(db)
+    # Sync completo invalida todo o cache — dados de clientes, faturamento e KPIs mudaram
+    cache.clear()
 
     return PipelineRunResponse(
         inicio=result.inicio.isoformat(),
@@ -225,6 +228,7 @@ def get_pipeline_logs(_admin=Depends(require_admin)):
         "Disponivel para qualquer usuario autenticado."
     ),
 )
+@cached(ttl_seconds=30, key_prefix="/api/notificacoes")
 def get_notificacoes(
     db: Session = Depends(get_db),
     _user=Depends(get_current_user),

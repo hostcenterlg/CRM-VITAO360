@@ -33,6 +33,7 @@ from backend.app.models.cliente import Cliente
 from backend.app.models.log_interacao import LogInteracao
 from backend.app.models.usuario import Usuario
 from backend.app.models.venda import Venda
+from backend.app.utils.cache import cache, cached
 
 router = APIRouter(prefix="/api/dashboard", tags=["Dashboard"])
 
@@ -134,6 +135,7 @@ def _distribuicao(db: Session, coluna, total: int) -> list[DistribuicaoItem]:
 # ---------------------------------------------------------------------------
 
 @router.get("/kpis", response_model=KPIsResponse, summary="KPIs principais")
+@cached(ttl_seconds=60, key_prefix="/api/dashboard/kpis")
 def kpis(
     user: Usuario = Depends(get_current_user),
     db: Session = Depends(get_db),
@@ -250,6 +252,7 @@ def kpis(
 
 
 @router.get("/distribuicao", response_model=DistribuicaoResponse, summary="Distribuicoes")
+@cached(ttl_seconds=60, key_prefix="/api/dashboard/distribuicao")
 def distribuicao(
     user: Usuario = Depends(get_current_user),
     db: Session = Depends(get_db),
@@ -504,6 +507,7 @@ class TendenciasResponse(BaseModel):
     response_model=TendenciasResponse,
     summary="Tendencias mensais dos ultimos 12 meses",
 )
+@cached(ttl_seconds=300, key_prefix="/api/dashboard/tendencias")
 def tendencias(
     user: Usuario = Depends(get_current_user),
     db: Session = Depends(get_db),
