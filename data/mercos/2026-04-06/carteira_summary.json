@@ -1,0 +1,20 @@
+{
+  "extraction_date": "2026-04-06",
+  "source": "mercos_browser",
+  "period": "Abril 2026",
+  "carteira": {
+    "total_clientes": 553,
+    "ativos": 136,
+    "inativos_recentes": 53,
+    "inativos_antigos": 364,
+    "prospects": 5885
+  },
+  "amostra_clientes_primeira_pagina": [
+    {"nome": "BRENDHA EVELYN LOPES ERRERA ROCA", "cnpj": "51.172.110/0001-71", "telefone": "(41) 99800-6467", "email": "bele9347@gmail.com", "cidade": "CURITIBA"},
+    {"nome": "EMPORIUM GRÃOS E ESPECIARIAS LTDA", "cnpj": "06.202.229/0001-95", "telefone": "(38) 99117-1956", "email": "mafradequeiroz5852@gmail.com", "cidade": "MONTES CLAROS"},
+    {"nome": "JOSE GABRIEL MINUSSI SUDATI", "cnpj": "34.275.514/0001-71", "telefone": "55 97043496", "email": "MINUSSISUDATI@GMAIL.COM", "cidade": "SAO FRANCISCO DE ASSIS"},
+    {"nome": "LUIZA LOURO DE FREITAS", "cnpj": "44.823.864/0001-89", "telefone": "53 981437853", "email": "Contato.nutrilu@gmail.com", "cidade": "PELOTAS"},
+    {"nome": "Pro Abelha Comercio e Ind Prod Alimentcios LTDA", "cnpj": "31.983.992/0001-48", "telefone": "(21) 96876-9347", "email": "proabelhanaturais@gmail.com", "cidade": "Teresópolis"}
+  ],
+  "nota": "Lista completa requer paginação (553 clientes, ~15 por página). Amostra da primeira página extraída."
+}

@@ -1372,3 +1372,617 @@ def positivacao_uf(
         periodo=periodo_str,
         por_uf=resultado,
     )
+
+
+# ---------------------------------------------------------------------------
+# Evolucao de Vendas — acumulado diario: mes atual vs mes anterior vs ano anterior
+# Two-Base: APENAS tabela vendas (R1/R4)
+# ---------------------------------------------------------------------------
+
+class EvolucaoDiaItem(BaseModel):
+    dia: int
+    acumulado_atual: float
+    acumulado_mes_anterior: float
+    acumulado_ano_anterior: float
+
+
+class EvolucaoVendasResponse(BaseModel):
+    periodo: str                          # "YYYY-MM"
+    dias: list[EvolucaoDiaItem]
+    total_atual: float
+    total_mes_anterior: float
+    total_ano_anterior: float
+
+
+def _vendas_por_dia(db: Session, ano: int, mes: int, consultor: Optional[str]) -> dict[int, float]:
+    """Retorna dict dia -> soma valor_pedido para o mes/ano indicado (REAL/SINTETICO)."""
+    dt_ini = date(ano, mes, 1)
+    if mes == 12:
+        dt_fim = date(ano + 1, 1, 1) - timedelta(days=1)
+    else:
+        dt_fim = date(ano, mes + 1, 1) - timedelta(days=1)
+
+    stmt = (
+        select(
+            func.cast(func.strftime("%d", Venda.data_pedido), func.Integer()).label("dia"),
+            func.sum(Venda.valor_pedido).label("total"),
+        )
+        .where(
+            Venda.classificacao_3tier.in_(["REAL", "SINTETICO"]),
+            Venda.data_pedido >= dt_ini,
+            Venda.data_pedido <= dt_fim,
+        )
+        .group_by(func.strftime("%d", Venda.data_pedido))
+        .order_by(func.strftime("%d", Venda.data_pedido))
+    )
+    if consultor:
+        stmt = stmt.where(Venda.consultor == consultor.upper())
+
+    rows = db.execute(stmt).all()
+    return {int(r[0]): float(r[1] or 0) for r in rows}
+
+
+@router.get(
+    "/evolucao-vendas",
+    response_model=EvolucaoVendasResponse,
+    summary="Evolucao de vendas acumulada por dia: atual vs mes anterior vs ano anterior",
+)
+def evolucao_vendas(
+    mes: Optional[int] = Query(default=None, ge=1, le=12, description="Mes (1-12). Padrao: mes atual."),
+    ano: Optional[int] = Query(default=None, ge=2020, description="Ano (ex.: 2026). Padrao: ano atual."),
+    consultor: Optional[str] = Query(default=None, description="Filtrar por consultor"),
+    user: Usuario = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> EvolucaoVendasResponse:
+    """
+    Retorna series comparativas de faturamento acumulado dia a dia:
+      - acumulado_atual:         acumulado no mes/ano selecionado
+      - acumulado_mes_anterior:  acumulado no mes imediatamente anterior
+      - acumulado_ano_anterior:  acumulado no mesmo mes, 1 ano antes
+
+    Two-Base: APENAS tabela vendas (R1). Exclui ALUCINACAO (R8).
+    Requer autenticacao JWT.
+    """
+    import calendar
+
+    hoje = date.today()
+    mes_ref = mes if mes is not None else hoje.month
+    ano_ref = ano if ano is not None else hoje.year
+
+    # Periodo anterior (mes-1)
+    if mes_ref == 1:
+        mes_ant, ano_ant = 12, ano_ref - 1
+    else:
+        mes_ant, ano_ant = mes_ref - 1, ano_ref
+
+    # Mesmo mes, ano passado
+    mes_aap, ano_aap = mes_ref, ano_ref - 1
+
+    # Carregar vendas diarias para os tres periodos
+    vendas_atual = _vendas_por_dia(db, ano_ref, mes_ref, consultor)
+    vendas_ant = _vendas_por_dia(db, ano_ant, mes_ant, consultor)
+    vendas_aap = _vendas_por_dia(db, ano_aap, mes_aap, consultor)
+
+    # Numero de dias no mes de referencia
+    dias_no_mes = calendar.monthrange(ano_ref, mes_ref)[1]
+
+    dias: list[EvolucaoDiaItem] = []
+    acc_atual = 0.0
+    acc_ant = 0.0
+    acc_aap = 0.0
+
+    for d in range(1, dias_no_mes + 1):
+        acc_atual += vendas_atual.get(d, 0.0)
+        acc_ant += vendas_ant.get(d, 0.0)
+        acc_aap += vendas_aap.get(d, 0.0)
+        dias.append(
+            EvolucaoDiaItem(
+                dia=d,
+                acumulado_atual=round(acc_atual, 2),
+                acumulado_mes_anterior=round(acc_ant, 2),
+                acumulado_ano_anterior=round(acc_aap, 2),
+            )
+        )
+
+    return EvolucaoVendasResponse(
+        periodo=f"{ano_ref:04d}-{mes_ref:02d}",
+        dias=dias,
+        total_atual=round(sum(vendas_atual.values()), 2),
+        total_mes_anterior=round(sum(vendas_ant.values()), 2),
+        total_ano_anterior=round(sum(vendas_aap.values()), 2),
+    )
+
+
+# ---------------------------------------------------------------------------
+# Positivacao Diaria — clientes distintos com pedido por dia + novos
+# Two-Base: APENAS tabela vendas (R1/R4)
+# ---------------------------------------------------------------------------
+
+class PositivacaoDiaDiaItem(BaseModel):
+    dia: int
+    positivados: int
+    novos: int
+
+
+class PositivacaoDiariaResponse(BaseModel):
+    periodo: str
+    objetivo_diario: int
+    dias: list[PositivacaoDiaDiaItem]
+    total_positivados: int
+    total_novos: int
+
+
+@router.get(
+    "/positivacao-diaria",
+    response_model=PositivacaoDiariaResponse,
+    summary="Positivacao por dia: clientes distintos que fizeram pedido e novos clientes",
+)
+def positivacao_diaria(
+    mes: Optional[int] = Query(default=None, ge=1, le=12, description="Mes (1-12). Padrao: mes atual."),
+    ano: Optional[int] = Query(default=None, ge=2020, description="Ano (ex.: 2026). Padrao: ano atual."),
+    consultor: Optional[str] = Query(default=None, description="Filtrar por consultor"),
+    user: Usuario = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> PositivacaoDiariaResponse:
+    """
+    Para cada dia do mes informado, retorna:
+      - positivados: COUNT(DISTINCT cnpj) com pedido naquele dia
+      - novos:       clientes cujo primeiro pedido (qualquer historico) ocorreu naquele dia
+
+    objetivo_diario: meta fixa de 5 positivacoes/dia (pode ser parametrizado futuramente).
+    Two-Base: APENAS tabela vendas (R1). Exclui ALUCINACAO (R8).
+    Requer autenticacao JWT.
+    """
+    import calendar
+
+    hoje = date.today()
+    mes_ref = mes if mes is not None else hoje.month
+    ano_ref = ano if ano is not None else hoje.year
+
+    dt_ini = date(ano_ref, mes_ref, 1)
+    if mes_ref == 12:
+        dt_fim = date(ano_ref + 1, 1, 1) - timedelta(days=1)
+    else:
+        dt_fim = date(ano_ref, mes_ref + 1, 1) - timedelta(days=1)
+
+    # CNPJs positivados por dia no periodo
+    stmt_dia = (
+        select(
+            func.strftime("%d", Venda.data_pedido).label("dia_str"),
+            Venda.cnpj,
+        )
+        .where(
+            Venda.classificacao_3tier.in_(["REAL", "SINTETICO"]),
+            Venda.data_pedido >= dt_ini,
+            Venda.data_pedido <= dt_fim,
+        )
+        .distinct()
+    )
+    if consultor:
+        stmt_dia = stmt_dia.where(Venda.consultor == consultor.upper())
+
+    rows_dia = db.execute(stmt_dia).all()
+
+    # Agrupar CNPJs por dia
+    dia_cnpjs: dict[int, set[str]] = {}
+    for r in rows_dia:
+        d = int(r[0])
+        dia_cnpjs.setdefault(d, set()).add(r[1])
+
+    # Primeiro pedido historico por CNPJ (para identificar novos)
+    stmt_primeiro = select(
+        Venda.cnpj,
+        func.min(Venda.data_pedido).label("primeiro"),
+    ).where(
+        Venda.classificacao_3tier.in_(["REAL", "SINTETICO"]),
+    ).group_by(Venda.cnpj)
+
+    primeiro_pedido: dict[str, date] = {}
+    for r in db.execute(stmt_primeiro).all():
+        try:
+            primeiro_pedido[r[0]] = date.fromisoformat(str(r[1])[:10])
+        except (ValueError, TypeError):
+            pass
+
+    dias_no_mes = calendar.monthrange(ano_ref, mes_ref)[1]
+    total_positivados = 0
+    total_novos = 0
+    dias_out: list[PositivacaoDiaDiaItem] = []
+
+    for d in range(1, dias_no_mes + 1):
+        cnpjs_dia = dia_cnpjs.get(d, set())
+        data_dia = date(ano_ref, mes_ref, d)
+        novos_dia = sum(
+            1 for cnpj in cnpjs_dia if primeiro_pedido.get(cnpj) == data_dia
+        )
+        total_positivados += len(cnpjs_dia)
+        total_novos += novos_dia
+        dias_out.append(
+            PositivacaoDiaDiaItem(
+                dia=d,
+                positivados=len(cnpjs_dia),
+                novos=novos_dia,
+            )
+        )
+
+    return PositivacaoDiariaResponse(
+        periodo=f"{ano_ref:04d}-{mes_ref:02d}",
+        objetivo_diario=5,
+        dias=dias_out,
+        total_positivados=total_positivados,
+        total_novos=total_novos,
+    )
+
+
+# ---------------------------------------------------------------------------
+# Positivacao por Vendedor — barras: positivados vs objetivo por consultor
+# Two-Base: APENAS tabela vendas (R1/R4)
+# ---------------------------------------------------------------------------
+
+# Objetivos mensais fixos por consultor (podem ser tornados configuráveis futuramente)
+_OBJETIVO_POSITIVACAO: dict[str, int] = {
+    "MANU":    30,
+    "LARISSA": 35,
+    "DAIANE":  15,
+    "JULIO":   10,
+}
+
+_CONSULTORES_PADRAO = list(_OBJETIVO_POSITIVACAO.keys())
+
+
+class PositivacaoVendedorItem(BaseModel):
+    consultor: str
+    positivados: int
+    objetivo: int
+    pct: float
+
+
+class PositivacaoVendedorResponse(BaseModel):
+    periodo: str
+    vendedores: list[PositivacaoVendedorItem]
+
+
+@router.get(
+    "/positivacao-vendedor",
+    response_model=PositivacaoVendedorResponse,
+    summary="Positivacao comparada por vendedor vs objetivo mensal",
+)
+def positivacao_vendedor(
+    mes: Optional[int] = Query(default=None, ge=1, le=12, description="Mes (1-12). Padrao: mes atual."),
+    ano: Optional[int] = Query(default=None, ge=2020, description="Ano (ex.: 2026). Padrao: ano atual."),
+    user: Usuario = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> PositivacaoVendedorResponse:
+    """
+    Para cada consultor principal, retorna clientes positivados no mes/ano
+    comparados ao objetivo mensal configurado.
+
+    Two-Base: APENAS tabela vendas (R1). Exclui ALUCINACAO (R8).
+    Requer autenticacao JWT.
+    """
+    hoje = date.today()
+    mes_ref = mes if mes is not None else hoje.month
+    ano_ref = ano if ano is not None else hoje.year
+
+    dt_ini = date(ano_ref, mes_ref, 1)
+    if mes_ref == 12:
+        dt_fim = date(ano_ref + 1, 1, 1) - timedelta(days=1)
+    else:
+        dt_fim = date(ano_ref, mes_ref + 1, 1) - timedelta(days=1)
+
+    vendedores: list[PositivacaoVendedorItem] = []
+
+    for cons in _CONSULTORES_PADRAO:
+        positivados = db.scalar(
+            select(func.count(func.distinct(Venda.cnpj)))
+            .where(
+                Venda.consultor == cons,
+                Venda.classificacao_3tier.in_(["REAL", "SINTETICO"]),
+                Venda.data_pedido >= dt_ini,
+                Venda.data_pedido <= dt_fim,
+            )
+        ) or 0
+
+        objetivo = _OBJETIVO_POSITIVACAO.get(cons, 0)
+        pct = round(positivados / objetivo * 100, 1) if objetivo > 0 else 0.0
+
+        vendedores.append(
+            PositivacaoVendedorItem(
+                consultor=cons,
+                positivados=positivados,
+                objetivo=objetivo,
+                pct=pct,
+            )
+        )
+
+    # Ordenar por positivados desc
+    vendedores.sort(key=lambda x: x.positivados, reverse=True)
+
+    return PositivacaoVendedorResponse(
+        periodo=f"{ano_ref:04d}-{mes_ref:02d}",
+        vendedores=vendedores,
+    )
+
+
+# ---------------------------------------------------------------------------
+# Atendimentos Diarios — volume log_interacoes por dia: atual vs mes anterior
+# Two-Base: interacoes NAO contem monetario (R1/R4)
+# ---------------------------------------------------------------------------
+
+class AtendimentoDiaItem(BaseModel):
+    dia: int
+    atendimentos: int
+    atendimentos_mes_anterior: int
+
+
+class AtendimentosDiariosResponse(BaseModel):
+    periodo: str
+    objetivo_diario: int
+    dias: list[AtendimentoDiaItem]
+    total_atual: int
+    total_mes_anterior: int
+
+
+def _log_por_dia(db: Session, ano: int, mes: int, consultor: Optional[str]) -> dict[int, int]:
+    """Retorna dict dia -> COUNT(*) log_interacoes para o mes/ano indicado."""
+    dt_ini = date(ano, mes, 1)
+    if mes == 12:
+        dt_fim = date(ano + 1, 1, 1) - timedelta(days=1)
+    else:
+        dt_fim = date(ano, mes + 1, 1) - timedelta(days=1)
+
+    stmt = (
+        select(
+            func.strftime("%d", LogInteracao.data_interacao).label("dia_str"),
+            func.count().label("qt"),
+        )
+        .where(
+            func.date(LogInteracao.data_interacao) >= dt_ini,
+            func.date(LogInteracao.data_interacao) <= dt_fim,
+        )
+        .group_by(func.strftime("%d", LogInteracao.data_interacao))
+    )
+    if consultor:
+        stmt = stmt.where(LogInteracao.consultor == consultor.upper())
+
+    rows = db.execute(stmt).all()
+    return {int(r[0]): int(r[1]) for r in rows}
+
+
+@router.get(
+    "/atendimentos-diarios",
+    response_model=AtendimentosDiariosResponse,
+    summary="Volume de atendimentos diarios (log_interacoes): mes atual vs anterior",
+)
+def atendimentos_diarios(
+    mes: Optional[int] = Query(default=None, ge=1, le=12, description="Mes (1-12). Padrao: mes atual."),
+    ano: Optional[int] = Query(default=None, ge=2020, description="Ano (ex.: 2026). Padrao: ano atual."),
+    consultor: Optional[str] = Query(default=None, description="Filtrar por consultor"),
+    user: Usuario = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> AtendimentosDiariosResponse:
+    """
+    Para cada dia do mes, retorna:
+      - atendimentos:              total de registros em log_interacoes naquele dia
+      - atendimentos_mes_anterior: idem para o mes imediatamente anterior
+
+    objetivo_diario: 40 atendimentos/dia (pode ser parametrizado futuramente).
+
+    Two-Base: interacoes NAO contem monetario (R1). Apenas contagens.
+    Requer autenticacao JWT.
+    """
+    import calendar
+
+    hoje = date.today()
+    mes_ref = mes if mes is not None else hoje.month
+    ano_ref = ano if ano is not None else hoje.year
+
+    if mes_ref == 1:
+        mes_ant, ano_ant = 12, ano_ref - 1
+    else:
+        mes_ant, ano_ant = mes_ref - 1, ano_ref
+
+    log_atual = _log_por_dia(db, ano_ref, mes_ref, consultor)
+    log_ant = _log_por_dia(db, ano_ant, mes_ant, consultor)
+
+    dias_no_mes = calendar.monthrange(ano_ref, mes_ref)[1]
+    dias_out: list[AtendimentoDiaItem] = []
+
+    for d in range(1, dias_no_mes + 1):
+        dias_out.append(
+            AtendimentoDiaItem(
+                dia=d,
+                atendimentos=log_atual.get(d, 0),
+                atendimentos_mes_anterior=log_ant.get(d, 0),
+            )
+        )
+
+    return AtendimentosDiariosResponse(
+        periodo=f"{ano_ref:04d}-{mes_ref:02d}",
+        objetivo_diario=40,
+        dias=dias_out,
+        total_atual=sum(log_atual.values()),
+        total_mes_anterior=sum(log_ant.values()),
+    )
+
+
+# ---------------------------------------------------------------------------
+# Curva ABC Detalhe — lista de clientes por faixa com totais de faturamento
+# Two-Base: faturamento_total do cliente (campo calculado, nao vendas em tempo real)
+# ---------------------------------------------------------------------------
+
+class CurvaABCFaixaItem(BaseModel):
+    curva: str
+    qtd: int
+    pct: float
+    faturamento: float
+
+
+class CurvaABCDetalheResponse(BaseModel):
+    total_clientes: int
+    faixas: list[CurvaABCFaixaItem]
+
+
+@router.get(
+    "/curva-abc-detalhe",
+    response_model=CurvaABCDetalheResponse,
+    summary="Curva ABC detalhada: clientes por faixa (A/B/C) com totais",
+)
+def curva_abc_detalhe(
+    consultor: Optional[str] = Query(default=None, description="Filtrar por consultor"),
+    user: Usuario = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> CurvaABCDetalheResponse:
+    """
+    Retorna distribuicao de clientes por curva ABC com:
+      - qtd:          numero de clientes nessa faixa
+      - pct:          % sobre total (nao-ALUCINACAO com curva preenchida)
+      - faturamento:  soma de faturamento_total dos clientes nessa faixa
+
+    Apenas clientes com curva_abc preenchida e classificacao_3tier != ALUCINACAO.
+    Ordenacao fixa: A -> B -> C.
+    Requer autenticacao JWT.
+    """
+    base_where = [
+        Cliente.classificacao_3tier != "ALUCINACAO",
+        Cliente.curva_abc.isnot(None),
+    ]
+    if consultor:
+        base_where.append(Cliente.consultor == consultor.upper())
+
+    rows = db.execute(
+        select(
+            Cliente.curva_abc,
+            func.count().label("qtd"),
+            func.coalesce(func.sum(Cliente.faturamento_total), 0.0).label("faturamento"),
+        )
+        .where(*base_where)
+        .group_by(Cliente.curva_abc)
+    ).all()
+
+    total = sum(int(r[1]) for r in rows)
+    curva_order = {"A": 0, "B": 1, "C": 2}
+
+    faixas = sorted(
+        [
+            CurvaABCFaixaItem(
+                curva=r[0],
+                qtd=int(r[1]),
+                pct=round(int(r[1]) / total * 100, 1) if total > 0 else 0.0,
+                faturamento=round(float(r[2]), 2),
+            )
+            for r in rows
+        ],
+        key=lambda x: curva_order.get(x.curva, 99),
+    )
+
+    return CurvaABCDetalheResponse(total_clientes=total, faixas=faixas)
+
+
+# ---------------------------------------------------------------------------
+# E-commerce B2B — indicadores de pedidos via canal E-COMMERCE
+# Two-Base: APENAS tabela vendas (R1/R4)
+# ---------------------------------------------------------------------------
+
+class EcommerceResponse(BaseModel):
+    periodo: str
+    total_clientes_ecommerce: int
+    total_clientes: int
+    pct_ecommerce: float
+    pedidos_ecommerce: int
+    valor_ecommerce: float
+
+
+@router.get(
+    "/ecommerce",
+    response_model=EcommerceResponse,
+    summary="Indicadores e-commerce B2B: clientes e pedidos via canal E-COMMERCE",
+)
+def ecommerce(
+    mes: Optional[int] = Query(default=None, ge=1, le=12, description="Mes (1-12). Padrao: mes atual."),
+    ano: Optional[int] = Query(default=None, ge=2020, description="Ano (ex.: 2026). Padrao: ano atual."),
+    user: Usuario = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> EcommerceResponse:
+    """
+    Indicadores do canal e-commerce B2B no periodo informado:
+      - total_clientes_ecommerce: CNPJs distintos com pedido via E-COMMERCE no periodo
+      - total_clientes:           CNPJs distintos com QUALQUER pedido (nao-ALUCINACAO) no periodo
+      - pct_ecommerce:            total_clientes_ecommerce / total_clientes * 100
+      - pedidos_ecommerce:        COUNT de vendas com fonte='E-COMMERCE' no periodo
+      - valor_ecommerce:          SUM(valor_pedido) das vendas E-COMMERCE no periodo
+
+    Filtra vendas com fonte IN ('E-COMMERCE', 'ECOMMERCE', 'E_COMMERCE') para
+    cobrir variacoes de grafia. Exclui ALUCINACAO (R8).
+    Two-Base: APENAS tabela vendas (R1).
+    Requer autenticacao JWT.
+    """
+    hoje = date.today()
+    mes_ref = mes if mes is not None else hoje.month
+    ano_ref = ano if ano is not None else hoje.year
+
+    dt_ini = date(ano_ref, mes_ref, 1)
+    if mes_ref == 12:
+        dt_fim = date(ano_ref + 1, 1, 1) - timedelta(days=1)
+    else:
+        dt_fim = date(ano_ref, mes_ref + 1, 1) - timedelta(days=1)
+
+    periodo_str = f"{ano_ref:04d}-{mes_ref:02d}"
+
+    # Grafias aceitas do canal e-commerce
+    _FONTES_ECOMMERCE = ("E-COMMERCE", "ECOMMERCE", "E_COMMERCE")
+
+    # Clientes e-commerce: CNPJs distintos com pedido via canal e-commerce no periodo
+    clientes_ecommerce = db.scalar(
+        select(func.count(func.distinct(Venda.cnpj)))
+        .where(
+            Venda.classificacao_3tier.in_(["REAL", "SINTETICO"]),
+            Venda.fonte.in_(_FONTES_ECOMMERCE),
+            Venda.data_pedido >= dt_ini,
+            Venda.data_pedido <= dt_fim,
+        )
+    ) or 0
+
+    # Total de clientes com qualquer pedido no periodo (nao-ALUCINACAO)
+    total_clientes = db.scalar(
+        select(func.count(func.distinct(Venda.cnpj)))
+        .where(
+            Venda.classificacao_3tier.in_(["REAL", "SINTETICO"]),
+            Venda.data_pedido >= dt_ini,
+            Venda.data_pedido <= dt_fim,
+        )
+    ) or 0
+
+    pct = round(clientes_ecommerce / total_clientes * 100, 1) if total_clientes > 0 else 0.0
+
+    # Pedidos e-commerce: COUNT de registros
+    pedidos_ecommerce = db.scalar(
+        select(func.count())
+        .select_from(Venda)
+        .where(
+            Venda.classificacao_3tier.in_(["REAL", "SINTETICO"]),
+            Venda.fonte.in_(_FONTES_ECOMMERCE),
+            Venda.data_pedido >= dt_ini,
+            Venda.data_pedido <= dt_fim,
+        )
+    ) or 0
+
+    # Valor e-commerce: SUM(valor_pedido)
+    valor_ecommerce = db.scalar(
+        select(func.coalesce(func.sum(Venda.valor_pedido), 0.0))
+        .where(
+            Venda.classificacao_3tier.in_(["REAL", "SINTETICO"]),
+            Venda.fonte.in_(_FONTES_ECOMMERCE),
+            Venda.data_pedido >= dt_ini,
+            Venda.data_pedido <= dt_fim,
+        )
+    ) or 0.0
+
+    return EcommerceResponse(
+        periodo=periodo_str,
+        total_clientes_ecommerce=clientes_ecommerce,
+        total_clientes=total_clientes,
+        pct_ecommerce=pct,
+        pedidos_ecommerce=pedidos_ecommerce,
+        valor_ecommerce=round(float(valor_ecommerce), 2),
+    )

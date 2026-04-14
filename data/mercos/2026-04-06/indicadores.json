@@ -1,0 +1,35 @@
+{
+  "extraction_date": "2026-04-06",
+  "extraction_time": "auto",
+  "source": "mercos_browser",
+  "period": "Abril 2026",
+  "filter": "Todos os vendedores",
+  "evolucao_venda": {
+    "vendido_no_mes": 4603.79,
+    "hoje": 0.00,
+    "objetivo_do_mes": 0.00,
+    "meta_definida": false
+  },
+  "carteira_clientes": {
+    "total": 553,
+    "ativos": 136,
+    "ativos_pct": 24.59,
+    "inativos_recentes": 53,
+    "inativos_recentes_pct": 9.58,
+    "inativos_antigos": 364,
+    "inativos_antigos_pct": 65.82,
+    "prospects": 5885
+  },
+  "positivacao": {
+    "clientes_positivados": 4,
+    "positivados_pct": 50.00,
+    "nao_positivados_pct": 50.00,
+    "novos_pct": 0.00
+  },
+  "curva_abc": {
+    "total_clientes": 526,
+    "periodo": "ultimos_12_meses",
+    "a_pct": 26.62,
+    "b_pct": 38.97
+  }
+}

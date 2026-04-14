@@ -1,0 +1,24 @@
+{
+  "timestamp": "2026-04-07T07:02:51.530389",
+  "date": "2026-04-07",
+  "sources": {
+    "deskrio": {
+      "status": "SUCCESS",
+      "contacts": 15568,
+      "tickets": 17,
+      "kanban_boards": 0,
+      "kanban_cards_per_board": {},
+      "extrainfo_fields": 6,
+      "connections": "obj",
+      "messages_extracted": 17
+    },
+    "sales_hunter": {
+      "status": "SKIPPED",
+      "reason": "browser não disponível em scheduled task"
+    },
+    "mercos": {
+      "status": "SKIPPED",
+      "reason": "browser não disponível em scheduled task"
+    }
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "extraction_date": "2026-04-06",
+  "source": "mercos_browser",
+  "filter": "Pedidos ativos, Todos os vendedores, Todas as plataformas, Qualquer status",
+  "pedidos": [
+    {
+      "numero": 2212,
+      "data": "2026-04-03",
+      "vendedor": "Central - Daiane",
+      "cliente": "ALICE NO PAIS DOS GRAOS COMERCIO DE ALIMENTOS LTDA",
+      "razao_social": "ALICE NO PAIS DOS GRAOS COMERCIO DE ALIMENTOS",
+      "valor": 100.26,
+      "status": "Em orçamento",
+      "plataforma": "e-commerce em andamento"
+    },
+    {
+      "numero": 2211,
+      "data": "2026-04-03",
+      "vendedor": "Central - Daiane",
+      "cliente": "ALICE NO PAIS DOS GRAOS COMERCIO DE ALIMENTOS LTDA",
+      "razao_social": "ALICE NO PAIS DOS GRAOS COMERCIO DE ALIMENTOS",
+      "valor": 1961.49,
+      "status": "Em orçamento",
+      "plataforma": "e-commerce concluído",
+      "pagamento": "Cartão de crédito 2x sem juros"
+    },
+    {
+      "numero": 2210,
+      "data": "2026-04-02",
+      "vendedor": "Larissa Padilha",
+      "cliente": "SERVICO NACIONAL DE APRENDIZAGEM COMERCIAL SENAC",
+      "unidade": "SENAC MOGI-GUACU",
+      "valor": 1676.47,
+      "status": "Em orçamento",
+      "pagamento": "Não autorizado"
+    }
+  ],
+  "total_pedidos_visiveis": 3,
+  "soma_valores": 3738.22,
+  "nota": "Apenas pedidos ativos visíveis na primeira página. Filtro padrão do Mercos."
+}
