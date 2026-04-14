@@ -1,19 +1,20 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { fetchClientes, fetchCliente, ClienteRegistro, formatBRL } from '@/lib/api';
+import { fetchClientes, fetchCliente, atualizarEstagioCliente, ClienteRegistro, formatBRL, formatDateBR } from '@/lib/api';
 import { useAuth } from '@/contexts/AuthContext';
 
 // ---------------------------------------------------------------------------
 // Pipeline Kanban — CRM VITAO360
-// Horizontal scrollable board with 14 funnel stages, drag-and-drop, client detail panel
+// Horizontal scrollable board with 14 funnel stages, HTML5 drag-and-drop,
+// swimlane grouping (PRE-VENDA / VENDA / POS-VENDA) and mobile fallback.
 // ---------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------
 // Stage definitions — 14 estagios do Motor de Regras
 // ---------------------------------------------------------------------------
 
-type StageGroup = 'pre-venda' | 'venda' | 'pos-venda' | 'loop' | 'auxiliar';
+type StageGroup = 'pre-venda' | 'venda' | 'pos-venda';
 
 interface StageConfig {
   id: string;
@@ -26,25 +27,38 @@ interface StageConfig {
 }
 
 const STAGE_CONFIGS: StageConfig[] = [
-  // Pre-venda — cinza/slate
+  // Pre-venda
   { id: 'INÍCIO CONTATO',  label: 'Inicio Contato',  group: 'pre-venda', borderColor: '#64748b', bgColor: '#f8fafc', textColor: '#475569', headerBg: '#f1f5f9' },
   { id: 'TENTATIVA',       label: 'Tentativa',        group: 'pre-venda', borderColor: '#94a3b8', bgColor: '#f8fafc', textColor: '#475569', headerBg: '#f1f5f9' },
   { id: 'PROSPECÇÃO',      label: 'Prospeccao',       group: 'pre-venda', borderColor: '#64748b', bgColor: '#f8fafc', textColor: '#475569', headerBg: '#f1f5f9' },
-  // Venda — azul
+  // Venda
   { id: 'EM ATENDIMENTO',  label: 'Em Atendimento',   group: 'venda',     borderColor: '#2563eb', bgColor: '#eff6ff', textColor: '#1d4ed8', headerBg: '#dbeafe' },
   { id: 'CADASTRO',        label: 'Cadastro',          group: 'venda',     borderColor: '#3b82f6', bgColor: '#eff6ff', textColor: '#1d4ed8', headerBg: '#dbeafe' },
   { id: 'ORÇAMENTO',       label: 'Orcamento',         group: 'venda',     borderColor: '#2563eb', bgColor: '#eff6ff', textColor: '#1d4ed8', headerBg: '#dbeafe' },
   { id: 'PEDIDO',          label: 'Pedido',            group: 'venda',     borderColor: '#1d4ed8', bgColor: '#eff6ff', textColor: '#1d4ed8', headerBg: '#dbeafe' },
-  // Pos-venda — verde
+  // Pos-venda
   { id: 'ACOMP POS-VENDA', label: 'Acomp Pos-Venda',  group: 'pos-venda', borderColor: '#00B050', bgColor: '#f0fdf4', textColor: '#166534', headerBg: '#dcfce7' },
   { id: 'POS-VENDA',       label: 'Pos-Venda',         group: 'pos-venda', borderColor: '#16a34a', bgColor: '#f0fdf4', textColor: '#166534', headerBg: '#dcfce7' },
   { id: 'CS',              label: 'CS',                group: 'pos-venda', borderColor: '#00B050', bgColor: '#f0fdf4', textColor: '#166534', headerBg: '#dcfce7' },
-  // Loop — amarelo/orange
-  { id: 'FOLLOW-UP',       label: 'Follow-Up',         group: 'loop',      borderColor: '#d97706', bgColor: '#fffbeb', textColor: '#92400e', headerBg: '#fef3c7' },
-  // Auxiliar — vermelho/rose
-  { id: 'SUPORTE',         label: 'Suporte',            group: 'auxiliar',  borderColor: '#dc2626', bgColor: '#fff1f2', textColor: '#9f1239', headerBg: '#ffe4e6' },
-  { id: 'RELACIONAMENTO',  label: 'Relacionamento',     group: 'auxiliar',  borderColor: '#e11d48', bgColor: '#fff1f2', textColor: '#9f1239', headerBg: '#ffe4e6' },
-  { id: 'NUTRIÇÃO',        label: 'Nutricao',           group: 'auxiliar',  borderColor: '#f43f5e', bgColor: '#fff1f2', textColor: '#9f1239', headerBg: '#ffe4e6' },
+  { id: 'FOLLOW-UP',       label: 'Follow-Up',         group: 'pos-venda', borderColor: '#d97706', bgColor: '#fffbeb', textColor: '#92400e', headerBg: '#fef3c7' },
+  { id: 'SUPORTE',         label: 'Suporte',            group: 'pos-venda', borderColor: '#dc2626', bgColor: '#fff1f2', textColor: '#9f1239', headerBg: '#ffe4e6' },
+  { id: 'RELACIONAMENTO',  label: 'Relacionamento',     group: 'pos-venda', borderColor: '#e11d48', bgColor: '#fff1f2', textColor: '#9f1239', headerBg: '#ffe4e6' },
+  { id: 'NUTRIÇÃO',        label: 'Nutricao',           group: 'pos-venda', borderColor: '#f43f5e', bgColor: '#fff1f2', textColor: '#9f1239', headerBg: '#ffe4e6' },
+];
+
+// Swimlane configuration
+interface SwimlaneConfig {
+  id: StageGroup;
+  label: string;
+  bg: string;
+  border: string;
+  text: string;
+}
+
+const SWIMLANES: SwimlaneConfig[] = [
+  { id: 'pre-venda', label: 'PRE-VENDA',  bg: '#DBEAFE', border: '#93c5fd', text: '#1d4ed8' },
+  { id: 'venda',     label: 'VENDA',      bg: '#DCFCE7', border: '#86efac', text: '#166534' },
+  { id: 'pos-venda', label: 'POS-VENDA',  bg: '#FEF3C7', border: '#fcd34d', text: '#92400e' },
 ];
 
 // Normalise variant spellings from the backend to canonical stage IDs
@@ -73,7 +87,6 @@ function normalizeStage(raw: string | undefined | null): string {
 }
 
 const STAGE_IDS = STAGE_CONFIGS.map((s) => s.id);
-
 const CONSULTORES = ['LARISSA', 'MANU', 'JULIO', 'DAIANE'];
 
 // ---------------------------------------------------------------------------
@@ -113,13 +126,8 @@ function formatCnpj(cnpj: string): string {
   return `${d.slice(0, 2)}.${d.slice(2, 5)}.${d.slice(5, 8)}/${d.slice(8, 12)}-${d.slice(12)}`;
 }
 
-function formatDate(value?: string): string {
-  if (!value) return '—';
-  const [datePart] = value.split('T');
-  const parts = datePart.split('-');
-  if (parts.length !== 3) return value;
-  return `${parts[2]}/${parts[1]}/${parts[0]}`;
-}
+// formatDate: alias para formatDateBR centralizado em api.ts
+const formatDate = formatDateBR;
 
 function truncate(s: string, max: number): string {
   return s.length <= max ? s : s.slice(0, max - 1) + '…';
@@ -344,26 +352,114 @@ function DetailRow({ label, value }: { label: string; value?: string | null }) {
 }
 
 // ---------------------------------------------------------------------------
+// MobileMoveModal — selecao de estagio no mobile (sem drag-and-drop)
+// ---------------------------------------------------------------------------
+
+interface MobileMoveModalProps {
+  cliente: ClienteRegistro;
+  currentStage: string;
+  onMove: (cnpj: string, toStage: string) => void;
+  onClose: () => void;
+}
+
+function MobileMoveModal({ cliente, currentStage, onMove, onClose }: MobileMoveModalProps) {
+  return (
+    <>
+      <div
+        className="fixed inset-0 bg-black/40 z-50"
+        onClick={onClose}
+        aria-hidden="true"
+      />
+      <div
+        className="fixed bottom-0 left-0 right-0 bg-white rounded-t-2xl z-50 shadow-2xl max-h-[80vh] overflow-y-auto"
+        role="dialog"
+        aria-label="Mover cliente de estagio"
+      >
+        <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
+          <div>
+            <p className="text-sm font-semibold text-gray-900 truncate">{cliente.nome_fantasia}</p>
+            <p className="text-xs text-gray-500 mt-0.5">Selecionar novo estagio</p>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            className="p-1.5 rounded text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors"
+            aria-label="Fechar"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <div className="p-3 space-y-1">
+          {SWIMLANES.map((swimlane) => {
+            const stages = STAGE_CONFIGS.filter((s) => s.group === swimlane.id);
+            return (
+              <div key={swimlane.id} className="mb-3">
+                <p
+                  className="text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded mb-1"
+                  style={{ backgroundColor: swimlane.bg, color: swimlane.text }}
+                >
+                  {swimlane.label}
+                </p>
+                {stages.map((cfg) => (
+                  <button
+                    key={cfg.id}
+                    type="button"
+                    disabled={cfg.id === currentStage}
+                    onClick={() => {
+                      onMove(cliente.cnpj, cfg.id);
+                      onClose();
+                    }}
+                    className={`w-full text-left px-3 py-2.5 rounded-lg text-xs font-medium transition-colors flex items-center gap-2
+                      ${cfg.id === currentStage
+                        ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                        : 'hover:bg-gray-50 text-gray-700 active:bg-gray-100'
+                      }`}
+                  >
+                    <span
+                      className="w-2.5 h-2.5 rounded-sm flex-shrink-0"
+                      style={{ backgroundColor: cfg.borderColor }}
+                    />
+                    {cfg.label}
+                    {cfg.id === currentStage && (
+                      <span className="ml-auto text-[10px] text-gray-400">atual</span>
+                    )}
+                  </button>
+                ))}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // KanbanCard — individual client card
 // ---------------------------------------------------------------------------
 
 interface KanbanCardProps {
   cliente: ClienteRegistro;
+  currentStage: string;
   onDragStart: (e: React.DragEvent, cnpj: string, fromStage: string) => void;
   onClick: (cnpj: string) => void;
+  onMobileMove: (cliente: ClienteRegistro, currentStage: string) => void;
   isDragging: boolean;
+  isMobile: boolean;
 }
 
-function KanbanCard({ cliente, onDragStart, onClick, isDragging }: KanbanCardProps) {
+function KanbanCard({ cliente, currentStage, onDragStart, onClick, onMobileMove, isDragging, isMobile }: KanbanCardProps) {
   const sc = scoreBadgeColor(cliente.score);
   const { user } = useAuth();
   const isExterno = user?.role === 'consultor_externo';
-  const stage = normalizeStage(cliente.estagio_funil);
 
   return (
     <div
-      draggable
-      onDragStart={(e) => onDragStart(e, cliente.cnpj, stage)}
+      draggable={!isMobile}
+      onDragStart={(e) => !isMobile && onDragStart(e, cliente.cnpj, currentStage)}
       onClick={() => onClick(cliente.cnpj)}
       aria-label={`Cliente ${cliente.nome_fantasia}, score ${cliente.score?.toFixed(1) ?? 'N/A'}`}
       role="button"
@@ -385,7 +481,7 @@ function KanbanCard({ cliente, onDragStart, onClick, isDragging }: KanbanCardPro
           style={{ backgroundColor: tempDotColor(cliente.temperatura) }}
           title={cliente.temperatura ?? 'Temperatura desconhecida'}
         />
-        <p className="text-xs font-semibold text-gray-900 leading-snug min-w-0 line-clamp-2">
+        <p className="text-xs font-semibold text-gray-900 leading-snug min-w-0 line-clamp-2 flex-1">
           {truncate(cliente.nome_fantasia, 40)}
         </p>
       </div>
@@ -425,6 +521,24 @@ function KanbanCard({ cliente, onDragStart, onClick, isDragging }: KanbanCardPro
           </span>
         </div>
       )}
+
+      {/* Mobile move button */}
+      {isMobile && (
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            onMobileMove(cliente, currentStage);
+          }}
+          className="mt-1.5 w-full flex items-center justify-center gap-1 py-1 text-[10px] font-medium text-blue-600 border border-blue-200 rounded bg-blue-50 hover:bg-blue-100 transition-colors"
+          aria-label="Mover para outro estagio"
+        >
+          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+          </svg>
+          Mover para
+        </button>
+      )}
     </div>
   );
 }
@@ -443,6 +557,8 @@ interface KanbanColumnProps {
   isDragTarget: boolean;
   draggingCnpj: string | null;
   onCardClick: (cnpj: string) => void;
+  onMobileMove: (cliente: ClienteRegistro, currentStage: string) => void;
+  isMobile: boolean;
 }
 
 function KanbanColumn({
@@ -455,8 +571,9 @@ function KanbanColumn({
   isDragTarget,
   draggingCnpj,
   onCardClick,
+  onMobileMove,
+  isMobile,
 }: KanbanColumnProps) {
-  // Sum of valor_ultimo_pedido (last order per client) — NOT annual cumulative
   const totalUltimoPedido = cards.reduce((acc, c) => acc + (c.valor_ultimo_pedido ?? 0), 0);
 
   return (
@@ -506,7 +623,7 @@ function KanbanColumn({
           flex-1 p-2 space-y-2 overflow-y-auto scrollbar-thin min-h-[120px] transition-colors duration-150
           ${isDragTarget ? 'bg-blue-50 ring-2 ring-inset ring-blue-300' : ''}
         `}
-        style={{ maxHeight: 'calc(100vh - 280px)' }}
+        style={{ maxHeight: 'calc(100vh - 320px)' }}
       >
         {cards.length === 0 ? (
           <div className="h-full flex items-center justify-center min-h-[100px]">
@@ -520,9 +637,12 @@ function KanbanColumn({
             <KanbanCard
               key={c.cnpj}
               cliente={c}
+              currentStage={config.id}
               onDragStart={onDragStart}
               onClick={onCardClick}
+              onMobileMove={onMobileMove}
               isDragging={draggingCnpj === c.cnpj}
+              isMobile={isMobile}
             />
           ))
         )}
@@ -543,6 +663,7 @@ interface SummaryBarProps {
   filtroConsultor: string;
   onFiltroConsultor: (v: string) => void;
   loading: boolean;
+  pendingMoves: number;
 }
 
 function SummaryBar({
@@ -553,6 +674,7 @@ function SummaryBar({
   filtroConsultor,
   onFiltroConsultor,
   loading,
+  pendingMoves,
 }: SummaryBarProps) {
   const conversionRate =
     totalClientes > 0 ? ((totalOportunidades / totalClientes) * 100).toFixed(1) : '0.0';
@@ -619,6 +741,19 @@ function SummaryBar({
               </span>
             )}
           </div>
+
+          {/* Pending API saves indicator */}
+          {pendingMoves > 0 && (
+            <>
+              <div className="w-px h-8 bg-gray-200 flex-shrink-0" />
+              <div className="flex items-center gap-1.5">
+                <div className="w-3.5 h-3.5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin flex-shrink-0" />
+                <span className="text-[10px] text-blue-600 font-medium">
+                  Salvando {pendingMoves} movimentacao{pendingMoves !== 1 ? 'oes' : ''}...
+                </span>
+              </div>
+            </>
+          )}
         </div>
 
         {/* Consultor filter */}
@@ -649,6 +784,85 @@ function SummaryBar({
 }
 
 // ---------------------------------------------------------------------------
+// SwimlaneGroup — wrapper that renders a labeled group of columns
+// ---------------------------------------------------------------------------
+
+interface SwimlaneGroupProps {
+  swimlane: SwimlaneConfig;
+  stages: StageConfig[];
+  columns: KanbanColumns;
+  onDragStart: (e: React.DragEvent, cnpj: string, fromStage: string) => void;
+  onDragOver: (e: React.DragEvent, toStage: string) => void;
+  onDrop: (e: React.DragEvent, toStage: string) => void;
+  onDragLeave: () => void;
+  dragTargetStage: string | null;
+  draggingCnpj: string | null;
+  onCardClick: (cnpj: string) => void;
+  onMobileMove: (cliente: ClienteRegistro, currentStage: string) => void;
+  isMobile: boolean;
+}
+
+function SwimlaneGroup({
+  swimlane,
+  stages,
+  columns,
+  onDragStart,
+  onDragOver,
+  onDrop,
+  onDragLeave,
+  dragTargetStage,
+  draggingCnpj,
+  onCardClick,
+  onMobileMove,
+  isMobile,
+}: SwimlaneGroupProps) {
+  const totalCards = stages.reduce((acc, s) => acc + (columns[s.id]?.length ?? 0), 0);
+
+  return (
+    <div className="flex-shrink-0 flex flex-col gap-2">
+      {/* Swimlane header label */}
+      <div
+        className="flex items-center gap-2 px-3 py-1.5 rounded-lg border"
+        style={{ backgroundColor: swimlane.bg, borderColor: swimlane.border }}
+      >
+        <span
+          className="text-[10px] font-black uppercase tracking-widest"
+          style={{ color: swimlane.text }}
+        >
+          {swimlane.label}
+        </span>
+        <span
+          className="text-[10px] font-bold px-1.5 py-0.5 rounded-full"
+          style={{ backgroundColor: swimlane.border, color: swimlane.text }}
+        >
+          {totalCards}
+        </span>
+      </div>
+
+      {/* Columns in this swimlane */}
+      <div className="flex gap-3">
+        {stages.map((cfg) => (
+          <KanbanColumn
+            key={cfg.id}
+            config={cfg}
+            cards={columns[cfg.id] ?? []}
+            onDragStart={onDragStart}
+            onDragOver={onDragOver}
+            onDrop={onDrop}
+            onDragLeave={onDragLeave}
+            isDragTarget={dragTargetStage === cfg.id}
+            draggingCnpj={draggingCnpj}
+            onCardClick={onCardClick}
+            onMobileMove={onMobileMove}
+            isMobile={isMobile}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // PipelinePage — main board
 // ---------------------------------------------------------------------------
 
@@ -667,14 +881,33 @@ export default function PipelinePage() {
   const [draggingFromStage, setDraggingFromStage] = useState<string | null>(null);
   const [dragTargetStage, setDragTargetStage] = useState<string | null>(null);
 
-  // Local overrides for stage (drag-only, no API call)
+  // Local overrides for stage (applied immediately, API call fires in background)
   const [stageOverrides, setStageOverrides] = useState<Record<string, string>>({});
+
+  // Pending API saves counter (for UX indicator)
+  const [pendingMoves, setPendingMoves] = useState(0);
 
   // Detail panel
   const [selectedCnpj, setSelectedCnpj] = useState<string | null>(null);
 
+  // Mobile detection
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Mobile move modal
+  const [mobileMoving, setMobileMoving] = useState<{ cliente: ClienteRegistro; currentStage: string } | null>(null);
+
   // Scroll ref for horizontal board
   const boardRef = useRef<HTMLDivElement>(null);
+
+  // Detect mobile on mount + resize
+  useEffect(() => {
+    function check() {
+      setIsMobile(window.innerWidth < 768);
+    }
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
 
   // Apply consultant filter from user role automatically
   useEffect(() => {
@@ -698,6 +931,8 @@ export default function PipelinePage() {
         ...(filtroConsultor ? { consultor: filtroConsultor } : {}),
       });
       setAllClientes(resp.registros);
+      // Clear overrides on fresh reload
+      setStageOverrides({});
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : 'Erro ao carregar clientes');
     } finally {
@@ -722,16 +957,12 @@ export default function PipelinePage() {
     if (stage && columns[stage] !== undefined) {
       columns[stage].push(c);
     }
-    // Clients with no stage or unknown stage are silently omitted from the board
   });
 
   // Only show stages that have cards OR are "core" stages we always want visible
   const ALWAYS_SHOW_STAGES = new Set([
     'EM ATENDIMENTO', 'PEDIDO', 'POS-VENDA', 'FOLLOW-UP',
   ]);
-  const visibleStages = STAGE_CONFIGS.filter(
-    (s) => columns[s.id].length > 0 || ALWAYS_SHOW_STAGES.has(s.id)
-  );
 
   // ---------------------------------------------------------------------------
   // Summary stats
@@ -746,7 +977,33 @@ export default function PipelinePage() {
   const totalFatAcumulado = allClientes.reduce((acc, c) => acc + (c.faturamento_total ?? 0), 0);
 
   // ---------------------------------------------------------------------------
-  // Drag-and-drop handlers
+  // Move handler — optimistic UI + async API call
+  // ---------------------------------------------------------------------------
+
+  const handleMoveCliente = useCallback(async (cnpj: string, fromStage: string, toStage: string) => {
+    if (!cnpj || !fromStage || fromStage === toStage) return;
+
+    // Optimistic update
+    setStageOverrides((prev) => ({ ...prev, [cnpj]: toStage }));
+    setPendingMoves((n) => n + 1);
+
+    try {
+      await atualizarEstagioCliente(cnpj, toStage);
+    } catch (e) {
+      // Revert on failure
+      setStageOverrides((prev) => {
+        const next = { ...prev };
+        delete next[cnpj];
+        return next;
+      });
+      console.error('Falha ao atualizar estagio:', e);
+    } finally {
+      setPendingMoves((n) => Math.max(0, n - 1));
+    }
+  }, []);
+
+  // ---------------------------------------------------------------------------
+  // Drag-and-drop handlers (desktop only)
   // ---------------------------------------------------------------------------
 
   function handleDragStart(e: React.DragEvent, cnpj: string, fromStage: string) {
@@ -754,6 +1011,7 @@ export default function PipelinePage() {
     setDraggingFromStage(fromStage);
     e.dataTransfer.effectAllowed = 'move';
     e.dataTransfer.setData('cnpj', cnpj);
+    e.dataTransfer.setData('fromStage', fromStage);
   }
 
   function handleDragOver(e: React.DragEvent, toStage: string) {
@@ -767,17 +1025,15 @@ export default function PipelinePage() {
   function handleDrop(e: React.DragEvent, toStage: string) {
     e.preventDefault();
     const cnpj = e.dataTransfer.getData('cnpj');
-    if (!cnpj || !draggingFromStage || draggingFromStage === toStage) {
-      setDraggingCnpj(null);
-      setDraggingFromStage(null);
-      setDragTargetStage(null);
-      return;
-    }
-    // Apply visual override (no API call as per requirements)
-    setStageOverrides((prev) => ({ ...prev, [cnpj]: toStage }));
+    const fromStage = e.dataTransfer.getData('fromStage') || draggingFromStage;
+
     setDraggingCnpj(null);
     setDraggingFromStage(null);
     setDragTargetStage(null);
+
+    if (!cnpj || !fromStage || fromStage === toStage) return;
+
+    void handleMoveCliente(cnpj, fromStage, toStage);
   }
 
   function handleDragLeave() {
@@ -791,7 +1047,143 @@ export default function PipelinePage() {
   }
 
   // ---------------------------------------------------------------------------
-  // Render
+  // Mobile move handler
+  // ---------------------------------------------------------------------------
+
+  function handleMobileOpenMove(cliente: ClienteRegistro, currentStage: string) {
+    setMobileMoving({ cliente, currentStage });
+  }
+
+  function handleMobileMoveConfirm(cnpj: string, toStage: string) {
+    const fromStage = mobileMoving?.currentStage ?? '';
+    void handleMoveCliente(cnpj, fromStage, toStage);
+    setMobileMoving(null);
+  }
+
+  // ---------------------------------------------------------------------------
+  // Build swimlane data — filter visible stages per swimlane
+  // ---------------------------------------------------------------------------
+
+  const swimlaneData = SWIMLANES.map((swimlane) => {
+    const stages = STAGE_CONFIGS.filter(
+      (s) =>
+        s.group === swimlane.id &&
+        (columns[s.id].length > 0 || ALWAYS_SHOW_STAGES.has(s.id))
+    );
+    return { swimlane, stages };
+  }).filter((entry) => entry.stages.length > 0);
+
+  // ---------------------------------------------------------------------------
+  // Mobile list view — single flat list grouped by stage
+  // ---------------------------------------------------------------------------
+
+  if (isMobile) {
+    return (
+      <div className="flex flex-col gap-3">
+        {/* Page header */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-lg font-bold text-gray-900">Pipeline</h1>
+            <p className="text-xs text-gray-500 mt-0.5">
+              {loading ? 'Carregando...' : `${allClientes.length.toLocaleString('pt-BR')} clientes`}
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={loadClientes}
+            disabled={loading}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-green-700 border border-green-300 rounded-lg bg-white hover:bg-green-50 transition-colors disabled:opacity-50"
+          >
+            <svg className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            Atualizar
+          </button>
+        </div>
+
+        {/* Filter */}
+        <div className="flex items-center gap-2">
+          <label className="text-xs text-gray-500 font-medium flex-shrink-0">Consultor:</label>
+          <select
+            value={filtroConsultor}
+            onChange={(e) => setFiltroConsultor(e.target.value)}
+            className="flex-1 border border-gray-200 rounded px-2 py-1.5 text-xs bg-white"
+          >
+            <option value="">Todos</option>
+            {CONSULTORES.map((c) => <option key={c} value={c}>{c}</option>)}
+          </select>
+        </div>
+
+        {error && (
+          <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-xs text-red-700">{error}</div>
+        )}
+
+        {loading ? (
+          <div className="space-y-2">
+            {[...Array(5)].map((_, i) => (
+              <div key={i} className="h-20 bg-gray-100 animate-pulse rounded-lg" />
+            ))}
+          </div>
+        ) : (
+          STAGE_CONFIGS.map((cfg) => {
+            const cards = columns[cfg.id] ?? [];
+            if (cards.length === 0) return null;
+            return (
+              <div key={cfg.id}>
+                <div
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-t-lg border-t-4"
+                  style={{ borderTopColor: cfg.borderColor, backgroundColor: cfg.headerBg }}
+                >
+                  <span className="text-xs font-bold uppercase" style={{ color: cfg.textColor }}>
+                    {cfg.label}
+                  </span>
+                  <span
+                    className="text-[10px] font-bold px-1.5 py-0.5 rounded-full text-white"
+                    style={{ backgroundColor: cfg.borderColor }}
+                  >
+                    {cards.length}
+                  </span>
+                </div>
+                <div className="space-y-2 p-2 bg-white border border-t-0 border-gray-200 rounded-b-lg">
+                  {cards.map((c) => (
+                    <KanbanCard
+                      key={c.cnpj}
+                      cliente={c}
+                      currentStage={cfg.id}
+                      onDragStart={() => {}}
+                      onClick={setSelectedCnpj}
+                      onMobileMove={handleMobileOpenMove}
+                      isDragging={false}
+                      isMobile={true}
+                    />
+                  ))}
+                </div>
+              </div>
+            );
+          })
+        )}
+
+        {/* Mobile move modal */}
+        {mobileMoving && (
+          <MobileMoveModal
+            cliente={mobileMoving.cliente}
+            currentStage={mobileMoving.currentStage}
+            onMove={handleMobileMoveConfirm}
+            onClose={() => setMobileMoving(null)}
+          />
+        )}
+
+        {/* Detail panel */}
+        <ClienteDetailPanel
+          cnpj={selectedCnpj}
+          onClose={() => setSelectedCnpj(null)}
+        />
+      </div>
+    );
+  }
+
+  // ---------------------------------------------------------------------------
+  // Desktop Kanban board with swimlane grouping
   // ---------------------------------------------------------------------------
 
   return (
@@ -839,6 +1231,7 @@ export default function PipelinePage() {
         filtroConsultor={filtroConsultor}
         onFiltroConsultor={setFiltroConsultor}
         loading={loading}
+        pendingMoves={pendingMoves}
       />
 
       {/* Error state */}
@@ -873,17 +1266,27 @@ export default function PipelinePage() {
 
       {/* Loading skeleton */}
       {loading && !error && (
-        <div className="flex gap-3 overflow-x-auto pb-3 scrollbar-thin">
-          {[...Array(6)].map((_, i) => (
-            <div
-              key={i}
-              className="flex-shrink-0 rounded-lg border border-gray-200 bg-white animate-pulse"
-              style={{ width: 220, height: 400 }}
-            >
-              <div className="h-14 bg-gray-100 rounded-t-lg" />
-              <div className="p-2 space-y-2">
-                {[...Array(4)].map((_, j) => (
-                  <div key={j} className="h-20 bg-gray-50 rounded-lg border border-gray-100" />
+        <div className="flex gap-6 overflow-x-auto pb-3 scrollbar-thin">
+          {SWIMLANES.map((sw) => (
+            <div key={sw.id} className="flex-shrink-0 flex flex-col gap-2">
+              <div
+                className="h-8 rounded-lg w-48 animate-pulse"
+                style={{ backgroundColor: sw.bg }}
+              />
+              <div className="flex gap-3">
+                {[...Array(sw.id === 'pos-venda' ? 4 : sw.id === 'venda' ? 4 : 3)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="flex-shrink-0 rounded-lg border border-gray-200 bg-white animate-pulse"
+                    style={{ width: 220, height: 360 }}
+                  >
+                    <div className="h-14 bg-gray-100 rounded-t-lg" />
+                    <div className="p-2 space-y-2">
+                      {[...Array(4)].map((_, j) => (
+                        <div key={j} className="h-16 bg-gray-50 rounded-lg border border-gray-100" />
+                      ))}
+                    </div>
+                  </div>
                 ))}
               </div>
             </div>
@@ -891,29 +1294,32 @@ export default function PipelinePage() {
         </div>
       )}
 
-      {/* Kanban board */}
+      {/* Kanban board — swimlane groups side by side, horizontally scrollable */}
       {!loading && (
         <div
           ref={boardRef}
-          className="flex gap-3 overflow-x-auto pb-4 scrollbar-thin flex-1"
+          className="flex gap-6 overflow-x-auto pb-4 scrollbar-thin flex-1"
           style={{ minHeight: 0 }}
         >
-          {visibleStages.map((cfg) => (
-            <KanbanColumn
-              key={cfg.id}
-              config={cfg}
-              cards={columns[cfg.id]}
+          {swimlaneData.map(({ swimlane, stages }) => (
+            <SwimlaneGroup
+              key={swimlane.id}
+              swimlane={swimlane}
+              stages={stages}
+              columns={columns}
               onDragStart={handleDragStart}
               onDragOver={handleDragOver}
               onDrop={handleDrop}
               onDragLeave={handleDragLeave}
-              isDragTarget={dragTargetStage === cfg.id}
+              dragTargetStage={dragTargetStage}
               draggingCnpj={draggingCnpj}
               onCardClick={setSelectedCnpj}
+              onMobileMove={handleMobileOpenMove}
+              isMobile={false}
             />
           ))}
 
-          {visibleStages.length === 0 && !loading && (
+          {swimlaneData.length === 0 && !loading && (
             <div className="flex-1 flex items-center justify-center min-h-[200px]">
               <div className="text-center">
                 <p className="text-sm font-medium text-gray-500">Nenhum cliente no pipeline</p>
