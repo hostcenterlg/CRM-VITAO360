@@ -240,6 +240,53 @@ const ITEMS: Item[] = [
   { id: 'S3-013', pedido: 'Kanban drag-drop + Busca Ctrl+K + Atalhos', descricao: 'Pipeline HTML5 DnD, swimlanes, busca global multi-fonte, atalhos N/A/C/I.', status: 'done', categoria: 'feature', sessao: '13/Abr/2026', detalhes: 'Optimistic update. Mobile bottom sheet. SearchModal debounce 300ms. useKeyboardShortcuts hook.', commits: ['7d030d6'] },
   { id: 'S3-014', pedido: 'Skeleton loading + ErrorBoundary + Performance', descricao: '8 variantes Skeleton. ErrorBoundary global. formatDateBR/formatNumber. Recharts tree-shake.', status: 'done', categoria: 'fix', sessao: '13/Abr/2026', detalhes: 'Skeleton.tsx reutilizável. ErrorBoundary class em layout.tsx. optimizePackageImports.', commits: ['25471ab'] },
 
+  // ═══ SESSÃO 14/ABR/2026 ═══
+  {
+    id: 'S4-001',
+    pedido: '17 issues UX corrigidas',
+    descricao: 'Dashboard tabs mobile, AppShell notif vazio, Inbox status, Carteira toast, IA skeleton, Pipeline retry, Pedidos confirm, Tarefas reset, Relatórios toast, RNC validação.',
+    status: 'done',
+    categoria: 'fix',
+    sessao: '14/Abr/2026',
+    detalhes: 'Dashboard tabs mobile, AppShell notif vazio, Inbox status, Carteira toast, IA skeleton, Pipeline retry, Pedidos confirm, Tarefas reset, Relatórios toast, RNC validação.',
+  },
+  {
+    id: 'S4-002',
+    pedido: 'Componentes reutilizáveis Toast + ErrorCard',
+    descricao: 'Toast 4 variantes + useToast() hook. ErrorCard standard + compact com retry.',
+    status: 'done',
+    categoria: 'feature',
+    sessao: '14/Abr/2026',
+    detalhes: 'Toast com variantes: success, error, warning, info. useToast() hook encapsula lógica de exibição. ErrorCard em modo standard e compact com suporte a retry callback.',
+  },
+  {
+    id: 'S4-003',
+    pedido: 'Acessibilidade melhorada',
+    descricao: 'aria-controls, scope=col, role=status, aria-labelledby em Sinaleiro, ClienteDetalhe, Motor.',
+    status: 'done',
+    categoria: 'fix',
+    sessao: '14/Abr/2026',
+    detalhes: 'aria-controls em accordions e tabs expandíveis. scope="col" em cabeçalhos de tabela. role="status" em indicadores dinâmicos. aria-labelledby em Sinaleiro, ClienteDetalhe e Motor de Regras.',
+  },
+  {
+    id: 'S4-004',
+    pedido: 'Visual design consistency',
+    descricao: 'Status colors unified, buttons consistent, KpiCard polished, modals standardized, rounded-xl everywhere.',
+    status: 'done',
+    categoria: 'fix',
+    sessao: '14/Abr/2026',
+    detalhes: 'Paleta de status unificada em todos os componentes. Botões com tamanhos e estilos consistentes. KpiCard com layout polido. Modais padronizados. rounded-xl aplicado consistentemente.',
+  },
+  {
+    id: 'S4-005',
+    pedido: '737 testes passando',
+    descricao: '228 testes novos. Suite completa sem regressão.',
+    status: 'done',
+    categoria: 'fix',
+    sessao: '14/Abr/2026',
+    detalhes: '228 testes novos cobrindo os componentes e endpoints da sessão 14/Abr. Suite completa de 737 testes passando. Zero regressões introduzidas.',
+  },
+
   // ═══ PENDÊNCIAS RESTANTES ═══
 
   {
@@ -520,7 +567,7 @@ export default function AtualizacoesPage() {
       {/* Footer */}
       <div className="mt-8 mb-4 p-4 bg-gray-50 rounded-xl border border-gray-200 text-center">
         <p className="text-xs text-gray-500">
-          CRM VITAO360 — Atualizado: 13/Abr/2026 — {ITEMS.length} itens rastreados
+          CRM VITAO360 — Atualizado: 14/Abr/2026 — {ITEMS.length} itens rastreados
         </p>
       </div>
     </div>
