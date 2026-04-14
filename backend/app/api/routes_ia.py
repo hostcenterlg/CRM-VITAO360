@@ -477,3 +477,365 @@ async def get_sugestao_produto(
         ) from exc
 
     return SugestaoProdutoResponse(**resultado)
+
+
+# ---------------------------------------------------------------------------
+# Schemas Pydantic — Response (módulo IA avançada)
+# ---------------------------------------------------------------------------
+
+class HistoricoSentimentoItem(BaseModel):
+    """Item individual do histórico de sentimento."""
+
+    data: str
+    resultado: str
+    sentimento: str
+
+
+class SentimentoResponse(BaseModel):
+    """Resposta do endpoint de análise de sentimento WhatsApp."""
+
+    cnpj: str
+    sentimento: str          # POSITIVO | NEUTRO | NEGATIVO | URGENTE
+    score: float             # 0-100
+    historico: list[HistoricoSentimentoItem]
+    tendencia: str           # MELHORANDO | ESTAVEL | PIORANDO
+    recomendacao: str
+
+
+class FatorFechamentoItem(BaseModel):
+    """Fator individual que compõe a previsão de fechamento."""
+
+    nome: str
+    peso: int
+    contribuicao: float
+
+
+class PrevisaoFechamentoResponse(BaseModel):
+    """Resposta do endpoint de previsão de fechamento de venda."""
+
+    cnpj: str
+    probabilidade_pct: float
+    nivel: str               # ALTA | MEDIA | BAIXA
+    fatores: list[FatorFechamentoItem]
+    tempo_estimado_dias: int
+    recomendacao: str
+
+
+class MetricasCoachResponse(BaseModel):
+    """Métricas numéricas do coach de vendas."""
+
+    conversao_pct: float
+    ticket_medio: float
+    atendimentos_dia: float
+    positivacao_pct: float
+
+
+class RecomendacaoCoachItem(BaseModel):
+    """Recomendação individual do coach de vendas."""
+
+    prioridade: str
+    acao: str
+    impacto_estimado: str
+
+
+class CoachVendasResponse(BaseModel):
+    """Resposta do endpoint de coach de vendas."""
+
+    consultor: str
+    periodo: str
+    metricas: MetricasCoachResponse
+    pontos_fortes: list[str]
+    pontos_fracos: list[str]
+    recomendacoes: list[RecomendacaoCoachItem]
+    meta_sugerida: str
+
+
+class OportunidadeItem(BaseModel):
+    """Oportunidade de venda detectada automaticamente."""
+
+    cnpj: str
+    nome: str
+    tipo: str                # REATIVACAO | UPSELL | PROSPECT_QUENTE | CROSS_SELL_REDE
+    prioridade: str          # ALTA | MEDIA
+    valor_potencial: float
+    motivo: str
+    acao_sugerida: str
+
+
+class AlertaOportunidadeResponse(BaseModel):
+    """Resposta do endpoint de alertas de oportunidade."""
+
+    total: int
+    oportunidades: list[OportunidadeItem]
+
+
+class ConsultorDestaqueItem(BaseModel):
+    """Consultor em destaque no dashboard IA."""
+
+    nome: str
+    motivo: str
+
+
+class DashboardIAResponse(BaseModel):
+    """Resposta do endpoint de dashboard de KPIs de IA."""
+
+    briefings_disponiveis: int
+    alertas_ativos: int
+    oportunidades: int
+    clientes_em_risco: int
+    consultor_destaque: ConsultorDestaqueItem
+    insight_do_dia: str
+
+
+# ---------------------------------------------------------------------------
+# Endpoints — IA Avançada
+# ---------------------------------------------------------------------------
+
+@router.get(
+    "/sentimento/{cnpj}",
+    response_model=SentimentoResponse,
+    summary="Análise de sentimento das últimas interações WhatsApp do cliente",
+    description=(
+        "Analisa os últimos 20 registros de interação WhatsApp do cliente. "
+        "Classifica o sentimento dominante em POSITIVO, NEUTRO, NEGATIVO ou URGENTE "
+        "com base nos resultados dos atendimentos. "
+        "Calcula score (0-100), tendência (MELHORANDO/ESTAVEL/PIORANDO) e recomendação de ação. "
+        "R4: busca apenas log_interacoes — sem valores monetários."
+    ),
+)
+async def get_sentimento(
+    cnpj: str,
+    user: Usuario = Depends(require_consultor_or_admin),
+    db: Session = Depends(get_db),
+) -> SentimentoResponse:
+    """
+    Retorna análise de sentimento baseada no histórico de interações do cliente.
+
+    O CNPJ pode ser enviado formatado; é normalizado automaticamente.
+
+    Retorna 404 se o CNPJ não existir na base de clientes.
+
+    Requer autenticação JWT.
+    """
+    logger.info(
+        "Requisição de sentimento | cnpj=%s usuario=%s",
+        cnpj,
+        getattr(user, "email", user.id),
+    )
+
+    try:
+        resultado: dict[str, Any] = await ia_service.analisar_sentimento(cnpj=cnpj, db=db)
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=str(exc),
+        ) from exc
+    except Exception as exc:
+        logger.exception("Erro ao analisar sentimento | cnpj=%s: %s", cnpj, exc)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Erro interno ao analisar sentimento — contate o administrador.",
+        ) from exc
+
+    return SentimentoResponse(
+        cnpj=resultado["cnpj"],
+        sentimento=resultado["sentimento"],
+        score=resultado["score"],
+        historico=[HistoricoSentimentoItem(**h) for h in resultado["historico"]],
+        tendencia=resultado["tendencia"],
+        recomendacao=resultado["recomendacao"],
+    )
+
+
+@router.get(
+    "/previsao-fechamento/{cnpj}",
+    response_model=PrevisaoFechamentoResponse,
+    summary="Probabilidade de fechar venda com o cliente",
+    description=(
+        "Calcula probabilidade de fechamento de venda considerando 4 fatores ponderados: "
+        "estágio no funil (40%), tempo no estágio/dias sem compra (20%), "
+        "taxa de conversão histórica do consultor (20%) e perfil de ticket (20%). "
+        "Retorna nível ALTA/MEDIA/BAIXA, fatores detalhados e tempo estimado. "
+        "R4: vendas e logs consultados em queries separadas."
+    ),
+)
+async def get_previsao_fechamento(
+    cnpj: str,
+    user: Usuario = Depends(require_consultor_or_admin),
+    db: Session = Depends(get_db),
+) -> PrevisaoFechamentoResponse:
+    """
+    Retorna probabilidade de fechamento de venda para o cliente.
+
+    O CNPJ pode ser enviado formatado; é normalizado automaticamente.
+
+    Retorna 404 se o CNPJ não existir na base de clientes.
+
+    Requer autenticação JWT.
+    """
+    logger.info(
+        "Requisição de previsão de fechamento | cnpj=%s usuario=%s",
+        cnpj,
+        getattr(user, "email", user.id),
+    )
+
+    try:
+        resultado: dict[str, Any] = await ia_service.prever_fechamento(cnpj=cnpj, db=db)
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=str(exc),
+        ) from exc
+    except Exception as exc:
+        logger.exception("Erro ao prever fechamento | cnpj=%s: %s", cnpj, exc)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Erro interno ao calcular previsão — contate o administrador.",
+        ) from exc
+
+    return PrevisaoFechamentoResponse(
+        cnpj=resultado["cnpj"],
+        probabilidade_pct=resultado["probabilidade_pct"],
+        nivel=resultado["nivel"],
+        fatores=[FatorFechamentoItem(**f) for f in resultado["fatores"]],
+        tempo_estimado_dias=resultado["tempo_estimado_dias"],
+        recomendacao=resultado["recomendacao"],
+    )
+
+
+@router.get(
+    "/coach/{consultor}",
+    response_model=CoachVendasResponse,
+    summary="Coach de vendas — análise de performance e recomendações de foco",
+    description=(
+        "Analisa a performance do consultor nos últimos 30 dias: "
+        "taxa de conversão, ticket médio, volume de atendimentos e positivação de carteira. "
+        "Compara com benchmarks internos da VITAO e identifica pontos fortes e fracos. "
+        "Retorna recomendações priorizadas (ALTA/MEDIA/BAIXA) e meta sugerida. "
+        "Consultores válidos: MANU, LARISSA, DAIANE, JULIO."
+    ),
+)
+async def get_coach_vendas(
+    consultor: str,
+    user: Usuario = Depends(require_consultor_or_admin),
+    db: Session = Depends(get_db),
+) -> CoachVendasResponse:
+    """
+    Retorna análise de performance e recomendações de coaching para o consultor.
+
+    O nome do consultor é normalizado para UPPERCASE.
+
+    Requer autenticação JWT.
+    """
+    logger.info(
+        "Requisição de coach de vendas | consultor=%s usuario=%s",
+        consultor,
+        getattr(user, "email", user.id),
+    )
+
+    try:
+        resultado: dict[str, Any] = await ia_service.coach_vendas(consultor=consultor, db=db)
+    except Exception as exc:
+        logger.exception("Erro ao gerar coach | consultor=%s: %s", consultor, exc)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Erro interno ao gerar coach de vendas — contate o administrador.",
+        ) from exc
+
+    return CoachVendasResponse(
+        consultor=resultado["consultor"],
+        periodo=resultado["periodo"],
+        metricas=MetricasCoachResponse(**resultado["metricas"]),
+        pontos_fortes=resultado["pontos_fortes"],
+        pontos_fracos=resultado["pontos_fracos"],
+        recomendacoes=[RecomendacaoCoachItem(**r) for r in resultado["recomendacoes"]],
+        meta_sugerida=resultado["meta_sugerida"],
+    )
+
+
+@router.get(
+    "/alerta-oportunidade",
+    response_model=AlertaOportunidadeResponse,
+    summary="Top 10 oportunidades de venda detectadas automaticamente",
+    description=(
+        "Detecta automaticamente as melhores oportunidades na carteira completa. "
+        "Padrões: REATIVACAO (recorrente parou de comprar), UPSELL (ticket em alta), "
+        "PROSPECT_QUENTE (prospect com contato recente), CROSS_SELL_REDE (mesma rede de cliente ativo). "
+        "Retorna top 10 ordenadas por prioridade e score interno. "
+        "R4: vendas e clientes consultados em queries separadas."
+    ),
+)
+async def get_alerta_oportunidade(
+    user: Usuario = Depends(require_consultor_or_admin),
+    db: Session = Depends(get_db),
+) -> AlertaOportunidadeResponse:
+    """
+    Retorna as top 10 oportunidades de venda detectadas automaticamente.
+
+    Não requer parâmetros de rota — analisa a carteira completa.
+
+    Requer autenticação JWT.
+    """
+    logger.info(
+        "Requisição de alertas de oportunidade | usuario=%s",
+        getattr(user, "email", user.id),
+    )
+
+    try:
+        resultado: dict[str, Any] = await ia_service.detectar_oportunidades(db=db)
+    except Exception as exc:
+        logger.exception("Erro ao detectar oportunidades: %s", exc)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Erro interno ao detectar oportunidades — contate o administrador.",
+        ) from exc
+
+    return AlertaOportunidadeResponse(
+        total=resultado["total"],
+        oportunidades=[OportunidadeItem(**op) for op in resultado["oportunidades"]],
+    )
+
+
+@router.get(
+    "/dashboard",
+    response_model=DashboardIAResponse,
+    summary="Dashboard de KPIs do módulo de Inteligência Artificial",
+    description=(
+        "Agrega métricas-chave do módulo de IA: briefings disponíveis, alertas ativos no sinaleiro, "
+        "oportunidades detectadas, clientes em risco e consultor em destaque. "
+        "Inclui insight do dia gerado por template local. "
+        "Ideal para o painel executivo. Requer autenticação JWT."
+    ),
+)
+async def get_dashboard_ia(
+    user: Usuario = Depends(require_consultor_or_admin),
+    db: Session = Depends(get_db),
+) -> DashboardIAResponse:
+    """
+    Retorna KPIs agregados do módulo de IA para o painel executivo.
+
+    Requer autenticação JWT.
+    """
+    logger.info(
+        "Requisição de dashboard IA | usuario=%s role=%s",
+        getattr(user, "email", user.id),
+        user.role,
+    )
+
+    try:
+        resultado: dict[str, Any] = await ia_service.dashboard_ia(db=db)
+    except Exception as exc:
+        logger.exception("Erro ao gerar dashboard IA: %s", exc)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Erro interno ao gerar dashboard — contate o administrador.",
+        ) from exc
+
+    return DashboardIAResponse(
+        briefings_disponiveis=resultado["briefings_disponiveis"],
+        alertas_ativos=resultado["alertas_ativos"],
+        oportunidades=resultado["oportunidades"],
+        clientes_em_risco=resultado["clientes_em_risco"],
+        consultor_destaque=ConsultorDestaqueItem(**resultado["consultor_destaque"]),
+        insight_do_dia=resultado["insight_do_dia"],
+    )

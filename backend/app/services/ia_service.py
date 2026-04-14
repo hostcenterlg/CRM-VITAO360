@@ -1371,6 +1371,855 @@ class IAService:
         }
 
 
+    # ------------------------------------------------------------------
+    # Método 7: Análise de sentimento das mensagens WhatsApp
+    # ------------------------------------------------------------------
+
+    async def analisar_sentimento(self, cnpj: str, db: Session) -> dict[str, Any]:
+        """
+        Analisa o sentimento das últimas 20 interações WhatsApp do cliente.
+
+        Classifica cada resultado nos quadrantes:
+          POSITIVO  — VENDA, PEDIDO, POS-VENDA, CS (cliente comprou/satisfeito)
+          NEUTRO    — EM ATENDIMENTO, CADASTRO, ORCAMENTO (em negociação)
+          NEGATIVO  — NAO ATENDE, NAO RESPONDE, RECUSOU (cliente evitando)
+          URGENTE   — SUPORTE (problema ativo)
+
+        Calcula score ponderado (POSITIVO=100, NEUTRO=50, NEGATIVO=10, URGENTE=20)
+        e tendência comparando segunda metade vs primeira metade da janela.
+
+        R4 — Two-Base: busca apenas log_interacoes (sem R$).
+        R5 — CNPJ normalizado.
+
+        Returns:
+            dict com: cnpj, sentimento, score (0-100), historico, tendencia, recomendacao
+
+        Raises:
+            ValueError: se o CNPJ não for encontrado.
+        """
+        cnpj_n = _normalizar_cnpj(cnpj)
+
+        cliente = db.query(Cliente).filter(Cliente.cnpj == cnpj_n).first()
+        if not cliente:
+            raise ValueError(f"Cliente CNPJ {cnpj_n} não encontrado")
+
+        # R4: buscar log de interações WhatsApp — sem valor monetário
+        interacoes = (
+            db.query(LogInteracao)
+            .filter(
+                LogInteracao.cnpj == cnpj_n,
+                LogInteracao.tipo_contato.ilike("%WHATSAPP%"),
+            )
+            .order_by(LogInteracao.data_interacao.desc())
+            .limit(20)
+            .all()
+        )
+
+        # Caso sem filtro de canal no banco, cair para todas as interações
+        if not interacoes:
+            interacoes = (
+                db.query(LogInteracao)
+                .filter(LogInteracao.cnpj == cnpj_n)
+                .order_by(LogInteracao.data_interacao.desc())
+                .limit(20)
+                .all()
+            )
+
+        _SENTIMENTO_MAP: dict[str, str] = {
+            "VENDA": "POSITIVO",
+            "PEDIDO": "POSITIVO",
+            "POS-VENDA": "POSITIVO",
+            "POS VENDA": "POSITIVO",
+            "CS": "POSITIVO",
+            "VENDA REALIZADA": "POSITIVO",
+            "EM ATENDIMENTO": "NEUTRO",
+            "CADASTRO": "NEUTRO",
+            "ORCAMENTO": "NEUTRO",
+            "ORÇAMENTO": "NEUTRO",
+            "NEGOCIACAO": "NEUTRO",
+            "NEGOCIAÇÃO": "NEUTRO",
+            "NAO ATENDE": "NEGATIVO",
+            "NÃO ATENDE": "NEGATIVO",
+            "NAO RESPONDE": "NEGATIVO",
+            "NÃO RESPONDE": "NEGATIVO",
+            "RECUSOU": "NEGATIVO",
+            "RECUSA": "NEGATIVO",
+            "SEM CONTATO": "NEGATIVO",
+            "SUPORTE": "URGENTE",
+        }
+        _SCORE_MAP: dict[str, float] = {
+            "POSITIVO": 100.0,
+            "NEUTRO": 50.0,
+            "NEGATIVO": 10.0,
+            "URGENTE": 20.0,
+        }
+
+        def _classificar_resultado(resultado: str) -> str:
+            r = (resultado or "").upper().strip()
+            for chave, sent in _SENTIMENTO_MAP.items():
+                if chave in r:
+                    return sent
+            return "NEUTRO"
+
+        historico = []
+        for i in interacoes:
+            sent = _classificar_resultado(i.resultado)
+            historico.append(
+                {
+                    "data": _formatar_data(i.data_interacao),
+                    "resultado": i.resultado,
+                    "sentimento": sent,
+                }
+            )
+
+        if not historico:
+            score = 50.0
+            sentimento_dominante = "NEUTRO"
+            tendencia = "ESTAVEL"
+            recomendacao = "Sem histórico de interações suficiente para análise. Iniciar contato para estabelecer baseline."
+        else:
+            scores_todos = [_SCORE_MAP[h["sentimento"]] for h in historico]
+            score = sum(scores_todos) / len(scores_todos)
+
+            contagem: dict[str, int] = {"POSITIVO": 0, "NEUTRO": 0, "NEGATIVO": 0, "URGENTE": 0}
+            for h in historico:
+                contagem[h["sentimento"]] += 1
+            sentimento_dominante = max(contagem, key=lambda k: contagem[k])
+
+            # Tendência: comparar metade recente vs metade anterior
+            metade = max(len(historico) // 2, 1)
+            score_recente = sum(_SCORE_MAP[h["sentimento"]] for h in historico[:metade]) / metade
+            score_anterior = sum(_SCORE_MAP[h["sentimento"]] for h in historico[metade:]) / max(len(historico[metade:]), 1)
+            diff = score_recente - score_anterior
+            if diff > 10:
+                tendencia = "MELHORANDO"
+            elif diff < -10:
+                tendencia = "PIORANDO"
+            else:
+                tendencia = "ESTAVEL"
+
+            # Recomendação local baseada no sentimento dominante
+            nome = cliente.nome_fantasia or cliente.razao_social or cnpj_n
+            rec_map = {
+                "POSITIVO": (
+                    f"Cliente {nome} com sentimento POSITIVO (score {score:.0f}/100). "
+                    "Momento ideal para oferecer cross-sell ou up-sell. "
+                    "Manter ritmo de relacionamento e aproveitar abertura para novos produtos."
+                ),
+                "NEUTRO": (
+                    f"Cliente {nome} em fase de negociação/atendimento (score {score:.0f}/100). "
+                    "Dar continuidade ao funil — enviar proposta ou follow-up de orçamento. "
+                    "Monitorar evolução nos próximos contatos."
+                ),
+                "NEGATIVO": (
+                    f"Cliente {nome} com sentimento NEGATIVO (score {score:.0f}/100) — evitando contato. "
+                    "Mudar abordagem: tentar canal diferente (WhatsApp pessoal, visita). "
+                    "Entender objeção real antes de nova tentativa de venda."
+                ),
+                "URGENTE": (
+                    f"Cliente {nome} com SUPORTE ativo (score {score:.0f}/100). "
+                    "Resolver problema aberto ANTES de qualquer abordagem comercial. "
+                    "Contato imediato do responsável para acompanhar resolução."
+                ),
+            }
+            recomendacao = rec_map.get(sentimento_dominante, f"Monitorar evolução do cliente {nome}.")
+
+        logger.info(
+            "Sentimento calculado | cnpj=%s sentimento=%s score=%.1f tendencia=%s",
+            cnpj_n,
+            sentimento_dominante if historico else "NEUTRO",
+            score,
+            tendencia if historico else "ESTAVEL",
+        )
+
+        return {
+            "cnpj": cnpj_n,
+            "sentimento": sentimento_dominante if historico else "NEUTRO",
+            "score": round(score, 1),
+            "historico": historico,
+            "tendencia": tendencia if historico else "ESTAVEL",
+            "recomendacao": recomendacao,
+        }
+
+    # ------------------------------------------------------------------
+    # Método 8: Previsão de fechamento (probabilidade de venda)
+    # ------------------------------------------------------------------
+
+    async def prever_fechamento(self, cnpj: str, db: Session) -> dict[str, Any]:
+        """
+        Calcula a probabilidade de fechar venda com o cliente.
+
+        Fatores (pesos configurados para somar 100%):
+          - Estágio no funil (peso 40%)
+          - Dias no estágio atual (peso 20%, penaliza tempo parado)
+          - Taxa de conversão histórica do consultor (peso 20%)
+          - Valor potencial: tickets menores fecham mais rápido (peso 20%)
+
+        R4 — Two-Base: vendas consultadas separadamente de logs.
+        R5 — CNPJ normalizado.
+
+        Returns:
+            dict com: cnpj, probabilidade_pct, nivel, fatores, tempo_estimado_dias, recomendacao
+
+        Raises:
+            ValueError: se o CNPJ não for encontrado.
+        """
+        cnpj_n = _normalizar_cnpj(cnpj)
+
+        cliente = db.query(Cliente).filter(Cliente.cnpj == cnpj_n).first()
+        if not cliente:
+            raise ValueError(f"Cliente CNPJ {cnpj_n} não encontrado")
+
+        from sqlalchemy import func as sqlfunc
+
+        estagio = (cliente.estagio_funil or "PROSPECCAO").upper()
+
+        # Fator 1: probabilidade base por estágio (peso 40%)
+        estagio_prob: dict[str, float] = {
+            "PEDIDO": 95.0,
+            "POS-VENDA": 90.0,
+            "POS VENDA": 90.0,
+            "VENDA REALIZADA": 90.0,
+            "EM ATENDIMENTO": 40.0,
+            "NEGOCIACAO": 55.0,
+            "NEGOCIAÇÃO": 55.0,
+            "ORCAMENTO": 70.0,
+            "ORÇAMENTO": 70.0,
+            "PROSPECCAO": 10.0,
+            "PROSPECÇÃO": 10.0,
+            "REATIVACAO": 25.0,
+            "REATIVAÇÃO": 25.0,
+        }
+        base_estagio = estagio_prob.get(estagio, 20.0)
+        contribuicao_estagio = base_estagio * 0.40
+
+        # Fator 2: decaimento por dias no estágio (peso 20%)
+        dias_sem_compra = cliente.dias_sem_compra or 0
+        ciclo_medio = cliente.ciclo_medio or 30.0
+        # Quanto mais dias além do ciclo, menor a probabilidade de fechar
+        if ciclo_medio > 0:
+            ratio = min(dias_sem_compra / ciclo_medio, 3.0)
+            prob_dias = max(100.0 - (ratio * 25.0), 5.0)
+        else:
+            prob_dias = 50.0
+        contribuicao_dias = prob_dias * 0.20
+
+        # Fator 3: taxa de conversão histórica do consultor (peso 20%)
+        consultor_nome = (cliente.consultor or "").upper()
+        total_clientes_consultor = (
+            db.query(Cliente)
+            .filter(Cliente.consultor == consultor_nome)
+            .count()
+        )
+        clientes_ativos_consultor = (
+            db.query(Cliente)
+            .filter(
+                Cliente.consultor == consultor_nome,
+                Cliente.situacao == "ATIVO",
+            )
+            .count()
+        )
+        if total_clientes_consultor > 0:
+            taxa_conversao = (clientes_ativos_consultor / total_clientes_consultor) * 100.0
+        else:
+            taxa_conversao = 50.0
+        contribuicao_consultor = taxa_conversao * 0.20
+
+        # Fator 4: ticket médio (peso 20%) — tickets menores fecham mais rápido
+        ticket_medio_global = 2000.0  # baseline VITAO Alimentos
+        valor_ultimo = cliente.valor_ultimo_pedido or 0.0
+        faturamento_total = cliente.faturamento_total or 0.0
+        n_compras = max(cliente.n_compras or 0, 1)
+        ticket_cliente = faturamento_total / n_compras if faturamento_total > 0 else (valor_ultimo or ticket_medio_global)
+        if ticket_cliente <= ticket_medio_global:
+            prob_ticket = 70.0  # tickets pequenos/médios: mais fácil de fechar
+        elif ticket_cliente <= ticket_medio_global * 3:
+            prob_ticket = 50.0
+        else:
+            prob_ticket = 30.0  # ticket alto: ciclo de venda mais longo
+        contribuicao_ticket = prob_ticket * 0.20
+
+        probabilidade = min(
+            contribuicao_estagio + contribuicao_dias + contribuicao_consultor + contribuicao_ticket,
+            99.0,
+        )
+
+        # Nível de probabilidade
+        if probabilidade >= 70:
+            nivel = "ALTA"
+        elif probabilidade >= 40:
+            nivel = "MEDIA"
+        else:
+            nivel = "BAIXA"
+
+        # Tempo estimado em dias
+        if nivel == "ALTA":
+            tempo_estimado = max(int(ciclo_medio * 0.5), 3)
+        elif nivel == "MEDIA":
+            tempo_estimado = max(int(ciclo_medio * 1.0), 7)
+        else:
+            tempo_estimado = max(int(ciclo_medio * 2.0), 14)
+
+        fatores = [
+            {
+                "nome": "Estágio no funil",
+                "peso": 40,
+                "contribuicao": round(contribuicao_estagio, 1),
+            },
+            {
+                "nome": "Tempo no estágio",
+                "peso": 20,
+                "contribuicao": round(contribuicao_dias, 1),
+            },
+            {
+                "nome": "Taxa de conversão do consultor",
+                "peso": 20,
+                "contribuicao": round(contribuicao_consultor, 1),
+            },
+            {
+                "nome": "Perfil de ticket",
+                "peso": 20,
+                "contribuicao": round(contribuicao_ticket, 1),
+            },
+        ]
+
+        nome = cliente.nome_fantasia or cliente.razao_social or cnpj_n
+        rec_map = {
+            "ALTA": (
+                f"Probabilidade ALTA ({probabilidade:.0f}%) — cliente {nome} pronto para fechar. "
+                f"Acionar hoje: enviar proposta final ou ligar para confirmar pedido. "
+                f"Tempo estimado: {tempo_estimado} dias."
+            ),
+            "MEDIA": (
+                f"Probabilidade MÉDIA ({probabilidade:.0f}%) — cliente {nome} em negociação. "
+                f"Nutrir relacionamento: follow-up com condição especial ou demonstração de produto. "
+                f"Estimativa de fechamento em {tempo_estimado} dias."
+            ),
+            "BAIXA": (
+                f"Probabilidade BAIXA ({probabilidade:.0f}%) — cliente {nome} ainda em prospecção. "
+                f"Focar em qualificação: entender necessidade real e objeções. "
+                f"Ciclo estimado de {tempo_estimado} dias para maturar oportunidade."
+            ),
+        }
+        recomendacao = rec_map[nivel]
+
+        logger.info(
+            "Previsão de fechamento | cnpj=%s prob=%.1f nivel=%s",
+            cnpj_n,
+            probabilidade,
+            nivel,
+        )
+
+        return {
+            "cnpj": cnpj_n,
+            "probabilidade_pct": round(probabilidade, 1),
+            "nivel": nivel,
+            "fatores": fatores,
+            "tempo_estimado_dias": tempo_estimado,
+            "recomendacao": recomendacao,
+        }
+
+    # ------------------------------------------------------------------
+    # Método 9: Coach de vendas por consultor
+    # ------------------------------------------------------------------
+
+    async def coach_vendas(self, consultor: str, db: Session) -> dict[str, Any]:
+        """
+        Analisa performance do consultor e gera recomendações de coaching.
+
+        Calcula (últimos 30 dias):
+          - Taxa de conversão (vendas / total de atendimentos)
+          - Ticket médio das vendas realizadas
+          - Distribuição de carteira por curva ABC
+          - Positivação (% de clientes com ao menos 1 venda no período)
+          - Pontos fortes e fracos vs padrão da equipe
+
+        R4 — Two-Base: vendas e logs buscados separadamente.
+        R5 — CNPJ normalizado.
+
+        Returns:
+            dict com: consultor, periodo, metricas, pontos_fortes, pontos_fracos, recomendacoes, meta_sugerida
+        """
+        from sqlalchemy import func as sqlfunc
+
+        consultor_norm = consultor.upper().strip()
+
+        hoje = date.today()
+        inicio_30d = hoje - timedelta(days=30)
+
+        # R4: vendas dos últimos 30 dias
+        vendas_30d = (
+            db.query(Venda)
+            .filter(
+                Venda.consultor == consultor_norm,
+                Venda.data_pedido >= inicio_30d,
+            )
+            .all()
+        )
+        total_vendas_valor = sum(v.valor_pedido for v in vendas_30d)
+        qtd_vendas = len(vendas_30d)
+        ticket_medio = (total_vendas_valor / qtd_vendas) if qtd_vendas > 0 else 0.0
+
+        # R4: atendimentos (logs) dos últimos 30 dias
+        atendimentos_30d = (
+            db.query(LogInteracao)
+            .filter(
+                LogInteracao.consultor == consultor_norm,
+                LogInteracao.data_interacao >= datetime.combine(inicio_30d, datetime.min.time()),
+            )
+            .all()
+        )
+        qtd_atendimentos = len(atendimentos_30d)
+        atendimentos_por_dia = qtd_atendimentos / 30.0
+
+        # Taxa de conversão: CNPJs que fecharam venda / CNPJs atendidos
+        cnpjs_atendidos = {i.cnpj for i in atendimentos_30d}
+        cnpjs_com_venda = {v.cnpj for v in vendas_30d}
+        conversao_pct = (
+            (len(cnpjs_com_venda) / len(cnpjs_atendidos)) * 100.0
+            if cnpjs_atendidos
+            else 0.0
+        )
+
+        # Carteira total e distribuição ABC
+        carteira = (
+            db.query(Cliente)
+            .filter(Cliente.consultor == consultor_norm)
+            .all()
+        )
+        total_carteira = len(carteira)
+        abc_dist: dict[str, int] = {"A": 0, "B": 0, "C": 0, "SEM": 0}
+        for c in carteira:
+            abc = (c.curva_abc or "SEM").upper()
+            abc_dist[abc] = abc_dist.get(abc, 0) + 1
+
+        # Positivação: % de clientes ativos com compra nos últimos 30 dias
+        ativos = [c for c in carteira if (c.situacao or "").upper() == "ATIVO"]
+        ativos_com_venda = sum(1 for c in ativos if c.cnpj in cnpjs_com_venda)
+        positivacao_pct = (
+            (ativos_com_venda / len(ativos)) * 100.0 if ativos else 0.0
+        )
+
+        # Benchmarks internos (referência VITAO)
+        _BENCH_CONVERSAO = 25.0
+        _BENCH_TICKET = 1500.0
+        _BENCH_ATEND_DIA = 8.0
+        _BENCH_POSITIVACAO = 30.0
+
+        pontos_fortes: list[str] = []
+        pontos_fracos: list[str] = []
+
+        if conversao_pct >= _BENCH_CONVERSAO:
+            pontos_fortes.append(f"Taxa de conversão acima do benchmark ({conversao_pct:.1f}% vs {_BENCH_CONVERSAO:.0f}%)")
+        else:
+            pontos_fracos.append(f"Taxa de conversão abaixo do benchmark ({conversao_pct:.1f}% vs {_BENCH_CONVERSAO:.0f}% esperado)")
+
+        if ticket_medio >= _BENCH_TICKET:
+            pontos_fortes.append(f"Ticket médio saudável ({_formatar_moeda(ticket_medio)})")
+        else:
+            pontos_fracos.append(f"Ticket médio abaixo do esperado ({_formatar_moeda(ticket_medio)} vs {_formatar_moeda(_BENCH_TICKET)})")
+
+        if atendimentos_por_dia >= _BENCH_ATEND_DIA:
+            pontos_fortes.append(f"Volume de atendimentos consistente ({atendimentos_por_dia:.1f}/dia)")
+        else:
+            pontos_fracos.append(f"Volume de atendimentos baixo ({atendimentos_por_dia:.1f}/dia vs {_BENCH_ATEND_DIA:.0f} esperado)")
+
+        if positivacao_pct >= _BENCH_POSITIVACAO:
+            pontos_fortes.append(f"Boa positivação da carteira ({positivacao_pct:.1f}%)")
+        else:
+            pontos_fracos.append(f"Positivação abaixo da meta ({positivacao_pct:.1f}% vs {_BENCH_POSITIVACAO:.0f}% esperado)")
+
+        if abc_dist.get("A", 0) >= abc_dist.get("C", 0):
+            pontos_fortes.append("Carteira concentrada em clientes de alto valor (curva A)")
+        else:
+            pontos_fracos.append("Carteira com excesso de clientes C — revisar priorização ABC")
+
+        # Recomendações priorizadas
+        recomendacoes: list[dict[str, str]] = []
+
+        if conversao_pct < _BENCH_CONVERSAO:
+            recomendacoes.append({
+                "prioridade": "ALTA",
+                "acao": "Focar em fechar orçamentos abertos antes de prospectar novos clientes",
+                "impacto_estimado": f"+{(_BENCH_CONVERSAO - conversao_pct):.1f}pp na taxa de conversão",
+            })
+
+        if positivacao_pct < _BENCH_POSITIVACAO:
+            recomendacoes.append({
+                "prioridade": "ALTA",
+                "acao": "Contatar clientes ativos sem pedido nos últimos 30 dias",
+                "impacto_estimado": f"Potencial de +{(len(ativos) * (_BENCH_POSITIVACAO - positivacao_pct) / 100):.0f} clientes positivados",
+            })
+
+        if ticket_medio < _BENCH_TICKET and qtd_vendas > 0:
+            recomendacoes.append({
+                "prioridade": "MEDIA",
+                "acao": "Incluir produtos adicionais em cada pedido (cross-sell de categorias complementares)",
+                "impacto_estimado": f"+{_formatar_moeda(_BENCH_TICKET - ticket_medio)} por pedido",
+            })
+
+        if atendimentos_por_dia < _BENCH_ATEND_DIA:
+            recomendacoes.append({
+                "prioridade": "MEDIA",
+                "acao": "Aumentar cadência de contatos — use o CRM para filtrar follow-ups vencidos",
+                "impacto_estimado": f"+{(_BENCH_ATEND_DIA - atendimentos_por_dia):.1f} atendimentos/dia",
+            })
+
+        if not recomendacoes:
+            recomendacoes.append({
+                "prioridade": "BAIXA",
+                "acao": "Manter ritmo atual e focar em conquista de novos prospects de curva A",
+                "impacto_estimado": "Crescimento orgânico da carteira",
+            })
+
+        # Meta sugerida (incremento de 10% no volume atual)
+        meta_mensal = total_vendas_valor * 1.10
+        meta_sugerida = f"Meta sugerida para os próximos 30 dias: {_formatar_moeda(meta_mensal)} (+10% sobre período atual)"
+
+        logger.info(
+            "Coach de vendas | consultor=%s conversao=%.1f%% ticket=%s positivacao=%.1f%%",
+            consultor_norm,
+            conversao_pct,
+            _formatar_moeda(ticket_medio),
+            positivacao_pct,
+        )
+
+        return {
+            "consultor": consultor_norm,
+            "periodo": "ultimos_30_dias",
+            "metricas": {
+                "conversao_pct": round(conversao_pct, 1),
+                "ticket_medio": round(ticket_medio, 2),
+                "atendimentos_dia": round(atendimentos_por_dia, 1),
+                "positivacao_pct": round(positivacao_pct, 1),
+            },
+            "pontos_fortes": pontos_fortes,
+            "pontos_fracos": pontos_fracos,
+            "recomendacoes": recomendacoes,
+            "meta_sugerida": meta_sugerida,
+        }
+
+    # ------------------------------------------------------------------
+    # Método 10: Alertas de oportunidade automáticos
+    # ------------------------------------------------------------------
+
+    async def detectar_oportunidades(self, db: Session) -> dict[str, Any]:
+        """
+        Detecta automaticamente as top 10 oportunidades de venda na carteira.
+
+        Padrões detectados:
+          REATIVACAO      — Cliente recorrente parou de comprar (dias_sem_compra > ciclo_medio * 1.5)
+          UPSELL          — Últimas 3 compras em tendência de alta de ticket
+          PROSPECT_QUENTE — Prospect com log recente e nunca comprou
+          CROSS_SELL_REDE — Cliente da mesma rede que outro já ativo
+
+        R4 — Two-Base: vendas e clientes consultados em queries separadas.
+        R5 — CNPJ normalizado.
+
+        Returns:
+            dict com: total (int), oportunidades (list[dict])
+        """
+        from sqlalchemy import func as sqlfunc
+
+        oportunidades: list[dict[str, Any]] = []
+
+        # Padrão 1: REATIVACAO — recorrente que parou de comprar
+        clientes_reativacao = (
+            db.query(Cliente)
+            .filter(
+                Cliente.situacao.in_(["ATIVO", "INAT.REC"]),
+                Cliente.n_compras >= 2,
+                Cliente.dias_sem_compra.isnot(None),
+                Cliente.ciclo_medio.isnot(None),
+            )
+            .all()
+        )
+        for c in clientes_reativacao:
+            dias = c.dias_sem_compra or 0
+            ciclo = c.ciclo_medio or 30.0
+            if ciclo > 0 and dias > ciclo * 1.5:
+                valor_potencial = (c.faturamento_total or 0.0) / max(c.n_compras or 1, 1)
+                oportunidades.append(
+                    {
+                        "cnpj": c.cnpj,
+                        "nome": c.nome_fantasia or c.razao_social or c.cnpj,
+                        "tipo": "REATIVACAO",
+                        "prioridade": "ALTA" if dias > ciclo * 2.0 else "MEDIA",
+                        "valor_potencial": round(valor_potencial, 2),
+                        "motivo": (
+                            f"{dias} dias sem compra (ciclo médio esperado: {ciclo:.0f} dias — "
+                            f"{dias/ciclo:.1f}x o padrão)"
+                        ),
+                        "acao_sugerida": "Contato imediato de reativação — oferecer condição especial",
+                        "_score": dias / ciclo,  # para ordenação interna
+                    }
+                )
+
+        # Padrão 2: UPSELL — 3 últimas compras em tendência de alta
+        clientes_upsell = (
+            db.query(Cliente)
+            .filter(
+                Cliente.situacao == "ATIVO",
+                Cliente.n_compras >= 3,
+            )
+            .all()
+        )
+        for c in clientes_upsell:
+            ultimas_3 = (
+                db.query(Venda)
+                .filter(Venda.cnpj == c.cnpj)
+                .order_by(Venda.data_pedido.desc())
+                .limit(3)
+                .all()
+            )
+            if len(ultimas_3) == 3:
+                v1, v2, v3 = ultimas_3[0].valor_pedido, ultimas_3[1].valor_pedido, ultimas_3[2].valor_pedido
+                if v1 > v2 > v3:  # tendência crescente
+                    crescimento_pct = ((v1 - v3) / v3 * 100) if v3 > 0 else 0
+                    if crescimento_pct >= 15:  # ao menos 15% de crescimento
+                        oportunidades.append(
+                            {
+                                "cnpj": c.cnpj,
+                                "nome": c.nome_fantasia or c.razao_social or c.cnpj,
+                                "tipo": "UPSELL",
+                                "prioridade": "ALTA" if crescimento_pct >= 30 else "MEDIA",
+                                "valor_potencial": round(v1 * 1.15, 2),
+                                "motivo": (
+                                    f"Ticket cresceu {crescimento_pct:.0f}% nas últimas 3 compras "
+                                    f"({_formatar_moeda(v3)} → {_formatar_moeda(v1)})"
+                                ),
+                                "acao_sugerida": "Apresentar linha premium — cliente em expansão de compra",
+                                "_score": crescimento_pct,
+                            }
+                        )
+
+        # Padrão 3: PROSPECT_QUENTE — prospect com interação recente e sem compra
+        limite_recente = datetime.combine(date.today() - timedelta(days=14), datetime.min.time())
+        prospects_log_recente = (
+            db.query(LogInteracao.cnpj)
+            .filter(LogInteracao.data_interacao >= limite_recente)
+            .distinct()
+            .all()
+        )
+        cnpjs_log_recente = {row[0] for row in prospects_log_recente}
+
+        if cnpjs_log_recente:
+            prospects = (
+                db.query(Cliente)
+                .filter(
+                    Cliente.cnpj.in_(cnpjs_log_recente),
+                    Cliente.situacao == "PROSPECT",
+                    Cliente.n_compras.is_(None) | (Cliente.n_compras == 0),
+                )
+                .all()
+            )
+            for c in prospects:
+                oportunidades.append(
+                    {
+                        "cnpj": c.cnpj,
+                        "nome": c.nome_fantasia or c.razao_social or c.cnpj,
+                        "tipo": "PROSPECT_QUENTE",
+                        "prioridade": "ALTA",
+                        "valor_potencial": 1500.0,  # ticket de entrada médio
+                        "motivo": "Prospect com contato nos últimos 14 dias — sem pedido ainda",
+                        "acao_sugerida": "Enviar proposta comercial personalizada ainda hoje",
+                        "_score": 50.0,
+                    }
+                )
+
+        # Padrão 4: CROSS_SELL_REDE — mesma rede de cliente ativo
+        # Buscar redes que têm ao menos 1 cliente ATIVO
+        redes_ativas = (
+            db.query(Cliente.rede_regional)
+            .filter(
+                Cliente.situacao == "ATIVO",
+                Cliente.rede_regional.isnot(None),
+                Cliente.rede_regional != "",
+            )
+            .distinct()
+            .all()
+        )
+        redes_ativas_set = {r[0] for r in redes_ativas if r[0]}
+
+        if redes_ativas_set:
+            clientes_rede_sem_compra = (
+                db.query(Cliente)
+                .filter(
+                    Cliente.rede_regional.in_(redes_ativas_set),
+                    Cliente.situacao.in_(["PROSPECT", "INAT.REC"]),
+                )
+                .limit(20)
+                .all()
+            )
+            for c in clientes_rede_sem_compra:
+                oportunidades.append(
+                    {
+                        "cnpj": c.cnpj,
+                        "nome": c.nome_fantasia or c.razao_social or c.cnpj,
+                        "tipo": "CROSS_SELL_REDE",
+                        "prioridade": "MEDIA",
+                        "valor_potencial": 2000.0,
+                        "motivo": (
+                            f"Pertence à rede {c.rede_regional!r} que já tem clientes ativos na VITAO"
+                        ),
+                        "acao_sugerida": "Mencionar clientes parceiros da rede — abordagem de referência",
+                        "_score": 30.0,
+                    }
+                )
+
+        # Ordenar por prioridade (ALTA primeiro) e _score decrescente, limitar a top 10
+        prioridade_ordem = {"ALTA": 0, "MEDIA": 1}
+        oportunidades.sort(
+            key=lambda x: (prioridade_ordem.get(x["prioridade"], 2), -x["_score"])
+        )
+        oportunidades = oportunidades[:10]
+
+        # Remover campo interno _score da resposta
+        for op in oportunidades:
+            op.pop("_score", None)
+
+        logger.info(
+            "Oportunidades detectadas | total=%d (antes do top10: raw)",
+            len(oportunidades),
+        )
+
+        return {
+            "total": len(oportunidades),
+            "oportunidades": oportunidades,
+        }
+
+    # ------------------------------------------------------------------
+    # Método 11: Dashboard de KPIs de IA
+    # ------------------------------------------------------------------
+
+    async def dashboard_ia(self, db: Session) -> dict[str, Any]:
+        """
+        Retorna KPIs agregados do módulo de IA para o painel executivo.
+
+        Calcula:
+          - briefings_disponiveis: clientes ATIVOS + INAT.REC com dados suficientes
+          - alertas_ativos: clientes com sinaleiro VERMELHO ou LARANJA
+          - oportunidades: top oportunidades detectadas
+          - clientes_em_risco: clientes com situação EM_RISCO ou INAT.ANT
+          - consultor_destaque: quem tem maior taxa de positivação nos últimos 30 dias
+          - insight_do_dia: frase gerada por template local
+
+        R4 — Two-Base: vendas e clientes em queries distintas.
+
+        Returns:
+            dict com todos os campos de KPI descritos acima.
+        """
+        from sqlalchemy import func as sqlfunc
+
+        hoje = date.today()
+        inicio_30d = hoje - timedelta(days=30)
+
+        # Briefings disponíveis: clientes ATIVO ou INAT.REC com CNPJ válido
+        briefings_disponiveis = (
+            db.query(Cliente)
+            .filter(
+                Cliente.situacao.in_(["ATIVO", "INAT.REC"]),
+                Cliente.cnpj.isnot(None),
+            )
+            .count()
+        )
+
+        # Alertas ativos: sinaleiro VERMELHO ou LARANJA
+        alertas_ativos = (
+            db.query(Cliente)
+            .filter(Cliente.sinaleiro.in_(["VERMELHO", "LARANJA"]))
+            .count()
+        )
+
+        # Clientes em risco: situação EM_RISCO ou INAT.ANT
+        clientes_em_risco = (
+            db.query(Cliente)
+            .filter(Cliente.situacao.in_(["EM_RISCO", "INAT.ANT"]))
+            .count()
+        )
+
+        # Oportunidades: detectar sem persistir (reutiliza lógica)
+        oportunidades_resultado = await self.detectar_oportunidades(db=db)
+        qtd_oportunidades = oportunidades_resultado["total"]
+
+        # Consultor destaque: maior % de positivação nos últimos 30 dias
+        consultores = ["MANU", "LARISSA", "DAIANE", "JULIO"]
+        destaque_nome = "MANU"
+        destaque_motivo = "maior volume de atendimentos no período"
+        melhor_positivacao = -1.0
+
+        for cons in consultores:
+            # R4: vendas por consultor
+            cnpjs_vendas = {
+                row[0]
+                for row in db.query(Venda.cnpj)
+                .filter(
+                    Venda.consultor == cons,
+                    Venda.data_pedido >= inicio_30d,
+                )
+                .distinct()
+                .all()
+            }
+            # R4: clientes ativos do consultor
+            ativos_consultor = (
+                db.query(Cliente)
+                .filter(
+                    Cliente.consultor == cons,
+                    Cliente.situacao == "ATIVO",
+                )
+                .count()
+            )
+            if ativos_consultor > 0:
+                pos_pct = len(cnpjs_vendas) / ativos_consultor * 100.0
+                if pos_pct > melhor_positivacao:
+                    melhor_positivacao = pos_pct
+                    destaque_nome = cons
+                    destaque_motivo = f"maior positivação de carteira no período ({pos_pct:.1f}%)"
+
+        # Insight do dia — template local baseado nos dados
+        if clientes_em_risco > 5:
+            insight = (
+                f"Atenção: {clientes_em_risco} clientes em risco. "
+                "Prioridade: contato de retenção antes de prospecção."
+            )
+        elif qtd_oportunidades >= 5:
+            insight = (
+                f"{qtd_oportunidades} oportunidades detectadas automaticamente. "
+                "Acesse 'Alertas de Oportunidade' para ver os detalhes."
+            )
+        elif alertas_ativos > 10:
+            insight = (
+                f"{alertas_ativos} alertas ativos no sinaleiro. "
+                "Revisar carteira com sinaleiro VERMELHO/LARANJA primeiro."
+            )
+        else:
+            insight = (
+                f"Carteira saudável: {briefings_disponiveis} clientes disponíveis para briefing. "
+                "Use a IA para preparar as ligações de hoje."
+            )
+
+        logger.info(
+            "Dashboard IA | briefings=%d alertas=%d oportunidades=%d risco=%d destaque=%s",
+            briefings_disponiveis,
+            alertas_ativos,
+            qtd_oportunidades,
+            clientes_em_risco,
+            destaque_nome,
+        )
+
+        return {
+            "briefings_disponiveis": briefings_disponiveis,
+            "alertas_ativos": alertas_ativos,
+            "oportunidades": qtd_oportunidades,
+            "clientes_em_risco": clientes_em_risco,
+            "consultor_destaque": {
+                "nome": destaque_nome,
+                "motivo": destaque_motivo,
+            },
+            "insight_do_dia": insight,
+        }
+
+
 # ---------------------------------------------------------------------------
 # Instância singleton (padrão dos outros services do projeto)
 # ---------------------------------------------------------------------------
