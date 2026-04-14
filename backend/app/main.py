@@ -50,6 +50,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.types import ASGIApp
 
 from backend.app.api.routes_agenda import router as agenda_router
+from backend.app.api.routes_pipeline import router as pipeline_router
 from backend.app.api.routes_atendimentos import router as atendimentos_router
 from backend.app.api.routes_auth import router as auth_router
 from backend.app.api.routes_clientes import router as clientes_router
@@ -326,6 +327,7 @@ app.include_router(ia_router)
 app.include_router(whatsapp_router)
 app.include_router(produtos_router)
 app.include_router(relatorios_router)
+app.include_router(pipeline_router)
 
 
 # ---------------------------------------------------------------------------
