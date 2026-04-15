@@ -258,17 +258,18 @@ function ThSort({ label, col, sort, onSort }: ThSortProps) {
 function MaisVendidosSection() {
   const [itens, setItens] = useState<ProdutoItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
     fetchProdutosMaisVendidos({ limit: 5 })
       .then((data) => { if (!cancelled) setItens(data); })
-      .catch(() => {/* silencioso: seção opcional */})
+      .catch((e: Error) => { if (!cancelled) setFetchError(e.message); })
       .finally(() => { if (!cancelled) setLoading(false); });
     return () => { cancelled = true; };
   }, []);
 
-  if (!loading && itens.length === 0) return null;
+  if (!loading && itens.length === 0 && !fetchError) return null;
 
   return (
     <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4">
@@ -281,13 +282,19 @@ function MaisVendidosSection() {
         <span className="text-[10px] text-gray-400">Top 5 produtos por volume</span>
       </div>
 
+      {fetchError && (
+        <div role="alert" className="px-3 py-2 bg-red-50 border border-red-200 rounded text-xs text-red-700">
+          Erro ao carregar mais vendidos: {fetchError}
+        </div>
+      )}
+
       {loading ? (
         <div className="flex gap-3 overflow-x-auto pb-1">
           {[1, 2, 3, 4, 5].map((i) => (
             <div key={i} className="flex-shrink-0 w-40 h-20 rounded-lg animate-pulse bg-gray-100" />
           ))}
         </div>
-      ) : (
+      ) : !fetchError && (
         <div className="flex gap-3 overflow-x-auto pb-1">
           {itens.map((item, idx) => (
             <div
@@ -349,7 +356,10 @@ function ProdutosInner() {
   useEffect(() => {
     fetchProdutoCategorias()
       .then(setCategorias)
-      .catch(() => {/* silencioso: lista cai para vazio */});
+      .catch((e: Error) => {
+        console.error('[Produtos] Falha ao carregar categorias:', e.message);
+        // Filtro de categorias fica vazio — funcionalidade de busca continua disponivel
+      });
   }, []);
 
   // Sincronizar com URL

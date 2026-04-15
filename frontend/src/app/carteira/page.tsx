@@ -18,7 +18,7 @@ import ClienteDetalhe from '@/components/ClienteDetalhe';
 // Export CSV via helper exportToCSV
 // ---------------------------------------------------------------------------
 
-const CONSULTORES = ['LARISSA', 'MANU', 'JULIO', 'DAIANE'];
+const CONSULTORES = ['MANU', 'LARISSA', 'DAIANE', 'JULIO', 'OUTROS'];
 const SITUACOES   = ['ATIVO', 'INAT.REC', 'INAT.ANT', 'PROSPECT', 'EM RISCO', 'LEAD', 'NOVO'];
 const SINALEIROS  = ['VERDE', 'AMARELO', 'LARANJA', 'VERMELHO', 'ROXO'];
 const ABCS        = ['A', 'B', 'C'];

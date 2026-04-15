@@ -35,7 +35,7 @@ const ROLE_CONFIG: Record<RoleUsuario, { label: string; bg: string; text: string
   consultor_externo:  { label: 'Ext.',       bg: '#6B7280', text: '#fff' },
 };
 
-const CONSULTORES = ['MANU', 'LARISSA', 'DAIANE', 'JULIO'];
+const CONSULTORES = ['MANU', 'LARISSA', 'DAIANE', 'JULIO', 'OUTROS'];
 
 // ---------------------------------------------------------------------------
 // Componentes internos
@@ -314,6 +314,9 @@ export default function AdminUsuariosPage() {
   }
 
   async function handleToggleAtivo(usuario: UsuarioAdmin) {
+    if (usuario.ativo) {
+      if (!confirm(`Desativar o usuario "${usuario.nome}"? O acesso sera bloqueado imediatamente.`)) return;
+    }
     try {
       await atualizarUsuario(usuario.id, { ativo: !usuario.ativo });
       await load();

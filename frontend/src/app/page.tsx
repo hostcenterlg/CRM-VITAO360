@@ -217,6 +217,16 @@ export default function DashboardPage() {
   // IA Dashboard widget
   const [iaDashboard, setIaDashboard]  = useState<IADashboardResponse | null>(null);
 
+  // Optional data source error flags
+  const [atividadesError, setAtividadesError]           = useState(false);
+  const [positivacaoError, setPositivacaoError]         = useState(false);
+  const [evolucaoVendasError, setEvolucaoVendasError]   = useState(false);
+  const [positivacaoDiariaError, setPositivacaoDiariaError] = useState(false);
+  const [positivacaoVendedorError, setPositivacaoVendedorError] = useState(false);
+  const [atendimentosDiariosError, setAtendimentosDiariosError] = useState(false);
+  const [curvaABCDetalheError, setCurvaABCDetalheError] = useState(false);
+  const [ecommerceError, setEcommerceError]             = useState(false);
+
   // Loading / error
   const [loading, setLoading]          = useState(true);
   const [error, setError]              = useState<string | null>(null);
@@ -235,6 +245,8 @@ export default function DashboardPage() {
   const loadData = useCallback(() => {
     setLoading(true);
     setError(null);
+    setAtividadesError(false);
+    setPositivacaoError(false);
 
     const consultorParam = undefined as string | undefined; // filter applied per-tab via filteredPerf
 
@@ -250,8 +262,8 @@ export default function DashboardPage() {
       fetchTendencias(),
       fetchSinaleiro({ limit: 200 }),
       fetchRNC(),
-      fetchAtividades({ consultor: consultorParam }).catch(() => null),
-      fetchPositivacao({ consultor: consultorParam }).catch(() => null),
+      fetchAtividades({ consultor: consultorParam }).catch(() => { setAtividadesError(true); return null; }),
+      fetchPositivacao({ consultor: consultorParam }).catch(() => { setPositivacaoError(true); return null; }),
     ])
       .then(([k, d, t, p, pr, tr, sn, rn, atv, pos]) => {
         setKpis(k);
@@ -271,16 +283,22 @@ export default function DashboardPage() {
 
   const loadIndicadores = useCallback(() => {
     setLoadingIndicadores(true);
+    setEvolucaoVendasError(false);
+    setPositivacaoDiariaError(false);
+    setPositivacaoVendedorError(false);
+    setAtendimentosDiariosError(false);
+    setCurvaABCDetalheError(false);
+    setEcommerceError(false);
     const consultorParam = consultor !== 'TODOS' ? consultor : undefined;
     const params = { mes: filtroMes, ano: filtroAno, consultor: consultorParam };
 
     Promise.all([
-      fetchEvolucaoVendas(params).catch(() => null),
-      fetchPositivacaoDiaria(params).catch(() => null),
-      fetchPositivacaoVendedor({ mes: filtroMes, ano: filtroAno }).catch(() => null),
-      fetchAtendimentosDiarios(params).catch(() => null),
-      fetchCurvaABCDetalhe({ consultor: consultorParam }).catch(() => null),
-      fetchEcommerce({ mes: filtroMes, ano: filtroAno }).catch(() => null),
+      fetchEvolucaoVendas(params).catch(() => { setEvolucaoVendasError(true); return null; }),
+      fetchPositivacaoDiaria(params).catch(() => { setPositivacaoDiariaError(true); return null; }),
+      fetchPositivacaoVendedor({ mes: filtroMes, ano: filtroAno }).catch(() => { setPositivacaoVendedorError(true); return null; }),
+      fetchAtendimentosDiarios(params).catch(() => { setAtendimentosDiariosError(true); return null; }),
+      fetchCurvaABCDetalhe({ consultor: consultorParam }).catch(() => { setCurvaABCDetalheError(true); return null; }),
+      fetchEcommerce({ mes: filtroMes, ano: filtroAno }).catch(() => { setEcommerceError(true); return null; }),
     ])
       .then(([ev, pd, pv, ad, abc, ec]) => {
         setEvolucaoVendas(ev as EvolucaoVendasResponse | null);
@@ -556,7 +574,30 @@ export default function DashboardPage() {
       {/* Tab content                                                          */}
       {/* ------------------------------------------------------------------ */}
       <div className="pt-4">
-        {activeTab === 'resumo' && (
+        {/* Tab-level skeleton: shown while initial data load is in flight for non-indicadores tabs */}
+        {loading && activeTab !== 'indicadores' && (
+          <div className="space-y-4 animate-pulse">
+            <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-3">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="h-24 bg-gray-100 rounded-xl" />
+              ))}
+            </div>
+            <div className="h-64 bg-gray-100 rounded-xl" />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="h-56 bg-gray-100 rounded-xl" />
+              <div className="h-56 bg-gray-100 rounded-xl" />
+            </div>
+          </div>
+        )}
+        {/* Tab-level skeleton for indicadores tab while its data loads */}
+        {loadingIndicadores && activeTab === 'indicadores' && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 animate-pulse">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="h-80 bg-gray-100 rounded-xl" />
+            ))}
+          </div>
+        )}
+        {!loading && activeTab === 'resumo' && (
           <TabResumo
             kpis={kpis}
             distribuicao={distribuicao}
@@ -571,16 +612,18 @@ export default function DashboardPage() {
             scoreMedio={scoreMedio}
           />
         )}
-        {activeTab === 'operacional' && (
+        {!loading && activeTab === 'operacional' && (
           <TabOperacional
             kpis={kpis}
             performance={filteredPerf}
             atividades={atividades}
             positivacao={positivacao}
             loading={loading}
+            atividadesError={atividadesError}
+            positivacaoError={positivacaoError}
           />
         )}
-        {activeTab === 'funil' && (
+        {!loading && activeTab === 'funil' && (
           <TabFunil
             kpis={kpis}
             distribuicao={distribuicao}
@@ -590,45 +633,47 @@ export default function DashboardPage() {
             totalVendas={totalVendas}
             totalProspects={totalProspects}
             naoAtende={naoAtende}
+            atividadesError={atividadesError}
           />
         )}
-        {activeTab === 'performance' && (
+        {!loading && activeTab === 'performance' && (
           <TabPerformance
             performance={filteredPerf}
             projecao={projecao}
             loading={loading}
           />
         )}
-        {activeTab === 'saude' && (
+        {!loading && activeTab === 'saude' && (
           <TabSaude
             kpis={kpis}
             distribuicao={distribuicao}
             positivacao={positivacao}
             loading={loading}
             totalInativos={totalInativos}
+            positivacaoError={positivacaoError}
           />
         )}
-        {activeTab === 'redes' && (
+        {!loading && activeTab === 'redes' && (
           <TabRedes
             sinaleiro={sinaleiro}
             distribuicao={distribuicao}
             loading={loading}
           />
         )}
-        {activeTab === 'motivos' && (
+        {!loading && activeTab === 'motivos' && (
           <TabMotivos
             rnc={rnc}
             loading={loading}
           />
         )}
-        {activeTab === 'produtividade' && (
+        {!loading && activeTab === 'produtividade' && (
           <TabProdutividade
             performance={filteredPerf}
             kpis={kpis}
             loading={loading}
           />
         )}
-        {activeTab === 'indicadores' && (
+        {!loadingIndicadores && activeTab === 'indicadores' && (
           <TabIndicadores
             evolucaoVendas={evolucaoVendas}
             positivacaoDiaria={positivacaoDiaria}
@@ -639,6 +684,12 @@ export default function DashboardPage() {
             loading={loadingIndicadores}
             filtroMes={filtroMes}
             filtroAno={filtroAno}
+            evolucaoVendasError={evolucaoVendasError}
+            positivacaoDiariaError={positivacaoDiariaError}
+            positivacaoVendedorError={positivacaoVendedorError}
+            atendimentosDiariosError={atendimentosDiariosError}
+            curvaABCDetalheError={curvaABCDetalheError}
+            ecommerceError={ecommerceError}
           />
         )}
       </div>
@@ -831,9 +882,11 @@ interface TabOperacionalProps {
   atividades: AtividadesResponse | null;
   positivacao: PositivacaoResponse | null;
   loading: boolean;
+  atividadesError?: boolean;
+  positivacaoError?: boolean;
 }
 
-function TabOperacional({ performance, atividades, positivacao, loading }: TabOperacionalProps) {
+function TabOperacional({ performance, atividades, positivacao, loading, atividadesError, positivacaoError }: TabOperacionalProps) {
   const atividadesDisponivel = atividades !== null && atividades.total > 0;
 
   // Tipo contato — usa dados reais de atividades, sem fallback fabricado
@@ -865,7 +918,9 @@ function TabOperacional({ performance, atividades, positivacao, loading }: TabOp
               d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
           <p className="text-xs text-amber-800">
-            Nenhuma atividade registrada para o período selecionado.
+            {atividadesError
+              ? 'Dados temporariamente indisponiveis'
+              : 'Nenhuma atividade registrada para o periodo selecionado.'}
           </p>
         </div>
       )}
@@ -971,6 +1026,9 @@ function TabOperacional({ performance, atividades, positivacao, loading }: TabOp
       </div>
 
       {/* Positivacao section */}
+      {positivacaoError && !loading && (
+        <p className="text-[11px] text-amber-600 italic">Dados temporariamente indisponiveis</p>
+      )}
       {positivacao !== null && (
         <div className="space-y-4">
           {/* KPI de positivacao */}
@@ -1047,6 +1105,7 @@ interface TabFunilProps {
   totalVendas: number;
   totalProspects: number;
   naoAtende: number;
+  atividadesError?: boolean;
 }
 
 function TabFunil({
@@ -1056,6 +1115,7 @@ function TabFunil({
   totalVendas,
   totalProspects,
   naoAtende,
+  atividadesError,
 }: TabFunilProps) {
   const atividadesDisponivel = atividades !== null && atividades.total > 0;
 
@@ -1119,7 +1179,9 @@ function TabFunil({
         <SectionHeader label="Funil de Conversao" accentColor={VERDE} />
         {!atividadesDisponivel && !loading && (
           <p className="text-[10px] text-amber-600 mt-1 italic">
-            Etapa &quot;Abordados&quot; omitida — dados de atividades indisponíveis
+            {atividadesError
+              ? 'Dados temporariamente indisponiveis'
+              : 'Etapa "Abordados" omitida — dados de atividades indisponiveis'}
           </p>
         )}
         <div className="mt-6 space-y-3">
@@ -1291,9 +1353,10 @@ interface TabSaudeProps {
   positivacao: PositivacaoResponse | null;
   loading: boolean;
   totalInativos: number;
+  positivacaoError?: boolean;
 }
 
-function TabSaude({ kpis, distribuicao, positivacao, loading, totalInativos }: TabSaudeProps) {
+function TabSaude({ kpis, distribuicao, positivacao, loading, totalInativos, positivacaoError }: TabSaudeProps) {
   // ABC distribution from distribuicao.por_prioridade
   const abcData = distribuicao?.por_prioridade ?? [];
   const pieData = abcData
@@ -1383,12 +1446,15 @@ function TabSaude({ kpis, distribuicao, positivacao, loading, totalInativos }: T
         {/* Positivacao por consultor — substitui ciclo de recompra fabricado */}
         <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
           <SectionHeader label="Positivacao por Consultor" accentColor="#0891b2" />
+          {positivacaoError && !loading && (
+            <p className="text-[11px] text-amber-600 italic mt-1">Dados temporariamente indisponiveis</p>
+          )}
           {loading ? (
             <ChartSkeleton />
           ) : positivacaoConsultorData.length === 0 ? (
             <div className="mt-4 py-10 text-center">
-              <p className="text-sm text-gray-400">Dados indisponíveis</p>
-              <p className="text-xs text-gray-300 mt-1">Registre vendas para ver positivação aqui</p>
+              <p className="text-sm text-gray-400">Dados indisponiveis</p>
+              <p className="text-xs text-gray-300 mt-1">Registre vendas para ver positivacao aqui</p>
             </div>
           ) : (
             <div className="mt-4 h-56">
@@ -1861,6 +1927,12 @@ interface TabIndicadoresProps {
   loading: boolean;
   filtroMes: number;
   filtroAno: number;
+  evolucaoVendasError?: boolean;
+  positivacaoDiariaError?: boolean;
+  positivacaoVendedorError?: boolean;
+  atendimentosDiariosError?: boolean;
+  curvaABCDetalheError?: boolean;
+  ecommerceError?: boolean;
 }
 
 function TabIndicadores({
@@ -1873,6 +1945,12 @@ function TabIndicadores({
   loading,
   filtroMes,
   filtroAno,
+  evolucaoVendasError,
+  positivacaoDiariaError,
+  positivacaoVendedorError,
+  atendimentosDiariosError,
+  curvaABCDetalheError,
+  ecommerceError,
 }: TabIndicadoresProps) {
   const nomeMes = MESES.find((m) => m.value === filtroMes)?.label ?? String(filtroMes);
 
@@ -1918,11 +1996,14 @@ function TabIndicadores({
         <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
           <SectionHeader label="Evolucao de Vendas" accentColor={VERDE} />
           <p className="text-[10px] text-gray-400 mt-1">Acumulado diario — mes atual vs anterior vs ano anterior</p>
+          {evolucaoVendasError && !loading && (
+            <p className="text-[11px] text-amber-600 italic mt-1">Dados temporariamente indisponiveis</p>
+          )}
           {loading ? (
             <ChartSkeleton />
           ) : evolucaoSerie.length === 0 ? (
             <div className="mt-4 py-10 text-center">
-              <p className="text-sm text-gray-400">Dados indisponíveis</p>
+              <p className="text-sm text-gray-400">Dados indisponiveis</p>
               <p className="text-xs text-gray-300 mt-1">Endpoint /api/dashboard/evolucao-vendas nao disponivel</p>
             </div>
           ) : (
@@ -1970,11 +2051,14 @@ function TabIndicadores({
         <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
           <SectionHeader label="Positivacao Diaria" accentColor="#0891b2" />
           <p className="text-[10px] text-gray-400 mt-1">Clientes positivados por dia vs objetivo</p>
+          {positivacaoDiariaError && !loading && (
+            <p className="text-[11px] text-amber-600 italic mt-1">Dados temporariamente indisponiveis</p>
+          )}
           {loading ? (
             <ChartSkeleton />
           ) : positivacaoDiariaItens.length === 0 ? (
             <div className="mt-4 py-10 text-center">
-              <p className="text-sm text-gray-400">Dados indisponíveis</p>
+              <p className="text-sm text-gray-400">Dados indisponiveis</p>
               <p className="text-xs text-gray-300 mt-1">Endpoint /api/dashboard/positivacao-diaria nao disponivel</p>
             </div>
           ) : (
@@ -2006,11 +2090,14 @@ function TabIndicadores({
         <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
           <SectionHeader label="Positivacao por Vendedor" accentColor={ROXO} />
           <p className="text-[10px] text-gray-400 mt-1">Positivados vs objetivo por consultor</p>
+          {positivacaoVendedorError && !loading && (
+            <p className="text-[11px] text-amber-600 italic mt-1">Dados temporariamente indisponiveis</p>
+          )}
           {loading ? (
             <ChartSkeleton />
           ) : positivacaoVendedorItens.length === 0 ? (
             <div className="mt-4 py-10 text-center">
-              <p className="text-sm text-gray-400">Dados indisponíveis</p>
+              <p className="text-sm text-gray-400">Dados indisponiveis</p>
               <p className="text-xs text-gray-300 mt-1">Endpoint /api/dashboard/positivacao-vendedor nao disponivel</p>
             </div>
           ) : (
@@ -2041,11 +2128,14 @@ function TabIndicadores({
         <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
           <SectionHeader label="Volume de Atendimentos" accentColor={AMARELO} />
           <p className="text-[10px] text-gray-400 mt-1">Atendimentos diarios — mes atual vs anterior</p>
+          {atendimentosDiariosError && !loading && (
+            <p className="text-[11px] text-amber-600 italic mt-1">Dados temporariamente indisponiveis</p>
+          )}
           {loading ? (
             <ChartSkeleton />
           ) : atendimentosDiariosItens.length === 0 ? (
             <div className="mt-4 py-10 text-center">
-              <p className="text-sm text-gray-400">Dados indisponíveis</p>
+              <p className="text-sm text-gray-400">Dados indisponiveis</p>
               <p className="text-xs text-gray-300 mt-1">Endpoint /api/dashboard/atendimentos-diarios nao disponivel</p>
             </div>
           ) : (
@@ -2087,11 +2177,14 @@ function TabIndicadores({
         <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
           <SectionHeader label="Curva ABC Detalhada" accentColor={VERDE} />
           <p className="text-[10px] text-gray-400 mt-1">Distribuicao de clientes e faturamento por curva</p>
+          {curvaABCDetalheError && !loading && (
+            <p className="text-[11px] text-amber-600 italic mt-1">Dados temporariamente indisponiveis</p>
+          )}
           {loading ? (
             <ChartSkeleton />
           ) : abcPieData.length === 0 ? (
             <div className="mt-4 py-10 text-center">
-              <p className="text-sm text-gray-400">Dados indisponíveis</p>
+              <p className="text-sm text-gray-400">Dados indisponiveis</p>
               <p className="text-xs text-gray-300 mt-1">Endpoint /api/dashboard/curva-abc-detalhe nao disponivel</p>
             </div>
           ) : (
@@ -2156,6 +2249,9 @@ function TabIndicadores({
         <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
           <SectionHeader label="E-commerce B2B" accentColor="#7c3aed" />
           <p className="text-[10px] text-gray-400 mt-1">Indicadores do canal e-commerce no periodo</p>
+          {ecommerceError && !loading && (
+            <p className="text-[11px] text-amber-600 italic mt-1">Dados temporariamente indisponiveis</p>
+          )}
           {loading ? (
             <div className="mt-4 grid grid-cols-2 gap-3">
               {Array.from({ length: 4 }).map((_, i) => (
@@ -2164,7 +2260,7 @@ function TabIndicadores({
             </div>
           ) : !ecommerce ? (
             <div className="mt-4 py-10 text-center">
-              <p className="text-sm text-gray-400">Dados indisponíveis</p>
+              <p className="text-sm text-gray-400">Dados indisponiveis</p>
               <p className="text-xs text-gray-300 mt-1">Endpoint /api/dashboard/ecommerce nao disponivel</p>
             </div>
           ) : (

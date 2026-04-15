@@ -82,7 +82,7 @@ interface NovaTarefaForm {
 // Constants
 // ---------------------------------------------------------------------------
 
-const CONSULTORES = ['LARISSA', 'MANU', 'JULIO', 'DAIANE'] as const;
+const CONSULTORES = ['MANU', 'LARISSA', 'DAIANE', 'JULIO', 'OUTROS'] as const;
 
 const PRIORITY_MAP: Record<string, number> = {
   P0: 0, P1: 1, P2: 2, P3: 3, P4: 4, P5: 5, P6: 6, P7: 7,

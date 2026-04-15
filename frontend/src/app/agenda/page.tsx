@@ -19,7 +19,7 @@ import AtendimentoModal from '@/components/AtendimentoModal';
 // Constantes de dominio
 // ---------------------------------------------------------------------------
 
-const CONSULTORES = ['LARISSA', 'MANU', 'JULIO', 'DAIANE'] as const;
+const CONSULTORES = ['MANU', 'LARISSA', 'DAIANE', 'JULIO', 'OUTROS'] as const;
 type Consultor = (typeof CONSULTORES)[number];
 
 // Prioridades que "pulam fila" — aparecem na secao PRIORITARIOS

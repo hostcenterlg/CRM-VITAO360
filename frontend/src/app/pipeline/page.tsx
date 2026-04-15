@@ -87,7 +87,7 @@ function normalizeStage(raw: string | undefined | null): string {
 }
 
 const STAGE_IDS = STAGE_CONFIGS.map((s) => s.id);
-const CONSULTORES = ['LARISSA', 'MANU', 'JULIO', 'DAIANE'];
+const CONSULTORES = ['MANU', 'LARISSA', 'DAIANE', 'JULIO', 'OUTROS'];
 
 // ---------------------------------------------------------------------------
 // Score badge helpers
@@ -1147,7 +1147,6 @@ export default function PipelinePage() {
         ) : (
           STAGE_CONFIGS.map((cfg) => {
             const cards = columns[cfg.id] ?? [];
-            if (cards.length === 0) return null;
             return (
               <div key={cfg.id}>
                 <div
@@ -1165,18 +1164,24 @@ export default function PipelinePage() {
                   </span>
                 </div>
                 <div className="space-y-2 p-2 bg-white border border-t-0 border-gray-200 rounded-b-lg">
-                  {cards.map((c) => (
-                    <KanbanCard
-                      key={c.cnpj}
-                      cliente={c}
-                      currentStage={cfg.id}
-                      onDragStart={() => {}}
-                      onClick={setSelectedCnpj}
-                      onMobileMove={handleMobileOpenMove}
-                      isDragging={false}
-                      isMobile={true}
-                    />
-                  ))}
+                  {cards.length === 0 ? (
+                    <div className="py-6 text-center border-2 border-dashed border-gray-200 rounded-lg">
+                      <p className="text-xs text-gray-400">Nenhum cliente neste estagio</p>
+                    </div>
+                  ) : (
+                    cards.map((c) => (
+                      <KanbanCard
+                        key={c.cnpj}
+                        cliente={c}
+                        currentStage={cfg.id}
+                        onDragStart={() => {}}
+                        onClick={setSelectedCnpj}
+                        onMobileMove={handleMobileOpenMove}
+                        isDragging={false}
+                        isMobile={true}
+                      />
+                    ))
+                  )}
                 </div>
               </div>
             );

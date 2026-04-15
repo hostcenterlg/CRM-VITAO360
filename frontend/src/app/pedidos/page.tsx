@@ -18,7 +18,7 @@ import { useAuth } from '@/contexts/AuthContext';
 
 type StatusPedido = 'DIGITADO' | 'LIBERADO' | 'FATURADO' | 'ENTREGUE' | 'CANCELADO';
 
-const CONSULTORES = ['LARISSA', 'MANU', 'DAIANE', 'JULIO'];
+const CONSULTORES = ['MANU', 'LARISSA', 'DAIANE', 'JULIO', 'OUTROS'];
 
 const DEBOUNCE_MS = 300;
 
@@ -142,6 +142,9 @@ function ModalPedido({ pedido, onClose, onTransicionar, isAdmin }: ModalPedidoPr
   }, [formDirty, confirmDescarte]);
 
   async function handleAcao(novoStatus: string) {
+    if (novoStatus === 'CANCELADO') {
+      if (!confirm('Tem certeza que deseja cancelar este pedido? Esta acao nao pode ser desfeita.')) return;
+    }
     setFormDirty(true);
     setLoading(true);
     setError(null);
@@ -473,8 +476,14 @@ function PedidosInner() {
   }
 
   async function handleTransicionar(id: number, novoStatus: string) {
-    await transicionarStatusVenda(id, novoStatus);
-    await load();
+    try {
+      await transicionarStatusVenda(id, novoStatus);
+      await load();
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : 'Erro ao atualizar status do pedido';
+      setApiError(`Erro ao mudar status: ${msg}`);
+      throw e; // re-throw so ModalPedido also shows its local error
+    }
   }
 
   const grupos = agruparPorData(response?.itens ?? []);
