@@ -194,32 +194,70 @@ def registrar_atendimento(
 # GET — Listar atendimentos com filtros
 # ---------------------------------------------------------------------------
 
+
+class AtendimentosHistoricoResponse(BaseModel):
+    """
+    Wrapper paginado retornado pelo GET /api/atendimentos.
+
+    Suporta dois estilos de paginacao:
+      - Novo (frontend): page + page_size  → retorna total/page/page_size/itens
+      - Legado (backward-compat): limit + offset → page calculado a partir de limit/offset
+    """
+
+    total: int = Field(..., description="Total de registros que satisfazem os filtros")
+    page: int = Field(..., description="Pagina atual (1-indexed)")
+    page_size: int = Field(..., description="Tamanho da pagina")
+    itens: list[AtendimentoListItem]
+
+
 @router.get(
     "",
-    response_model=list[AtendimentoListItem],
+    response_model=AtendimentosHistoricoResponse,
     summary="Listar atendimentos",
     description=(
         "Lista atendimentos com paginacao e filtros. "
         "Consultores veem apenas os proprios atendimentos (RBAC automatico). "
-        "Admins e viewers veem todos."
+        "Admins e viewers veem todos. "
+        "Suporta page/page_size (novo) ou limit/offset (legado)."
     ),
 )
 def listar_atendimentos(
     consultor: str | None = Query(None, description="Filtrar por nome do consultor"),
     cnpj: str | None = Query(None, description="Filtrar por CNPJ (14 digitos)"),
     resultado: str | None = Query(None, description="Filtrar por resultado"),
-    limit: int = Query(50, ge=1, le=200, description="Quantidade maxima de registros"),
-    offset: int = Query(0, ge=0, description="Registros a pular (paginacao)"),
+    # Novo estilo — usado pelo frontend (ClienteDetalhe / HistoricoBloco)
+    page: int | None = Query(None, ge=1, description="Pagina (1-indexed). Se informado, usa paginacao por pagina."),
+    page_size: int | None = Query(None, ge=1, le=200, description="Registros por pagina (max 200). Usado com page."),
+    # Legado — backward-compat para clientes que usam limit/offset diretamente
+    limit: int = Query(50, ge=1, le=200, description="Quantidade maxima de registros (legado; ignorado quando page e fornecido)"),
+    offset: int = Query(0, ge=0, description="Registros a pular (legado; ignorado quando page e fornecido)"),
     user: Usuario = Depends(get_current_user),
     db: Session = Depends(get_db),
-) -> list[AtendimentoListItem]:
+) -> AtendimentosHistoricoResponse:
     """
-    Lista atendimentos com filtros opcionais.
+    Lista atendimentos com filtros opcionais, retornando wrapper paginado.
 
     RBAC:
       - role=consultor: ve apenas os proprios atendimentos (ignora param consultor)
       - role=admin/viewer: pode filtrar por qualquer consultor
+
+    Paginacao:
+      - Novo estilo: ?page=1&page_size=20  → offset=(page-1)*page_size, limit=page_size
+      - Legado: ?limit=50&offset=0  → page calculado como offset//limit + 1
     """
+    # Resolver parametros de paginacao: novo estilo tem precedencia sobre legado
+    if page is not None:
+        effective_page_size = page_size if page_size is not None else 20
+        effective_offset = (page - 1) * effective_page_size
+        effective_limit = effective_page_size
+        effective_page = page
+    else:
+        effective_limit = limit
+        effective_offset = offset
+        effective_page_size = limit
+        # Calcular pagina equivalente para o campo de resposta (1-indexed)
+        effective_page = (offset // limit) + 1 if limit > 0 else 1
+
     q = db.query(LogInteracao)
 
     # Filtro automatico por role — consultor ve apenas os seus
@@ -233,7 +271,10 @@ def listar_atendimentos(
     if resultado:
         q = q.filter(LogInteracao.resultado == resultado)
 
-    logs = q.order_by(desc(LogInteracao.data_interacao)).offset(offset).limit(limit).all()
+    # COUNT antes de aplicar limit/offset (mesma query base, sem ordenacao)
+    total: int = q.with_entities(func.count(LogInteracao.id)).scalar() or 0
+
+    logs = q.order_by(desc(LogInteracao.data_interacao)).offset(effective_offset).limit(effective_limit).all()
 
     # Buscar nomes de clientes em lote para evitar N+1
     cnpjs = list({log.cnpj for log in logs})
@@ -246,7 +287,7 @@ def listar_atendimentos(
         )
         clientes_map = {row.cnpj: row.nome_fantasia for row in rows}
 
-    return [
+    itens = [
         AtendimentoListItem(
             id=log.id,
             cnpj=log.cnpj,
@@ -262,6 +303,13 @@ def listar_atendimentos(
         )
         for log in logs
     ]
+
+    return AtendimentosHistoricoResponse(
+        total=total,
+        page=effective_page,
+        page_size=effective_page_size,
+        itens=itens,
+    )
 
 
 # ---------------------------------------------------------------------------

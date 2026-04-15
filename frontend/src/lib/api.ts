@@ -936,6 +936,42 @@ export async function fetchWhatsAppConexoes(): Promise<ConexaoWA[]> {
   return fetchJson<ConexaoWA[]>('/api/whatsapp/conexoes');
 }
 
+export interface WhatsAppMensagem {
+  id: number;
+  texto: string;
+  de_cliente: boolean;
+  timestamp: string;
+  tipo: string;
+  media_url?: string;
+  nome_contato?: string;
+}
+
+export interface WhatsAppConversaContato {
+  nome: string;
+  telefone: string;
+  foto_url?: string;
+}
+
+export interface WhatsAppConversaTicket {
+  id: number;
+  assunto: string;
+  status: string;
+}
+
+export interface WhatsAppConversaResponse {
+  encontrado: boolean;
+  cnpj: string;
+  contato?: WhatsAppConversaContato;
+  ticket_recente?: WhatsAppConversaTicket;
+  mensagens?: WhatsAppMensagem[];
+}
+
+export async function fetchWhatsAppConversa(
+  cnpj: string
+): Promise<WhatsAppConversaResponse> {
+  return fetchJson<WhatsAppConversaResponse>(`/api/whatsapp/conversa/${cnpj}`);
+}
+
 // ---------------------------------------------------------------------------
 // Atividades — dados reais de contato por tipo/resultado (substitui mock data)
 // ---------------------------------------------------------------------------

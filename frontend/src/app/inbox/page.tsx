@@ -365,7 +365,7 @@ function ConversationList({
   refreshing,
 }: ConversationListProps) {
   return (
-    <div className="w-80 flex-shrink-0 border-r border-gray-200 bg-white flex flex-col h-full">
+    <div className="w-full flex-shrink-0 border-r border-gray-200 bg-white flex flex-col h-full">
       {/* Header */}
       <div className="px-4 py-3 border-b border-gray-100 flex-shrink-0">
         <div className="flex items-center justify-between mb-2">
@@ -825,7 +825,7 @@ function ChatPanel({
       </div>
 
       {/* Input bar */}
-      <div className="px-4 pb-4 bg-gray-50 flex-shrink-0">
+      <div className="px-4 bg-gray-50 flex-shrink-0" style={{ paddingBottom: 'max(1rem, env(safe-area-inset-bottom))' }}>
         <div className="flex items-end gap-2 bg-white border border-gray-200 rounded-2xl
                         shadow-sm px-3 py-2 focus-within:border-green-400 focus-within:ring-2
                         focus-within:ring-green-100 transition-all">
@@ -1363,8 +1363,7 @@ export default function InboxPage() {
       style={{ height: 'calc(100vh - 49px)' }}
     >
       {/* LEFT panel — conversations list */}
-      <div className={`${mobileView === 'chat' ? 'hidden md:flex' : 'flex'} md:flex flex-col flex-shrink-0`}
-        style={{ width: '320px' }}>
+      <div className={`${mobileView === 'chat' ? 'hidden md:flex' : 'flex'} md:flex flex-col flex-shrink-0 w-full md:w-80`}>
         <ConversationList
           clientes={clientes}
           loading={loadingClientes}

@@ -427,9 +427,9 @@ export default function DashboardPage() {
       {/* ------------------------------------------------------------------ */}
       {/* Filters bar                                                          */}
       {/* ------------------------------------------------------------------ */}
-      <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4 mb-4">
-        <div className="flex flex-wrap items-end gap-4">
-          <div className="flex flex-col gap-1 min-w-[160px]">
+      <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-3 md:p-4 mb-4">
+        <div className="grid grid-cols-2 sm:flex sm:flex-wrap items-end gap-3">
+          <div className="flex flex-col gap-1 col-span-2 sm:col-span-1 sm:min-w-[160px]">
             <label htmlFor="filtro-consultor" className="text-xs font-medium text-gray-500 uppercase tracking-wide">
               Consultor
             </label>
@@ -437,14 +437,14 @@ export default function DashboardPage() {
               id="filtro-consultor"
               value={consultor}
               onChange={(e) => setConsultor(e.target.value as Consultor)}
-              className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-colors"
+              className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-colors min-h-[44px] sm:min-h-0"
             >
               {CONSULTORES.map((c) => (
                 <option key={c} value={c}>{c}</option>
               ))}
             </select>
           </div>
-          <div className="flex flex-col gap-1 min-w-[140px]">
+          <div className="flex flex-col gap-1 sm:min-w-[140px]">
             <label htmlFor="filtro-mes" className="text-xs font-medium text-gray-500 uppercase tracking-wide">
               Mes
             </label>
@@ -452,14 +452,14 @@ export default function DashboardPage() {
               id="filtro-mes"
               value={filtroMes}
               onChange={(e) => setFiltroMes(Number(e.target.value))}
-              className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-colors"
+              className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-colors min-h-[44px] sm:min-h-0"
             >
               {MESES.map((m) => (
                 <option key={m.value} value={m.value}>{m.label}</option>
               ))}
             </select>
           </div>
-          <div className="flex flex-col gap-1 min-w-[100px]">
+          <div className="flex flex-col gap-1 sm:min-w-[100px]">
             <label htmlFor="filtro-ano" className="text-xs font-medium text-gray-500 uppercase tracking-wide">
               Ano
             </label>
@@ -467,7 +467,7 @@ export default function DashboardPage() {
               id="filtro-ano"
               value={filtroAno}
               onChange={(e) => setFiltroAno(Number(e.target.value))}
-              className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-colors"
+              className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-colors min-h-[44px] sm:min-h-0"
             >
               {[2025, 2026].map((ano) => (
                 <option key={ano} value={ano}>{ano}</option>
@@ -483,7 +483,7 @@ export default function DashboardPage() {
               type="date"
               value={dataInicio}
               onChange={(e) => setDataInicio(e.target.value)}
-              className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-colors"
+              className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-colors min-h-[44px] sm:min-h-0"
             />
           </div>
           <div className="flex flex-col gap-1">
@@ -495,7 +495,7 @@ export default function DashboardPage() {
               type="date"
               value={dataFim}
               onChange={(e) => setDataFim(e.target.value)}
-              className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-colors"
+              className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-colors min-h-[44px] sm:min-h-0"
             />
           </div>
           {consultor !== 'TODOS' && (

@@ -12,7 +12,9 @@ import {
   ScoreBreakdown,
   VendaMensal,
   VendaPedidoItem,
+  WhatsAppConversaResponse,
   WhatsAppEnviarResponse,
+  WhatsAppMensagem,
   WhatsAppStatus,
   enviarWhatsApp,
   fetchAtendimentosHistorico,
@@ -21,6 +23,7 @@ import {
   fetchCliente,
   fetchClienteScore,
   fetchVendasCliente,
+  fetchWhatsAppConversa,
   fetchWhatsAppStatus,
   formatBRL,
   getBriefing,
@@ -563,6 +566,7 @@ function TimelineVisual({ cnpj }: TimelineVisualProps) {
   const [itens, setItens] = useState<AtendimentoHistoricoItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
 
   useEffect(() => {
     setLoading(true);
@@ -571,7 +575,7 @@ function TimelineVisual({ cnpj }: TimelineVisualProps) {
       .then((res) => setItens(res.itens))
       .catch((e: Error) => setError(e.message))
       .finally(() => setLoading(false));
-  }, [cnpj]);
+  }, [cnpj, retryCount]);
 
   if (loading) {
     return (
@@ -591,9 +595,16 @@ function TimelineVisual({ cnpj }: TimelineVisualProps) {
 
   if (error) {
     return (
-      <p className="text-xs text-red-600 py-2">
-        Erro ao carregar timeline: {error}
-      </p>
+      <div className="py-2 space-y-2">
+        <p className="text-xs text-red-600">Erro ao carregar timeline: {error}</p>
+        <button
+          type="button"
+          onClick={() => setRetryCount((c) => c + 1)}
+          className="px-3 py-1.5 text-xs font-semibold text-red-700 border border-red-300 rounded-lg bg-white hover:bg-red-50 transition-colors"
+        >
+          Tentar novamente
+        </button>
+      </div>
     );
   }
 
@@ -705,6 +716,7 @@ function HistoricoBloco({ cnpj }: { cnpj: string }) {
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
   const [error, setError] = useState<string | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
   const PAGE_SIZE = 20;
 
   useEffect(() => {
@@ -720,7 +732,7 @@ function HistoricoBloco({ cnpj }: { cnpj: string }) {
       })
       .catch((e: Error) => setError(e.message))
       .finally(() => setLoading(false));
-  }, [cnpj]);
+  }, [cnpj, retryCount]);
 
   const loadMore = useCallback(() => {
     const nextPage = page + 1;
@@ -755,9 +767,16 @@ function HistoricoBloco({ cnpj }: { cnpj: string }) {
 
   if (error) {
     return (
-      <p className="text-xs text-red-600 py-2">
-        Erro ao carregar historico: {error}
-      </p>
+      <div className="py-2 space-y-2">
+        <p className="text-xs text-red-600">Erro ao carregar historico: {error}</p>
+        <button
+          type="button"
+          onClick={() => setRetryCount((c) => c + 1)}
+          className="px-3 py-1.5 text-xs font-semibold text-red-700 border border-red-300 rounded-lg bg-white hover:bg-red-50 transition-colors"
+        >
+          Tentar novamente
+        </button>
+      </div>
     );
   }
 
@@ -1282,11 +1301,189 @@ function BriefingLigacaoPainel({ cnpj }: { cnpj: string }) {
   );
 }
 
+
+// ---------------------------------------------------------------------------
+// Conversas WhatsApp — historico real de mensagens via Deskrio
+// ---------------------------------------------------------------------------
+
+function formatTimestampHHMM(ts: string): string {
+  if (!ts) return '';
+  try {
+    const d = new Date(ts);
+    if (isNaN(d.getTime())) return ts;
+    return d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+  } catch {
+    return ts;
+  }
+}
+
+function BolhaChat({ msg }: { msg: WhatsAppMensagem }) {
+  const nosso = !msg.de_cliente;
+  return (
+    <div className={`flex w-full ${nosso ? 'justify-end' : 'justify-start'}`}>
+      <div
+        className={`max-w-[80%] px-3 py-2 rounded-lg space-y-0.5 ${
+          nosso
+            ? 'rounded-br-sm'
+            : 'rounded-bl-sm bg-gray-100'
+        }`}
+        style={nosso ? { backgroundColor: '#00B050' } : undefined}
+      >
+        {msg.tipo === 'image' && msg.media_url ? (
+          <a
+            href={msg.media_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`text-xs underline ${nosso ? 'text-white/80' : 'text-blue-600'}`}
+          >
+            [imagem]
+          </a>
+        ) : msg.tipo === 'audio' ? (
+          <span className={`text-xs italic ${nosso ? 'text-white/80' : 'text-gray-500'}`}>
+            [audio]
+          </span>
+        ) : (
+          <p className={`text-xs leading-relaxed break-words ${nosso ? 'text-white' : 'text-gray-800'}`}>
+            {msg.texto || '—'}
+          </p>
+        )}
+        <p className={`text-[10px] text-right ${nosso ? 'text-white/60' : 'text-gray-400'}`}>
+          {formatTimestampHHMM(msg.timestamp)}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function ChatSkeleton() {
+  const sides = [false, true, false, false, true, true, false, true];
+  return (
+    <div className="space-y-2 py-1">
+      {sides.map((right, i) => (
+        <div key={i} className={`flex ${right ? 'justify-end' : 'justify-start'}`}>
+          <div
+            className="h-7 bg-gray-100 animate-pulse rounded-lg"
+            style={{ width: `${40 + ((i * 13) % 35)}%` }}
+          />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function ConversasWhatsAppBloco({ cnpj }: { cnpj: string }) {
+  const [conversa, setConversa] = useState<WhatsAppConversaResponse | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const chatRef = useRef<HTMLDivElement>(null);
+
+  const carregar = () => {
+    setLoading(true);
+    setError(null);
+    fetchWhatsAppConversa(cnpj)
+      .then(setConversa)
+      .catch((e: Error) => setError(e.message))
+      .finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    carregar();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cnpj]);
+
+  // Scroll para o final das mensagens quando carregadas
+  useEffect(() => {
+    if (!loading && conversa?.mensagens?.length && chatRef.current) {
+      chatRef.current.scrollTop = chatRef.current.scrollHeight;
+    }
+  }, [loading, conversa]);
+
+  if (loading) return <ChatSkeleton />;
+
+  if (error) {
+    return (
+      <div className="space-y-2 py-1">
+        <p className="text-xs text-red-600">Erro ao carregar conversas: {error}</p>
+        <button
+          type="button"
+          onClick={carregar}
+          className="text-xs text-green-700 border border-green-200 px-3 py-1.5 rounded-lg hover:bg-green-50 transition-colors"
+        >
+          Tentar novamente
+        </button>
+      </div>
+    );
+  }
+
+  if (!conversa || !conversa.encontrado) {
+    return (
+      <p className="text-xs text-gray-400 py-2 italic">
+        Cliente nao encontrado no WhatsApp.
+      </p>
+    );
+  }
+
+  const mensagens = conversa.mensagens ?? [];
+
+  if (mensagens.length === 0) {
+    return (
+      <p className="text-xs text-gray-400 py-2 italic">
+        Nenhuma conversa encontrada.
+      </p>
+    );
+  }
+
+  const ultimas = mensagens.slice(-20);
+
+  return (
+    <div className="space-y-2">
+      {/* Cabecalho com info do contato */}
+      {conversa.contato && (
+        <div className="flex items-center gap-2 pb-1.5 border-b border-gray-100">
+          <div
+            className="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-bold text-white"
+            style={{ backgroundColor: '#00B050' }}
+            aria-hidden="true"
+          >
+            {conversa.contato.nome.charAt(0).toUpperCase()}
+          </div>
+          <div className="min-w-0">
+            <p className="text-[11px] font-semibold text-gray-800 truncate">{conversa.contato.nome}</p>
+            {conversa.contato.telefone && (
+              <p className="text-[10px] text-gray-400 font-mono">{conversa.contato.telefone}</p>
+            )}
+          </div>
+          {conversa.ticket_recente && (
+            <span className="ml-auto text-[10px] text-gray-400 flex-shrink-0">
+              Ticket #{conversa.ticket_recente.id} — {conversa.ticket_recente.status}
+            </span>
+          )}
+        </div>
+      )}
+
+      {/* Baloes de chat */}
+      <div
+        ref={chatRef}
+        className="max-h-[400px] overflow-y-auto space-y-1.5 py-1 pr-0.5"
+        aria-label="Historico de mensagens WhatsApp"
+      >
+        {ultimas.map((msg) => (
+          <BolhaChat key={msg.id} msg={msg} />
+        ))}
+      </div>
+
+      <p className="text-[10px] text-gray-400 text-right">
+        Ultimas {ultimas.length} mensagens
+      </p>
+    </div>
+  );
+}
+
 // ---------------------------------------------------------------------------
 // Componente principal
 // ---------------------------------------------------------------------------
 
-type BlocoKey = 'identidade' | 'status' | 'financeiro' | 'timeline' | 'compras' | 'historico' | 'ia';
+type BlocoKey = 'identidade' | 'status' | 'financeiro' | 'timeline' | 'compras' | 'historico' | 'conversas' | 'ia';
 
 const BLOCO_DEFAULTS: Record<BlocoKey, boolean> = {
   identidade: true,
@@ -1295,6 +1492,7 @@ const BLOCO_DEFAULTS: Record<BlocoKey, boolean> = {
   timeline:   true,
   compras:    false,
   historico:  false,
+  conversas:  false,
   ia:         false,
 };
 
@@ -1310,6 +1508,7 @@ export default function ClienteDetalhe({ cnpj, onClose }: ClienteDetalheProps) {
   const [atendimentoAberto, setAtendimentoAberto] = useState(false);
   const [historicoKey, setHistoricoKey] = useState(0);
   const [briefingLigacaoAberto, setBriefingLigacaoAberto] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
 
   // Estado dos blocos colapsáveis — persistido em sessionStorage
   const [open, setOpen] = useState<Record<BlocoKey, boolean>>(() => {
@@ -1325,6 +1524,7 @@ export default function ClienteDetalhe({ cnpj, onClose }: ClienteDetalheProps) {
           timeline:   parsed.timeline   ?? BLOCO_DEFAULTS.timeline,
           compras:    parsed.compras    ?? BLOCO_DEFAULTS.compras,
           historico:  parsed.historico  ?? BLOCO_DEFAULTS.historico,
+          conversas:  parsed.conversas  ?? BLOCO_DEFAULTS.conversas,
           ia:         parsed.ia         ?? BLOCO_DEFAULTS.ia,
         };
       }
@@ -1384,7 +1584,7 @@ export default function ClienteDetalhe({ cnpj, onClose }: ClienteDetalheProps) {
       })
       .catch((e: Error) => setError(e.message))
       .finally(() => setLoading(false));
-  }, [cnpj]);
+  }, [cnpj, retryCount]);
 
   function toggleBloco(key: BlocoKey) {
     setOpen((prev) => {
@@ -1416,7 +1616,7 @@ export default function ClienteDetalhe({ cnpj, onClose }: ClienteDetalheProps) {
         role="dialog"
         aria-modal="true"
         aria-labelledby="detalhe-titulo"
-        className="fixed top-0 right-0 h-full w-full max-w-lg bg-white z-50 shadow-2xl flex flex-col outline-none"
+        className="fixed top-0 right-0 h-full w-full md:max-w-2xl bg-white z-50 shadow-2xl flex flex-col outline-none"
       >
         {/* Cabeçalho fixo */}
         <div className="flex items-start justify-between px-4 md:px-5 py-3 md:py-4 border-b border-gray-200 bg-white flex-shrink-0">
@@ -1448,7 +1648,7 @@ export default function ClienteDetalhe({ cnpj, onClose }: ClienteDetalheProps) {
                 onClick={() => setBriefingLigacaoAberto((v) => !v)}
                 aria-label="Preparar briefing de ligacao com IA"
                 aria-pressed={briefingLigacaoAberto}
-                className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-md transition-all hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
+                className="inline-flex items-center gap-1.5 min-h-[44px] sm:min-h-0 px-3 py-1.5 text-xs font-semibold rounded-md transition-all hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
                 style={briefingLigacaoAberto
                   ? { backgroundColor: '#1D4ED8', color: '#fff' }
                   : { backgroundColor: '#DBEAFE', color: '#1D4ED8' }
@@ -1456,7 +1656,7 @@ export default function ClienteDetalhe({ cnpj, onClose }: ClienteDetalheProps) {
               >
                 <svg
                   aria-hidden="true"
-                  className="w-3.5 h-3.5"
+                  className="w-3.5 h-3.5 flex-shrink-0"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -1465,7 +1665,7 @@ export default function ClienteDetalhe({ cnpj, onClose }: ClienteDetalheProps) {
                   <path strokeLinecap="round" strokeLinejoin="round"
                     d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                 </svg>
-                {briefingLigacaoAberto ? 'Fechar' : 'Ligar'}
+                <span className="hidden sm:inline">{briefingLigacaoAberto ? 'Fechar' : 'Ligar'}</span>
               </button>
             )}
             {/* Botao registrar atendimento */}
@@ -1474,12 +1674,12 @@ export default function ClienteDetalhe({ cnpj, onClose }: ClienteDetalheProps) {
                 type="button"
                 onClick={() => setAtendimentoAberto(true)}
                 aria-label={`Registrar atendimento de ${cliente.nome_fantasia}`}
-                className="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-semibold text-white rounded-md transition-all hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1"
+                className="inline-flex items-center gap-1.5 min-h-[44px] sm:min-h-0 px-2.5 py-1.5 text-xs font-semibold text-white rounded-md transition-all hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1"
                 style={{ backgroundColor: '#00B050' }}
               >
                 <svg
                   aria-hidden="true"
-                  className="w-3.5 h-3.5"
+                  className="w-3.5 h-3.5 flex-shrink-0"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -1511,7 +1711,9 @@ export default function ClienteDetalhe({ cnpj, onClose }: ClienteDetalheProps) {
         )}
 
         {/* Corpo scrollável */}
-        <div className="flex-1 overflow-y-auto py-3 px-3 md:px-4 space-y-3">
+        <div className="flex-1 overflow-y-auto py-3 px-3 md:px-4 space-y-3 pb-20 md:pb-4"
+          style={{ WebkitOverflowScrolling: 'touch' }}
+        >
 
           {/* Estado de loading */}
           {loading && (
@@ -1528,8 +1730,15 @@ export default function ClienteDetalhe({ cnpj, onClose }: ClienteDetalheProps) {
 
           {/* Estado de erro */}
           {error && (
-            <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-xs text-red-700">
-              Erro ao carregar cliente: {error}
+            <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-xs text-red-700 space-y-2">
+              <p>Erro ao carregar cliente: {error}</p>
+              <button
+                type="button"
+                onClick={() => setRetryCount((c) => c + 1)}
+                className="px-3 py-1.5 text-xs font-semibold text-red-700 border border-red-300 rounded-lg bg-white hover:bg-red-50 transition-colors"
+              >
+                Tentar novamente
+              </button>
             </div>
           )}
 
@@ -1574,7 +1783,7 @@ export default function ClienteDetalhe({ cnpj, onClose }: ClienteDetalheProps) {
                 open={open.status}
                 onToggle={() => toggleBloco('status')}
               >
-                <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 pb-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1.5 pb-2">
                   <FieldRow
                     label="Situacao"
                     badge={<StatusBadge value={cliente.situacao} variant="situacao" large />}
@@ -1731,6 +1940,23 @@ export default function ClienteDetalhe({ cnpj, onClose }: ClienteDetalheProps) {
                 onToggle={() => toggleBloco('historico')}
               >
                 <HistoricoBloco key={historicoKey} cnpj={cnpj} />
+              </Bloco>
+
+              {/* BLOCO 6.5: CONVERSAS WHATSAPP */}
+              <Bloco
+                title="Conversas WhatsApp"
+                open={open.conversas}
+                onToggle={() => toggleBloco('conversas')}
+                badge={
+                  <span
+                    className="inline-flex items-center gap-1 text-[10px] font-medium px-1.5 py-0.5 rounded"
+                    style={{ backgroundColor: '#00B05018', color: '#00B050' }}
+                  >
+                    Deskrio
+                  </span>
+                }
+              >
+                <ConversasWhatsAppBloco cnpj={cnpj} />
               </Bloco>
 
               {/* BLOCO 7: INTELIGÊNCIA ARTIFICIAL */}

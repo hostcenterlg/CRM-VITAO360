@@ -27,17 +27,18 @@ interface ClienteTableProps {
 }
 
 // Mapa: chave da coluna -> campo no ClienteRegistro
-const COLS: { key: string; label: string; sortable: boolean; align?: 'right' }[] = [
-  { key: 'cnpj',            label: 'CNPJ',         sortable: false },
+// mobileHidden: true = oculto em mobile, visivel apenas a partir de md
+const COLS: { key: string; label: string; sortable: boolean; align?: 'right'; mobileHidden?: boolean }[] = [
+  { key: 'cnpj',            label: 'CNPJ',         sortable: false,  mobileHidden: true },
   { key: 'nome_fantasia',   label: 'Cliente',       sortable: true },
-  { key: 'uf',              label: 'UF',            sortable: true },
+  { key: 'uf',              label: 'UF',            sortable: true,   mobileHidden: true },
   { key: 'consultor',       label: 'Consultor',     sortable: true },
   { key: 'situacao',        label: 'Situacao',      sortable: true },
-  { key: 'temperatura',     label: 'Temp.',         sortable: true },
-  { key: 'score',           label: 'Score',         sortable: true, align: 'right' },
-  { key: 'curva_abc',       label: 'ABC',           sortable: true },
-  { key: 'sinaleiro',       label: 'Sinal.',        sortable: true },
-  { key: 'faturamento_total', label: 'Faturamento', sortable: true, align: 'right' },
+  { key: 'temperatura',     label: 'Temp.',         sortable: true,   mobileHidden: true },
+  { key: 'score',           label: 'Score',         sortable: true,   align: 'right' },
+  { key: 'curva_abc',       label: 'ABC',           sortable: true,   mobileHidden: true },
+  { key: 'sinaleiro',       label: 'Sinal.',        sortable: true,   mobileHidden: true },
+  { key: 'faturamento_total', label: 'Faturamento', sortable: true,   align: 'right', mobileHidden: true },
 ];
 
 const SKELETON_ROWS = 8;
@@ -285,19 +286,19 @@ function ClienteRow({ cliente: c, idx, onRowClick, showFaturamento }: ClienteRow
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
-        {/* CNPJ */}
-        <td className="px-3 py-2.5 font-mono text-xs text-gray-500 whitespace-nowrap">
+        {/* CNPJ — hidden on mobile */}
+        <td className="hidden md:table-cell px-3 py-2.5 font-mono text-xs text-gray-500 whitespace-nowrap">
           {formatCnpj(c.cnpj)}
         </td>
         {/* Cliente */}
-        <td className="px-3 py-2.5 max-w-[200px]">
+        <td className="px-3 py-2.5 max-w-[160px] md:max-w-[200px]">
           <p className="font-medium text-gray-900 truncate">{c.nome_fantasia ?? '—'}</p>
           {c.razao_social && c.razao_social !== c.nome_fantasia && (
-            <p className="text-[11px] text-gray-400 truncate">{c.razao_social}</p>
+            <p className="text-[11px] text-gray-400 truncate hidden md:block">{c.razao_social}</p>
           )}
         </td>
-        {/* UF */}
-        <td className="px-3 py-2.5 text-gray-600 whitespace-nowrap text-xs">
+        {/* UF — hidden on mobile */}
+        <td className="hidden md:table-cell px-3 py-2.5 text-gray-600 whitespace-nowrap text-xs">
           {c.uf ?? '—'}
         </td>
         {/* Consultor */}
@@ -308,8 +309,8 @@ function ClienteRow({ cliente: c, idx, onRowClick, showFaturamento }: ClienteRow
         <td className="px-3 py-2.5 whitespace-nowrap">
           <StatusBadge value={c.situacao} variant="situacao" small />
         </td>
-        {/* Temperatura */}
-        <td className="px-3 py-2.5 whitespace-nowrap">
+        {/* Temperatura — hidden on mobile */}
+        <td className="hidden md:table-cell px-3 py-2.5 whitespace-nowrap">
           {c.temperatura ? (
             <StatusBadge value={c.temperatura} variant="temperatura" small />
           ) : (
@@ -320,21 +321,21 @@ function ClienteRow({ cliente: c, idx, onRowClick, showFaturamento }: ClienteRow
         <td className="px-3 py-2.5 whitespace-nowrap">
           <ScoreCell value={c.score} />
         </td>
-        {/* ABC */}
-        <td className="px-3 py-2.5 whitespace-nowrap">
+        {/* ABC — hidden on mobile */}
+        <td className="hidden md:table-cell px-3 py-2.5 whitespace-nowrap">
           {c.curva_abc ? (
             <StatusBadge value={c.curva_abc} variant="abc" small />
           ) : (
             <span className="text-gray-300">—</span>
           )}
         </td>
-        {/* Sinaleiro */}
-        <td className="px-3 py-2.5 whitespace-nowrap">
+        {/* Sinaleiro — hidden on mobile */}
+        <td className="hidden md:table-cell px-3 py-2.5 whitespace-nowrap">
           <SinaleiroDot value={c.sinaleiro} />
         </td>
-        {/* Faturamento */}
+        {/* Faturamento — hidden on mobile */}
         {showFaturamento && (
-          <td className="px-3 py-2.5 text-right whitespace-nowrap font-mono text-xs text-gray-800">
+          <td className="hidden md:table-cell px-3 py-2.5 text-right whitespace-nowrap font-mono text-xs text-gray-800">
             {c.faturamento_total != null ? formatBRL(c.faturamento_total) : '—'}
           </td>
         )}
@@ -382,7 +383,7 @@ export default function ClienteTable({
             {Array.from({ length: SKELETON_ROWS }).map((_, i) => (
               <tr key={i} className="border-t border-gray-100">
                 {visibleCols.map((c) => (
-                  <td key={c.key} className="px-3 py-2.5">
+                  <td key={c.key} className={`px-3 py-2.5 ${c.mobileHidden ? 'hidden md:table-cell' : ''}`}>
                     <div
                       className="h-3.5 bg-gray-100 animate-pulse rounded"
                       style={{ width: `${55 + (i * 7 + visibleCols.indexOf(c) * 11) % 40}%` }}
@@ -451,7 +452,7 @@ export default function ClienteTable({
 // Sub-componentes internos
 // ---------------------------------------------------------------------------
 
-interface ColDef { key: string; label: string; sortable: boolean; align?: 'right' }
+interface ColDef { key: string; label: string; sortable: boolean; align?: 'right'; mobileHidden?: boolean }
 
 function TableHead({
   cols,
@@ -470,7 +471,9 @@ function TableHead({
           scope="col"
           className={`px-3 py-2 text-[11px] font-semibold text-gray-500 uppercase tracking-wide whitespace-nowrap select-none ${
             col.align === 'right' ? 'text-right' : ''
-          } ${col.sortable && onSort ? 'cursor-pointer hover:text-gray-700' : ''}`}
+          } ${col.sortable && onSort ? 'cursor-pointer hover:text-gray-700' : ''} ${
+            col.mobileHidden ? 'hidden md:table-cell' : ''
+          }`}
           onClick={() => col.sortable && onSort?.(col.key)}
           aria-sort={
             sort?.by === col.key
