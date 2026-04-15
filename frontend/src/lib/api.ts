@@ -445,7 +445,9 @@ export async function fetchAtendimentosHistorico(
   page_size = 20
 ): Promise<AtendimentosHistoricoResponse> {
   const qs = new URLSearchParams({ cnpj, page: String(page), page_size: String(page_size) });
-  return fetchJson<AtendimentosHistoricoResponse>(`/api/atendimentos?${qs.toString()}`);
+  const res = await fetchJson<AtendimentosHistoricoResponse>(`/api/atendimentos?${qs.toString()}`);
+  // Garantir que itens nunca seja null — Two-Base: LOG records, sem valor R$
+  return { ...res, itens: res.itens ?? [], total: res.total ?? 0 };
 }
 
 export async function fetchCliente(cnpj: string): Promise<ClienteRegistro> {
@@ -1228,10 +1230,15 @@ export async function fetchVendasCliente(
   cnpj: string,
   limit = 5
 ): Promise<VendaPedidoItem[]> {
-  const qs = new URLSearchParams({ busca: cnpj, limit: String(limit) });
-  const res = await fetchJson<VendasPorStatusResponse>(`/api/vendas?${qs.toString()}`);
-  // Filtrar pelo CNPJ exato para garantir que nao retorne outros clientes
-  return (res.itens ?? []).filter((v) => v.cliente_cnpj === cnpj).slice(0, limit);
+  try {
+    const qs = new URLSearchParams({ busca: cnpj, limit: String(limit) });
+    const res = await fetchJson<VendasPorStatusResponse>(`/api/vendas?${qs.toString()}`);
+    // Filtrar pelo CNPJ exato para garantir que nao retorne outros clientes
+    return (res?.itens ?? []).filter((v) => v.cliente_cnpj === cnpj).slice(0, limit);
+  } catch {
+    // Backend 500 ou indisponivel — retorna array vazio, nao null
+    return [];
+  }
 }
 
 export async function fetchVendasPorStatus(
@@ -1523,7 +1530,9 @@ export async function fetchResumoSemanalIA(consultor: string): Promise<ResumoSem
 }
 
 export async function fetchChurnRisk(cnpj: string): Promise<ChurnRiskResponse> {
-  return fetchJson<ChurnRiskResponse>(`/api/ia/churn-risk/${encodeURIComponent(cnpj)}`);
+  const res = await fetchJson<ChurnRiskResponse>(`/api/ia/churn-risk/${encodeURIComponent(cnpj)}`);
+  // Garantir que fatores nunca seja null
+  return { ...res, fatores: res.fatores ?? [] };
 }
 
 export async function fetchSugestaoProduto(cnpj: string): Promise<SugestaoProdutoResponse> {

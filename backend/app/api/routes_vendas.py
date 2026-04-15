@@ -285,11 +285,15 @@ def listar_vendas(
     paginated_stmt = base_stmt.limit(pagination.limit).offset(pagination.offset)
     vendas = db.scalars(paginated_stmt).all()
 
-    # Enriquecer com nome_fantasia via JOIN lazy (relationship ja configurado no model)
-    items: list[VendaResponse] = []
-    for v in vendas:
-        nome = v.cliente.nome_fantasia if v.cliente else None
-        items.append(_montar_venda_response(v, nome))
+    # Batch lookup para nome_fantasia — evita N+1 e falha em orphaned vendas
+    # (vendas cujo CNPJ nao existe na tabela clientes causam erro no lazy load)
+    cnpjs = list({v.cnpj for v in vendas})
+    clientes_map: dict[str, str | None] = {}
+    if cnpjs:
+        rows = db.query(Cliente.cnpj, Cliente.nome_fantasia).filter(Cliente.cnpj.in_(cnpjs)).all()
+        clientes_map = {row.cnpj: row.nome_fantasia for row in rows}
+
+    items = [_montar_venda_response(v, clientes_map.get(v.cnpj)) for v in vendas]
 
     return VendasPaginatedResponse.build(items=items, total=total, params=pagination)
 

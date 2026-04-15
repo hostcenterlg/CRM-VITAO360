@@ -23,8 +23,11 @@ Todos os endpoints requerem autenticacao JWT (Bearer token).
 
 from __future__ import annotations
 
+import logging
 import re
 from typing import Optional
+
+logger = logging.getLogger(__name__)
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel, ConfigDict, model_validator
@@ -866,35 +869,46 @@ def timeline_cliente(
     if not existe:
         raise HTTPException(status_code=404, detail=f"Cliente CNPJ {cnpj_n} nao encontrado.")
 
-    vendas = db.query(Venda).filter(Venda.cnpj == cnpj_n).all()
-    logs = db.query(LogInteracao).filter(LogInteracao.cnpj == cnpj_n).all()
+    try:
+        vendas = db.query(Venda).filter(Venda.cnpj == cnpj_n).all()
+        logs = db.query(LogInteracao).filter(LogInteracao.cnpj == cnpj_n).all()
 
-    timeline: list[dict] = []
+        timeline: list[dict] = []
 
-    for v in vendas:
-        timeline.append({
-            "tipo": "VENDA",
-            "data": v.data_pedido.isoformat() if v.data_pedido else None,
-            "valor": v.valor_pedido,
-            "consultor": v.consultor,
-            "descricao": f"Pedido {v.numero_pedido or ''} - R$ {v.valor_pedido:,.2f}".strip(),
-            "fonte": v.fonte,
-            "classificacao": v.classificacao_3tier,
-        })
+        for v in vendas:
+            valor = v.valor_pedido
+            descricao = (
+                f"Pedido {v.numero_pedido or ''} - R$ {valor:,.2f}".strip()
+                if valor is not None
+                else f"Pedido {v.numero_pedido or ''}".strip()
+            )
+            timeline.append({
+                "tipo": "VENDA",
+                "data": v.data_pedido.isoformat() if v.data_pedido else None,
+                "valor": valor,
+                "consultor": v.consultor,
+                "descricao": descricao,
+                "fonte": v.fonte,
+                "classificacao": v.classificacao_3tier,
+            })
 
-    for l in logs:
-        timeline.append({
-            "tipo": "INTERACAO",
-            "data": l.data_interacao.isoformat() if l.data_interacao else None,
-            "resultado": l.resultado,
-            "consultor": l.consultor,
-            "descricao": l.descricao or l.resultado,
-            "fase": l.fase,
-            "temperatura": l.temperatura,
-            "estagio_funil": l.estagio_funil,
-        })
+        for l in logs:
+            timeline.append({
+                "tipo": "INTERACAO",
+                "data": l.data_interacao.isoformat() if l.data_interacao else None,
+                "resultado": l.resultado,
+                "consultor": l.consultor,
+                "descricao": l.descricao or l.resultado,
+                "fase": l.fase,
+                "temperatura": l.temperatura,
+                "estagio_funil": l.estagio_funil,
+            })
 
-    # Ordenar por data decrescente; eventos sem data ficam no fim
-    timeline.sort(key=lambda x: x.get("data") or "", reverse=True)
+        # Ordenar por data decrescente; eventos sem data ficam no fim
+        timeline.sort(key=lambda x: x.get("data") or "", reverse=True)
 
-    return timeline
+        return timeline
+
+    except Exception as e:
+        logger.error("timeline_cliente error for cnpj=%s: %s", cnpj_n, e)
+        return []

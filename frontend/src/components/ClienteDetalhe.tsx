@@ -413,7 +413,7 @@ function UltimasComprasBloco({ cnpj }: UltimasComprasProps) {
     );
   }
 
-  if (vendas.length === 0) {
+  if ((vendas ?? []).length === 0) {
     return (
       <p className="text-xs text-gray-400 py-2 italic">
         Nenhum pedido encontrado para este cliente.
@@ -432,7 +432,7 @@ function UltimasComprasBloco({ cnpj }: UltimasComprasProps) {
           </tr>
         </thead>
         <tbody>
-          {vendas.map((v) => {
+          {(vendas ?? []).map((v) => {
             const cor = STATUS_VENDA_COLORS[v.status] ?? '#9CA3AF';
             return (
               <tr key={v.id} className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
@@ -572,7 +572,7 @@ function TimelineVisual({ cnpj }: TimelineVisualProps) {
     setLoading(true);
     setError(null);
     fetchAtendimentosHistorico(cnpj, 1, 10)
-      .then((res) => setItens(res.itens))
+      .then((res) => setItens(res.itens ?? []))
       .catch((e: Error) => setError(e.message))
       .finally(() => setLoading(false));
   }, [cnpj, retryCount]);
@@ -608,7 +608,7 @@ function TimelineVisual({ cnpj }: TimelineVisualProps) {
     );
   }
 
-  if (itens.length === 0) {
+  if ((itens ?? []).length === 0) {
     return (
       <p className="text-xs text-gray-400 py-2 italic">
         Nenhum evento registrado.
@@ -618,11 +618,11 @@ function TimelineVisual({ cnpj }: TimelineVisualProps) {
 
   return (
     <div className="pt-1">
-      {itens.map((item) => (
+      {(itens ?? []).map((item) => (
         <TimelineEvent key={item.id} item={item} />
       ))}
       <p className="text-[10px] text-gray-400 mt-1 text-right">
-        Ultimos {itens.length} eventos
+        Ultimos {(itens ?? []).length} eventos
       </p>
     </div>
   );
@@ -727,8 +727,8 @@ function HistoricoBloco({ cnpj }: { cnpj: string }) {
 
     fetchAtendimentosHistorico(cnpj, 1, PAGE_SIZE)
       .then((res) => {
-        setItens(res.itens);
-        setTotal(res.total);
+        setItens(res.itens ?? []);
+        setTotal(res.total ?? 0);
       })
       .catch((e: Error) => setError(e.message))
       .finally(() => setLoading(false));
@@ -739,15 +739,15 @@ function HistoricoBloco({ cnpj }: { cnpj: string }) {
     setLoadingMore(true);
     fetchAtendimentosHistorico(cnpj, nextPage, PAGE_SIZE)
       .then((res) => {
-        setItens((prev) => [...prev, ...res.itens]);
+        setItens((prev) => [...prev, ...(res.itens ?? [])]);
         setPage(nextPage);
-        setTotal(res.total);
+        setTotal(res.total ?? 0);
       })
       .catch((e: Error) => setError(e.message))
       .finally(() => setLoadingMore(false));
   }, [cnpj, page]);
 
-  const hasMore = itens.length < total;
+  const hasMore = (itens ?? []).length < total;
 
   if (loading) {
     return (
@@ -780,7 +780,7 @@ function HistoricoBloco({ cnpj }: { cnpj: string }) {
     );
   }
 
-  if (itens.length === 0) {
+  if ((itens ?? []).length === 0) {
     return (
       <p className="text-xs text-gray-400 py-2 italic">
         Nenhum atendimento registrado.
@@ -791,7 +791,7 @@ function HistoricoBloco({ cnpj }: { cnpj: string }) {
   return (
     <div>
       <div className="space-y-0">
-        {itens.map((item) => (
+        {(itens ?? []).map((item) => (
           <TimelineItem key={item.id} item={item} />
         ))}
       </div>
@@ -1276,13 +1276,13 @@ function BriefingLigacaoPainel({ cnpj }: { cnpj: string }) {
           </div>
         </div>
 
-        {churn && churn.fatores.length > 0 && (
+        {churn && (churn.fatores?.length ?? 0) > 0 && (
           <div>
             <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1">
               Fatores de risco
             </p>
             <ul className="space-y-0.5">
-              {churn.fatores.map((f, idx) => (
+              {(churn.fatores ?? []).map((f, idx) => (
                 <li key={idx} className="flex items-start gap-1.5 text-xs text-gray-700">
                   <span className="w-1.5 h-1.5 rounded-full flex-shrink-0 mt-1" style={{ backgroundColor: churnColor }} />
                   {f}

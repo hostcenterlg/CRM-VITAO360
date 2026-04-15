@@ -263,7 +263,7 @@ function CarteiraInner() {
         offset: 0,
       });
 
-      const todosRegistros = aplicarFiltrosCliente(data.registros, filtrosC);
+      const todosRegistros = aplicarFiltrosCliente(data.registros ?? [], filtrosC);
       const hoje = new Date().toISOString().slice(0, 10);
 
       exportToCSV(
