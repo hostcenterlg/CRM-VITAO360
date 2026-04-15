@@ -118,12 +118,12 @@ export default function AdminMotorPage() {
 
       {/* Filtro */}
       <div className="bg-white rounded-xl border border-gray-200 p-4">
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           <select
             value={filtroSituacao}
             onChange={e => setFiltroSituacao(e.target.value)}
             aria-label="Filtrar por situacao"
-            className={`h-8 px-3 text-xs border rounded focus:outline-none focus:ring-2 focus:ring-green-500 bg-white ${filtroSituacao ? 'border-green-500 bg-green-50' : 'border-gray-300'}`}
+            className={`min-h-[44px] px-3 text-xs border rounded focus:outline-none focus:ring-2 focus:ring-green-500 bg-white w-full sm:w-auto ${filtroSituacao ? 'border-green-500 bg-green-50' : 'border-gray-300'}`}
           >
             <option value="">Todas as situacoes</option>
             {situacoes.map(s => (
@@ -134,12 +134,12 @@ export default function AdminMotorPage() {
             <button
               type="button"
               onClick={() => setFiltroSituacao('')}
-              className="text-xs text-gray-500 hover:text-gray-900"
+              className="min-h-[44px] px-3 text-xs text-gray-500 hover:text-gray-900"
             >
               Limpar
             </button>
           )}
-          <span className="text-xs text-gray-400 ml-auto">
+          <span className="text-xs text-gray-400 sm:ml-auto">
             {regrasFiltradas.length} regras exibidas
           </span>
         </div>
@@ -152,8 +152,8 @@ export default function AdminMotorPage() {
             <div className="w-5 h-5 border-2 border-gray-300 border-t-green-600 rounded-full animate-spin" />
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full" role="table">
+          <div className="overflow-x-auto -mx-0">
+            <table className="w-full min-w-[700px]" role="table">
               <caption className="sr-only">
                 {regras.length} regras do Motor de Inteligencia Comercial
               </caption>

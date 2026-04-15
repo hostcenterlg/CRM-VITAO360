@@ -108,7 +108,7 @@ function ClienteAutocomplete({ onSelect }: ClienteAutocompleteProps) {
   };
 
   return (
-    <div ref={containerRef} className="relative w-full max-w-md">
+    <div ref={containerRef} className="relative w-full sm:max-w-md">
       <div className="relative">
         <svg
           className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
@@ -125,7 +125,7 @@ function ClienteAutocomplete({ onSelect }: ClienteAutocompleteProps) {
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Buscar cliente por nome ou CNPJ..."
           aria-label="Buscar cliente"
-          className="w-full h-10 pl-10 pr-10 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          className="w-full h-11 pl-10 pr-10 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
         />
         {loading && (
           <span className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 border-2 border-blue-300 border-t-blue-600 rounded-full animate-spin" />
@@ -285,7 +285,7 @@ function CardBriefing({ cnpj }: { cnpj: string | null }) {
               <button
                 type="button"
                 onClick={handleCopiar}
-                className="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-semibold rounded transition-all focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="inline-flex items-center gap-1 px-3 py-2 min-h-[44px] text-[10px] font-semibold rounded transition-all focus:outline-none focus:ring-2 focus:ring-blue-500"
                 style={copiado
                   ? { backgroundColor: '#00B050', color: '#fff' }
                   : { backgroundColor: '#DBEAFE', color: '#1D4ED8' }
@@ -409,7 +409,7 @@ function CardMensagemWA({ cnpj, nomeCliente }: { cnpj: string | null; nomeClient
             <button
               type="button"
               onClick={handleCopiar}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-md transition-all hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-green-500"
+              className="inline-flex items-center gap-1.5 px-3 py-2.5 min-h-[44px] text-xs font-semibold rounded-md transition-all hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-green-500"
               style={copiado
                 ? { backgroundColor: '#00B050', color: '#fff' }
                 : { backgroundColor: '#F0FDF4', color: '#15803D' }
@@ -422,7 +422,7 @@ function CardMensagemWA({ cnpj, nomeCliente }: { cnpj: string | null; nomeClient
               type="button"
               onClick={handleEnviar}
               disabled={enviando || enviado}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white rounded-md transition-all hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-green-500 disabled:opacity-50"
+              className="inline-flex items-center gap-1.5 px-3 py-2.5 min-h-[44px] text-xs font-semibold text-white rounded-md transition-all hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-green-500 disabled:opacity-50"
               style={{ backgroundColor: '#25D366' }}
             >
               {enviando ? 'Enviando...' : enviado ? 'Enviado!' : 'Enviar via WA'}
@@ -1239,7 +1239,7 @@ export default function CentralIAPage() {
     <div className="min-h-screen bg-gray-50">
       {/* Header da pagina */}
       <div className="bg-white border-b border-gray-200">
-        <div className="px-6 py-5">
+        <div className="px-3 sm:px-6 py-5">
           <div className="flex items-start gap-3">
             <div
               className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
@@ -1283,7 +1283,7 @@ export default function CentralIAPage() {
       </div>
 
       {/* Grid de cards — 3x3 com 9 agentes */}
-      <div className="px-6 py-6">
+      <div className="px-3 sm:px-6 py-6">
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
           {/* Row 1 */}
           <CardBriefing cnpj={cnpj} />

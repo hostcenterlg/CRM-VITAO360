@@ -206,7 +206,7 @@ export default function AtendimentoForm({
     >
       <div
         ref={dialogRef}
-        className="bg-white sm:rounded-xl shadow-2xl w-full sm:max-w-[560px] max-h-[95vh] sm:max-h-[calc(100vh-2rem)] flex flex-col rounded-t-2xl"
+        className="bg-white sm:rounded-xl shadow-2xl w-full sm:max-w-[560px] h-[95dvh] sm:h-auto sm:max-h-[calc(100vh-2rem)] flex flex-col rounded-t-2xl"
         style={{ animation: 'atformIn 200ms ease-out' }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -393,12 +393,12 @@ export default function AtendimentoForm({
 
         {/* Footer — so exibe antes de salvar */}
         {!motorFeedback && (
-          <div className="px-4 sm:px-6 py-4 border-t border-gray-200 flex items-center justify-between gap-3 flex-shrink-0">
+          <div className="px-4 sm:px-6 py-4 border-t border-gray-200 flex items-center gap-3 flex-shrink-0">
             <button
               type="button"
               onClick={onClose}
               disabled={saving}
-              className="min-h-11 px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 disabled:opacity-50"
+              className="min-h-[44px] w-full sm:w-auto px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 disabled:opacity-50"
             >
               Cancelar
             </button>
@@ -407,7 +407,7 @@ export default function AtendimentoForm({
               form="form-atendimento-generico"
               disabled={saving}
               aria-label={`Salvar atendimento de ${cliente.nome_fantasia}`}
-              className="min-h-11 flex-1 sm:flex-none px-6 py-2 bg-green-600 hover:bg-green-700 disabled:opacity-60 text-white text-sm font-semibold rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 flex items-center justify-center gap-2"
+              className="min-h-[44px] flex-1 px-6 py-2 bg-green-600 hover:bg-green-700 disabled:opacity-60 text-white text-sm font-semibold rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 flex items-center justify-center gap-2"
             >
               {saving && (
                 <svg

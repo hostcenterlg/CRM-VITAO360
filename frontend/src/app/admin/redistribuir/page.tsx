@@ -119,7 +119,7 @@ function ModalConfirmacao({
             type="button"
             onClick={onCancelar}
             disabled={loading}
-            className="flex-1 px-4 py-2 text-xs font-medium text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
+            className="flex-1 min-h-[44px] px-4 py-2 text-xs font-medium text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
           >
             Cancelar
           </button>
@@ -127,7 +127,7 @@ function ModalConfirmacao({
             type="button"
             onClick={onConfirmar}
             disabled={loading}
-            className="flex-1 px-4 py-2 text-xs font-semibold text-white rounded-lg transition-colors disabled:opacity-60"
+            className="flex-1 min-h-[44px] px-4 py-2 text-xs font-semibold text-white rounded-lg transition-colors disabled:opacity-60"
             style={{ backgroundColor: loading ? '#9CA3AF' : '#00B050' }}
           >
             {loading ? 'Redistribuindo...' : 'Confirmar'}
@@ -463,7 +463,7 @@ export default function RedistribuirCarteiraPage() {
             type="button"
             disabled={!podeRedistribuir || loadingRedistribuir}
             onClick={() => setMostrarModal(true)}
-            className="flex items-center gap-2 px-4 py-2 text-xs font-semibold text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center gap-2 px-4 py-2 min-h-[44px] text-xs font-semibold text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             style={{ backgroundColor: podeRedistribuir ? '#00B050' : '#9CA3AF' }}
           >
             <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -482,8 +482,8 @@ export default function RedistribuirCarteiraPage() {
             <div className="w-5 h-5 border-2 border-gray-300 border-t-green-600 rounded-full animate-spin" />
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full" role="table">
+          <div className="overflow-x-auto -mx-0">
+            <table className="w-full min-w-[600px]" role="table">
               <thead>
                 <tr className="border-b border-gray-100">
                   <th scope="col" className="w-10 px-4 py-2.5" aria-label="Selecao" />

@@ -132,7 +132,7 @@ function AccordionItem({ section, defaultOpen = false }: { section: Section; def
       <button
         type="button"
         onClick={() => setOpen((p) => !p)}
-        className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-colors
+        className={`w-full flex items-center gap-3 px-4 py-3 min-h-[44px] text-left transition-colors
           ${open ? 'bg-green-50' : 'bg-white hover:bg-gray-50'}`}
       >
         <span className={`flex-shrink-0 w-7 h-7 rounded-lg flex items-center justify-center
@@ -598,7 +598,7 @@ export default function DocsPage() {
             key={role}
             type="button"
             onClick={() => setActiveRole(role)}
-            className={`flex-1 sm:flex-none px-4 py-3 rounded-xl border-2 text-left transition-all
+            className={`flex-1 sm:flex-none min-h-[44px] px-4 py-3 rounded-xl border-2 text-left transition-all
               ${activeRole === role
                 ? `${c.color} border-current`
                 : 'bg-white border-gray-200 text-gray-600 hover:border-gray-300 hover:bg-gray-50'

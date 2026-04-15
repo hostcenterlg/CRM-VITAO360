@@ -259,7 +259,7 @@ function ModalPedido({ pedido, onClose, onTransicionar, isAdmin }: ModalPedidoPr
                   type="button"
                   disabled={loading}
                   onClick={() => void handleAcao('LIBERADO')}
-                  className="px-4 py-2 text-xs font-semibold text-white rounded-lg transition-colors disabled:opacity-60"
+                  className="flex-1 sm:flex-none min-h-[44px] px-4 py-2 text-xs font-semibold text-white rounded-lg transition-colors disabled:opacity-60"
                   style={{ backgroundColor: '#3B82F6' }}
                 >
                   Liberar Pedido
@@ -270,7 +270,7 @@ function ModalPedido({ pedido, onClose, onTransicionar, isAdmin }: ModalPedidoPr
                   type="button"
                   disabled={loading}
                   onClick={() => void handleAcao('FATURADO')}
-                  className="px-4 py-2 text-xs font-semibold text-white rounded-lg transition-colors disabled:opacity-60"
+                  className="flex-1 sm:flex-none min-h-[44px] px-4 py-2 text-xs font-semibold text-white rounded-lg transition-colors disabled:opacity-60"
                   style={{ backgroundColor: '#00B050' }}
                 >
                   Faturar Pedido
@@ -281,7 +281,7 @@ function ModalPedido({ pedido, onClose, onTransicionar, isAdmin }: ModalPedidoPr
                   type="button"
                   disabled={loading}
                   onClick={() => void handleAcao('ENTREGUE')}
-                  className="px-4 py-2 text-xs font-semibold text-white rounded-lg transition-colors disabled:opacity-60"
+                  className="flex-1 sm:flex-none min-h-[44px] px-4 py-2 text-xs font-semibold text-white rounded-lg transition-colors disabled:opacity-60"
                   style={{ backgroundColor: '#166534' }}
                 >
                   Marcar Entregue
@@ -292,7 +292,7 @@ function ModalPedido({ pedido, onClose, onTransicionar, isAdmin }: ModalPedidoPr
                   type="button"
                   disabled={loading}
                   onClick={() => void handleAcao('CANCELADO')}
-                  className="px-4 py-2 text-xs font-semibold text-white rounded-lg transition-colors disabled:opacity-60"
+                  className="flex-1 sm:flex-none min-h-[44px] px-4 py-2 text-xs font-semibold text-white rounded-lg transition-colors disabled:opacity-60"
                   style={{ backgroundColor: '#FF0000' }}
                 >
                   Cancelar
@@ -652,9 +652,9 @@ function PedidosInner() {
         </div>
 
         {/* Filtros expandidos */}
-        <div className={`${filtrosExpanded ? 'flex' : 'hidden'} sm:flex flex-wrap gap-2 items-end mt-2`}>
+        <div className={`${filtrosExpanded ? 'grid grid-cols-2 gap-2' : 'hidden'} sm:flex sm:flex-wrap sm:gap-2 sm:items-end mt-2`}>
           {/* Status */}
-          <div className="flex flex-col gap-1 min-w-[130px]">
+          <div className="flex flex-col gap-1">
             <label htmlFor="pedidos-status" className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Status</label>
             <select
               id="pedidos-status"
@@ -664,7 +664,7 @@ function PedidosInner() {
                 pushUrl(e.target.value, filtroConsultor, filtroDataInicio, filtroDataFim, busca);
               }}
               aria-label="Filtrar por status"
-              className={`h-8 px-2.5 text-xs border rounded focus:outline-none focus:ring-2 focus:ring-green-200 bg-white ${filtroStatus ? 'border-green-400 bg-green-50 text-green-800' : 'border-gray-200 text-gray-700'}`}
+              className={`w-full sm:w-auto min-h-[44px] sm:min-h-0 sm:h-8 px-2.5 text-xs border rounded focus:outline-none focus:ring-2 focus:ring-green-200 bg-white ${filtroStatus ? 'border-green-400 bg-green-50 text-green-800' : 'border-gray-200 text-gray-700'}`}
             >
               <option value="">Todos</option>
               {STATUS_LIST.map((s) => (
@@ -674,7 +674,7 @@ function PedidosInner() {
           </div>
 
           {/* Consultor */}
-          <div className="flex flex-col gap-1 min-w-[120px]">
+          <div className="flex flex-col gap-1">
             <label htmlFor="pedidos-consultor" className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Consultor</label>
             <select
               id="pedidos-consultor"
@@ -684,7 +684,7 @@ function PedidosInner() {
                 pushUrl(filtroStatus, e.target.value, filtroDataInicio, filtroDataFim, busca);
               }}
               aria-label="Filtrar por consultor"
-              className={`h-8 px-2.5 text-xs border rounded focus:outline-none focus:ring-2 focus:ring-green-200 bg-white ${filtroConsultor ? 'border-green-400 bg-green-50 text-green-800' : 'border-gray-200 text-gray-700'}`}
+              className={`w-full sm:w-auto min-h-[44px] sm:min-h-0 sm:h-8 px-2.5 text-xs border rounded focus:outline-none focus:ring-2 focus:ring-green-200 bg-white ${filtroConsultor ? 'border-green-400 bg-green-50 text-green-800' : 'border-gray-200 text-gray-700'}`}
             >
               <option value="">Todos</option>
               {CONSULTORES.map((c) => (
@@ -704,7 +704,7 @@ function PedidosInner() {
                 setFiltroDataInicio(e.target.value);
                 pushUrl(filtroStatus, filtroConsultor, e.target.value, filtroDataFim, busca);
               }}
-              className={`h-8 px-2.5 text-xs border rounded focus:outline-none focus:ring-2 focus:ring-green-200 bg-white ${filtroDataInicio ? 'border-green-400 bg-green-50' : 'border-gray-200'}`}
+              className={`w-full sm:w-auto min-h-[44px] sm:min-h-0 sm:h-8 px-2.5 text-xs border rounded focus:outline-none focus:ring-2 focus:ring-green-200 bg-white ${filtroDataInicio ? 'border-green-400 bg-green-50' : 'border-gray-200'}`}
             />
           </div>
 
@@ -719,7 +719,7 @@ function PedidosInner() {
                 setFiltroDataFim(e.target.value);
                 pushUrl(filtroStatus, filtroConsultor, filtroDataInicio, e.target.value, busca);
               }}
-              className={`h-8 px-2.5 text-xs border rounded focus:outline-none focus:ring-2 focus:ring-green-200 bg-white ${filtroDataFim ? 'border-green-400 bg-green-50' : 'border-gray-200'}`}
+              className={`w-full sm:w-auto min-h-[44px] sm:min-h-0 sm:h-8 px-2.5 text-xs border rounded focus:outline-none focus:ring-2 focus:ring-green-200 bg-white ${filtroDataFim ? 'border-green-400 bg-green-50' : 'border-gray-200'}`}
             />
           </div>
 
@@ -727,7 +727,7 @@ function PedidosInner() {
             <button
               type="button"
               onClick={handleLimpar}
-              className="self-end text-xs text-gray-500 hover:text-gray-800 underline hover:no-underline pb-0.5"
+              className="col-span-2 sm:col-span-1 sm:self-end min-h-[44px] sm:min-h-0 px-3 text-xs text-gray-500 hover:text-gray-800 border border-gray-200 rounded-lg sm:border-transparent sm:underline sm:hover:no-underline transition-colors"
             >
               Limpar
             </button>

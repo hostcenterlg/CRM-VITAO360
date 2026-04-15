@@ -322,7 +322,7 @@ function NavItemCollapsed({ item, active, onClose }: NavItemCollapsedProps) {
         onClick={onClose}
         title={item.label}
         className={`
-          relative flex items-center justify-center w-9 h-9 rounded-lg transition-colors mx-auto
+          relative flex items-center justify-center w-11 h-11 rounded-lg transition-colors mx-auto
           ${active
             ? 'text-green-700'
             : 'text-gray-500 hover:bg-gray-100 hover:text-gray-900'
@@ -404,7 +404,7 @@ export default function Sidebar({ mobileOpen, onClose, collapsed = false, onTogg
           transition-all duration-200
           md:static md:translate-x-0
           ${mobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
-          ${collapsed ? 'w-14' : 'w-56'}
+          ${collapsed ? 'w-14' : 'w-56 max-w-[80vw]'}
         `}
         role="navigation"
         aria-label="Menu principal"
@@ -457,7 +457,7 @@ export default function Sidebar({ mobileOpen, onClose, collapsed = false, onTogg
                           href={item.href}
                           onClick={onClose}
                           className={`
-                            flex items-center gap-3 px-3 py-2 rounded text-sm font-medium transition-colors
+                            flex items-center gap-3 px-3 py-2 min-h-[44px] rounded text-sm font-medium transition-colors
                             ${active
                               ? 'text-green-700'
                               : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'

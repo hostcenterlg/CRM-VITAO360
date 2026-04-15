@@ -170,7 +170,7 @@ interface SelectFiltroProps {
 
 function SelectFiltro({ id, label, value, onChange, options, placeholder = 'Todos' }: SelectFiltroProps) {
   return (
-    <div className="flex flex-col gap-1">
+    <div className="flex flex-col gap-1 w-full sm:w-auto">
       <label htmlFor={id} className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
         {label}
       </label>
@@ -178,7 +178,7 @@ function SelectFiltro({ id, label, value, onChange, options, placeholder = 'Todo
         id={id}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className={`h-8 px-2.5 text-xs border rounded focus:outline-none focus:ring-2 focus:ring-green-200 focus:border-green-400 bg-white transition-colors ${
+        className={`w-full sm:w-auto h-10 sm:h-8 px-2.5 text-xs border rounded focus:outline-none focus:ring-2 focus:ring-green-200 focus:border-green-400 bg-white transition-colors ${
           value ? 'border-green-400 bg-green-50 text-green-800' : 'border-gray-200 text-gray-700'
         }`}
       >
@@ -200,7 +200,7 @@ interface DateFiltroProps {
 
 function DateFiltro({ id, label, value, onChange }: DateFiltroProps) {
   return (
-    <div className="flex flex-col gap-1">
+    <div className="flex flex-col gap-1 w-full sm:w-auto">
       <label htmlFor={id} className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
         {label}
       </label>
@@ -209,7 +209,7 @@ function DateFiltro({ id, label, value, onChange }: DateFiltroProps) {
         type="date"
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className={`h-8 px-2.5 text-xs border rounded focus:outline-none focus:ring-2 focus:ring-green-200 focus:border-green-400 bg-white transition-colors ${
+        className={`w-full sm:w-auto h-10 sm:h-8 px-2.5 text-xs border rounded focus:outline-none focus:ring-2 focus:ring-green-200 focus:border-green-400 bg-white transition-colors ${
           value ? 'border-green-400 bg-green-50' : 'border-gray-200'
         }`}
       />
@@ -232,7 +232,7 @@ function BotaoDownload({ loading, onClick }: BotaoDownloadProps) {
       type="button"
       onClick={onClick}
       disabled={loading}
-      className="mt-3 w-full flex items-center justify-center gap-2 py-2 px-4 text-xs font-semibold text-white rounded-lg transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+      className="mt-3 w-full flex items-center justify-center gap-2 py-3 sm:py-2 min-h-[44px] px-4 text-xs font-semibold text-white rounded-lg transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
       style={{ backgroundColor: loading ? '#9CA3AF' : '#00B050' }}
     >
       {loading ? (
@@ -287,7 +287,7 @@ function CardRelatorio({ icon, titulo, descricao, children, loading, error, onDo
       </div>
 
       {/* Filtros */}
-      <div className="flex flex-wrap gap-2 flex-1">
+      <div className="grid grid-cols-1 gap-2 sm:flex sm:flex-wrap flex-1">
         {children}
       </div>
 
@@ -406,7 +406,7 @@ export default function RelatoriosPage() {
   const anoOptions = ANOS.map((a) => ({ value: a, label: a }));
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-5 px-3 md:px-4 lg:px-6">
       {/* Cabecalho */}
       <div>
         <h1 className="text-lg sm:text-xl font-bold text-gray-900">Central de Relatorios</h1>

@@ -242,18 +242,18 @@ function ModalUsuario({ usuario, onClose, onSalvar }: ModalUsuarioProps) {
           </div>
 
           {/* Footer */}
-          <div className="flex justify-between pt-2 border-t border-gray-100">
+          <div className="flex justify-between pt-2 border-t border-gray-100 gap-3">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-xs font-medium text-gray-600 border border-gray-200 rounded hover:bg-gray-50 transition-colors"
+              className="min-h-[44px] px-4 py-2 text-xs font-medium text-gray-600 border border-gray-200 rounded hover:bg-gray-50 transition-colors"
             >
               Cancelar
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="px-5 py-2 text-xs font-semibold text-white rounded transition-colors disabled:opacity-60"
+              className="min-h-[44px] px-5 py-2 text-xs font-semibold text-white rounded transition-colors disabled:opacity-60"
               style={{ backgroundColor: loading ? '#9CA3AF' : '#00B050' }}
             >
               {loading ? 'Salvando...' : 'Salvar'}
@@ -344,7 +344,7 @@ export default function AdminUsuariosPage() {
         <button
           type="button"
           onClick={() => setModalUsuario('novo')}
-          className="flex items-center gap-2 px-4 py-2 text-xs font-semibold text-white rounded-lg transition-colors"
+          className="flex items-center gap-2 px-4 py-2 min-h-[44px] text-xs font-semibold text-white rounded-lg transition-colors"
           style={{ backgroundColor: '#00B050' }}
         >
           <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -371,8 +371,8 @@ export default function AdminUsuariosPage() {
             <div className="w-5 h-5 border-2 border-gray-300 border-t-green-600 rounded-full animate-spin" />
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full" role="table">
+          <div className="overflow-x-auto -mx-0">
+            <table className="w-full min-w-[600px]" role="table">
               <thead>
                 <tr className="border-b border-gray-200 bg-gray-50">
                   <th scope="col" className="px-4 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Nome</th>
@@ -424,7 +424,7 @@ export default function AdminUsuariosPage() {
                         <button
                           type="button"
                           onClick={() => setModalUsuario(u)}
-                          className="text-xs font-medium text-gray-600 hover:text-gray-900 underline focus:outline-none"
+                          className="inline-flex items-center min-h-[44px] px-2 text-xs font-medium text-gray-600 hover:text-gray-900 underline focus:outline-none"
                         >
                           Editar
                         </button>

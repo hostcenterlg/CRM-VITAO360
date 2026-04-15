@@ -264,7 +264,7 @@ export default function PipelinePage() {
             <button
               type="button"
               onClick={buscarStatus}
-              className="mt-4 w-full flex items-center justify-center gap-1.5 px-3 py-1.5
+              className="mt-4 w-full flex items-center justify-center gap-1.5 px-3 py-2 min-h-[44px]
                          text-xs font-medium text-gray-600 border border-gray-200 rounded-lg
                          hover:bg-gray-50 transition-colors"
             >
@@ -433,8 +433,8 @@ export default function PipelinePage() {
                 <span className="text-sm">Nenhum log disponivel</span>
               </div>
             ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full text-xs">
+              <div className="overflow-x-auto -mx-0">
+                <table className="w-full min-w-[520px] text-xs">
                   <thead>
                     <tr className="text-left">
                       <th className="px-4 py-2.5 text-gray-500 font-medium border-b border-gray-100 whitespace-nowrap">

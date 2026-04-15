@@ -110,7 +110,7 @@ function SinoBell() {
         type="button"
         onClick={handleAbrirDropdown}
         aria-label="Notificacoes"
-        className="relative flex items-center justify-center w-8 h-8 rounded-lg
+        className="relative flex items-center justify-center w-10 h-10 rounded-lg
                    text-gray-500 hover:text-gray-800 hover:bg-gray-100
                    transition-colors focus:outline-none focus:ring-2 focus:ring-green-500"
       >
@@ -134,7 +134,7 @@ function SinoBell() {
       {/* Dropdown */}
       {aberto && (
         <div
-          className="absolute right-0 top-full mt-2 w-80 bg-white border border-gray-200
+          className="absolute right-0 top-full mt-2 w-[min(320px,calc(100vw-1.5rem))] bg-white border border-gray-200
                      rounded-xl shadow-lg z-50 overflow-hidden"
         >
           {/* Cabecalho dropdown */}

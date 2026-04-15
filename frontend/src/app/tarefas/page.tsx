@@ -287,6 +287,7 @@ function Checkbox({ checked, onChange }: { checked: boolean; onChange: () => voi
       className={`
         flex-shrink-0 w-5 h-5 rounded border-2 flex items-center justify-center
         transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-1
+        touch-manipulation
         ${checked
           ? 'border-transparent'
           : 'border-gray-300 bg-white hover:border-green-400'
@@ -651,10 +652,10 @@ export default function TarefasPage() {
 
   return (
     <div className="min-h-full bg-gray-50">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 space-y-6">
+      <div className="max-w-5xl mx-auto px-3 sm:px-6 py-6 space-y-6">
 
         {/* Page header */}
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-3">
           <div>
             <h1 className="text-lg sm:text-xl font-bold text-gray-900">Tarefas</h1>
             <p className="text-sm text-gray-500 mt-0.5">
@@ -664,7 +665,7 @@ export default function TarefasPage() {
           <button
             type="button"
             onClick={() => setModalOpen(true)}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-white shadow-sm transition-all hover:brightness-105 active:scale-95"
+            className="flex items-center gap-2 px-4 min-h-[44px] rounded-lg text-sm font-semibold text-white shadow-sm transition-all hover:brightness-105 active:scale-95 flex-shrink-0"
             style={{ backgroundColor: '#00B050' }}
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -728,14 +729,14 @@ export default function TarefasPage() {
         </div>
 
         {/* Filter tabs */}
-        <div className="flex gap-1 bg-white border border-gray-200 rounded-lg p-1 w-fit overflow-x-auto">
+        <div className="flex gap-1 bg-white border border-gray-200 rounded-lg p-1 overflow-x-auto w-full sm:w-fit">
           {filterTabs.map((tab) => (
             <button
               key={tab.key}
               type="button"
               onClick={() => setActiveFilter(tab.key)}
               className={`
-                flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all whitespace-nowrap
+                flex items-center gap-1.5 px-3 py-2.5 sm:py-1.5 min-h-[44px] sm:min-h-0 rounded-md text-xs font-medium transition-all whitespace-nowrap
                 ${activeFilter === tab.key
                   ? 'text-white shadow-sm'
                   : 'text-gray-500 hover:text-gray-800 hover:bg-gray-50'
@@ -849,8 +850,8 @@ export default function TarefasPage() {
                   style={getRowStyle(tarefa)}
                   aria-label={tarefa.descricao}
                 >
-                  {/* Checkbox */}
-                  <div className="mt-0.5">
+                  {/* Checkbox — padded wrapper ensures 44px touch target */}
+                  <div className="mt-0.5 flex-shrink-0">
                     <Checkbox
                       checked={tarefa.status === 'done'}
                       onChange={() => toggleStatus(tarefa.id)}

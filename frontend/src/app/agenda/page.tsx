@@ -1044,7 +1044,7 @@ export default function AgendaPage() {
 
   return (
     <>
-      <div className="space-y-3 sm:space-y-4 max-w-4xl">
+      <div className="space-y-3 sm:space-y-4 max-w-4xl px-0">
         {/* Cabecalho da pagina */}
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
@@ -1140,9 +1140,9 @@ export default function AgendaPage() {
         {/* Agenda do consultor selecionado */}
         <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
           {/* Filtros */}
-          <div className="flex flex-wrap items-center gap-2 px-4 py-3 bg-gray-50 border-b border-gray-100">
-            {/* Busca */}
-            <div className="relative flex-1 min-w-[180px]">
+          <div className="px-3 md:px-4 py-3 bg-gray-50 border-b border-gray-100 space-y-2">
+            {/* Busca — linha própria no mobile */}
+            <div className="relative w-full">
               <svg
                 aria-hidden="true"
                 className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400"
@@ -1156,54 +1156,57 @@ export default function AgendaPage() {
                 value={filtroBusca}
                 onChange={(e) => setFiltroBusca(e.target.value)}
                 aria-label="Buscar por nome ou CNPJ"
-                className="w-full h-8 pl-8 pr-3 text-xs border border-gray-300 rounded-md bg-white text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                className="w-full h-9 pl-8 pr-3 text-xs border border-gray-300 rounded-md bg-white text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
               />
             </div>
 
-            {/* Filtro prioridade */}
-            <select
-              value={filtroPrioridade}
-              onChange={(e) => setFiltroPrioridade(e.target.value)}
-              aria-label="Filtrar por prioridade"
-              className={`h-8 px-2 text-xs border rounded-md bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors ${
-                filtroPrioridade ? 'border-green-500 bg-green-50' : 'border-gray-300'
-              }`}
-            >
-              <option value="">Prioridade</option>
-              {['P0', 'P1', 'P2', 'P3', 'P4', 'P5', 'P6', 'P7'].map((p) => (
-                <option key={p} value={p}>{p}</option>
-              ))}
-            </select>
-
-            {/* Filtro sinaleiro */}
-            <select
-              value={filtroSinaleiro}
-              onChange={(e) => setFiltroSinaleiro(e.target.value)}
-              aria-label="Filtrar por sinaleiro"
-              className={`h-8 px-2 text-xs border rounded-md bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors ${
-                filtroSinaleiro ? 'border-green-500 bg-green-50' : 'border-gray-300'
-              }`}
-            >
-              <option value="">Sinaleiro</option>
-              {['VERDE', 'AMARELO', 'LARANJA', 'VERMELHO', 'ROXO'].map((s) => (
-                <option key={s} value={s}>{s}</option>
-              ))}
-            </select>
-
-            {/* Limpar filtros */}
-            {temFiltrosAtivos && (
-              <button
-                type="button"
-                onClick={() => { setFiltroPrioridade(''); setFiltroSinaleiro(''); setFiltroBusca(''); }}
-                className="h-8 px-3 text-xs text-gray-500 hover:text-gray-900 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 rounded-md"
+            {/* Selects — 2-col grid no mobile, flex no desktop */}
+            <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:items-center">
+              {/* Filtro prioridade */}
+              <select
+                value={filtroPrioridade}
+                onChange={(e) => setFiltroPrioridade(e.target.value)}
+                aria-label="Filtrar por prioridade"
+                className={`w-full sm:w-auto min-h-[44px] sm:min-h-0 sm:h-8 px-2 text-xs border rounded-md bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors ${
+                  filtroPrioridade ? 'border-green-500 bg-green-50' : 'border-gray-300'
+                }`}
               >
-                Limpar
-              </button>
-            )}
+                <option value="">Prioridade</option>
+                {['P0', 'P1', 'P2', 'P3', 'P4', 'P5', 'P6', 'P7'].map((p) => (
+                  <option key={p} value={p}>{p}</option>
+                ))}
+              </select>
+
+              {/* Filtro sinaleiro */}
+              <select
+                value={filtroSinaleiro}
+                onChange={(e) => setFiltroSinaleiro(e.target.value)}
+                aria-label="Filtrar por sinaleiro"
+                className={`w-full sm:w-auto min-h-[44px] sm:min-h-0 sm:h-8 px-2 text-xs border rounded-md bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors ${
+                  filtroSinaleiro ? 'border-green-500 bg-green-50' : 'border-gray-300'
+                }`}
+              >
+                <option value="">Sinaleiro</option>
+                {['VERDE', 'AMARELO', 'LARANJA', 'VERMELHO', 'ROXO'].map((s) => (
+                  <option key={s} value={s}>{s}</option>
+                ))}
+              </select>
+
+              {/* Limpar filtros */}
+              {temFiltrosAtivos && (
+                <button
+                  type="button"
+                  onClick={() => { setFiltroPrioridade(''); setFiltroSinaleiro(''); setFiltroBusca(''); }}
+                  className="col-span-2 sm:col-span-1 min-h-[44px] sm:min-h-0 sm:h-8 px-3 text-xs text-gray-500 hover:text-gray-900 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 rounded-md border border-gray-200 sm:border-transparent"
+                >
+                  Limpar
+                </button>
+              )}
+            </div>
           </div>
 
           {/* Conteudo da aba */}
-          <div className="p-4">
+          <div className="px-3 py-4 md:px-4">
             {/* Aviso de urgentes */}
             {urgentesNaoPendentes.length > 0 && !isLoading && (
               <div className="mb-4 flex items-center gap-2.5 px-3.5 py-2.5 rounded-md border border-orange-200 bg-orange-50 text-sm">

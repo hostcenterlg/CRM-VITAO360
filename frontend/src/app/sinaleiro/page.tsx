@@ -290,7 +290,7 @@ export default function SinaleiroPage() {
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className="px-4 py-2 text-sm font-medium transition-colors"
+            className="flex-1 sm:flex-none px-4 min-h-[44px] sm:min-h-0 sm:py-2 text-sm font-medium transition-colors"
             style={
               activeTab === tab.id
                 ? { color: '#00B050', borderBottom: '2px solid #00B050', marginBottom: -1 }
@@ -418,13 +418,13 @@ export default function SinaleiroPage() {
           )}
 
           {/* Filters row */}
-          <div className="flex flex-wrap items-end gap-3">
+          <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:items-end sm:gap-3">
             <div className="flex flex-col gap-1">
               <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Cor</label>
               <select
                 value={filtroCor}
                 onChange={(e) => setFiltroCor(e.target.value)}
-                className="h-8 border border-gray-300 rounded-lg px-2 text-xs text-gray-700 bg-white focus:outline-none focus:border-green-600"
+                className="w-full sm:w-auto min-h-[44px] sm:min-h-0 sm:h-8 border border-gray-300 rounded-lg px-2 text-xs text-gray-700 bg-white focus:outline-none focus:border-green-600"
               >
                 <option value="">Todas</option>
                 {COR_ORDER.map((cor) => (
@@ -437,7 +437,7 @@ export default function SinaleiroPage() {
               <select
                 value={filtroConsultor}
                 onChange={(e) => setFiltroConsultor(e.target.value)}
-                className="h-8 border border-gray-300 rounded-lg px-2 text-xs text-gray-700 bg-white focus:outline-none focus:border-green-600"
+                className="w-full sm:w-auto min-h-[44px] sm:min-h-0 sm:h-8 border border-gray-300 rounded-lg px-2 text-xs text-gray-700 bg-white focus:outline-none focus:border-green-600"
               >
                 <option value="">Todos</option>
                 {consultores.map((c) => (
@@ -448,13 +448,13 @@ export default function SinaleiroPage() {
             {(filtroCor || filtroConsultor) && (
               <button
                 onClick={() => { setFiltroCor(''); setFiltroConsultor(''); }}
-                className="h-8 px-3 text-xs text-gray-500 hover:text-gray-800 border border-gray-200 rounded-lg transition-colors"
+                className="col-span-2 sm:col-span-1 min-h-[44px] sm:min-h-0 sm:h-8 px-3 text-xs text-gray-500 hover:text-gray-800 border border-gray-200 rounded-lg transition-colors"
               >
                 Limpar filtros
               </button>
             )}
             {(filtroCor || filtroConsultor) && (
-              <span className="text-xs text-gray-500">
+              <span className="hidden sm:inline text-xs text-gray-500 self-end pb-1">
                 {itens.length.toLocaleString('pt-BR')} registros
               </span>
             )}
@@ -471,7 +471,7 @@ export default function SinaleiroPage() {
                 {loadingCarteira ? 'carregando...' : `${itens.length.toLocaleString('pt-BR')} clientes`}
               </span>
             </div>
-            <div className="overflow-x-auto scrollbar-thin">
+            <div className="overflow-x-auto -mx-0 scrollbar-thin">
               {loadingCarteira ? (
                 <TableSkeleton cols={9} rows={8} />
               ) : itens.length === 0 ? (
@@ -959,7 +959,7 @@ function RankingTable({ itens, onRowClick }: { itens: SinaleiroItem[]; onRowClic
   );
 
   return (
-    <table className="w-full text-sm" role="table">
+    <table className="w-full min-w-[700px] text-sm" role="table">
       <thead>
         <tr style={{ background: '#FAFAFA' }}>
           {['#', 'Cliente', 'UF', 'Consultor', 'Realizado', 'Meta', '% Ating.', 'Gap', 'Cor'].map((h) => (

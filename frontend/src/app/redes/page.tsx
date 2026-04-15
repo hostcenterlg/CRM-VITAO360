@@ -147,7 +147,7 @@ export default function RedesPage() {
     : 0;
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-5 px-3 md:px-4 lg:px-6">
       {/* Titulo */}
       <div>
         <h1 className="text-lg font-bold text-gray-900">Redes e Franquias</h1>
@@ -157,7 +157,7 @@ export default function RedesPage() {
       </div>
 
       {/* Cards de resumo */}
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <div className="bg-white rounded-xl border border-gray-200 p-4 shadow-sm flex flex-col gap-1"
           style={{ borderLeftColor: '#00B050', borderLeftWidth: '4px' }}>
           <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Total Redes</p>
@@ -215,7 +215,8 @@ export default function RedesPage() {
             <p className="text-xs text-gray-400">Nenhuma rede cadastrada.</p>
           </div>
         ) : (
-          <div>
+          <div className="overflow-x-auto -mx-0">
+            <div style={{ minWidth: 640 }}>
             {/* Header tabela */}
             <div className="border-b border-gray-200 bg-gray-50 px-4 py-2.5 grid grid-cols-9 gap-3 text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
               <span className="col-span-2">Rede</span>
@@ -237,7 +238,7 @@ export default function RedesPage() {
                   <button
                     type="button"
                     onClick={() => toggleRede(rede.nome)}
-                    className="w-full px-4 py-3 grid grid-cols-9 gap-3 items-center hover:bg-gray-50 transition-colors text-left focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-inset"
+                    className="w-full px-4 py-3 grid grid-cols-9 gap-3 items-center hover:bg-gray-50 transition-colors text-left focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-inset min-h-[44px]"
                     style={{ backgroundColor: isCritica ? '#FEF2F2' : undefined }}
                     aria-expanded={isExpanded}
                     aria-controls={`rede-lojas-${rede.nome}`}
@@ -308,7 +309,7 @@ export default function RedesPage() {
                           key={loja.cnpj}
                           type="button"
                           onClick={() => router.push(`/carteira?busca=${loja.cnpj}`)}
-                          className="w-full px-10 py-2 grid grid-cols-8 gap-3 items-center hover:bg-white transition-colors text-left focus:outline-none focus:ring-1 focus:ring-green-500 focus:ring-inset cursor-pointer"
+                          className="w-full px-10 py-2 grid grid-cols-8 gap-3 items-center hover:bg-white transition-colors text-left focus:outline-none focus:ring-1 focus:ring-green-500 focus:ring-inset cursor-pointer min-h-[44px]"
                         >
                           <span className="col-span-2 text-[10px] font-mono text-gray-500">{loja.cnpj}</span>
                           <span className="col-span-2 text-xs text-gray-800">{loja.nome}</span>
@@ -340,6 +341,7 @@ export default function RedesPage() {
                 </div>
               );
             })}
+            </div>
           </div>
         )}
       </div>

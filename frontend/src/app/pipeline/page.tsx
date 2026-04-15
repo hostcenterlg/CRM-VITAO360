@@ -551,7 +551,7 @@ function KanbanCard({ cliente, currentStage, onDragStart, onClick, onMobileMove,
             e.stopPropagation();
             onMobileMove(cliente, currentStage);
           }}
-          className="mt-1.5 w-full flex items-center justify-center gap-1 py-1 text-[10px] font-medium text-blue-600 border border-blue-200 rounded bg-blue-50 hover:bg-blue-100 transition-colors"
+          className="mt-1.5 w-full flex items-center justify-center gap-1 min-h-[44px] py-2 text-xs font-medium text-blue-600 border border-blue-200 rounded bg-blue-50 hover:bg-blue-100 transition-colors"
           aria-label="Mover para outro estagio"
         >
           <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -601,7 +601,8 @@ function KanbanColumn({
     <div
       className="flex-shrink-0 flex flex-col rounded-lg border-t-4 bg-white"
       style={{
-        width: 220,
+        width: 240,
+        minWidth: 200,
         borderTopColor: config.borderColor,
         borderLeft: '1px solid #e5e7eb',
         borderRight: '1px solid #e5e7eb',
@@ -701,84 +702,82 @@ function SummaryBar({
     totalClientes > 0 ? ((totalOportunidades / totalClientes) * 100).toFixed(1) : '0.0';
 
   return (
-    <div className="flex-shrink-0 bg-white border border-gray-200 rounded-lg shadow-sm px-4 py-3">
-      <div className="flex items-center flex-wrap gap-4">
-        {/* KPIs */}
-        <div className="flex items-center gap-4 flex-wrap flex-1">
-          <div className="flex flex-col">
-            <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
-              Oportunidades
+    <div className="flex-shrink-0 bg-white border border-gray-200 rounded-lg shadow-sm px-3 md:px-4 py-3">
+      {/* KPIs — grid 2x2 on mobile, single row on desktop */}
+      <div className="grid grid-cols-2 sm:flex sm:items-center gap-3 sm:gap-4 mb-3 sm:mb-0">
+        <div className="flex flex-col">
+          <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
+            Oportunidades
+          </span>
+          {loading ? (
+            <div className="h-6 w-10 bg-gray-100 animate-pulse rounded" />
+          ) : (
+            <span className="text-xl font-bold text-gray-900">
+              {totalOportunidades.toLocaleString('pt-BR')}
             </span>
-            {loading ? (
-              <div className="h-6 w-10 bg-gray-100 animate-pulse rounded" />
-            ) : (
-              <span className="text-xl font-bold text-gray-900">
-                {totalOportunidades.toLocaleString('pt-BR')}
-              </span>
-            )}
-          </div>
-
-          <div className="w-px h-8 bg-gray-200 flex-shrink-0" />
-
-          <div className="flex flex-col">
-            <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
-              Ult. Pedidos
-            </span>
-            {loading ? (
-              <div className="h-6 w-28 bg-gray-100 animate-pulse rounded" />
-            ) : (
-              <span className="text-xl font-bold" style={{ color: '#00B050' }}>
-                {formatBRL(totalUltPedido)}
-              </span>
-            )}
-          </div>
-
-          <div className="w-px h-8 bg-gray-200 flex-shrink-0" />
-
-          <div className="flex flex-col">
-            <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
-              Fat. Acumulado
-            </span>
-            {loading ? (
-              <div className="h-6 w-28 bg-gray-100 animate-pulse rounded" />
-            ) : (
-              <span className="text-lg font-bold text-gray-600">
-                {formatBRL(totalFatAcumulado)}
-              </span>
-            )}
-          </div>
-
-          <div className="w-px h-8 bg-gray-200 flex-shrink-0" />
-
-          <div className="flex flex-col">
-            <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
-              Engajamento
-            </span>
-            {loading ? (
-              <div className="h-6 w-14 bg-gray-100 animate-pulse rounded" />
-            ) : (
-              <span className="text-xl font-bold text-gray-900">
-                {conversionRate}%
-              </span>
-            )}
-          </div>
-
-          {/* Pending API saves indicator */}
-          {pendingMoves > 0 && (
-            <>
-              <div className="w-px h-8 bg-gray-200 flex-shrink-0" />
-              <div className="flex items-center gap-1.5">
-                <div className="w-3.5 h-3.5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin flex-shrink-0" />
-                <span className="text-[10px] text-blue-600 font-medium">
-                  Salvando {pendingMoves} movimentacao{pendingMoves !== 1 ? 'oes' : ''}...
-                </span>
-              </div>
-            </>
           )}
         </div>
 
-        {/* Consultor filter */}
-        <div className="flex flex-col gap-1 flex-shrink-0">
+        <div className="hidden sm:block w-px h-8 bg-gray-200 flex-shrink-0" />
+
+        <div className="flex flex-col">
+          <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
+            Ult. Pedidos
+          </span>
+          {loading ? (
+            <div className="h-6 w-28 bg-gray-100 animate-pulse rounded" />
+          ) : (
+            <span className="text-lg sm:text-xl font-bold" style={{ color: '#00B050' }}>
+              {formatBRL(totalUltPedido)}
+            </span>
+          )}
+        </div>
+
+        <div className="hidden sm:block w-px h-8 bg-gray-200 flex-shrink-0" />
+
+        <div className="flex flex-col">
+          <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
+            Fat. Acumulado
+          </span>
+          {loading ? (
+            <div className="h-6 w-28 bg-gray-100 animate-pulse rounded" />
+          ) : (
+            <span className="text-base sm:text-lg font-bold text-gray-600">
+              {formatBRL(totalFatAcumulado)}
+            </span>
+          )}
+        </div>
+
+        <div className="hidden sm:block w-px h-8 bg-gray-200 flex-shrink-0" />
+
+        <div className="flex flex-col">
+          <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
+            Engajamento
+          </span>
+          {loading ? (
+            <div className="h-6 w-14 bg-gray-100 animate-pulse rounded" />
+          ) : (
+            <span className="text-xl font-bold text-gray-900">
+              {conversionRate}%
+            </span>
+          )}
+        </div>
+
+        {/* Pending API saves indicator */}
+        {pendingMoves > 0 && (
+          <>
+            <div className="hidden sm:block w-px h-8 bg-gray-200 flex-shrink-0" />
+            <div className="flex items-center gap-1.5 col-span-2 sm:col-span-1">
+              <div className="w-3.5 h-3.5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin flex-shrink-0" />
+              <span className="text-[10px] text-blue-600 font-medium">
+                Salvando {pendingMoves} movimentacao{pendingMoves !== 1 ? 'oes' : ''}...
+              </span>
+            </div>
+          </>
+        )}
+
+        {/* Consultor filter — pushed to right on desktop, own row on mobile */}
+        <div className="flex flex-col gap-1 col-span-2 sm:col-span-1 sm:ml-auto flex-shrink-0">
           <label className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
             Consultor
           </label>
@@ -786,7 +785,7 @@ function SummaryBar({
             value={filtroConsultor}
             onChange={(e) => onFiltroConsultor(e.target.value)}
             aria-label="Filtrar por consultor"
-            className={`border rounded px-2 py-1.5 text-xs text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-offset-0 transition-colors ${
+            className={`w-full sm:w-auto min-h-[44px] sm:min-h-0 border rounded px-2 py-1.5 text-xs text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-offset-0 transition-colors ${
               filtroConsultor
                 ? 'border-green-400 bg-green-50 text-green-800 font-medium'
                 : 'border-gray-200'
@@ -1100,7 +1099,7 @@ export default function PipelinePage() {
 
   if (isMobile) {
     return (
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-3 px-3">
         {/* Page header */}
         <div className="flex items-center justify-between">
           <div>
@@ -1113,7 +1112,7 @@ export default function PipelinePage() {
             type="button"
             onClick={loadClientes}
             disabled={loading}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-green-700 border border-green-300 rounded-lg bg-white hover:bg-green-50 transition-colors disabled:opacity-50"
+            className="flex items-center gap-1.5 min-h-[44px] px-3 py-2 text-xs font-semibold text-green-700 border border-green-300 rounded-lg bg-white hover:bg-green-50 transition-colors disabled:opacity-50"
           >
             <svg className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -1128,7 +1127,7 @@ export default function PipelinePage() {
           <select
             value={filtroConsultor}
             onChange={(e) => setFiltroConsultor(e.target.value)}
-            className="flex-1 border border-gray-200 rounded px-2 py-1.5 text-xs bg-white"
+            className="flex-1 border border-gray-200 rounded px-2 min-h-[44px] text-xs bg-white"
           >
             <option value="">Todos</option>
             {CONSULTORES.map((c) => <option key={c} value={c}>{c}</option>)}

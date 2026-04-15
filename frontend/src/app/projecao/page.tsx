@@ -170,17 +170,17 @@ export default function ProjecaoPage() {
       </section>
 
       {/* Grafico Realizado vs Meta por Mes — por consultor */}
-      <section className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
+      <section className="bg-white rounded-xl border border-gray-200 p-4 sm:p-5 shadow-sm">
         <div className="flex items-center justify-between flex-wrap gap-3 mb-4">
           <h2 className="text-sm font-semibold text-gray-700">
             Evolucao Mensal por Consultor (2026)
           </h2>
-          <div className="flex items-center gap-2">
-            <label className="text-xs text-gray-500 font-medium">Consultor:</label>
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            <label className="text-xs text-gray-500 font-medium flex-shrink-0">Consultor:</label>
             <select
               value={filtroConsultor}
               onChange={(e) => setFiltroConsultor(e.target.value)}
-              className="h-7 border border-gray-300 rounded px-2 text-xs text-gray-700 bg-white focus:outline-none focus:border-green-600"
+              className="flex-1 sm:flex-none w-full sm:w-auto min-h-[44px] sm:min-h-0 sm:h-7 border border-gray-300 rounded px-2 text-xs text-gray-700 bg-white focus:outline-none focus:border-green-600"
             >
               {CONSULTORES.map((c) => (
                 <option key={c} value={c}>
@@ -207,7 +207,7 @@ export default function ProjecaoPage() {
             ))}
           </div>
         ) : detalhe?.mensal?.length ? (
-          <GroupedBarChart data={detalhe.mensal} />
+          <div className="min-h-[200px]"><GroupedBarChart data={detalhe.mensal} /></div>
         ) : (
           <div className="h-64 min-h-[200px] flex items-center justify-center text-sm text-gray-400">
             <div className="text-center">
@@ -257,8 +257,8 @@ export default function ProjecaoPage() {
             Sem dados por consultor disponíveis
           </div>
         ) : (
-          <div className="overflow-x-auto scrollbar-thin">
-            <table className="w-full text-sm">
+          <div className="overflow-x-auto -mx-0 scrollbar-thin">
+            <table className="w-full min-w-[540px] text-sm">
               <thead>
                 <tr className="bg-gray-50 text-left">
                   {['Consultor', 'Faturamento', 'Meta', 'Pedidos', '% Alcancado', 'Status'].map((h) => (

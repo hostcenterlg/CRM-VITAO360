@@ -472,7 +472,7 @@ function ProdutosInner() {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 px-3 md:px-4 lg:px-6">
       {/* Cabecalho */}
       <div className="flex items-start justify-between gap-3">
         <div>
@@ -533,7 +533,7 @@ function ProdutosInner() {
       <div className="bg-white rounded-xl border border-gray-200 p-3 shadow-sm">
         <div className="flex flex-wrap items-end gap-3">
           {/* Busca */}
-          <div className="flex flex-col gap-1 flex-1 min-w-[160px]">
+          <div className="flex flex-col gap-1 w-full sm:flex-1 sm:min-w-[160px]">
             <label htmlFor="produtos-busca" className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
               Busca
             </label>
@@ -552,7 +552,7 @@ function ProdutosInner() {
                 onChange={handleBuscaChange}
                 placeholder="Nome ou codigo..."
                 aria-label="Buscar produto por nome ou codigo"
-                className={`w-full pl-8 pr-7 py-1.5 text-xs border rounded focus:outline-none focus:ring-2 focus:ring-green-200 focus:border-green-400 ${
+                className={`w-full pl-8 pr-7 py-2.5 sm:py-1.5 text-xs border rounded focus:outline-none focus:ring-2 focus:ring-green-200 focus:border-green-400 ${
                   busca ? 'border-green-400 bg-green-50' : 'border-gray-200 bg-white'
                 }`}
               />
@@ -577,7 +577,7 @@ function ProdutosInner() {
           </div>
 
           {/* Categoria */}
-          <div className="flex flex-col gap-1 min-w-[140px]">
+          <div className="flex flex-col gap-1 w-full sm:w-auto sm:min-w-[140px]">
             <label htmlFor="produtos-categoria" className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
               Categoria
             </label>
@@ -586,7 +586,7 @@ function ProdutosInner() {
               value={categoria}
               onChange={(e) => handleCategoriaChange(e.target.value)}
               aria-label="Filtrar por categoria"
-              className={`h-8 px-2.5 text-xs border rounded focus:outline-none focus:ring-2 focus:ring-green-200 focus:border-green-400 bg-white ${
+              className={`w-full h-10 sm:h-8 px-2.5 text-xs border rounded focus:outline-none focus:ring-2 focus:ring-green-200 focus:border-green-400 bg-white ${
                 categoria ? 'border-green-400 bg-green-50 text-green-800' : 'border-gray-200 text-gray-700'
               }`}
             >
@@ -598,7 +598,7 @@ function ProdutosInner() {
           </div>
 
           {/* Toggle apenas ativos */}
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col gap-1 w-full sm:w-auto">
             <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
               Status
             </span>
@@ -606,7 +606,7 @@ function ProdutosInner() {
               type="button"
               onClick={handleAtivoToggle}
               aria-pressed={apenasAtivos}
-              className={`h-8 px-3 text-xs font-medium rounded border transition-colors ${
+              className={`w-full sm:w-auto h-10 sm:h-8 px-3 text-xs font-medium rounded border transition-colors ${
                 apenasAtivos
                   ? 'border-green-400 bg-green-50 text-green-800'
                   : 'border-gray-200 bg-white text-gray-600 hover:bg-gray-50'
@@ -632,7 +632,7 @@ function ProdutosInner() {
       {/* Tabela */}
       <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full" role="table">
+          <table className="w-full min-w-[600px]" role="table">
             <thead>
               <tr className="border-b border-gray-200 bg-gray-50">
                 <ThSort label="Codigo"   col="codigo"       sort={sort} onSort={handleSort} />

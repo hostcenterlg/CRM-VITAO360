@@ -462,7 +462,7 @@ export default function AtualizacoesPage() {
             key={cat}
             type="button"
             onClick={() => setFilterCat(filterCat === cat ? 'all' : cat)}
-            className={`px-3 py-1 text-xs font-semibold rounded-full border transition-all
+            className={`min-h-[44px] px-3 py-1 text-xs font-semibold rounded-full border transition-all
               ${filterCat === cat
                 ? 'bg-gray-900 text-white border-gray-900'
                 : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'
@@ -475,7 +475,7 @@ export default function AtualizacoesPage() {
           <button
             type="button"
             onClick={() => { setFilterStatus('all'); setFilterCat('all'); }}
-            className="px-3 py-1 text-xs font-semibold text-red-600 bg-red-50 border border-red-200 rounded-full hover:bg-red-100"
+            className="min-h-[44px] px-3 py-1 text-xs font-semibold text-red-600 bg-red-50 border border-red-200 rounded-full hover:bg-red-100"
           >
             Limpar filtros
           </button>
@@ -512,7 +512,7 @@ export default function AtualizacoesPage() {
               <button
                 type="button"
                 onClick={() => toggleExpand(item.id)}
-                className="w-full flex items-start gap-3 px-4 py-3 text-left"
+                className="w-full flex items-start gap-3 px-4 py-3 min-h-[44px] text-left"
               >
                 {/* Status icon */}
                 <span className={`mt-0.5 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 ${STATUS_CONFIG[item.status].bg} ${STATUS_CONFIG[item.status].text}`} style={{ border: '1px solid' }}>

@@ -139,7 +139,7 @@ function ImportResultCard({
         <button
           type="button"
           onClick={onReset}
-          className="px-4 py-2 text-sm font-semibold text-white rounded-lg transition-opacity hover:opacity-90"
+          className="w-full sm:w-auto min-h-[44px] px-4 py-2 text-sm font-semibold text-white rounded-lg transition-opacity hover:opacity-90"
           style={{ backgroundColor: '#00B050' }}
         >
           Importar outro arquivo
@@ -287,7 +287,7 @@ function DropZone({ onFile, disabled }: DropZoneProps) {
         type="button"
         onClick={handleImport}
         disabled={!selectedFile || disabled}
-        className="w-full sm:w-auto px-6 py-2.5 text-sm font-semibold text-white rounded-lg
+        className="w-full sm:w-auto min-h-[44px] px-6 py-2.5 text-sm font-semibold text-white rounded-lg
                    transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500
                    disabled:opacity-50 disabled:cursor-not-allowed hover:opacity-90 active:scale-[0.99]"
         style={{ backgroundColor: '#00B050' }}
@@ -335,8 +335,8 @@ function HistoryTable({ items, loading }: { items: ImportHistoryItem[]; loading:
   }
 
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full text-sm">
+    <div className="overflow-x-auto -mx-0">
+      <table className="w-full min-w-[600px] text-sm">
         <thead>
           <tr className="bg-gray-50">
             {['Data', 'Arquivo', 'Lidos', 'Inseridos', 'Atualizados', 'Erros', 'Status'].map((h) => (

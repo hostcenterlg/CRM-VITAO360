@@ -147,7 +147,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={submitting || !email || !senha}
-              className="w-full py-2.5 px-4 text-sm font-semibold text-white rounded-lg gradient-vitao
+              className="w-full min-h-[44px] py-2.5 px-4 text-sm font-semibold text-white rounded-lg gradient-vitao
                          transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500
                          disabled:opacity-50 disabled:cursor-not-allowed hover:opacity-90 active:scale-[0.99]"
             >
