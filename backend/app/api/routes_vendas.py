@@ -121,14 +121,14 @@ def _montar_venda_response(venda: Venda, nome_fantasia: str | None) -> VendaResp
     """Constroi VendaResponse a partir de um ORM Venda + nome_fantasia do cliente."""
     return VendaResponse(
         id=venda.id,
-        cnpj=venda.cnpj,
+        cnpj=venda.cnpj or "",
         nome_fantasia=nome_fantasia,
         data_pedido=venda.data_pedido,
         numero_pedido=venda.numero_pedido,
-        valor_pedido=venda.valor_pedido,
+        valor_pedido=venda.valor_pedido or 0,
         consultor=venda.consultor,
         fonte=venda.fonte,
-        classificacao_3tier=venda.classificacao_3tier,
+        classificacao_3tier=venda.classificacao_3tier or "REAL",
         mes_referencia=venda.mes_referencia,
         created_at=venda.created_at,
     )

@@ -110,7 +110,8 @@ class VendaResponse(BaseModel):
     consultor: str | None = None
     fonte: str | None = None
     classificacao_3tier: str = Field(
-        description="REAL | SINTETICO | ALUCINACAO. Nunca deve ser ALUCINACAO em producao (R8)."
+        default="REAL",
+        description="REAL | SINTETICO | ALUCINACAO. Nunca deve ser ALUCINACAO em producao (R8).",
     )
     mes_referencia: str | None = Field(
         default=None,
@@ -128,7 +129,7 @@ class VendaResponse(BaseModel):
         default=None,
         description="Observacoes livres sobre o pedido.",
     )
-    created_at: datetime
+    created_at: datetime | None = None
 
     model_config = {"from_attributes": True}
 
