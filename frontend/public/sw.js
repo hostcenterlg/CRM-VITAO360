@@ -2,7 +2,7 @@
 // Strategy: network-first with cache fallback for pages/assets
 // API calls: NEVER cached (Two-Base Architecture requires fresh data)
 
-const CACHE_NAME = 'crm-vitao360-v1';
+const CACHE_NAME = 'crm-vitao360-v2';
 const PRECACHE_URLS = ['/', '/login', '/agenda', '/carteira'];
 
 // ---------------------------------------------------------------------------
