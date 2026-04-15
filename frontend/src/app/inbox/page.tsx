@@ -1,69 +1,13 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import {
+  fetchInbox,
+  fetchTicketMensagens,
+  type InboxTicket,
+  type DeskrioMensagem,
+} from '@/lib/api';
 import { getToken } from '@/lib/auth';
-
-// ---------------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------------
-
-interface Cliente {
-  cnpj: string;
-  nome_fantasia: string;
-  razao_social?: string;
-  consultor?: string;
-  situacao?: string;
-  temperatura?: string;
-  sinaleiro?: string;
-  curva_abc?: string;
-  score?: number;
-  faturamento_total?: number;
-  ticket_medio?: number;
-  ciclo_medio?: number;
-  ultima_compra?: string;
-  dias_sem_compra?: number;
-  telefone?: string;
-  cidade?: string;
-  uf?: string;
-  prioridade?: string;
-}
-
-interface Atendimento {
-  id: number;
-  cnpj: string;
-  tipo: string;
-  descricao: string;
-  data_atendimento: string;
-  consultor?: string;
-  resultado?: string;
-  valor?: number;
-}
-
-interface Mensagem {
-  id: string;
-  texto: string;
-  enviado: boolean; // true = sent by us (green right), false = received (white left)
-  timestamp: string;
-  tipo: 'texto' | 'atendimento';
-  media_url?: string;
-}
-
-interface ClienteScore {
-  cnpj: string;
-  score?: number;
-  temperatura?: string;
-  prioridade?: string;
-  sinaleiro?: string;
-  curva_abc?: string;
-  ticket_medio?: number;
-  ciclo_medio?: number;
-  ultima_compra?: string;
-  dias_sem_compra?: number;
-  faturamento_total?: number;
-  sugestao_ia?: string;
-  produtos_foco?: string[];
-  tarefas_pendentes?: string[];
-}
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -72,19 +16,23 @@ interface ClienteScore {
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? '';
 const POLL_INTERVAL_MS = 30_000;
 
+type FilterTab = 'todos' | 'aguardando' | 'atendimento' | 'finalizados';
+
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
 
 function getInitials(nome: string): string {
   return nome
-    .split(' ')
+    .trim()
+    .split(/\s+/)
     .slice(0, 2)
     .map((w) => w.charAt(0).toUpperCase())
     .join('');
 }
 
-function formatTime(dateStr: string): string {
+function formatTime(dateStr: string | null): string {
+  if (!dateStr) return '';
   try {
     const d = new Date(dateStr);
     const now = new Date();
@@ -101,36 +49,52 @@ function formatTime(dateStr: string): string {
   }
 }
 
-function formatBRL(v: number): string {
-  return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v);
+function formatMsgTime(dateStr: string): string {
+  try {
+    const d = new Date(dateStr);
+    return d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+  } catch {
+    return '';
+  }
 }
 
-/** Returns a canonical seconds-ago label for the last-refreshed indicator. */
-function formatSecondsAgo(lastRefreshed: Date | null): string {
-  if (!lastRefreshed) return '';
-  const seconds = Math.floor((Date.now() - lastRefreshed.getTime()) / 1000);
-  if (seconds < 5) return 'Atualizado agora';
-  if (seconds < 60) return `Atualizado há ${seconds}s`;
-  const minutes = Math.floor(seconds / 60);
-  return `Atualizado há ${minutes}min`;
+function formatSecondsAgo(last: Date | null): string {
+  if (!last) return '';
+  const secs = Math.floor((Date.now() - last.getTime()) / 1000);
+  if (secs < 5) return 'Atualizado agora';
+  if (secs < 60) return `Atualizado ha ${secs}s`;
+  const mins = Math.floor(secs / 60);
+  return `Atualizado ha ${mins}min`;
+}
+
+function stripMarkdown(text: string): string {
+  return text
+    .replace(/\*([^*]+)\*:/g, '$1:')
+    .replace(/\*([^*]+)\*/g, '$1')
+    .replace(/_([^_]+)_/g, '$1')
+    .trim();
+}
+
+function truncatePreview(text: string, max = 52): string {
+  const clean = stripMarkdown(text);
+  if (clean.length <= max) return clean;
+  return clean.slice(0, max) + '...';
 }
 
 // ---------------------------------------------------------------------------
-// Media helpers
+// Media helpers (preserved from original)
 // ---------------------------------------------------------------------------
 
 type MediaType = 'image' | 'audio' | 'video' | 'document';
 
 function getMediaType(url: string): MediaType | null {
   if (!url) return null;
-  // Try to extract extension from path before query string
   const cleanUrl = url.split('?')[0] ?? '';
   const ext = (cleanUrl.split('.').pop() ?? '').toLowerCase();
   if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext)) return 'image';
   if (['mp3', 'ogg', 'wav', 'opus', 'm4a'].includes(ext)) return 'audio';
   if (['mp4', 'webm'].includes(ext)) return 'video';
   if (['pdf', 'doc', 'docx', 'xls', 'xlsx'].includes(ext)) return 'document';
-  // Fallback: inspect path segments for content-type hints (Deskrio URLs may lack extensions)
   if (/\/(image|img|photo|foto)\//i.test(url)) return 'image';
   if (/\/(audio|voice|ptt)\//i.test(url)) return 'audio';
   if (/\/(video|vid)\//i.test(url)) return 'video';
@@ -152,7 +116,6 @@ function MediaBubble({ url, enviado }: MediaBubbleProps) {
   const [imgExpanded, setImgExpanded] = useState(false);
 
   if (!mediaType) {
-    // Unknown type — show as a generic download link
     return (
       <a
         href={url}
@@ -190,8 +153,6 @@ function MediaBubble({ url, enviado }: MediaBubbleProps) {
             }}
           />
         </button>
-
-        {/* Lightbox overlay */}
         {imgExpanded && (
           <div
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/80"
@@ -279,58 +240,100 @@ function MediaBubble({ url, enviado }: MediaBubbleProps) {
   );
 }
 
-interface TempBadgeProps {
-  temperatura?: string;
-  size?: 'sm' | 'xs';
+// ---------------------------------------------------------------------------
+// Status dot
+// ---------------------------------------------------------------------------
+
+interface StatusDotProps {
+  ticket: InboxTicket;
 }
 
-function TempBadge({ temperatura, size = 'sm' }: TempBadgeProps) {
-  if (!temperatura) return null;
-  const map: Record<string, { label: string; cls: string; icon: string }> = {
-    QUENTE:  { label: 'Quente',  cls: 'bg-green-100 text-green-800 border border-green-200',   icon: 'F' },
-    MORNO:   { label: 'Morno',   cls: 'bg-yellow-100 text-yellow-800 border border-yellow-200', icon: 'A' },
-    FRIO:    { label: 'Frio',    cls: 'bg-gray-100 text-gray-600 border border-gray-200',       icon: 'F' },
-    CRITICO: { label: 'Critico', cls: 'bg-red-100 text-red-800 border border-red-200',         icon: '!' },
-    PERDIDO: { label: 'Perdido', cls: 'bg-red-50 text-red-600 border border-red-200',          icon: 'X' },
-  };
-  const entry = map[temperatura.toUpperCase()] ?? { label: temperatura, cls: 'bg-gray-100 text-gray-600 border border-gray-200', icon: '?' };
-  const textSize = size === 'xs' ? 'text-[9px]' : 'text-[10px]';
-  const tempIcons: Record<string, string> = {
-    QUENTE: '🔥', MORNO: '⚠️', FRIO: '❄️', CRITICO: '🚨', PERDIDO: '✖',
-  };
-  const icon = tempIcons[temperatura.toUpperCase()] ?? '';
+function StatusDot({ ticket }: StatusDotProps) {
+  if (ticket.status === 'closed' || ticket.status === 'resolved') {
+    return (
+      <span title="Finalizado">
+        <span className="w-2 h-2 rounded-full bg-gray-400 inline-block" />
+      </span>
+    );
+  }
+  if (ticket.aguardando_resposta) {
+    return (
+      <span title="Aguardando resposta">
+        <span className="w-2 h-2 rounded-full bg-orange-400 inline-block" />
+      </span>
+    );
+  }
   return (
-    <span className={`inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded font-semibold ${textSize} ${entry.cls}`}>
-      <span>{icon}</span>
-      <span>{entry.label}</span>
+    <span title="Em atendimento">
+      <span className="w-2 h-2 rounded-full bg-green-500 inline-block" />
     </span>
   );
 }
 
 // ---------------------------------------------------------------------------
-// Fetch helpers
+// Status badge (for chat header)
 // ---------------------------------------------------------------------------
 
-async function apiFetch<T>(path: string, options?: RequestInit): Promise<T> {
-  const token = getToken();
-  const res = await fetch(`${BASE_URL}${path}`, {
-    cache: 'no-store',
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      ...(options?.headers as Record<string, string> | undefined),
-    },
-  });
-  if (res.status === 401) {
-    if (typeof window !== 'undefined') window.location.href = '/login';
-    throw new Error('Sessao expirada');
+function StatusBadge({ ticket }: StatusDotProps) {
+  if (ticket.status === 'closed' || ticket.status === 'resolved') {
+    return (
+      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-gray-100 border border-gray-200">
+        <span className="w-1.5 h-1.5 rounded-full bg-gray-400" />
+        <span className="text-[10px] font-medium text-gray-600">Finalizado</span>
+      </span>
+    );
   }
-  if (!res.ok) {
-    const body = await res.json().catch(() => ({})) as Record<string, unknown>;
-    throw new Error((body.detail as string) || `API error ${res.status}`);
+  if (ticket.aguardando_resposta) {
+    return (
+      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-orange-50 border border-orange-200">
+        <span className="w-1.5 h-1.5 rounded-full bg-orange-400 animate-pulse" />
+        <span className="text-[10px] font-medium text-orange-700">Aguardando resposta</span>
+      </span>
+    );
   }
-  return res.json() as Promise<T>;
+  return (
+    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-green-50 border border-green-200">
+      <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
+      <span className="text-[10px] font-medium text-green-700">Em atendimento</span>
+    </span>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Avatar
+// ---------------------------------------------------------------------------
+
+interface AvatarProps {
+  nome: string;
+  size?: 'sm' | 'md';
+}
+
+function Avatar({ nome, size = 'md' }: AvatarProps) {
+  const dim = size === 'sm' ? 'w-8 h-8 text-[10px]' : 'w-10 h-10 text-xs';
+  return (
+    <div
+      className={`${dim} rounded-full flex items-center justify-center flex-shrink-0 text-white font-bold`}
+      style={{ backgroundColor: '#00B050' }}
+    >
+      {getInitials(nome)}
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Skeleton row
+// ---------------------------------------------------------------------------
+
+function SkeletonRow() {
+  return (
+    <div className="flex items-center gap-3 px-3 py-3 border-b border-gray-50">
+      <div className="w-10 h-10 rounded-full bg-gray-100 animate-pulse flex-shrink-0" />
+      <div className="flex-1 space-y-1.5">
+        <div className="h-3 bg-gray-100 animate-pulse rounded w-3/4" />
+        <div className="h-2.5 bg-gray-100 animate-pulse rounded w-1/2" />
+      </div>
+    </div>
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -338,52 +341,80 @@ async function apiFetch<T>(path: string, options?: RequestInit): Promise<T> {
 // ---------------------------------------------------------------------------
 
 interface ConversationListProps {
-  clientes: Cliente[];
+  tickets: InboxTicket[];
   loading: boolean;
   error: string | null;
-  selectedCnpj: string | null;
+  selectedId: number | null;
   busca: string;
-  onBuscaChange: (v: string) => void;
-  onSelect: (c: Cliente) => void;
-  atendimentoMap: Record<string, Atendimento | undefined>;
+  filterTab: FilterTab;
   lastRefreshed: Date | null;
-  onRefresh: () => void;
   refreshing: boolean;
+  onBuscaChange: (v: string) => void;
+  onFilterTab: (t: FilterTab) => void;
+  onSelect: (t: InboxTicket) => void;
+  onRefresh: () => void;
 }
 
 function ConversationList({
-  clientes,
+  tickets,
   loading,
   error,
-  selectedCnpj,
+  selectedId,
   busca,
-  onBuscaChange,
-  onSelect,
-  atendimentoMap,
+  filterTab,
   lastRefreshed,
-  onRefresh,
   refreshing,
+  onBuscaChange,
+  onFilterTab,
+  onSelect,
+  onRefresh,
 }: ConversationListProps) {
+  const tabs: { key: FilterTab; label: string }[] = [
+    { key: 'todos', label: 'Todos' },
+    { key: 'aguardando', label: 'Aguardando' },
+    { key: 'atendimento', label: 'Em atend.' },
+    { key: 'finalizados', label: 'Finaliz.' },
+  ];
+
+  // Filter by tab
+  const filtered = tickets.filter((t) => {
+    const matchBusca = !busca.trim() ||
+      t.contato_nome.toLowerCase().includes(busca.toLowerCase()) ||
+      t.contato_numero.includes(busca);
+    if (!matchBusca) return false;
+    if (filterTab === 'aguardando') return t.aguardando_resposta && t.status === 'open';
+    if (filterTab === 'atendimento') return !t.aguardando_resposta && t.status === 'open';
+    if (filterTab === 'finalizados') return t.status === 'closed' || t.status === 'resolved';
+    return true;
+  });
+
+  // Count badges
+  const countAguardando = tickets.filter((t) => t.aguardando_resposta && t.status === 'open').length;
+
   return (
     <div className="w-full flex-shrink-0 border-r border-gray-200 bg-white flex flex-col h-full">
       {/* Header */}
-      <div className="px-4 py-3 border-b border-gray-100 flex-shrink-0">
+      <div className="px-4 pt-3 pb-2 border-b border-gray-100 flex-shrink-0">
         <div className="flex items-center justify-between mb-2">
-          <h2 className="text-sm font-bold text-gray-900">WhatsApp Inbox</h2>
           <div className="flex items-center gap-2">
-            <div className="flex items-center gap-1.5">
-              <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-              <span className="text-[10px] text-green-700 font-medium">Online</span>
+            {/* WhatsApp icon */}
+            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="#00B050">
+              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+            </svg>
+            <h2 className="text-sm font-bold text-gray-900">WhatsApp Inbox</h2>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1">
+              <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+              <span className="text-[9px] text-green-700 font-medium">Deskrio</span>
             </div>
-            {/* Manual refresh button */}
             <button
               type="button"
               onClick={onRefresh}
               disabled={refreshing}
-              aria-label="Atualizar conversas"
-              title="Atualizar conversas"
+              aria-label="Atualizar"
               className="p-1 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100
-                         transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                         transition-colors disabled:opacity-40"
             >
               <svg
                 className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`}
@@ -396,7 +427,6 @@ function ConversationList({
           </div>
         </div>
 
-        {/* Last-refreshed indicator */}
         {lastRefreshed && (
           <p className="text-[9px] text-gray-400 mb-2 leading-none">
             {formatSecondsAgo(lastRefreshed)}
@@ -404,10 +434,10 @@ function ConversationList({
         )}
 
         {/* Search */}
-        <div className="relative">
+        <div className="relative mb-2">
           <svg
             className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none"
-            fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"
+            fill="none" viewBox="0 0 24 24" stroke="currentColor"
           >
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
               d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -416,106 +446,129 @@ function ConversationList({
             type="text"
             value={busca}
             onChange={(e) => onBuscaChange(e.target.value)}
-            placeholder="Buscar cliente..."
-            aria-label="Buscar cliente"
+            placeholder="Buscar contato..."
+            aria-label="Buscar contato"
             className="w-full pl-8 pr-3 py-2 text-xs border border-gray-200 rounded-lg bg-gray-50
                        focus:outline-none focus:ring-2 focus:ring-green-200 focus:border-green-400
                        placeholder:text-gray-400"
           />
         </div>
+
+        {/* Filter tabs */}
+        <div className="flex gap-0.5 bg-gray-100 rounded-lg p-0.5">
+          {tabs.map((tab) => (
+            <button
+              key={tab.key}
+              type="button"
+              onClick={() => onFilterTab(tab.key)}
+              className={`flex-1 flex items-center justify-center gap-1 py-1 rounded-md text-[10px] font-semibold
+                         transition-colors focus:outline-none
+                         ${filterTab === tab.key
+                           ? 'bg-white text-gray-900 shadow-sm'
+                           : 'text-gray-500 hover:text-gray-700'}`}
+            >
+              {tab.label}
+              {tab.key === 'aguardando' && countAguardando > 0 && (
+                <span className="bg-orange-400 text-white text-[8px] font-bold px-1 py-0.5 rounded-full leading-none min-w-[14px] text-center">
+                  {countAguardando}
+                </span>
+              )}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* List */}
-      <div className="flex-1 overflow-y-auto scrollbar-thin">
+      <div className="flex-1 overflow-y-auto" style={{ scrollbarWidth: 'thin' }}>
         {loading && (
-          <div className="flex flex-col gap-2 p-3">
-            {[...Array(8)].map((_, i) => (
-              <div key={i} className="flex items-center gap-3 p-2">
-                <div className="w-10 h-10 rounded-full bg-gray-100 animate-pulse flex-shrink-0" />
-                <div className="flex-1 space-y-1.5">
-                  <div className="h-3 bg-gray-100 animate-pulse rounded w-3/4" />
-                  <div className="h-2.5 bg-gray-100 animate-pulse rounded w-1/2" />
-                </div>
-              </div>
-            ))}
+          <div>
+            {[...Array(8)].map((_, i) => <SkeletonRow key={i} />)}
           </div>
         )}
 
         {!loading && error && (
-          <div className="p-5 text-center">
-            <svg className="w-8 h-8 text-amber-300 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="flex flex-col items-center justify-center h-48 text-center px-6">
+            <svg className="w-8 h-8 text-amber-300 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
                 d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
             </svg>
-            <p className="text-xs font-medium text-gray-600 mb-1">
-              WhatsApp temporariamente indisponivel
-            </p>
-            <p className="text-[11px] text-gray-400">
-              Mostrando atendimentos do CRM
-            </p>
+            <p className="text-xs font-medium text-gray-600 mb-1">Erro ao carregar</p>
+            <p className="text-[11px] text-gray-400">{error}</p>
           </div>
         )}
 
-        {!loading && !error && clientes.length === 0 && (
+        {!loading && !error && filtered.length === 0 && (
           <div className="flex flex-col items-center justify-center h-48 text-center px-6">
-            <svg className="w-10 h-10 text-gray-300 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg className="w-10 h-10 text-gray-200 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
                 d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
             </svg>
-            <p className="text-xs font-medium text-gray-500">Nenhum cliente encontrado</p>
-            <p className="text-[11px] text-gray-400 mt-1">Tente outro termo de busca</p>
+            <p className="text-xs font-medium text-gray-500">Nenhuma conversa</p>
+            <p className="text-[11px] text-gray-400 mt-1">
+              {busca ? 'Tente outro termo' : 'Sem tickets nesta categoria'}
+            </p>
           </div>
         )}
 
-        {!loading && !error && clientes.map((c) => {
-          const lastAtt = atendimentoMap[c.cnpj];
-          const isSelected = selectedCnpj === c.cnpj;
+        {!loading && !error && filtered.map((t) => {
+          const isSelected = selectedId === t.ticket_id;
+          const isAguardando = t.aguardando_resposta && t.status === 'open';
           return (
             <button
-              key={c.cnpj}
+              key={t.ticket_id}
               type="button"
-              onClick={() => onSelect(c)}
+              onClick={() => onSelect(t)}
               aria-pressed={isSelected}
               className={`w-full flex items-start gap-3 px-3 py-3 text-left border-b border-gray-50
                           transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2
-                          focus:ring-inset focus:ring-green-300
-                          ${isSelected ? 'bg-green-50 border-l-2 border-l-green-500' : ''}`}
+                          focus:ring-inset focus:ring-green-300 relative
+                          ${isSelected ? 'bg-green-50' : ''}
+                          ${isAguardando ? 'border-l-2 border-l-orange-400' : isSelected ? 'border-l-2 border-l-green-500' : 'border-l-2 border-l-transparent'}`}
             >
               {/* Avatar */}
-              <div
-                className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0
-                           text-white text-xs font-bold"
-                style={{ backgroundColor: '#00B050' }}
-              >
-                {getInitials(c.nome_fantasia)}
+              <div className="relative flex-shrink-0 mt-0.5">
+                <Avatar nome={t.contato_nome} size="md" />
+                <span className="absolute -bottom-0.5 -right-0.5">
+                  <StatusDot ticket={t} />
+                </span>
               </div>
 
-              {/* Info */}
+              {/* Content */}
               <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between gap-1 mb-0.5">
-                  <p className="text-xs font-semibold text-gray-900 truncate">{c.nome_fantasia}</p>
-                  {lastAtt && (
-                    <span className="text-[10px] text-gray-400 flex-shrink-0">
-                      {formatTime(lastAtt.data_atendimento)}
+                <div className="flex items-start justify-between gap-1 mb-0.5">
+                  <p className={`text-xs font-semibold text-gray-900 truncate leading-tight
+                    ${t.mensagens_nao_lidas > 0 ? 'font-bold' : ''}`}>
+                    {t.contato_nome}
+                  </p>
+                  <div className="flex items-center gap-1 flex-shrink-0">
+                    {t.mensagens_nao_lidas > 0 && (
+                      <span className="bg-green-500 text-white text-[9px] font-bold
+                                       w-4 h-4 rounded-full flex items-center justify-center">
+                        {t.mensagens_nao_lidas > 9 ? '9+' : t.mensagens_nao_lidas}
+                      </span>
+                    )}
+                    <span className="text-[10px] text-gray-400">
+                      {formatTime(t.ultima_mensagem_data ?? t.ultima_msg_cliente_data)}
                     </span>
-                  )}
+                  </div>
                 </div>
 
-                <p className="text-[11px] text-gray-500 truncate mb-1">
-                  {lastAtt
-                    ? lastAtt.descricao.slice(0, 48) + (lastAtt.descricao.length > 48 ? '...' : '')
-                    : `${c.uf ?? ''} · ${c.consultor ?? ''}`}
+                <p className={`text-[11px] truncate leading-tight mb-1
+                  ${t.mensagens_nao_lidas > 0 ? 'text-gray-800 font-medium' : 'text-gray-500'}`}>
+                  {t.ultima_mensagem ? truncatePreview(t.ultima_mensagem) : '\u00a0'}
                 </p>
 
-                <div className="flex items-center justify-between gap-1">
-                  <TempBadge temperatura={c.temperatura} size="xs" />
-                  {c.curva_abc && (
-                    <span className={`text-[9px] font-bold px-1 py-0.5 rounded
-                      ${c.curva_abc === 'A' ? 'bg-green-100 text-green-700'
-                        : c.curva_abc === 'B' ? 'bg-yellow-100 text-yellow-700'
-                        : 'bg-orange-100 text-orange-700'}`}>
-                      {c.curva_abc}
+                <div className="flex items-center gap-1.5">
+                  {t.atendente_nome && (
+                    <span className="text-[9px] text-gray-400 truncate">
+                      {t.atendente_nome.replace('- Vitao', '').replace('- vitao', '').trim()}
                     </span>
+                  )}
+                  {t.origem && (
+                    <span className="text-[9px] text-gray-300">·</span>
+                  )}
+                  {t.origem && (
+                    <span className="text-[9px] text-gray-400">{t.origem}</span>
                   )}
                 </div>
               </div>
@@ -528,41 +581,37 @@ function ConversationList({
 }
 
 // ---------------------------------------------------------------------------
-// Center panel — Chat area
+// Chat panel
 // ---------------------------------------------------------------------------
 
 interface ChatPanelProps {
-  cliente: Cliente | null;
-  mensagens: Mensagem[];
-  loadingMensagens: boolean;
+  ticket: InboxTicket | null;
+  mensagens: DeskrioMensagem[];
+  loading: boolean;
+  refreshing: boolean;
   inputTexto: string;
+  sending: boolean;
+  lastRefreshed: Date | null;
   onInputChange: (v: string) => void;
   onSend: () => void;
-  sending: boolean;
   onBack: () => void;
   showBack: boolean;
-  lastRefreshed: Date | null;
   onRefresh: () => void;
-  refreshingMensagens: boolean;
-  pollingAtivo: boolean;
-  fetchFalhou: boolean;
 }
 
 function ChatPanel({
-  cliente,
+  ticket,
   mensagens,
-  loadingMensagens,
+  loading,
+  refreshing,
   inputTexto,
+  sending,
+  lastRefreshed,
   onInputChange,
   onSend,
-  sending,
   onBack,
   showBack,
-  lastRefreshed,
   onRefresh,
-  refreshingMensagens,
-  pollingAtivo,
-  fetchFalhou,
 }: ChatPanelProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -579,12 +628,13 @@ function ChatPanel({
   }
 
   const quickPills = [
-    { label: 'Catalogo', icon: 'C', msg: 'Segue o catalogo de produtos VITAO: [link]' },
-    { label: 'Tabela de Precos', icon: 'R$', msg: 'Segue a tabela de precos atualizada: [link]' },
-    { label: 'Prazo de Entrega', icon: 'D', msg: 'O prazo de entrega para sua regiao e de 3 a 5 dias uteis.' },
+    { label: 'Catalogo', msg: 'Segue o catalogo de produtos VITAO: [link]' },
+    { label: 'Tabela de Precos', msg: 'Segue a tabela de precos atualizada: [link]' },
+    { label: 'Prazo de Entrega', msg: 'O prazo de entrega para sua regiao e de 3 a 5 dias uteis.' },
   ];
 
-  if (!cliente) {
+  // Empty state — no ticket selected
+  if (!ticket) {
     return (
       <div className="flex-1 flex flex-col items-center justify-center bg-gray-50">
         <div
@@ -596,13 +646,15 @@ function ChatPanel({
               d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
           </svg>
         </div>
-        <h3 className="text-sm font-semibold text-gray-700">Selecione um cliente</h3>
+        <h3 className="text-sm font-semibold text-gray-700">Selecione uma conversa</h3>
         <p className="text-xs text-gray-400 mt-1 text-center px-8">
-          Escolha uma conversa na lista ao lado para comecar
+          Escolha um ticket na lista ao lado para ver o historico
         </p>
       </div>
     );
   }
+
+  const isClosed = ticket.status === 'closed' || ticket.status === 'resolved';
 
   return (
     <div className="flex-1 flex flex-col bg-gray-50 min-w-0">
@@ -612,8 +664,8 @@ function ChatPanel({
           <button
             type="button"
             onClick={onBack}
-            aria-label="Voltar a lista"
-            className="mr-1 p-1.5 rounded-lg text-gray-500 hover:bg-gray-100 transition-colors"
+            aria-label="Voltar"
+            className="p-1.5 rounded-lg text-gray-500 hover:bg-gray-100 transition-colors"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -621,181 +673,124 @@ function ChatPanel({
           </button>
         )}
 
-        <div
-          className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 text-white text-xs font-bold"
-          style={{ backgroundColor: '#00B050' }}
-        >
-          {getInitials(cliente.nome_fantasia)}
-        </div>
+        <Avatar nome={ticket.contato_nome} size="sm" />
 
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-semibold text-gray-900 truncate">{cliente.nome_fantasia}</p>
-          <div className="flex items-center gap-2">
+          <p className="text-sm font-semibold text-gray-900 truncate leading-tight">
+            {ticket.contato_nome}
+          </p>
+          <div className="flex items-center gap-2 flex-wrap">
             <span className="text-[10px] text-gray-400">
-              {cliente.cidade && cliente.uf ? `${cliente.cidade}, ${cliente.uf}` : cliente.uf ?? ''}
+              {ticket.contato_numero
+                ? ticket.contato_numero.replace(/^55/, '+55 ').replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3')
+                : ''}
             </span>
-            {cliente.temperatura && (
-              <TempBadge temperatura={cliente.temperatura} size="xs" />
+            {ticket.atendente_nome && (
+              <span className="text-[10px] text-gray-400">
+                · {ticket.atendente_nome.replace('- Vitao', '').replace('- vitao', '').trim()}
+              </span>
             )}
-            {/* Connection status badge */}
-            {fetchFalhou ? (
-              <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-red-50 border border-red-200">
-                <span className="w-1.5 h-1.5 rounded-full bg-red-500 flex-shrink-0" />
-                <span className="text-[9px] font-medium text-red-600">Offline</span>
-              </span>
-            ) : refreshingMensagens ? (
-              <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-yellow-50 border border-yellow-200">
-                <span className="w-1.5 h-1.5 rounded-full bg-yellow-400 animate-pulse flex-shrink-0" />
-                <span className="text-[9px] font-medium text-yellow-700">Atualizando...</span>
-              </span>
-            ) : pollingAtivo ? (
-              <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-green-50 border border-green-200">
-                <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse flex-shrink-0" />
-                <span className="text-[9px] font-medium text-green-700">Ao vivo</span>
-              </span>
-            ) : null}
           </div>
         </div>
 
-        {/* Action buttons */}
         <div className="flex items-center gap-2 flex-shrink-0">
-          {/* Manual refresh for messages */}
+          <StatusBadge ticket={ticket} />
+          {refreshing && (
+            <div className="w-3.5 h-3.5 border-2 border-gray-200 border-t-green-500 rounded-full animate-spin" />
+          )}
           <button
             type="button"
             onClick={onRefresh}
-            disabled={refreshingMensagens || loadingMensagens}
+            disabled={loading || refreshing}
             aria-label="Atualizar mensagens"
-            title={lastRefreshed ? formatSecondsAgo(lastRefreshed) : 'Atualizar mensagens'}
+            title={lastRefreshed ? formatSecondsAgo(lastRefreshed) : 'Atualizar'}
             className="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100
-                       transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                       transition-colors disabled:opacity-40"
           >
-            <svg
-              className={`w-4 h-4 ${refreshingMensagens ? 'animate-spin' : ''}`}
-              fill="none" viewBox="0 0 24 24" stroke="currentColor"
-            >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
                 d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
             </svg>
           </button>
-
-          <button
-            type="button"
-            title="Ligar para o cliente"
-            className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium text-gray-600
-                       border border-gray-200 rounded-lg hover:bg-gray-50 hover:border-gray-300
-                       transition-colors"
+          <span
+            className="text-[9px] text-gray-400 hidden lg:inline"
+            title="ID do ticket Deskrio"
           >
-            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-            </svg>
-            <span className="hidden sm:inline">Ligar</span>
-          </button>
-          <a
-            href={`/carteira?busca=${encodeURIComponent(cliente.cnpj)}`}
-            title="Ver ficha completa do cliente"
-            className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium text-white
-                       rounded-lg transition-colors"
-            style={{ backgroundColor: '#00B050' }}
-          >
-            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-            </svg>
-            <span className="hidden sm:inline">Ver Pedidos</span>
-          </a>
+            #{ticket.ticket_id}
+          </span>
         </div>
       </div>
 
-      {/* Last-refreshed indicator bar */}
+      {/* Last-refreshed bar */}
       {lastRefreshed && (
-        <div className="flex items-center justify-center px-4 py-1 bg-gray-50 border-b border-gray-100 flex-shrink-0">
-          <span className="text-[10px] text-gray-400">{formatSecondsAgo(lastRefreshed)}</span>
+        <div className="flex items-center justify-center px-4 py-1 bg-white border-b border-gray-100 flex-shrink-0">
+          <span className="text-[9px] text-gray-400">{formatSecondsAgo(lastRefreshed)}</span>
         </div>
       )}
 
-      {/* Messages area */}
-      <div className="flex-1 overflow-y-auto scrollbar-thin px-4 py-4 space-y-3">
-        {loadingMensagens && (
+      {/* Messages */}
+      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3" style={{ scrollbarWidth: 'thin' }}>
+        {loading && (
           <div className="flex justify-center py-8">
-            <div className="w-5 h-5 border-2 border-gray-300 border-t-green-500 rounded-full animate-spin" />
+            <div className="w-5 h-5 border-2 border-gray-200 border-t-green-500 rounded-full animate-spin" />
           </div>
         )}
 
-        {!loadingMensagens && mensagens.length === 0 && (
+        {!loading && mensagens.length === 0 && (
           <div className="flex flex-col items-center justify-center h-32 text-center">
-            <svg className="w-8 h-8 text-amber-300 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg className="w-8 h-8 text-gray-200 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
-                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
             </svg>
-            <p className="text-xs font-medium text-gray-600 mb-1">
-              WhatsApp temporariamente indisponivel
-            </p>
-            <p className="text-[11px] text-gray-400">
-              Mostrando atendimentos do CRM
-            </p>
+            <p className="text-xs font-medium text-gray-500">Sem mensagens ainda</p>
+            <p className="text-[11px] text-gray-400 mt-1">O historico aparecera aqui</p>
           </div>
         )}
 
-        {!loadingMensagens && mensagens.map((m) => {
-          const isAtendimento = m.tipo === 'atendimento';
+        {!loading && mensagens.map((m) => {
+          const enviado = !m.de_cliente;
           const mediaType = m.media_url ? getMediaType(m.media_url) : null;
+
           return (
-            <div
-              key={m.id}
-              className={`flex ${m.enviado ? 'justify-end' : 'justify-start'}`}
-            >
-              {!m.enviado && (
+            <div key={m.id} className={`flex ${enviado ? 'justify-end' : 'justify-start'}`}>
+              {/* Avatar for incoming */}
+              {!enviado && (
                 <div
                   className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0
-                             text-white text-[9px] font-bold mr-2 mt-auto mb-0.5"
-                  style={{ backgroundColor: isAtendimento ? '#6366F1' : '#6B7280' }}
-                  title={isAtendimento ? 'Atendimento CRM' : 'WhatsApp'}
+                             text-white text-[9px] font-bold mr-2 mt-auto mb-0.5 bg-gray-400"
                 >
-                  {isAtendimento ? 'A' : 'W'}
+                  {getInitials(m.nome_contato ?? ticket.contato_nome)}
                 </div>
               )}
+
               <div className="max-w-xs lg:max-w-sm xl:max-w-md">
-                {isAtendimento && (
-                  <span className="block text-[9px] font-semibold text-indigo-400 mb-0.5 uppercase tracking-wide ml-1">
-                    Registro CRM
-                  </span>
+                {/* Sender name for outgoing */}
+                {enviado && m.nome_contato && (
+                  <p className="text-[9px] text-gray-400 text-right mb-0.5 mr-1 truncate max-w-[200px] ml-auto">
+                    {m.nome_contato.replace('- Vitao', '').replace('- vitao', '').trim()}
+                  </p>
                 )}
                 <div
                   className={`px-3 py-2 text-xs leading-relaxed shadow-sm
-                    ${m.enviado
-                      ? 'text-white'
-                      : isAtendimento
-                        ? 'bg-indigo-50 text-gray-800 border border-indigo-200'
-                        : 'bg-white text-gray-800 border border-gray-200'
-                    }`}
+                    ${enviado ? 'text-white' : 'bg-white text-gray-800 border border-gray-200'}`}
                   style={{
-                    borderRadius: m.enviado
-                      ? '16px 16px 4px 16px'
-                      : '16px 16px 16px 4px',
-                    backgroundColor: m.enviado ? '#00B050' : undefined,
+                    borderRadius: enviado ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
+                    backgroundColor: enviado ? '#00B050' : undefined,
                   }}
                 >
-                  {/* Media content — rendered above text */}
                   {m.media_url && (
                     <div className={`mb-1.5 ${mediaType === 'audio' ? 'w-full' : ''}`}>
-                      <MediaBubble url={m.media_url} enviado={m.enviado} />
+                      <MediaBubble url={m.media_url} enviado={enviado} />
                     </div>
                   )}
-                  {/* Text content — only shown when present */}
                   {m.texto && (
-                    <span>{m.texto}</span>
+                    <span className="whitespace-pre-wrap break-words">{m.texto}</span>
                   )}
                 </div>
-                <div className={`flex items-center gap-1.5 mt-0.5 ${m.enviado ? 'justify-end' : 'justify-start'}`}>
-                  {!isAtendimento && !m.enviado && (
-                    <span className="text-[8px] text-green-500 font-medium">WA</span>
-                  )}
-                  <span className="text-[9px] text-gray-400">
-                    {formatTime(m.timestamp)}
-                  </span>
-                  {m.enviado && (
-                    <svg className="w-3 h-3 text-green-200" fill="currentColor" viewBox="0 0 24 24">
+                <div className={`flex items-center gap-1 mt-0.5 ${enviado ? 'justify-end' : 'justify-start'}`}>
+                  <span className="text-[9px] text-gray-400">{formatMsgTime(m.timestamp)}</span>
+                  {enviado && (
+                    <svg className="w-3 h-3 text-green-300" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
                     </svg>
                   )}
@@ -804,254 +799,80 @@ function ChatPanel({
             </div>
           );
         })}
+
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Quick action pills */}
-      <div className="flex items-center gap-2 px-4 pb-2 pt-1 bg-gray-50 flex-shrink-0">
-        {quickPills.map((pill) => (
-          <button
-            key={pill.label}
-            type="button"
-            onClick={() => onInputChange(pill.msg)}
-            className="flex items-center gap-1 px-2.5 py-1 text-[10px] font-medium text-gray-600
-                       bg-white border border-gray-200 rounded-full hover:border-green-300
-                       hover:text-green-700 transition-colors whitespace-nowrap"
-          >
-            <span className="text-[9px] font-bold">{pill.icon}</span>
-            {pill.label}
-          </button>
-        ))}
-      </div>
+      {/* Closed notice */}
+      {isClosed && (
+        <div className="flex items-center justify-center gap-2 px-4 py-2 bg-gray-100 border-t border-gray-200 flex-shrink-0">
+          <svg className="w-3.5 h-3.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+              d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+          </svg>
+          <span className="text-[11px] text-gray-500">Ticket finalizado — envio desabilitado</span>
+        </div>
+      )}
+
+      {/* Quick pills */}
+      {!isClosed && (
+        <div className="flex items-center gap-2 px-4 pb-2 pt-1 bg-gray-50 flex-shrink-0 overflow-x-auto">
+          {quickPills.map((pill) => (
+            <button
+              key={pill.label}
+              type="button"
+              onClick={() => onInputChange(pill.msg)}
+              className="flex items-center gap-1 px-2.5 py-1 text-[10px] font-medium text-gray-600
+                         bg-white border border-gray-200 rounded-full hover:border-green-300
+                         hover:text-green-700 transition-colors whitespace-nowrap flex-shrink-0"
+            >
+              {pill.label}
+            </button>
+          ))}
+        </div>
+      )}
 
       {/* Input bar */}
-      <div className="px-4 bg-gray-50 flex-shrink-0" style={{ paddingBottom: 'max(1rem, env(safe-area-inset-bottom))' }}>
-        <div className="flex items-end gap-2 bg-white border border-gray-200 rounded-2xl
-                        shadow-sm px-3 py-2 focus-within:border-green-400 focus-within:ring-2
-                        focus-within:ring-green-100 transition-all">
-          <textarea
-            ref={inputRef}
-            value={inputTexto}
-            onChange={(e) => onInputChange(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="Digite uma mensagem... (Enter para enviar)"
-            aria-label="Mensagem"
-            rows={1}
-            className="flex-1 resize-none text-xs text-gray-900 placeholder:text-gray-400
-                       bg-transparent focus:outline-none leading-relaxed max-h-32"
-            style={{ minHeight: '20px' }}
-          />
-          <button
-            type="button"
-            onClick={onSend}
-            disabled={sending || !inputTexto.trim()}
-            aria-label="Enviar mensagem"
-            className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center
-                       transition-all disabled:opacity-40 disabled:cursor-not-allowed"
-            style={{ backgroundColor: '#00B050' }}
-          >
-            {sending ? (
-              <div className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
-            ) : (
-              <svg className="w-4 h-4 text-white translate-x-0.5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
-              </svg>
-            )}
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ---------------------------------------------------------------------------
-// Right panel — Client Intelligence
-// ---------------------------------------------------------------------------
-
-interface IntelligencePanelProps {
-  cliente: Cliente | null;
-  score: ClienteScore | null;
-  loadingScore: boolean;
-}
-
-function IntelligencePanel({ cliente, score, loadingScore }: IntelligencePanelProps) {
-  if (!cliente) {
-    return (
-      <div className="w-96 flex-shrink-0 border-l border-gray-200 bg-white hidden xl:flex
-                      flex-col items-center justify-center">
-        <svg className="w-10 h-10 text-gray-200 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
-            d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-        </svg>
-        <p className="text-xs text-gray-400">Selecione um cliente</p>
-      </div>
-    );
-  }
-
-  const produtosFoco = score?.produtos_foco ?? [
-    'Graos e Cereais',
-    'Linha Sem Gluten',
-    'Proteinas Vegetais',
-  ];
-
-  const tarefas = score?.tarefas_pendentes ?? [];
-
-  return (
-    <div className="w-96 flex-shrink-0 border-l border-gray-200 bg-white hidden xl:flex flex-col h-full">
-      <div className="flex-1 overflow-y-auto scrollbar-thin p-4 space-y-4">
-
-        {/* IA Suggestion card */}
+      {!isClosed && (
         <div
-          className="rounded-xl p-4 text-white"
-          style={{ background: 'linear-gradient(135deg, #7C3AED 0%, #5B21B6 100%)' }}
+          className="px-4 bg-gray-50 flex-shrink-0"
+          style={{ paddingBottom: 'max(1rem, env(safe-area-inset-bottom))' }}
         >
-          <div className="flex items-center gap-2 mb-2">
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-            </svg>
-            <span className="text-xs font-bold uppercase tracking-wide">Sugestao IA</span>
-          </div>
-
-          {loadingScore ? (
-            <div className="space-y-1.5">
-              <div className="h-3 bg-white/20 animate-pulse rounded w-full" />
-              <div className="h-3 bg-white/20 animate-pulse rounded w-4/5" />
-              <div className="h-3 bg-white/20 animate-pulse rounded w-3/5" />
-            </div>
-          ) : (
-            <p className="text-xs leading-relaxed text-purple-100">
-              {score?.sugestao_ia ??
-                `Cliente ${cliente.temperatura?.toLowerCase() ?? 'sem classificacao'}. ${
-                  (score?.dias_sem_compra ?? 0) > 30
-                    ? `Sem compra ha ${score?.dias_sem_compra} dias — momento ideal para reativar.`
-                    : 'Perfil ativo. Oferta cruzada pode aumentar ticket medio.'
-                }`}
-            </p>
-          )}
-        </div>
-
-        {/* Mercos Data card */}
-        <div className="bg-white rounded-xl border border-gray-200 p-4">
-          <div className="flex items-center gap-2 mb-3">
-            <div className="w-6 h-6 rounded flex items-center justify-center" style={{ backgroundColor: '#00B05015' }}>
-              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" style={{ color: '#00B050' }}>
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                  d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-              </svg>
-            </div>
-            <span className="text-xs font-bold text-gray-800">Dados Mercos</span>
-          </div>
-
-          {loadingScore ? (
-            <div className="space-y-2">
-              {[...Array(4)].map((_, i) => (
-                <div key={i} className="flex justify-between">
-                  <div className="h-3 bg-gray-100 animate-pulse rounded w-1/3" />
-                  <div className="h-3 bg-gray-100 animate-pulse rounded w-1/4" />
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="space-y-2.5">
-              <DataRow
-                label="Ticket Medio"
-                value={score?.ticket_medio != null ? formatBRL(score.ticket_medio) : (cliente.ticket_medio != null ? formatBRL(cliente.ticket_medio) : '—')}
-                highlight
-              />
-              <DataRow
-                label="Ciclo de Compra"
-                value={score?.ciclo_medio != null ? `${score.ciclo_medio} dias` : (cliente.ciclo_medio != null ? `${cliente.ciclo_medio} dias` : '—')}
-              />
-              <DataRow
-                label="Ultima Compra"
-                value={score?.ultima_compra ?? cliente.ultima_compra ?? '—'}
-              />
-              <DataRow
-                label="Curva ABC"
-                value={cliente.curva_abc ?? '—'}
-              />
-              <DataRow
-                label="Faturamento"
-                value={score?.faturamento_total != null
-                  ? formatBRL(score.faturamento_total)
-                  : (cliente.faturamento_total != null ? formatBRL(cliente.faturamento_total) : '—')}
-              />
-              <DataRow
-                label="Score"
-                value={score?.score != null ? `${score.score.toFixed(1)} pts` : (cliente.score != null ? `${cliente.score.toFixed(1)} pts` : '—')}
-              />
-            </div>
-          )}
-        </div>
-
-        {/* Products focus */}
-        <div className="bg-white rounded-xl border border-gray-200 p-4">
-          <div className="flex items-center gap-2 mb-3">
-            <div className="w-6 h-6 rounded flex items-center justify-center bg-orange-50">
-              <svg className="w-3.5 h-3.5 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                  d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-              </svg>
-            </div>
-            <span className="text-xs font-bold text-gray-800">Foco de Produtos</span>
-          </div>
-          <div className="flex flex-wrap gap-1.5">
-            {produtosFoco.map((p) => (
-              <span
-                key={p}
-                className="inline-flex items-center px-2.5 py-1 text-[11px] font-medium
-                           bg-orange-50 text-orange-700 border border-orange-200 rounded-full"
-              >
-                {p}
-              </span>
-            ))}
-          </div>
-        </div>
-
-        {/* Pending tasks */}
-        {tarefas.length > 0 && (
-          <div className="bg-white rounded-xl border border-gray-200 p-4">
-            <div className="flex items-center gap-2 mb-3">
-              <div className="w-6 h-6 rounded flex items-center justify-center bg-blue-50">
-                <svg className="w-3.5 h-3.5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+          <div className="flex items-end gap-2 bg-white border border-gray-200 rounded-2xl
+                          shadow-sm px-3 py-2 focus-within:border-green-400 focus-within:ring-2
+                          focus-within:ring-green-100 transition-all">
+            <textarea
+              ref={inputRef}
+              value={inputTexto}
+              onChange={(e) => onInputChange(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="Digite uma mensagem... (Enter para enviar)"
+              aria-label="Mensagem"
+              rows={1}
+              className="flex-1 resize-none text-xs text-gray-900 placeholder:text-gray-400
+                         bg-transparent focus:outline-none leading-relaxed max-h-32"
+              style={{ minHeight: '20px' }}
+            />
+            <button
+              type="button"
+              onClick={onSend}
+              disabled={sending || !inputTexto.trim()}
+              aria-label="Enviar mensagem"
+              className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center
+                         transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+              style={{ backgroundColor: '#00B050' }}
+            >
+              {sending ? (
+                <div className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+              ) : (
+                <svg className="w-4 h-4 text-white translate-x-0.5" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
                 </svg>
-              </div>
-              <span className="text-xs font-bold text-gray-800">Tarefas Pendentes</span>
-              <span className="text-[10px] bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded font-semibold">
-                {tarefas.length}
-              </span>
-            </div>
-            <ul className="space-y-2">
-              {tarefas.map((t, i) => (
-                <li key={i} className="flex items-start gap-2">
-                  <div className="w-4 h-4 rounded border-2 border-gray-300 flex-shrink-0 mt-0.5" />
-                  <span className="text-[11px] text-gray-600 leading-relaxed">{t}</span>
-                </li>
-              ))}
-            </ul>
+              )}
+            </button>
           </div>
-        )}
-      </div>
-    </div>
-  );
-}
-
-interface DataRowProps {
-  label: string;
-  value: string;
-  highlight?: boolean;
-}
-
-function DataRow({ label, value, highlight = false }: DataRowProps) {
-  return (
-    <div className="flex items-center justify-between gap-2">
-      <span className="text-[11px] text-gray-500">{label}</span>
-      <span className={`text-[11px] font-semibold ${highlight ? 'text-green-700' : 'text-gray-800'}`}>
-        {value}
-      </span>
+        </div>
+      )}
     </div>
   );
 }
@@ -1061,178 +882,83 @@ function DataRow({ label, value, highlight = false }: DataRowProps) {
 // ---------------------------------------------------------------------------
 
 export default function InboxPage() {
-  // Clients list state
-  const [clientes, setClientes] = useState<Cliente[]>([]);
-  const [loadingClientes, setLoadingClientes] = useState(true);
-  const [errorClientes, setErrorClientes] = useState<string | null>(null);
-  const [busca, setBusca] = useState('');
-  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // Inbox list
+  const [tickets, setTickets] = useState<InboxTicket[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [lastRefreshedList, setLastRefreshedList] = useState<Date | null>(null);
+  const [refreshingList, setRefreshingList] = useState(false);
 
-  // Selected client
-  const [selectedCliente, setSelectedCliente] = useState<Cliente | null>(null);
+  // Selection
+  const [selectedTicket, setSelectedTicket] = useState<InboxTicket | null>(null);
 
-  // Atendimentos
-  const [mensagens, setMensagens] = useState<Mensagem[]>([]);
+  // Messages
+  const [mensagens, setMensagens] = useState<DeskrioMensagem[]>([]);
   const [loadingMensagens, setLoadingMensagens] = useState(false);
   const [refreshingMensagens, setRefreshingMensagens] = useState(false);
-  const [mensagensFetchError, setMensagensFetchError] = useState(false);
+  const [lastRefreshedMensagens, setLastRefreshedMensagens] = useState<Date | null>(null);
 
-  // Latest atendimento per client (for preview in list)
-  const [atendimentoMap, setAtendimentoMap] = useState<Record<string, Atendimento | undefined>>({});
-
-  // Client score / intelligence
-  const [score, setScore] = useState<ClienteScore | null>(null);
-  const [loadingScore, setLoadingScore] = useState(false);
-
-  // Message input
+  // Input
   const [inputTexto, setInputTexto] = useState('');
   const [sending, setSending] = useState(false);
 
-  // Mobile view: 'list' or 'chat'
+  // UI
+  const [busca, setBusca] = useState('');
+  const [filterTab, setFilterTab] = useState<FilterTab>('todos');
   const [mobileView, setMobileView] = useState<'list' | 'chat'>('list');
 
-  // Auto-polling state
-  const [lastRefreshed, setLastRefreshed] = useState<Date | null>(null);
-  const [refreshingList, setRefreshingList] = useState(false);
-  // Ticker that forces the "Atualizado há X segundos" label to re-render every 10s
-  const [, setTickCount] = useState(0);
+  // Stable refs to avoid stale closures in intervals
+  const selectedTicketRef = useRef<InboxTicket | null>(null);
+  selectedTicketRef.current = selectedTicket;
 
-  // Stable ref to avoid stale-closure issues in the polling interval
-  const selectedClienteRef = useRef<Cliente | null>(null);
-  selectedClienteRef.current = selectedCliente;
+  // Ticker to force "Atualizado ha Xs" re-renders
+  const [, setTick] = useState(0);
 
   // ---------------------------------------------------------------------------
-  // Load clients
+  // Load inbox
   // ---------------------------------------------------------------------------
 
-  const loadClientes = useCallback(async (searchTerm: string) => {
-    setLoadingClientes(true);
-    setErrorClientes(null);
+  const loadInbox = useCallback(async (silent = false) => {
+    if (!silent) setLoading(true);
+    else setRefreshingList(true);
+    setError(null);
     try {
-      const params = new URLSearchParams({ limit: '50' });
-      if (searchTerm.trim()) params.set('busca', searchTerm.trim());
-      const data = await apiFetch<{ registros: Cliente[]; total: number }>(
-        `/api/clientes?${params.toString()}`
-      );
-      setClientes(data.registros ?? []);
+      const data = await fetchInbox(7);
+      // Sort: most recent first
+      const sorted = [...data.tickets].sort((a, b) => {
+        const da = a.ultima_mensagem_data ?? a.ultima_msg_cliente_data ?? '';
+        const db = b.ultima_mensagem_data ?? b.ultima_msg_cliente_data ?? '';
+        return db.localeCompare(da);
+      });
+      setTickets(sorted);
+      setLastRefreshedList(new Date());
     } catch (e: unknown) {
-      setErrorClientes(e instanceof Error ? e.message : 'Erro ao carregar clientes');
+      setError(e instanceof Error ? e.message : 'Erro ao carregar inbox');
     } finally {
-      setLoadingClientes(false);
+      if (!silent) setLoading(false);
+      else setRefreshingList(false);
     }
   }, []);
 
   useEffect(() => {
-    loadClientes('');
-  }, [loadClientes]);
-
-  // Debounced search
-  function handleBuscaChange(v: string) {
-    setBusca(v);
-    if (debounceRef.current) clearTimeout(debounceRef.current);
-    debounceRef.current = setTimeout(() => {
-      loadClientes(v);
-    }, 350);
-  }
+    loadInbox(false);
+  }, [loadInbox]);
 
   // ---------------------------------------------------------------------------
-  // Load latest atendimento for list preview (top 20 shown)
+  // Load messages for selected ticket
   // ---------------------------------------------------------------------------
 
-  useEffect(() => {
-    if (clientes.length === 0) return;
-    const topClientes = clientes.slice(0, 20);
-
-    async function loadPreviews() {
-      const results: Record<string, Atendimento | undefined> = {};
-      await Promise.allSettled(
-        topClientes.map(async (c) => {
-          try {
-            const data = await apiFetch<{ atendimentos: Atendimento[] }>(
-              `/api/atendimentos?cnpj=${c.cnpj}&limit=1`
-            );
-            if (data.atendimentos?.length > 0) {
-              results[c.cnpj] = data.atendimentos[0];
-            }
-          } catch {
-            // silently skip individual failures
-          }
-        })
-      );
-      setAtendimentoMap((prev) => ({ ...prev, ...results }));
-    }
-
-    loadPreviews();
-  }, [clientes]);
-
-  // ---------------------------------------------------------------------------
-  // Core message loader — used both on select and on poll refresh
-  // ---------------------------------------------------------------------------
-
-  const loadMensagens = useCallback(async (c: Cliente, silent = false) => {
+  const loadMensagens = useCallback(async (ticketId: number, silent = false) => {
     if (!silent) setLoadingMensagens(true);
     else setRefreshingMensagens(true);
 
     try {
-      const [conversaResult, atendResult] = await Promise.allSettled([
-        apiFetch<{
-          configurado: boolean;
-          contato: { id: number; nome: string; numero: string } | null;
-          ticket: { id: number; status: string; criado_em: string; atualizado_em: string; ultima_mensagem: string } | null;
-          mensagens: Array<{ id: string | number; texto: string; de_cliente: boolean; timestamp: string; tipo: string; media_url?: string; nome_contato?: string }>;
-          total: number;
-        }>(`/api/whatsapp/conversa/${c.cnpj}`),
-        apiFetch<{ atendimentos: Atendimento[] }>(`/api/atendimentos?cnpj=${c.cnpj}&limit=20`),
-      ]);
-
-      const msgs: Mensagem[] = [];
-
-      // 1. Real WhatsApp messages from Deskrio (priority)
-      if (conversaResult.status === 'fulfilled' && conversaResult.value.mensagens.length > 0) {
-        for (const m of conversaResult.value.mensagens) {
-          msgs.push({
-            id: String(m.id ?? `wa-${msgs.length}`),
-            texto: m.texto || (m.tipo !== 'chat' ? `[${m.tipo}]` : ''),
-            enviado: !m.de_cliente,
-            timestamp: m.timestamp,
-            tipo: 'texto',
-            media_url: m.media_url ?? undefined,
-          });
-        }
-      }
-
-      // 2. CRM atendimentos as fallback / supplement
-      if (atendResult.status === 'fulfilled') {
-        const atts = atendResult.value.atendimentos ?? [];
-
-        const waTimestamps = new Set(msgs.map((m) => m.timestamp.slice(0, 10)));
-        const attsToShow = msgs.length > 0
-          ? atts.filter((a) => !waTimestamps.has(a.data_atendimento?.slice(0, 10)))
-          : atts;
-
-        for (const a of attsToShow.slice().reverse()) {
-          msgs.push({
-            id: `crm-${a.id}`,
-            texto: a.descricao,
-            enviado: false,
-            timestamp: a.data_atendimento,
-            tipo: 'atendimento',
-          });
-        }
-
-        if (atts.length > 0) {
-          setAtendimentoMap((prev) => ({ ...prev, [c.cnpj]: atts[0] }));
-        }
-      }
-
-      msgs.sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
-
-      setMensagens(msgs);
-      setLastRefreshed(new Date());
-      setMensagensFetchError(false);
+      const data = await fetchTicketMensagens(ticketId, 1);
+      setMensagens(data.messages ?? []);
+      setLastRefreshedMensagens(new Date());
     } catch {
-      // show empty state with fallback messaging — do not throw
-      setMensagensFetchError(true);
+      // keep existing messages on silent refresh failure
+      if (!silent) setMensagens([]);
     } finally {
       if (!silent) setLoadingMensagens(false);
       else setRefreshingMensagens(false);
@@ -1240,30 +966,16 @@ export default function InboxPage() {
   }, []);
 
   // ---------------------------------------------------------------------------
-  // Select client
+  // Select ticket
   // ---------------------------------------------------------------------------
 
-  async function handleSelectCliente(c: Cliente) {
-    setSelectedCliente(c);
+  async function handleSelectTicket(t: InboxTicket) {
+    setSelectedTicket(t);
     setMobileView('chat');
     setMensagens([]);
-    setScore(null);
     setInputTexto('');
-    setLastRefreshed(null);
-    setMensagensFetchError(false);
-
-    await loadMensagens(c, false);
-
-    // Load score / intelligence
-    setLoadingScore(true);
-    try {
-      const scoreData = await apiFetch<ClienteScore>(`/api/clientes/${c.cnpj}/score`);
-      setScore(scoreData);
-    } catch {
-      // score panel will show defaults
-    } finally {
-      setLoadingScore(false);
-    }
+    setLastRefreshedMensagens(null);
+    await loadMensagens(t.ticket_id, false);
   }
 
   // ---------------------------------------------------------------------------
@@ -1271,42 +983,34 @@ export default function InboxPage() {
   // ---------------------------------------------------------------------------
 
   async function handleRefreshList() {
-    setRefreshingList(true);
-    try {
-      await loadClientes(busca);
-    } finally {
-      setRefreshingList(false);
-    }
+    await loadInbox(true);
   }
 
   async function handleRefreshMensagens() {
-    const c = selectedClienteRef.current;
-    if (!c) return;
-    await loadMensagens(c, true);
+    const t = selectedTicketRef.current;
+    if (!t) return;
+    await loadMensagens(t.ticket_id, true);
   }
 
   // ---------------------------------------------------------------------------
-  // Auto-polling — 30s interval, only when tab is visible
+  // Auto-polling — 30s
   // ---------------------------------------------------------------------------
 
   useEffect(() => {
     const interval = setInterval(() => {
       if (document.hidden) return;
-      const c = selectedClienteRef.current;
-      if (c) {
-        // Silently refresh messages for the selected conversation
-        loadMensagens(c, true);
-      }
+      // Always refresh the list
+      loadInbox(true);
+      // If a ticket is selected, refresh its messages too
+      const t = selectedTicketRef.current;
+      if (t) loadMensagens(t.ticket_id, true);
     }, POLL_INTERVAL_MS);
-
     return () => clearInterval(interval);
-  }, [loadMensagens]);
+  }, [loadInbox, loadMensagens]);
 
-  // Ticker: re-render the "Atualizado há Xs" label every 10 seconds
+  // Ticker: re-render "Atualizado ha Xs" every 10s
   useEffect(() => {
-    const ticker = setInterval(() => {
-      setTickCount((n) => n + 1);
-    }, 10_000);
+    const ticker = setInterval(() => setTick((n) => n + 1), 10_000);
     return () => clearInterval(ticker);
   }, []);
 
@@ -1316,31 +1020,37 @@ export default function InboxPage() {
 
   async function handleSend() {
     const texto = inputTexto.trim();
-    if (!texto || !selectedCliente || sending) return;
+    if (!texto || !selectedTicket || sending) return;
 
-    // Optimistic update
-    const tempId = `tmp-${Date.now()}`;
-    const now = new Date().toISOString();
-    const novaMensagem: Mensagem = {
-      id: tempId,
+    // Optimistic: add a temp message immediately
+    const tempMsg: DeskrioMensagem = {
+      id: -Date.now(),
       texto,
-      enviado: true,
-      timestamp: now,
-      tipo: 'texto',
+      de_cliente: false,
+      timestamp: new Date().toISOString(),
+      tipo: 'chat',
     };
-    setMensagens((prev) => [...prev, novaMensagem]);
+    setMensagens((prev) => [...prev, tempMsg]);
     setInputTexto('');
     setSending(true);
 
     try {
-      // Send via Deskrio WhatsApp (backend resolves CNPJ -> phone number)
-      await apiFetch<{ enviado: boolean; erro?: string }>('/api/whatsapp/enviar', {
+      const token = getToken();
+      const res = await fetch(`${BASE_URL}/api/whatsapp/enviar`, {
         method: 'POST',
-        body: JSON.stringify({ cnpj: selectedCliente.cnpj, mensagem: texto }),
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({
+          ticket_id: selectedTicket.ticket_id,
+          mensagem: texto,
+        }),
       });
+      if (!res.ok) throw new Error('Erro ao enviar');
     } catch {
-      // Revert optimistic on hard error
-      setMensagens((prev) => prev.filter((m) => m.id !== tempId));
+      // Revert optimistic on error
+      setMensagens((prev) => prev.filter((m) => m.id !== tempMsg.id));
       setInputTexto(texto);
     } finally {
       setSending(false);
@@ -1353,60 +1063,53 @@ export default function InboxPage() {
 
   return (
     /*
-     * The AppShell wraps this page with max-w-screen-2xl p-3 lg:p-6.
-     * We use -m-3 lg:-m-6 to break out of that padding and fill the
-     * available content area edge-to-edge, giving the true 3-panel feel.
-     * Height is calculated as viewport minus the AppShell header (~49px).
+     * Break out of the AppShell padding (max-w-screen-2xl p-3 lg:p-6)
+     * to fill the full content area edge-to-edge.
+     * Height = 100vh minus the AppShell header (~49px).
      */
     <div
       className="-m-3 lg:-m-6 flex"
       style={{ height: 'calc(100vh - 49px)' }}
     >
-      {/* LEFT panel — conversations list */}
-      <div className={`${mobileView === 'chat' ? 'hidden md:flex' : 'flex'} md:flex flex-col flex-shrink-0 w-full md:w-80`}>
+      {/* LEFT — conversation list */}
+      <div
+        className={`${mobileView === 'chat' ? 'hidden md:flex' : 'flex'} md:flex flex-col flex-shrink-0 w-full md:w-80`}
+      >
         <ConversationList
-          clientes={clientes}
-          loading={loadingClientes}
-          error={errorClientes}
-          selectedCnpj={selectedCliente?.cnpj ?? null}
+          tickets={tickets}
+          loading={loading}
+          error={error}
+          selectedId={selectedTicket?.ticket_id ?? null}
           busca={busca}
-          onBuscaChange={handleBuscaChange}
-          onSelect={handleSelectCliente}
-          atendimentoMap={atendimentoMap}
-          lastRefreshed={lastRefreshed}
-          onRefresh={handleRefreshList}
+          filterTab={filterTab}
+          lastRefreshed={lastRefreshedList}
           refreshing={refreshingList}
+          onBuscaChange={setBusca}
+          onFilterTab={setFilterTab}
+          onSelect={handleSelectTicket}
+          onRefresh={handleRefreshList}
         />
       </div>
 
-      {/* CENTER panel — chat */}
+      {/* RIGHT — chat */}
       <div
         className={`${mobileView === 'list' ? 'hidden md:flex' : 'flex'} md:flex flex-1 min-w-0`}
       >
         <ChatPanel
-          cliente={selectedCliente}
+          ticket={selectedTicket}
           mensagens={mensagens}
-          loadingMensagens={loadingMensagens}
+          loading={loadingMensagens}
+          refreshing={refreshingMensagens}
           inputTexto={inputTexto}
+          sending={sending}
+          lastRefreshed={lastRefreshedMensagens}
           onInputChange={setInputTexto}
           onSend={handleSend}
-          sending={sending}
           onBack={() => setMobileView('list')}
           showBack={mobileView === 'chat'}
-          lastRefreshed={lastRefreshed}
           onRefresh={handleRefreshMensagens}
-          refreshingMensagens={refreshingMensagens}
-          pollingAtivo={selectedCliente !== null}
-          fetchFalhou={mensagensFetchError}
         />
       </div>
-
-      {/* RIGHT panel — intelligence (xl and above only) */}
-      <IntelligencePanel
-        cliente={selectedCliente}
-        score={score}
-        loadingScore={loadingScore}
-      />
     </div>
   );
 }

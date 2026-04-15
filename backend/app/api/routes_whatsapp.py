@@ -7,8 +7,9 @@ Endpoints:
   GET  /api/whatsapp/status           — status das conexoes WA (configurado/conectado)
   GET  /api/whatsapp/contato/{cnpj}   — busca contato Deskrio por CNPJ
   POST /api/whatsapp/enviar           — envia mensagem WA via Deskrio
-  GET  /api/whatsapp/tickets          — tickets recentes de um cliente
+  GET  /api/whatsapp/tickets          — tickets recentes de um cliente (por CNPJ)
   GET  /api/whatsapp/conexoes         — lista conexoes WA disponiveis
+  GET  /api/whatsapp/inbox            — todos os tickets abertos/recentes (Inbox page)
 
 Comportamento sem configuracao:
   - Se DESKRIO_API_TOKEN / DESKRIO_API_URL ausentes, retorna HTTP 200 com
@@ -580,4 +581,163 @@ def get_mensagens_ticket(
         mensagens=mensagens,
         total=dados.get("count", len(mensagens)),
         has_more=dados.get("hasMore", False),
+    )
+
+
+# ---------------------------------------------------------------------------
+# Schemas — Inbox (todos os tickets)
+# ---------------------------------------------------------------------------
+
+class InboxTicketItem(BaseModel):
+    """Um ticket da inbox do Deskrio, enriquecido para a pagina Inbox."""
+
+    ticket_id: int
+    status: str  # "open", "closed", "pending"
+    contato_nome: str
+    contato_numero: str
+    atendente_nome: str | None = None        # user.name do Deskrio
+    ultima_mensagem: str                     # lastMessage (preview)
+    ultima_mensagem_data: str | None = None  # lastMessageDate ISO
+    ultima_msg_cliente_data: str | None = None  # lastMessageDateNotFromMe ISO
+    mensagens_nao_lidas: int                 # unreadMessages
+    origem: str | None = None               # "Receptivo", "Ativo", etc.
+    aguardando_resposta: bool               # True = cliente enviou por ultimo
+
+
+class InboxResponse(BaseModel):
+    """Resposta do endpoint GET /api/whatsapp/inbox."""
+
+    total: int
+    tickets: list[InboxTicketItem]
+    configurado: bool  # False se Deskrio nao estiver configurado
+
+
+# ---------------------------------------------------------------------------
+# Endpoint — Inbox
+# ---------------------------------------------------------------------------
+
+@router.get(
+    "/inbox",
+    response_model=InboxResponse,
+    summary="Inbox de tickets WhatsApp (todos os atendimentos recentes)",
+    description=(
+        "Retorna todos os tickets Deskrio dos ultimos N dias (padrao 7), "
+        "ordenados por lastMessageDate decrescente — abertos primeiro, depois fechados. "
+        "Inclui flag 'aguardando_resposta' para identificar conversas em que o "
+        "cliente enviou a ultima mensagem. "
+        "Retorna configurado=false (sem erro) se Deskrio nao estiver configurado."
+    ),
+)
+def get_inbox(
+    dias: int = Query(7, ge=1, le=30, description="Quantos dias buscar (1-30)"),
+    status_filtro: str | None = Query(
+        None,
+        alias="status",
+        description="Filtrar por status: 'open', 'closed', ou omitir para todos",
+    ),
+    user: Usuario = Depends(require_consultor_or_admin),
+) -> InboxResponse:
+    """
+    Retorna inbox de todos os atendimentos WhatsApp recentes.
+
+    Fluxo:
+      1. Chama listar_tickets() para os ultimos N dias (sem filtro de numero)
+      2. Filtra por status se informado
+      3. Calcula aguardando_resposta comparando datas das ultimas mensagens
+      4. Ordena: abertos primeiro, depois por lastMessageDate desc
+
+    Graceful degradation: se Deskrio nao estiver configurado, retorna lista
+    vazia com configurado=false — nunca levanta excecao.
+
+    Requer autenticacao JWT.
+    """
+    logger.info(
+        "GET /api/whatsapp/inbox | dias=%d status=%s usuario=%s",
+        dias,
+        status_filtro,
+        getattr(user, "email", user.id),
+    )
+
+    if not deskrio_service.configurado:
+        return InboxResponse(total=0, tickets=[], configurado=False)
+
+    hoje = date.today()
+    inicio = hoje - timedelta(days=dias)
+
+    try:
+        tickets_raw = deskrio_service.listar_tickets(
+            data_inicio=inicio.isoformat(),
+            data_fim=hoje.isoformat(),
+        )
+    except Exception:  # noqa: BLE001
+        logger.exception("Erro ao listar tickets da inbox | dias=%d", dias)
+        return InboxResponse(total=0, tickets=[], configurado=True)
+
+    items: list[InboxTicketItem] = []
+
+    for t in tickets_raw:
+        t_status = (t.get("status") or "").lower()
+
+        # Aplicar filtro de status quando informado
+        if status_filtro and t_status != status_filtro.lower():
+            continue
+
+        # --- Dados do contato ---
+        contato_raw = t.get("contact") or {}
+        contato_nome = (
+            contato_raw.get("name") or ""
+            if isinstance(contato_raw, dict) else ""
+        )
+        contato_numero = (
+            contato_raw.get("number") or ""
+            if isinstance(contato_raw, dict) else ""
+        )
+
+        # --- Dados do atendente ---
+        user_raw = t.get("user") or {}
+        atendente_nome = (
+            user_raw.get("name") or None
+            if isinstance(user_raw, dict) else None
+        )
+
+        # --- Datas das mensagens ---
+        ultima_msg_data = t.get("lastMessageDate") or None
+        ultima_msg_cliente_data = t.get("lastMessageDateNotFromMe") or None
+
+        # --- Flag: aguardando resposta ---
+        # True quando o cliente enviou a ultima mensagem (data do cliente > data geral)
+        aguardando = False
+        if ultima_msg_data and ultima_msg_cliente_data:
+            # Comparacao lexicografica e segura para ISO 8601
+            aguardando = ultima_msg_cliente_data > ultima_msg_data
+
+        items.append(
+            InboxTicketItem(
+                ticket_id=t.get("id", 0),
+                status=t_status or "unknown",
+                contato_nome=contato_nome,
+                contato_numero=contato_numero,
+                atendente_nome=atendente_nome,
+                ultima_mensagem=t.get("lastMessage") or "",
+                ultima_mensagem_data=ultima_msg_data,
+                ultima_msg_cliente_data=ultima_msg_cliente_data,
+                mensagens_nao_lidas=int(t.get("unreadMessages") or 0),
+                origem=t.get("origin") or None,
+                aguardando_resposta=aguardando,
+            )
+        )
+
+    # Ordenar: abertos/pendentes primeiro, depois por lastMessageDate desc.
+    # Dois passes estaveis: primeiro por data desc (chave secundaria), depois
+    # por prioridade de status asc (chave primaria). Python sort e estavel, entao
+    # a ordem relativa dos itens com mesma prioridade e preservada da passada anterior.
+    _STATUS_PRIORITY = {"open": 0, "pending": 1}
+
+    items.sort(key=lambda i: i.ultima_mensagem_data or "", reverse=True)
+    items.sort(key=lambda i: _STATUS_PRIORITY.get(i.status, 2))
+
+    return InboxResponse(
+        total=len(items),
+        tickets=items,
+        configurado=True,
     )

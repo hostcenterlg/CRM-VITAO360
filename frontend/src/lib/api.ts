@@ -861,6 +861,64 @@ export async function redistribuirCarteira(
 }
 
 // ---------------------------------------------------------------------------
+// WhatsApp Inbox — Deskrio tickets (nova API)
+// ---------------------------------------------------------------------------
+
+export interface InboxTicket {
+  ticket_id: number;
+  status: string;
+  contato_nome: string;
+  contato_numero: string;
+  atendente_nome: string | null;
+  ultima_mensagem: string;
+  ultima_mensagem_data: string | null;
+  ultima_msg_cliente_data: string | null;
+  mensagens_nao_lidas: number;
+  origem: string | null;
+  aguardando_resposta: boolean;
+}
+
+export interface InboxResponse {
+  total: number;
+  configurado: boolean;
+  tickets: InboxTicket[];
+}
+
+export interface DeskrioMensagem {
+  id: number;
+  texto: string;
+  de_cliente: boolean;
+  timestamp: string;
+  tipo: string;
+  media_url?: string;
+  nome_contato?: string;
+}
+
+export interface DeskrioMensagensResponse {
+  count: number;
+  messages: DeskrioMensagem[];
+  hasMore: boolean;
+}
+
+export async function fetchInbox(
+  dias: number = 7,
+  status?: string
+): Promise<InboxResponse> {
+  const qs = new URLSearchParams({ dias: String(dias) });
+  if (status) qs.set('status', status);
+  return fetchJson<InboxResponse>(`/api/whatsapp/inbox?${qs.toString()}`);
+}
+
+export async function fetchTicketMensagens(
+  ticketId: number,
+  page: number = 1
+): Promise<DeskrioMensagensResponse> {
+  return fetchJson<DeskrioMensagensResponse>(
+    `/api/whatsapp/mensagens/${ticketId}?page=${page}`
+  );
+}
+
+// ---------------------------------------------------------------------------
 // WhatsApp — Integracao Deskrio
 // ---------------------------------------------------------------------------
 
