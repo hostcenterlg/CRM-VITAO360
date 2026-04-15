@@ -104,11 +104,11 @@ class VendaResponse(BaseModel):
     id: int
     cnpj: str
     nome_fantasia: str | None = None
-    data_pedido: date
+    data_pedido: date | None = None
     numero_pedido: str | None = None
-    valor_pedido: float = Field(description="Sempre > 0 (Two-Base, R4)")
-    consultor: str
-    fonte: str
+    valor_pedido: float = Field(default=0, description="Sempre > 0 (Two-Base, R4)")
+    consultor: str | None = None
+    fonte: str | None = None
     classificacao_3tier: str = Field(
         description="REAL | SINTETICO | ALUCINACAO. Nunca deve ser ALUCINACAO em producao (R8)."
     )
