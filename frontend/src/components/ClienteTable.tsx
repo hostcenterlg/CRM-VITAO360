@@ -398,7 +398,7 @@ export default function ClienteTable({
     );
   }
 
-  if (registros.length === 0) {
+  if (!registros || registros.length === 0) {
     return (
       <div className="py-16 text-center text-gray-400">
         <svg className="w-10 h-10 mx-auto mb-3 text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -433,7 +433,7 @@ export default function ClienteTable({
           <TableHead cols={visibleCols} sort={sort} onSort={onSort} />
         </thead>
         <tbody>
-          {registros.map((c, idx) => (
+          {(registros ?? []).map((c, idx) => (
             <ClienteRow
               key={c.cnpj}
               cliente={c}

@@ -117,7 +117,7 @@ function temFiltroServidor(f: FiltrosServidor): boolean {
 }
 
 function temFiltroCliente(f: FiltrosCliente): boolean {
-  return f.situacoes.length > 0 || f.abcs.length > 0 || f.temperaturas.length > 0;
+  return (f?.situacoes?.length ?? 0) > 0 || (f?.abcs?.length ?? 0) > 0 || (f?.temperaturas?.length ?? 0) > 0;
 }
 
 function temFiltroAtivo(fs: FiltrosServidor, fc: FiltrosCliente): boolean {
@@ -132,10 +132,10 @@ function aplicarFiltrosCliente(
   registros: ClienteRegistro[],
   fc: FiltrosCliente
 ): ClienteRegistro[] {
-  return registros.filter((r) => {
-    if (fc.situacoes.length > 0 && !fc.situacoes.includes(r.situacao ?? '')) return false;
-    if (fc.abcs.length > 0 && !fc.abcs.includes(r.curva_abc ?? '')) return false;
-    if (fc.temperaturas.length > 0 && !fc.temperaturas.includes(r.temperatura ?? '')) return false;
+  return (registros ?? []).filter((r) => {
+    if ((fc?.situacoes?.length ?? 0) > 0 && !(fc.situacoes ?? []).includes(r.situacao ?? '')) return false;
+    if ((fc?.abcs?.length ?? 0) > 0 && !(fc.abcs ?? []).includes(r.curva_abc ?? '')) return false;
+    if ((fc?.temperaturas?.length ?? 0) > 0 && !(fc.temperaturas ?? []).includes(r.temperatura ?? '')) return false;
     return true;
   });
 }
@@ -203,9 +203,9 @@ function CarteiraInner() {
     (fs: FiltrosServidor, fc: FiltrosCliente, novoOffset: number, novoSort: SortState) => {
       const params = new URLSearchParams();
       Object.entries(fs).forEach(([k, v]) => { if (v) params.set(k, v); });
-      if (fc.situacoes.length > 0) params.set('situacoes', fc.situacoes.join(','));
-      if (fc.abcs.length > 0) params.set('abcs', fc.abcs.join(','));
-      if (fc.temperaturas.length > 0) params.set('temperaturas', fc.temperaturas.join(','));
+      if ((fc?.situacoes?.length ?? 0) > 0) params.set('situacoes', fc.situacoes.join(','));
+      if ((fc?.abcs?.length ?? 0) > 0) params.set('abcs', fc.abcs.join(','));
+      if ((fc?.temperaturas?.length ?? 0) > 0) params.set('temperaturas', fc.temperaturas.join(','));
       if (novoOffset > 0) params.set('offset', String(novoOffset));
       if (novoSort.by !== DEFAULT_SORT.by || novoSort.dir !== DEFAULT_SORT.dir) {
         params.set('sort_by', novoSort.by);
@@ -377,7 +377,7 @@ function CarteiraInner() {
   // ---------------------------------------------------------------------------
 
   const totalServidor = response?.total ?? 0;
-  const totalFiltrado = temFiltroCliente(filtrosC) ? registrosFiltrados.length : totalServidor;
+  const totalFiltrado = temFiltroCliente(filtrosC) ? (registrosFiltrados?.length ?? 0) : totalServidor;
   const totalPages = Math.ceil(totalServidor / PAGE_SIZE);
   const currentPage = Math.floor(offset / PAGE_SIZE) + 1;
   const mostrando = response
@@ -387,9 +387,9 @@ function CarteiraInner() {
   const ativo = temFiltroAtivo(filtrosS, filtrosC);
   const countFiltrosAtivos =
     Object.values(filtrosS).filter(Boolean).length +
-    filtrosC.situacoes.length +
-    filtrosC.abcs.length +
-    filtrosC.temperaturas.length;
+    (filtrosC?.situacoes?.length ?? 0) +
+    (filtrosC?.abcs?.length ?? 0) +
+    (filtrosC?.temperaturas?.length ?? 0);
 
   return (
     <div className="space-y-3">
