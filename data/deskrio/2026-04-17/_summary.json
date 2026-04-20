@@ -1,0 +1,92 @@
+{
+  "connections.json": {
+    "count": 1,
+    "kind": "dict",
+    "size_bytes": 10333
+  },
+  "contacts.json": {
+    "count": 15612,
+    "kind": "list",
+    "size_bytes": 7011884
+  },
+  "extrainfo_fields.json": {
+    "count": 6,
+    "kind": "list",
+    "size_bytes": 7510
+  },
+  "kanban_boards.json": {
+    "count": 2,
+    "kind": "dict.kanbanBoards",
+    "size_bytes": 2530
+  },
+  "kanban_cards_100.json": {
+    "count": 12,
+    "kind": "list",
+    "size_bytes": 15991
+  },
+  "kanban_cards_20.json": {
+    "count": 95,
+    "kind": "list",
+    "size_bytes": 94682
+  },
+  "messages_67143617.json": {
+    "count": 30,
+    "kind": "dict.messages",
+    "size_bytes": 48538
+  },
+  "messages_67143734.json": {
+    "count": 8,
+    "kind": "dict.messages",
+    "size_bytes": 21530
+  },
+  "messages_67144560.json": {
+    "count": 26,
+    "kind": "dict.messages",
+    "size_bytes": 63620
+  },
+  "messages_67145435.json": {
+    "count": 19,
+    "kind": "dict.messages",
+    "size_bytes": 74083
+  },
+  "messages_67145453.json": {
+    "count": 12,
+    "kind": "dict.messages",
+    "size_bytes": 148953
+  },
+  "messages_67145689.json": {
+    "count": 18,
+    "kind": "dict.messages",
+    "size_bytes": 28643
+  },
+  "messages_67146854.json": {
+    "count": 30,
+    "kind": "dict.messages",
+    "size_bytes": 49789
+  },
+  "messages_67146889.json": {
+    "count": 14,
+    "kind": "dict.messages",
+    "size_bytes": 28092
+  },
+  "messages_67147367.json": {
+    "count": 2,
+    "kind": "dict.messages",
+    "size_bytes": 3304
+  },
+  "messages_67147432.json": {
+    "count": 2,
+    "kind": "dict.messages",
+    "size_bytes": 3232
+  },
+  "messages_67147525.json": {
+    "count": 23,
+    "kind": "dict.messages",
+    "size_bytes": 19369
+  },
+  "tickets.json": {
+    "count": 11,
+    "kind": "list",
+    "size_bytes": 28282
+  }
+}
