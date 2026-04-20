@@ -1,0 +1,376 @@
+[
+  {
+    "id": 4400001,
+    "name": "CNPJ",
+    "context": "contact",
+    "type": "text",
+    "config": null,
+    "mask": "^(([0-9]{2}.[0-9]{3}.[0-9]{3}/[0-9]{4}-[0-9]{2})|([0-9]{14}))$&^(\\d{1,2})(\\d{0,3})(\\d{0,3})(\\d{0,4})(\\d{0,2})$& ../-",
+    "description": null,
+    "example": null,
+    "onlyAdmin": null,
+    "link": null,
+    "order": null,
+    "companyId": 38,
+    "kanbanBoardId": null,
+    "createdAt": "2023-02-14T20:44:02.000Z",
+    "updatedAt": "2023-02-14T20:44:02.000Z",
+    "options": [],
+    "queues": []
+  },
+  {
+    "id": 4400003,
+    "name": "CNPJ 2",
+    "context": "contact",
+    "type": "text",
+    "config": null,
+    "mask": null,
+    "description": null,
+    "example": null,
+    "onlyAdmin": null,
+    "link": null,
+    "order": null,
+    "companyId": 38,
+    "kanbanBoardId": null,
+    "createdAt": "2023-03-28T18:02:20.000Z",
+    "updatedAt": "2023-03-28T18:02:20.000Z",
+    "options": [],
+    "queues": []
+  },
+  {
+    "id": 4400004,
+    "name": "CNPJ 3 ",
+    "context": "contact",
+    "type": "text",
+    "config": null,
+    "mask": null,
+    "description": null,
+    "example": null,
+    "onlyAdmin": null,
+    "link": null,
+    "order": null,
+    "companyId": 38,
+    "kanbanBoardId": null,
+    "createdAt": "2023-03-28T18:02:30.000Z",
+    "updatedAt": "2023-03-28T18:02:30.000Z",
+    "options": [],
+    "queues": []
+  },
+  {
+    "id": 63250071,
+    "name": "Código SAP",
+    "context": "contact",
+    "type": "text",
+    "config": null,
+    "mask": "",
+    "description": "",
+    "example": "",
+    "onlyAdmin": false,
+    "link": "",
+    "order": 0,
+    "companyId": 38,
+    "kanbanBoardId": null,
+    "createdAt": "2025-04-08T14:07:32.000Z",
+    "updatedAt": "2025-04-08T14:07:32.000Z",
+    "options": [],
+    "queues": []
+  },
+  {
+    "id": 63250070,
+    "name": "Estado",
+    "context": "contact",
+    "type": "singleOption",
+    "config": null,
+    "mask": "",
+    "description": "",
+    "example": "",
+    "onlyAdmin": false,
+    "link": "",
+    "order": 0,
+    "companyId": 38,
+    "kanbanBoardId": null,
+    "createdAt": "2025-04-08T14:06:44.000Z",
+    "updatedAt": "2025-04-08T14:06:44.000Z",
+    "options": [
+      {
+        "id": 64000443,
+        "fieldId": 63250070,
+        "value": "Acre",
+        "companyId": 38,
+        "createdAt": "2025-04-08T14:10:35.000Z",
+        "updatedAt": "2025-04-08T14:10:35.000Z"
+      },
+      {
+        "id": 64000449,
+        "fieldId": 63250070,
+        "value": "Alagoas",
+        "companyId": 38,
+        "createdAt": "2025-04-08T14:11:29.000Z",
+        "updatedAt": "2025-04-08T14:11:29.000Z"
+      },
+      {
+        "id": 64000446,
+        "fieldId": 63250070,
+        "value": "Amapá",
+        "companyId": 38,
+        "createdAt": "2025-04-08T14:11:11.000Z",
+        "updatedAt": "2025-04-08T14:11:11.000Z"
+      },
+      {
+        "id": 64000434,
+        "fieldId": 63250070,
+        "value": "Amazonas",
+        "companyId": 38,
+        "createdAt": "2025-04-08T14:09:18.000Z",
+        "updatedAt": "2025-04-08T14:09:18.000Z"
+      },
+      {
+        "id": 64000426,
+        "fieldId": 63250070,
+        "value": "Bahia",
+        "companyId": 38,
+        "createdAt": "2025-04-08T14:08:08.000Z",
+        "updatedAt": "2025-04-08T14:08:08.000Z"
+      },
+      {
+        "id": 64000451,
+        "fieldId": 63250070,
+        "value": "Brasília",
+        "companyId": 38,
+        "createdAt": "2025-04-08T14:12:51.000Z",
+        "updatedAt": "2025-04-08T14:12:51.000Z"
+      },
+      {
+        "id": 64000433,
+        "fieldId": 63250070,
+        "value": "Ceará",
+        "companyId": 38,
+        "createdAt": "2025-04-08T14:09:11.000Z",
+        "updatedAt": "2025-04-08T14:09:11.000Z"
+      },
+      {
+        "id": 64000438,
+        "fieldId": 63250070,
+        "value": "Espírito Santo",
+        "companyId": 38,
+        "createdAt": "2025-04-08T14:09:59.000Z",
+        "updatedAt": "2025-04-08T14:09:59.000Z"
+      },
+      {
+        "id": 64000432,
+        "fieldId": 63250070,
+        "value": "Goiás",
+        "companyId": 38,
+        "createdAt": "2025-04-08T14:09:00.000Z",
+        "updatedAt": "2025-04-08T14:09:00.000Z"
+      },
+      {
+        "id": 64000440,
+        "fieldId": 63250070,
+        "value": "Maranhão",
+        "companyId": 38,
+        "createdAt": "2025-04-08T14:10:11.000Z",
+        "updatedAt": "2025-04-08T14:10:11.000Z"
+      },
+      {
+        "id": 64000436,
+        "fieldId": 63250070,
+        "value": "Mato Grosso",
+        "companyId": 38,
+        "createdAt": "2025-04-08T14:09:37.000Z",
+        "updatedAt": "2025-04-08T14:09:37.000Z"
+      },
+      {
+        "id": 64000441,
+        "fieldId": 63250070,
+        "value": "Mato Grosso do Sul",
+        "companyId": 38,
+        "createdAt": "2025-04-08T14:10:21.000Z",
+        "updatedAt": "2025-04-08T14:10:21.000Z"
+      },
+      {
+        "id": 64000427,
+        "fieldId": 63250070,
+        "value": "Minas Gerais",
+        "companyId": 38,
+        "createdAt": "2025-04-08T14:08:16.000Z",
+        "updatedAt": "2025-04-08T14:08:16.000Z"
+      },
+      {
+        "id": 64000439,
+        "fieldId": 63250070,
+        "value": "Pará",
+        "companyId": 38,
+        "createdAt": "2025-04-08T14:10:03.000Z",
+        "updatedAt": "2025-04-08T14:10:03.000Z"
+      },
+      {
+        "id": 64000447,
+        "fieldId": 63250070,
+        "value": "Paraíba",
+        "companyId": 38,
+        "createdAt": "2025-04-08T14:11:18.000Z",
+        "updatedAt": "2025-04-08T14:11:18.000Z"
+      },
+      {
+        "id": 64000429,
+        "fieldId": 63250070,
+        "value": "Paraná",
+        "companyId": 38,
+        "createdAt": "2025-04-08T14:08:32.000Z",
+        "updatedAt": "2025-04-08T14:08:32.000Z"
+      },
+      {
+        "id": 64000437,
+        "fieldId": 63250070,
+        "value": "Pernambuco",
+        "companyId": 38,
+        "createdAt": "2025-04-08T14:09:45.000Z",
+        "updatedAt": "2025-04-08T14:09:45.000Z"
+      },
+      {
+        "id": 64000442,
+        "fieldId": 63250070,
+        "value": "Piauí",
+        "companyId": 38,
+        "createdAt": "2025-04-08T14:10:29.000Z",
+        "updatedAt": "2025-04-08T14:10:29.000Z"
+      },
+      {
+        "id": 64000435,
+        "fieldId": 63250070,
+        "value": "Rio de Janeiro",
+        "companyId": 38,
+        "createdAt": "2025-04-08T14:09:29.000Z",
+        "updatedAt": "2025-04-08T14:09:29.000Z"
+      },
+      {
+        "id": 64000445,
+        "fieldId": 63250070,
+        "value": "Rio Grande do Norte",
+        "companyId": 38,
+        "createdAt": "2025-04-08T14:11:00.000Z",
+        "updatedAt": "2025-04-08T14:11:00.000Z"
+      },
+      {
+        "id": 64000431,
+        "fieldId": 63250070,
+        "value": "Rio Grande do Sul",
+        "companyId": 38,
+        "createdAt": "2025-04-08T14:08:52.000Z",
+        "updatedAt": "2025-04-08T14:08:52.000Z"
+      },
+      {
+        "id": 64000448,
+        "fieldId": 63250070,
+        "value": "Roraima",
+        "companyId": 38,
+        "createdAt": "2025-04-08T14:11:24.000Z",
+        "updatedAt": "2025-04-08T14:11:24.000Z"
+      },
+      {
+        "id": 64000430,
+        "fieldId": 63250070,
+        "value": "Santa Catarina",
+        "companyId": 38,
+        "createdAt": "2025-04-08T14:08:43.000Z",
+        "updatedAt": "2025-04-08T14:08:43.000Z"
+      },
+      {
+        "id": 64000428,
+        "fieldId": 63250070,
+        "value": "São Paulo",
+        "companyId": 38,
+        "createdAt": "2025-04-08T14:08:24.000Z",
+        "updatedAt": "2025-04-08T14:08:24.000Z"
+      },
+      {
+        "id": 64000450,
+        "fieldId": 63250070,
+        "value": "Sergipe",
+        "companyId": 38,
+        "createdAt": "2025-04-08T14:11:36.000Z",
+        "updatedAt": "2025-04-08T14:11:36.000Z"
+      },
+      {
+        "id": 64000444,
+        "fieldId": 63250070,
+        "value": "Tocantins",
+        "companyId": 38,
+        "createdAt": "2025-04-08T14:10:49.000Z",
+        "updatedAt": "2025-04-08T14:10:49.000Z"
+      }
+    ],
+    "queues": []
+  },
+  {
+    "id": 63250447,
+    "name": "Ligação",
+    "context": "kanbanBoard",
+    "type": "multiOption",
+    "config": null,
+    "mask": "^(([0-9]{2}.[0-9]{3}.[0-9]{3}/[0-9]{4}-[0-9]{2})|([0-9]{14}))$&^(d{1,2})(d{0,3})(d{0,3})(d{0,4})(d{0,2})$& ../-",
+    "description": "",
+    "example": "",
+    "onlyAdmin": false,
+    "link": "",
+    "order": 1,
+    "companyId": 38,
+    "kanbanBoardId": 20,
+    "createdAt": "2026-01-12T18:29:57.000Z",
+    "updatedAt": "2026-01-12T18:29:57.000Z",
+    "options": [],
+    "queues": [
+      {
+        "id": 4400001,
+        "name": "Mais Granel",
+        "color": "#e27300",
+        "greetingMessage": "Aguarde um momento, em breve você será atendido(a). 💬​\n",
+        "absenceMessage": "No momento nossos atendentes não estão disponíveis. Nosso horário de atendimento é de 08h às 18h. Mas fique tranquilo(a) que assim que retornarmos você será respondido(a).",
+        "deleted": false,
+        "autoFinishMessage": null,
+        "autoFinishSeconds": null,
+        "autoCreateKanbanCard": false,
+        "autoCreateKanbanCardInfos": {
+          "kanbanId": null,
+          "kanbanColumnId": null,
+          "responsibleUserId": null
+        },
+        "companyId": 38,
+        "createdAt": "2022-08-24T12:44:38.000Z",
+        "updatedAt": "2025-05-27T21:47:15.000Z",
+        "ExtraInfoFieldsQueue": {
+          "extraInfoFieldId": 63250447,
+          "queueId": 4400001,
+          "createdAt": "2026-01-12T18:29:57.000Z",
+          "updatedAt": "2026-01-12T18:29:57.000Z"
+        }
+      },
+      {
+        "id": 64000070,
+        "name": "Interno Vitao",
+        "color": "#5bad35",
+        "greetingMessage": null,
+        "absenceMessage": "👋 Seja muito bem-vindo ao nosso canal de atendimento para lojistas!\nÉ um prazer receber você aqui.\n\nNo momento nossos atendentes não estão disponíveis. Nosso horário de atendimento é de 08h às 18h. Mas fique tranquilo(a) que assim que retornarmos você será respondido(a).",
+        "deleted": false,
+        "autoFinishMessage": null,
+        "autoFinishSeconds": null,
+        "autoCreateKanbanCard": false,
+        "autoCreateKanbanCardInfos": {
+          "kanbanId": null,
+          "kanbanColumnId": null,
+          "responsibleUserId": null
+        },
+        "companyId": 38,
+        "createdAt": "2025-04-07T17:47:00.000Z",
+        "updatedAt": "2026-01-20T13:37:46.000Z",
+        "ExtraInfoFieldsQueue": {
+          "extraInfoFieldId": 63250447,
+          "queueId": 64000070,
+          "createdAt": "2026-01-12T18:29:57.000Z",
+          "updatedAt": "2026-01-12T18:29:57.000Z"
+        }
+      }
+    ]
+  }
+]

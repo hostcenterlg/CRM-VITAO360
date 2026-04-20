@@ -1,0 +1,75 @@
+{
+  "success": 11,
+  "failed": 0,
+  "total_messages": 157,
+  "tickets_queried": 11,
+  "tickets_with_messages": 10,
+  "details": [
+    {
+      "ticketId": 67148392,
+      "status": "open",
+      "http_code": 200,
+      "messages": 0
+    },
+    {
+      "ticketId": 67147884,
+      "status": "open",
+      "http_code": 200,
+      "messages": 30
+    },
+    {
+      "ticketId": 67147525,
+      "status": "open",
+      "http_code": 200,
+      "messages": 26
+    },
+    {
+      "ticketId": 67148932,
+      "status": "open",
+      "http_code": 200,
+      "messages": 30
+    },
+    {
+      "ticketId": 67147812,
+      "status": "open",
+      "http_code": 200,
+      "messages": 30
+    },
+    {
+      "ticketId": 67148484,
+      "status": "open",
+      "http_code": 200,
+      "messages": 15
+    },
+    {
+      "ticketId": 67150140,
+      "status": "open",
+      "http_code": 200,
+      "messages": 15
+    },
+    {
+      "ticketId": 67151014,
+      "status": "pending",
+      "http_code": 200,
+      "messages": 2
+    },
+    {
+      "ticketId": 67151178,
+      "status": "pending",
+      "http_code": 200,
+      "messages": 4
+    },
+    {
+      "ticketId": 67151554,
+      "status": "pending",
+      "http_code": 200,
+      "messages": 2
+    },
+    {
+      "ticketId": 67151807,
+      "status": "pending",
+      "http_code": 200,
+      "messages": 3
+    }
+  ]
+}
