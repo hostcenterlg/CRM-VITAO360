@@ -1,0 +1,8 @@
+{
+  "statusCode": 403,
+  "message": "Invalid token. We'll try to assign a new one on next request",
+  "error": {
+    "statusCode": 403,
+    "context": null
+  }
+}
