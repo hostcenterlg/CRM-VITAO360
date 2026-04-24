@@ -201,11 +201,15 @@ async def get_briefing(
             detail=str(exc),
         ) from exc
     except Exception as exc:
-        logger.exception("Erro inesperado ao gerar briefing | cnpj=%s: %s", cnpj, exc)
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Erro interno ao gerar briefing — contate o administrador.",
-        ) from exc
+        logger.exception("Erro ao gerar briefing | cnpj=%s: %s — retornando fallback", cnpj, exc)
+        return BriefingResponse(
+            cnpj=cnpj,
+            nome_cliente="—",
+            briefing="[Briefing temporariamente indisponível — tente novamente em instantes]",
+            tokens_usados=0,
+            cached=False,
+            ia_configurada=False,
+        )
 
     return BriefingResponse(**resultado)
 
@@ -252,12 +256,17 @@ async def get_mensagem_wa_automatica(
         ) from exc
     except Exception as exc:
         logger.exception(
-            "Erro inesperado ao gerar mensagem WA | cnpj=%s: %s", cnpj, exc
+            "Erro ao gerar mensagem WA | cnpj=%s: %s — retornando fallback", cnpj, exc
         )
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Erro interno ao gerar mensagem — contate o administrador.",
-        ) from exc
+        return MensagemWAAutomaticaResponse(
+            cnpj=cnpj,
+            nome_cliente="—",
+            mensagem="[Geração de mensagem temporariamente indisponível]",
+            tom="NEUTRO",
+            contexto="INDISPONIVEL",
+            tokens_usados=0,
+            ia_configurada=False,
+        )
 
     return MensagemWAAutomaticaResponse(**resultado)
 
@@ -307,12 +316,15 @@ async def post_mensagem_whatsapp(
         ) from exc
     except Exception as exc:
         logger.exception(
-            "Erro inesperado ao gerar mensagem WA | cnpj=%s: %s", cnpj, exc
+            "Erro ao gerar mensagem WA | cnpj=%s: %s — retornando fallback", cnpj, exc
         )
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Erro interno ao gerar mensagem — contate o administrador.",
-        ) from exc
+        return MensagemWhatsAppResponse(
+            cnpj=cnpj,
+            nome_cliente="—",
+            mensagem="[Geração de mensagem temporariamente indisponível]",
+            tokens_usados=0,
+            ia_configurada=False,
+        )
 
     return MensagemWhatsAppResponse(**resultado)
 
@@ -355,15 +367,30 @@ async def get_resumo_semanal(
             consultor=consultor, db=db
         )
     except Exception as exc:
+        # Graceful degradation — responde 200 com payload zerado em vez de 500.
+        # Frontend lida com ia_configurada=False mostrando mensagem neutra.
         logger.exception(
-            "Erro inesperado ao gerar resumo semanal | consultor=%s: %s",
+            "Erro ao gerar resumo semanal | consultor=%s: %s — retornando fallback",
             consultor,
             exc,
         )
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Erro interno ao gerar resumo — contate o administrador.",
-        ) from exc
+        return ResumoSemanalResponse(
+            consultor=consultor.upper(),
+            periodo="",
+            resumo="[Resumo indisponível — serviço degradado]",
+            tokens_usados=0,
+            metricas=MetricasSemanaisResponse(
+                total_carteira=0,
+                clientes_contactados_semana=0,
+                vendas_semana_qtd=0,
+                vendas_semana_volume=0.0,
+                clientes_em_risco=0,
+                followups_vencidos=0,
+                pipeline={},
+                top3_proxima_semana=[],
+            ),
+            ia_configurada=False,
+        )
 
     return ResumoSemanalResponse(
         consultor=resultado["consultor"],
@@ -416,13 +443,20 @@ async def get_churn_risk(
             detail=str(exc),
         ) from exc
     except Exception as exc:
+        # Graceful degradation — 200 com risco BAIXO + sem fatores em vez de 500.
         logger.exception(
-            "Erro inesperado ao calcular churn risk | cnpj=%s: %s", cnpj, exc
+            "Erro ao calcular churn risk | cnpj=%s: %s — retornando fallback",
+            cnpj, exc,
         )
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Erro interno ao calcular risco de churn — contate o administrador.",
-        ) from exc
+        return ChurnRiskResponse(
+            cnpj=cnpj,
+            nome_cliente="—",
+            risco_pct=0.0,
+            nivel="INDISPONIVEL",
+            fatores=[],
+            recomendacao="Serviço de risco temporariamente indisponível.",
+            ia_configurada=False,
+        )
 
     return ChurnRiskResponse(**resultado)
 
@@ -469,12 +503,16 @@ async def get_sugestao_produto(
         ) from exc
     except Exception as exc:
         logger.exception(
-            "Erro inesperado ao gerar sugestão de produto | cnpj=%s: %s", cnpj, exc
+            "Erro ao gerar sugestão de produto | cnpj=%s: %s — retornando fallback", cnpj, exc
         )
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Erro interno ao gerar sugestão — contate o administrador.",
-        ) from exc
+        return SugestaoProdutoResponse(
+            cnpj=cnpj,
+            nome_cliente="—",
+            produtos_sugeridos=[],
+            estrategia="Serviço de sugestão temporariamente indisponível.",
+            categorias_frequentes=[],
+            ia_configurada=False,
+        )
 
     return SugestaoProdutoResponse(**resultado)
 
@@ -631,11 +669,18 @@ async def get_sentimento(
             detail=str(exc),
         ) from exc
     except Exception as exc:
-        logger.exception("Erro ao analisar sentimento | cnpj=%s: %s", cnpj, exc)
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Erro interno ao analisar sentimento — contate o administrador.",
-        ) from exc
+        logger.exception(
+            "Erro ao analisar sentimento | cnpj=%s: %s — retornando fallback",
+            cnpj, exc,
+        )
+        return SentimentoResponse(
+            cnpj=cnpj,
+            sentimento="NEUTRO",
+            score=0.0,
+            historico=[],
+            tendencia="ESTAVEL",
+            recomendacao="Análise temporariamente indisponível.",
+        )
 
     return SentimentoResponse(
         cnpj=resultado["cnpj"],
@@ -687,11 +732,15 @@ async def get_previsao_fechamento(
             detail=str(exc),
         ) from exc
     except Exception as exc:
-        logger.exception("Erro ao prever fechamento | cnpj=%s: %s", cnpj, exc)
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Erro interno ao calcular previsão — contate o administrador.",
-        ) from exc
+        logger.exception("Erro ao prever fechamento | cnpj=%s: %s — retornando fallback", cnpj, exc)
+        return PrevisaoFechamentoResponse(
+            cnpj=cnpj,
+            probabilidade_pct=0.0,
+            nivel="BAIXA",
+            fatores=[],
+            tempo_estimado_dias=0,
+            recomendacao="Previsão temporariamente indisponível.",
+        )
 
     return PrevisaoFechamentoResponse(
         cnpj=resultado["cnpj"],
@@ -736,11 +785,21 @@ async def get_coach_vendas(
     try:
         resultado: dict[str, Any] = await ia_service.coach_vendas(consultor=consultor, db=db)
     except Exception as exc:
-        logger.exception("Erro ao gerar coach | consultor=%s: %s", consultor, exc)
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Erro interno ao gerar coach de vendas — contate o administrador.",
-        ) from exc
+        logger.exception("Erro ao gerar coach | consultor=%s: %s — retornando fallback", consultor, exc)
+        return CoachVendasResponse(
+            consultor=consultor.upper(),
+            periodo="",
+            metricas=MetricasCoachResponse(
+                conversao_pct=0.0,
+                ticket_medio=0.0,
+                atendimentos_dia=0.0,
+                positivacao_pct=0.0,
+            ),
+            pontos_fortes=[],
+            pontos_fracos=[],
+            recomendacoes=[],
+            meta_sugerida="Serviço de coaching temporariamente indisponível.",
+        )
 
     return CoachVendasResponse(
         consultor=resultado["consultor"],
@@ -784,11 +843,8 @@ async def get_alerta_oportunidade(
     try:
         resultado: dict[str, Any] = await ia_service.detectar_oportunidades(db=db)
     except Exception as exc:
-        logger.exception("Erro ao detectar oportunidades: %s", exc)
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Erro interno ao detectar oportunidades — contate o administrador.",
-        ) from exc
+        logger.exception("Erro ao detectar oportunidades: %s — retornando fallback", exc)
+        return AlertaOportunidadeResponse(total=0, oportunidades=[])
 
     return AlertaOportunidadeResponse(
         total=resultado["total"],
@@ -825,11 +881,15 @@ async def get_dashboard_ia(
     try:
         resultado: dict[str, Any] = await ia_service.dashboard_ia(db=db)
     except Exception as exc:
-        logger.exception("Erro ao gerar dashboard IA: %s", exc)
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Erro interno ao gerar dashboard — contate o administrador.",
-        ) from exc
+        logger.exception("Erro ao gerar dashboard IA: %s — retornando fallback", exc)
+        return DashboardIAResponse(
+            briefings_disponiveis=0,
+            alertas_ativos=0,
+            oportunidades=0,
+            clientes_em_risco=0,
+            consultor_destaque=ConsultorDestaqueItem(nome="—", motivo="Indisponível"),
+            insight_do_dia="Dashboard IA temporariamente indisponível.",
+        )
 
     return DashboardIAResponse(
         briefings_disponiveis=resultado["briefings_disponiveis"],
