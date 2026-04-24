@@ -221,6 +221,16 @@ def listar_vendas(
     cnpj: Optional[str] = Query(None, description="Filtrar por CNPJ exato (14 digitos)"),
     consultor: Optional[str] = Query(None, description="Filtrar por consultor (MANU, LARISSA, DAIANE, JULIO)"),
     fonte: Optional[str] = Query(None, description="Filtrar por fonte (MERCOS, SAP, MANUAL)"),
+    status_pedido: Optional[str] = Query(
+        None,
+        alias="status",
+        description="Filtrar por status_pedido (DIGITADO, LIBERADO, FATURADO, ENTREGUE, CANCELADO)",
+    ),
+    busca: Optional[str] = Query(
+        None,
+        min_length=1,
+        description="Busca livre por numero_pedido, nome_fantasia ou CNPJ",
+    ),
     data_inicio: Optional[date] = Query(None, description="Data inicio (YYYY-MM-DD), inclusivo"),
     data_fim: Optional[date] = Query(None, description="Data fim (YYYY-MM-DD), inclusivo"),
     # Paginacao padronizada (page/per_page) — preferida
@@ -271,6 +281,26 @@ def listar_vendas(
 
     if fonte:
         base_stmt = base_stmt.where(Venda.fonte == fonte.upper())
+
+    if status_pedido:
+        base_stmt = base_stmt.where(Venda.status_pedido == status_pedido.upper())
+
+    if busca:
+        from sqlalchemy import or_
+        termo = f"%{busca.strip()}%"
+        # Cnpjs cujo nome_fantasia bate (batch lookup p/ evitar JOIN aqui)
+        cnpjs_por_nome = list(
+            db.scalars(
+                select(Cliente.cnpj).where(Cliente.nome_fantasia.ilike(termo))
+            ).all()
+        )
+        clauses = [
+            Venda.numero_pedido.ilike(termo),
+            Venda.cnpj.ilike(termo),
+        ]
+        if cnpjs_por_nome:
+            clauses.append(Venda.cnpj.in_(cnpjs_por_nome))
+        base_stmt = base_stmt.where(or_(*clauses))
 
     if data_inicio:
         base_stmt = base_stmt.where(Venda.data_pedido >= data_inicio)
