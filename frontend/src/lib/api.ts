@@ -1195,24 +1195,40 @@ export async function fetchProduto(id: number): Promise<ProdutoItem> {
 // Vendas (pedidos) endpoints
 // ---------------------------------------------------------------------------
 
+// Alinhado com backend schema VendaResponse (backend/app/schemas/venda.py)
+// e VendasPaginatedResponse (envelope items/total/page/per_page/pages/has_next/has_prev).
+export type StatusPedido =
+  | 'DIGITADO'
+  | 'LIBERADO'
+  | 'FATURADO'
+  | 'ENTREGUE'
+  | 'CANCELADO';
+
 export interface VendaPedidoItem {
   id: number;
-  numero_pedido: string;
-  consultor: string;
-  cliente_cnpj: string;
-  cliente_nome: string;
-  status: 'DIGITADO' | 'LIBERADO' | 'FATURADO' | 'ENTREGUE' | 'CANCELADO';
-  valor_total: number;
-  condicao_pagamento: string;
-  data_pedido: string;
-  data_atualizacao?: string;
-  itens_qtd?: number;
+  cnpj: string;
+  nome_fantasia: string | null;
+  data_pedido: string | null;
+  numero_pedido: string | null;
+  valor_pedido: number;
+  consultor: string | null;
+  fonte: string | null;
+  classificacao_3tier: string;
+  mes_referencia: string | null;
+  status_pedido: StatusPedido;
+  condicao_pagamento: string | null;
+  observacao: string | null;
+  created_at: string | null;
 }
 
 export interface VendasPorStatusResponse {
   total: number;
-  itens: VendaPedidoItem[];
-  resumo_status: Record<string, number>;
+  items: VendaPedidoItem[];
+  page: number;
+  per_page: number;
+  pages: number;
+  has_next: boolean;
+  has_prev: boolean;
 }
 
 export interface VendasParams {
@@ -1225,18 +1241,17 @@ export interface VendasParams {
   offset?: number;
 }
 
-// Busca ultimas vendas/pedidos de um cliente especifico por CNPJ
+// Busca ultimas vendas/pedidos de um cliente especifico por CNPJ.
+// Backend aceita filtro por cnpj exato — usamos isso em vez de busca livre.
 export async function fetchVendasCliente(
   cnpj: string,
   limit = 5
 ): Promise<VendaPedidoItem[]> {
   try {
-    const qs = new URLSearchParams({ busca: cnpj, limit: String(limit) });
+    const qs = new URLSearchParams({ cnpj, per_page: String(limit) });
     const res = await fetchJson<VendasPorStatusResponse>(`/api/vendas?${qs.toString()}`);
-    // Filtrar pelo CNPJ exato para garantir que nao retorne outros clientes
-    return (res?.itens ?? []).filter((v) => v.cliente_cnpj === cnpj).slice(0, limit);
+    return (res?.items ?? []).slice(0, limit);
   } catch {
-    // Backend 500 ou indisponivel — retorna array vazio, nao null
     return [];
   }
 }
@@ -1250,8 +1265,8 @@ export async function fetchVendasPorStatus(
   if (params?.data_inicio) qs.set('data_inicio', params.data_inicio);
   if (params?.data_fim) qs.set('data_fim', params.data_fim);
   if (params?.busca) qs.set('busca', params.busca);
-  qs.set('limit', String(params?.limit ?? 100));
-  qs.set('offset', String(params?.offset ?? 0));
+  qs.set('per_page', String(params?.limit ?? 100));
+  qs.set('page', '1');
   return fetchJson<VendasPorStatusResponse>(`/api/vendas?${qs.toString()}`);
 }
 
@@ -1675,7 +1690,7 @@ export async function fetchCoach(consultor: string): Promise<CoachResponse> {
 }
 
 export async function fetchAlertaOportunidade(): Promise<AlertaOportunidadeResponse> {
-  return fetchJson<AlertaOportunidadeResponse>('/api/ia/alertas-oportunidade');
+  return fetchJson<AlertaOportunidadeResponse>('/api/ia/alerta-oportunidade');
 }
 
 export async function fetchIADashboard(): Promise<IADashboardResponse> {

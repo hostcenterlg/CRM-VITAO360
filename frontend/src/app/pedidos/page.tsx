@@ -40,17 +40,17 @@ const STATUS_LIST: StatusPedido[] = ['DIGITADO', 'LIBERADO', 'FATURADO', 'ENTREG
 // Helpers
 // ---------------------------------------------------------------------------
 
-function formatarData(iso: string): string {
+function formatarData(iso: string | null | undefined): string {
   if (!iso) return '—';
   try {
     const d = new Date(iso);
     return d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
   } catch {
-    return iso;
+    return String(iso);
   }
 }
 
-function labelData(iso: string): string {
+function labelData(iso: string | null | undefined): string {
   if (!iso) return 'Sem data';
   try {
     const hoje = new Date();
@@ -62,14 +62,14 @@ function labelData(iso: string): string {
     if (diff === 1) return 'ONTEM';
     return d.toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long' });
   } catch {
-    return iso;
+    return String(iso);
   }
 }
 
-/** Agrupa itens por data_pedido (YYYY-MM-DD) */
-function agruparPorData(itens: VendaPedidoItem[]): { label: string; data: string; pedidos: VendaPedidoItem[] }[] {
+/** Agrupa items por data_pedido (YYYY-MM-DD) */
+function agruparPorData(items: VendaPedidoItem[]): { label: string; data: string; pedidos: VendaPedidoItem[] }[] {
   const map = new Map<string, VendaPedidoItem[]>();
-  for (const pedido of itens) {
+  for (const pedido of items) {
     const chave = pedido.data_pedido?.slice(0, 10) ?? 'sem-data';
     const lista = map.get(chave) ?? [];
     lista.push(pedido);
@@ -226,29 +226,29 @@ function ModalPedido({ pedido, onClose, onTransicionar, isAdmin }: ModalPedidoPr
           <div className="grid grid-cols-2 gap-3">
             <div>
               <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">Cliente</p>
-              <p className="text-xs font-medium text-gray-900">{pedido.cliente_nome}</p>
-              <p className="text-[10px] text-gray-400 font-mono mt-0.5">{pedido.cliente_cnpj}</p>
+              <p className="text-xs font-medium text-gray-900">{pedido.nome_fantasia ?? '—'}</p>
+              <p className="text-[10px] text-gray-400 font-mono mt-0.5">{pedido.cnpj}</p>
             </div>
             <div>
               <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">Consultor</p>
-              <p className="text-xs font-medium text-gray-900">{pedido.consultor}</p>
+              <p className="text-xs font-medium text-gray-900">{pedido.consultor ?? '—'}</p>
             </div>
             <div>
               <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">Valor Total</p>
-              <p className="text-sm font-bold text-gray-900 tabular-nums">{formatBRL(pedido.valor_total)}</p>
+              <p className="text-sm font-bold text-gray-900 tabular-nums">{formatBRL(pedido.valor_pedido)}</p>
             </div>
             <div>
               <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">Cond. Pagamento</p>
-              <p className="text-xs font-medium text-gray-900">{pedido.condicao_pagamento}</p>
+              <p className="text-xs font-medium text-gray-900">{pedido.condicao_pagamento ?? '—'}</p>
             </div>
             <div>
               <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">Status Atual</p>
-              <StatusBadge status={pedido.status} />
+              <StatusBadge status={pedido.status_pedido} />
             </div>
-            {pedido.itens_qtd != null && (
-              <div>
-                <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">Itens</p>
-                <p className="text-xs font-medium text-gray-900">{pedido.itens_qtd} produto{pedido.itens_qtd !== 1 ? 's' : ''}</p>
+            {pedido.observacao && (
+              <div className="col-span-2">
+                <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">Observação</p>
+                <p className="text-xs text-gray-700">{pedido.observacao}</p>
               </div>
             )}
           </div>
@@ -257,7 +257,7 @@ function ModalPedido({ pedido, onClose, onTransicionar, isAdmin }: ModalPedidoPr
           <div className="pt-3 border-t border-gray-100 space-y-2">
             <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-2">Acoes</p>
             <div className="flex flex-wrap gap-2">
-              {pedido.status === 'DIGITADO' && (
+              {pedido.status_pedido === 'DIGITADO' && (
                 <button
                   type="button"
                   disabled={loading}
@@ -268,7 +268,7 @@ function ModalPedido({ pedido, onClose, onTransicionar, isAdmin }: ModalPedidoPr
                   Liberar Pedido
                 </button>
               )}
-              {pedido.status === 'LIBERADO' && (
+              {pedido.status_pedido === 'LIBERADO' && (
                 <button
                   type="button"
                   disabled={loading}
@@ -279,7 +279,7 @@ function ModalPedido({ pedido, onClose, onTransicionar, isAdmin }: ModalPedidoPr
                   Faturar Pedido
                 </button>
               )}
-              {pedido.status === 'FATURADO' && (
+              {pedido.status_pedido === 'FATURADO' && (
                 <button
                   type="button"
                   disabled={loading}
@@ -290,7 +290,7 @@ function ModalPedido({ pedido, onClose, onTransicionar, isAdmin }: ModalPedidoPr
                   Marcar Entregue
                 </button>
               )}
-              {pedido.status !== 'CANCELADO' && pedido.status !== 'ENTREGUE' && isAdmin && (
+              {pedido.status_pedido !== 'CANCELADO' && pedido.status_pedido !== 'ENTREGUE' && isAdmin && (
                 <button
                   type="button"
                   disabled={loading}
@@ -301,7 +301,7 @@ function ModalPedido({ pedido, onClose, onTransicionar, isAdmin }: ModalPedidoPr
                   Cancelar
                 </button>
               )}
-              {(pedido.status === 'CANCELADO' || pedido.status === 'ENTREGUE') && (
+              {(pedido.status_pedido === 'CANCELADO' || pedido.status_pedido === 'ENTREGUE') && (
                 <p className="text-xs text-gray-400 italic">Nenhuma acao disponivel para este status</p>
               )}
             </div>
@@ -333,28 +333,28 @@ function CardPedido({ pedido, onClick }: CardPedidoProps) {
       type="button"
       onClick={onClick}
       className="w-full text-left bg-white rounded-lg border border-gray-200 p-3 hover:border-green-300 hover:shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-green-500"
-      aria-label={`Pedido ${pedido.numero_pedido} — ${pedido.cliente_nome}`}
+      aria-label={`Pedido ${pedido.numero_pedido ?? pedido.id} — ${pedido.nome_fantasia ?? pedido.cnpj}`}
     >
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-[11px] font-mono text-gray-400">#{pedido.numero_pedido}</span>
-            <span className="text-[11px] font-semibold text-gray-600">{pedido.consultor}</span>
+            <span className="text-[11px] font-mono text-gray-400">#{pedido.numero_pedido ?? pedido.id}</span>
+            <span className="text-[11px] font-semibold text-gray-600">{pedido.consultor ?? '—'}</span>
           </div>
-          <p className="text-sm font-semibold text-gray-900 mt-0.5 truncate">{pedido.cliente_nome}</p>
-          <p className="text-[10px] text-gray-400 font-mono mt-0.5">{pedido.cliente_cnpj}</p>
+          <p className="text-sm font-semibold text-gray-900 mt-0.5 truncate">{pedido.nome_fantasia ?? '—'}</p>
+          <p className="text-[10px] text-gray-400 font-mono mt-0.5">{pedido.cnpj}</p>
         </div>
         <div className="flex-shrink-0 flex flex-col items-end gap-1.5">
-          <StatusBadge status={pedido.status} />
+          <StatusBadge status={pedido.status_pedido} />
           <span className="text-sm font-bold text-gray-900 tabular-nums">
-            {formatBRL(pedido.valor_total)}
+            {formatBRL(pedido.valor_pedido)}
           </span>
         </div>
       </div>
       <div className="flex items-center gap-3 mt-2 pt-2 border-t border-gray-100">
-        <span className="text-[11px] text-gray-500">{pedido.condicao_pagamento}</span>
-        {pedido.itens_qtd != null && (
-          <span className="text-[11px] text-gray-400">{pedido.itens_qtd} item{pedido.itens_qtd !== 1 ? 's' : ''}</span>
+        <span className="text-[11px] text-gray-500">{pedido.condicao_pagamento ?? '—'}</span>
+        {pedido.fonte && (
+          <span className="text-[11px] text-gray-400">{pedido.fonte}</span>
         )}
       </div>
     </button>
@@ -486,28 +486,34 @@ function PedidosInner() {
     }
   }
 
-  const grupos = agruparPorData(response?.itens ?? []);
+  const items = response?.items ?? [];
+  const grupos = agruparPorData(items);
   const temFiltro = !!(filtroStatus || filtroConsultor || filtroDataInicio || filtroDataFim || busca);
   const totalPedidos = response?.total ?? 0;
-  const resumoStatus = response?.resumo_status ?? {};
+  // Backend não retorna resumo agregado — calcular do payload atual.
+  const resumoStatus = items.reduce<Record<string, number>>((acc, v) => {
+    const key = v.status_pedido || 'DIGITADO';
+    acc[key] = (acc[key] ?? 0) + 1;
+    return acc;
+  }, {});
 
   async function handleExportCsv() {
     setExporting(true);
     try {
       const hoje = new Date().toISOString().slice(0, 10);
-      const itensFiltrados = response?.itens ?? [];
+      const itensFiltrados = response?.items ?? [];
       exportToCSV(
         itensFiltrados,
         [
-          { label: 'Numero Pedido', value: (p) => p.numero_pedido },
+          { label: 'Numero Pedido', value: (p) => p.numero_pedido ?? '' },
           { label: 'Data',         value: (p) => p.data_pedido?.slice(0, 10) ?? '' },
-          { label: 'Cliente',      value: (p) => p.cliente_nome ?? '' },
-          { label: 'CNPJ',         value: (p) => p.cliente_cnpj ?? '', forceText: true },
+          { label: 'Cliente',      value: (p) => p.nome_fantasia ?? '' },
+          { label: 'CNPJ',         value: (p) => p.cnpj ?? '', forceText: true },
           { label: 'Consultor',    value: (p) => p.consultor ?? '' },
-          { label: 'Status',       value: (p) => p.status ?? '' },
-          { label: 'Valor Total',  value: (p) => p.valor_total != null ? p.valor_total.toFixed(2) : '' },
+          { label: 'Status',       value: (p) => p.status_pedido ?? '' },
+          { label: 'Valor Total',  value: (p) => p.valor_pedido != null ? p.valor_pedido.toFixed(2) : '' },
           { label: 'Cond. Pagamento', value: (p) => p.condicao_pagamento ?? '' },
-          { label: 'Itens',        value: (p) => p.itens_qtd ?? '' },
+          { label: 'Fonte',        value: (p) => p.fonte ?? '' },
         ],
         `pedidos_vitao360_${hoje}`
       );
@@ -535,7 +541,7 @@ function PedidosInner() {
           <button
             type="button"
             onClick={handleExportCsv}
-            disabled={exporting || loading || !response?.itens?.length}
+            disabled={exporting || loading || !response?.items?.length}
             aria-label="Exportar pedidos filtrados como CSV"
             className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-green-700 border border-green-300 rounded-lg bg-white hover:bg-green-50 hover:border-green-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >

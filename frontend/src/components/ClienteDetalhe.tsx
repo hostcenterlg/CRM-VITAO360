@@ -433,21 +433,21 @@ function UltimasComprasBloco({ cnpj }: UltimasComprasProps) {
         </thead>
         <tbody>
           {(vendas ?? []).map((v) => {
-            const cor = STATUS_VENDA_COLORS[v.status] ?? '#9CA3AF';
+            const cor = STATUS_VENDA_COLORS[v.status_pedido] ?? '#9CA3AF';
             return (
               <tr key={v.id} className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
                 <td className="py-1.5 px-1 text-gray-700 whitespace-nowrap">
-                  {formatDate(v.data_pedido)}
+                  {formatDate(v.data_pedido ?? '')}
                 </td>
                 <td className="py-1.5 px-1 text-right font-medium text-gray-900 tabular-nums whitespace-nowrap">
-                  {formatBRL(v.valor_total)}
+                  {formatBRL(v.valor_pedido)}
                 </td>
                 <td className="py-1.5 px-1 text-right whitespace-nowrap">
                   <span
                     className="inline-block text-[10px] font-semibold px-1.5 py-0.5 rounded"
                     style={{ backgroundColor: cor + '18', color: cor }}
                   >
-                    {v.status}
+                    {v.status_pedido}
                   </span>
                 </td>
               </tr>

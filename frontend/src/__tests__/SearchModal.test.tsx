@@ -18,7 +18,7 @@ vi.mock('next/navigation', () => ({
 vi.mock('@/lib/api', () => ({
   fetchClientes: vi.fn().mockResolvedValue({ registros: [] }),
   fetchProdutos: vi.fn().mockResolvedValue({ itens: [] }),
-  fetchVendasPorStatus: vi.fn().mockResolvedValue({ itens: [] }),
+  fetchVendasPorStatus: vi.fn().mockResolvedValue({ total: 0, items: [], page: 1, per_page: 100, pages: 0, has_next: false, has_prev: false }),
   formatBRL: vi.fn((v: number) => `R$ ${v}`),
 }));
 

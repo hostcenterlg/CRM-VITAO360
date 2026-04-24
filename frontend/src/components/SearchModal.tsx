@@ -169,12 +169,12 @@ export default function SearchModal({ open, onClose }: SearchModalProps) {
           promises.push(
             fetchVendasPorStatus({ busca: q, limit: 3 })
               .then((res): SearchResult[] =>
-                res.itens.map((v: VendaPedidoItem) => ({
+                (res?.items ?? []).map((v: VendaPedidoItem) => ({
                   type: 'pedido',
                   id: String(v.id),
-                  title: `Pedido ${v.numero_pedido}`,
-                  subtitle: `${v.cliente_nome} · ${formatBRL(v.valor_total)} · ${v.status}`,
-                  href: `/pedidos?numero=${v.numero_pedido}`,
+                  title: `Pedido ${v.numero_pedido ?? v.id}`,
+                  subtitle: `${v.nome_fantasia ?? v.cnpj} · ${formatBRL(v.valor_pedido)} · ${v.status_pedido}`,
+                  href: `/pedidos?numero=${v.numero_pedido ?? v.id}`,
                 }))
               )
               .catch(() => [])
