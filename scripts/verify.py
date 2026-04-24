@@ -6,9 +6,10 @@ Verifica claims antes de declarar "done"
 import argparse
 import json
 import os
+import re
 import sys
 import time
-from datetime import datetime
+from datetime import date, datetime, timedelta
 from pathlib import Path
 
 ROOT = Path(__file__).parent.parent
@@ -19,18 +20,75 @@ SELF_EXCLUDE = {
     "verify.py",
     "session_boot.py",
     "compliance_gate.py",
+    "preflight_check.py",
+    "tech_debt_scan.py",
+    "postflight_check.py",
 }
+
+# Regex: linha começa (após whitespace) com chamada de logger
+_LOGGER_LINE = re.compile(
+    r'^\s*(log|logger|logging)\.(info|warning|error|debug|exception|critical)\s*\('
+)
+# Regex: linha é comentário puro ou docstring marker
+_COMMENT_LINE = re.compile(r'^\s*(#|"""|\'\'\'|\*)')
+# Regex: guarda ALUCINAÇÃO (compara ou conta)
+_ALUC_GUARD = re.compile(
+    r"(!=\s*['\"]ALUCINACAO['\"]|==\s*['\"]ALUCINACAO['\"]|count\s*\(.*alucinacao|zero\s+alucin|classifica(cao_)?(_?)3?tier)",
+    re.IGNORECASE,
+)
+
 
 def _should_skip(filepath):
     """Retorna True se o arquivo é um script de enforcement (contém patterns de detecção)"""
     return Path(filepath).name in SELF_EXCLUDE
 
+def _docstring_line_ranges(source: str) -> set[int]:
+    """Retorna set de numeros de linha (1-indexed) que estao dentro de docstrings."""
+    import ast
+    lines_in_docstring: set[int] = set()
+    try:
+        tree = ast.parse(source)
+    except SyntaxError:
+        return lines_in_docstring
+
+    def _walk(node):
+        # Module, ClassDef, FunctionDef, AsyncFunctionDef podem ter docstring
+        if isinstance(node, (ast.Module, ast.ClassDef, ast.FunctionDef, ast.AsyncFunctionDef)):
+            body = getattr(node, "body", None)
+            if body and isinstance(body[0], ast.Expr) and isinstance(body[0].value, ast.Constant) and isinstance(body[0].value.value, str):
+                ds = body[0]
+                start = ds.lineno
+                end = getattr(ds, "end_lineno", start)
+                for ln in range(start, end + 1):
+                    lines_in_docstring.add(ln)
+        for child in ast.iter_child_nodes(node):
+            _walk(child)
+
+    _walk(tree)
+    return lines_in_docstring
+
+
 def check_two_base(files=None):
-    """Verifica que Two-Base Architecture está respeitada nos scripts"""
+    """Verifica que Two-Base Architecture está respeitada nos scripts.
+
+    FPs excluídos (refinado 2026-04-24):
+      - Linhas dentro de docstrings (AST-parsed)
+      - Linhas que começam com logger (log.info, logger.warning, logging.*)
+      - Linhas que começam com # ou docstring markers
+      - Linhas com `0.0`, `0.00`, `== 0`, `<= 0`, `>= 0`, `zero`
+      - Linhas que mencionam "NUNCA", "respeitada", "proibido" (explicam a regra)
+      - Scripts de enforcement (ja em SELF_EXCLUDE)
+    """
     issues = []
     scripts_dir = ROOT / "scripts"
     if not scripts_dir.exists():
         return "SKIP", ["scripts/ não existe"]
+
+    # Keywords que indicam linha explicativa (FP), não violação
+    EXPLAINER_TOKENS = (
+        "nunca", "never", "respeitada", "respect", "proibido", "forbidden",
+        "violac", "violation", "two-base", "r4 ",
+    )
 
     target_files = files or list(scripts_dir.rglob("*.py"))
     for f in target_files:
@@ -40,13 +98,34 @@ def check_two_base(files=None):
             continue
         try:
             content = f.read_text(encoding="utf-8", errors="ignore")
-            # Check for common Two-Base violations
+            docstring_lines = _docstring_line_ranges(content)
             lines = content.split("\n")
             for i, line in enumerate(lines, 1):
-                # Flag if mixing LOG and monetary values without separation
-                if "LOG" in line.upper() and ("R$" in line or "valor" in line.lower()):
-                    if "0.00" not in line and "zero" not in line.lower():
-                        issues.append(f"{f.name}:{i} — possível mistura LOG + valor monetário")
+                upper = line.upper()
+                lower = line.lower()
+                if "LOG" not in upper:
+                    continue
+                if "R$" not in line and "valor" not in lower:
+                    continue
+                # Inside a docstring?
+                if i in docstring_lines:
+                    continue
+                # Already zero?
+                if "0.00" in line or "0.0" in line or re.search(r"[<>=!]=\s*0\b", line) or "zero" in lower:
+                    continue
+                # Logger call?
+                if _LOGGER_LINE.match(line):
+                    continue
+                # Comment / docstring marker?
+                if _COMMENT_LINE.match(line):
+                    continue
+                # Explainer text?
+                if any(tok in lower for tok in EXPLAINER_TOKENS):
+                    continue
+                # Print that confirms the rule?
+                if "print(" in line and any(tok in lower for tok in ("respeitada", "nunca", "proibido")):
+                    continue
+                issues.append(f"{f.name}:{i} — possível mistura LOG + valor monetário")
         except Exception:
             pass
 
@@ -179,10 +258,22 @@ def main():
             if _should_skip(f):
                 continue
             try:
-                content = f.read_text(encoding="utf-8", errors="ignore").lower()
-                if "alucinacao" in content and ("integr" in content or "merge" in content or "insert" in content):
-                    if "exclu" not in content and "filter" not in content and "skip" not in content:
-                        aluc_issues.append(f"{f.name} — possível integração de dados ALUCINAÇÃO")
+                content = f.read_text(encoding="utf-8", errors="ignore")
+                low = content.lower()
+                if "alucinacao" not in low:
+                    continue
+                if not any(p in low for p in ("integr", "merge", "insert")):
+                    continue
+                # Já é um guard (exclui/filtra/skip)?
+                if any(p in low for p in ("exclu", "filter", "skip", "!= 'alucinacao'", "== 'alucinacao'")):
+                    continue
+                # Guard por comparação ou contagem?
+                if _ALUC_GUARD.search(content):
+                    continue
+                # Arquivo de classificação 3-tier: classifica REAL/SINTÉTICO/ALUCINAÇÃO, não integra
+                if "classify" in f.name.lower() or "classifica" in f.name.lower():
+                    continue
+                aluc_issues.append(f"{f.name} — possível integração de dados ALUCINAÇÃO")
             except Exception:
                 pass
         status = "WARN" if aluc_issues else "PASS"
@@ -248,6 +339,52 @@ def main():
         results["motor"] = {"status": status, "issues": motor_issues}
         print(f"  {status}: {len(motor_issues)} issues" if motor_issues else f"  {status}")
         for iss in motor_issues[:3]:
+            print(f"    -> {iss}")
+
+    if args.all or args.claim == "deskrio":
+        print("\n[9] Deskrio snapshots integrity...")
+        desk_issues = []
+        desk_root = ROOT / "data" / "deskrio"
+        if not desk_root.exists():
+            desk_issues.append("data/deskrio/ não existe")
+        else:
+            # Verificar últimos 7 dias
+            expected = {
+                "connections.json": 500,
+                "contacts.json": 1_000_000,
+                "kanban_boards.json": 500,
+                "tickets.json": 100,
+            }
+            today = date.today()
+            days_checked = 0
+            for delta in range(7):
+                d = today - timedelta(days=delta)
+                day_dir = desk_root / d.isoformat()
+                if not day_dir.exists():
+                    continue
+                days_checked += 1
+                for fname, min_size in expected.items():
+                    fpath = day_dir / fname
+                    if not fpath.exists():
+                        desk_issues.append(f"{d.isoformat()}/{fname} AUSENTE")
+                        continue
+                    size = fpath.stat().st_size
+                    if size < min_size:
+                        desk_issues.append(f"{d.isoformat()}/{fname} muito pequeno ({size} < {min_size})")
+                        continue
+                    # Detectar corpo de erro 403
+                    try:
+                        head = fpath.read_text(encoding="utf-8", errors="ignore")[:300]
+                        if "Invalid token" in head or '"statusCode":403' in head:
+                            desk_issues.append(f"{d.isoformat()}/{fname} contém ERRO 403 persistido")
+                    except Exception:
+                        pass
+            if days_checked == 0:
+                desk_issues.append("Nenhum snapshot encontrado nos últimos 7 dias")
+        status = "WARN" if desk_issues else "PASS"
+        results["deskrio"] = {"status": status, "issues": desk_issues}
+        print(f"  {status}: {len(desk_issues)} issues" if desk_issues else f"  {status}")
+        for iss in desk_issues[:5]:
             print(f"    -> {iss}")
 
     # Summary
