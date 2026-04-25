@@ -34,7 +34,12 @@ from pydantic import BaseModel, ConfigDict, model_validator
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
-from backend.app.api.deps import get_current_user, require_admin, require_admin_or_gerente
+from backend.app.api.deps import (
+    get_current_user,
+    get_user_canal_ids,
+    require_admin,
+    require_admin_or_gerente,
+)
 from backend.app.database import get_db
 from backend.app.models.audit_log import AuditLog
 from backend.app.models.cliente import Cliente
@@ -285,6 +290,13 @@ def listar_clientes(
     prioridade: Optional[str] = Query(None, description="Filtrar por prioridade (P0-P7)"),
     uf: Optional[str] = Query(None, description="Filtrar por UF (ex.: SP, RS, RJ)"),
     busca: Optional[str] = Query(None, description="Busca por nome fantasia ou razao social (contem)"),
+    canal_id: Optional[int] = Query(
+        None,
+        description=(
+            "Restringe a um canal especifico (id em canais). Tem que estar "
+            "entre os canais permitidos do usuario; admin pode escolher qualquer."
+        ),
+    ),
     # Paginacao padronizada (page/per_page) — preferida
     page: Optional[int] = Query(None, ge=1, description="Pagina atual (1-based). Tem precedencia sobre offset."),
     per_page: Optional[int] = Query(None, ge=1, le=200, description="Itens por pagina (max 200). Tem precedencia sobre limit."),
@@ -292,6 +304,7 @@ def listar_clientes(
     limit: int = Query(50, ge=1, le=500, description="Registros por pagina (legado: usar per_page)"),
     offset: int = Query(0, ge=0, description="Offset para paginacao (legado: usar page)"),
     user: Usuario = Depends(get_current_user),
+    user_canal_ids: list[int] | None = Depends(get_user_canal_ids),
     db: Session = Depends(get_db),
 ) -> ListagemResponse:
     """
@@ -315,6 +328,28 @@ def listar_clientes(
     )
 
     stmt = select(Cliente)
+
+    # ----------------------------------------------------------------------
+    # Multi-canal scoping (DECISAO L3 Leandro 25/Apr/2026)
+    # admin: user_canal_ids=None => sem restricao
+    # demais: filtra Cliente.canal_id IN (lista permitida)
+    # canal_id explicito: tem que estar na lista permitida
+    # ----------------------------------------------------------------------
+    if user_canal_ids is not None:
+        if not user_canal_ids:
+            # Usuario sem nenhum canal: retorna lista vazia
+            return ListagemResponse(
+                total=0, limit=limit, offset=offset, page=1, per_page=limit,
+                pages=1, has_next=False, has_prev=False, registros=[],
+            )
+        if canal_id is not None and canal_id not in user_canal_ids:
+            raise HTTPException(
+                status_code=403,
+                detail="Canal nao autorizado para este usuario",
+            )
+        stmt = stmt.where(Cliente.canal_id.in_(user_canal_ids))
+    if canal_id is not None:
+        stmt = stmt.where(Cliente.canal_id == canal_id)
 
     # Filtro automatico por carteira para role=consultor
     if user.role == "consultor" and user.consultor_nome:
