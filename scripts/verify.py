@@ -388,7 +388,7 @@ def main():
             print(f"    -> {iss}")
 
     if args.all or args.claim == "sales_hunter":
-        print("\n[10] Sales Hunter integrity...")
+        print("\n[10] Sales Hunter + Multi-Canal integrity...")
         sh_issues = []
         sh_warns = []
         try:
@@ -398,14 +398,13 @@ def main():
                 sh_issues.append("data/crm_vitao360.db não existe")
             else:
                 con = sqlite3.connect(str(db_path))
-                # Tabela debitos_clientes existe?
                 tbls = {r[0] for r in con.execute(
                     "SELECT name FROM sqlite_master WHERE type='table'"
                 ).fetchall()}
+                # Sales Hunter schema
                 if "debitos_clientes" not in tbls:
                     sh_issues.append("tabela debitos_clientes ausente (migration nao aplicada)")
                 else:
-                    # CNPJ no formato correto em debitos_clientes
                     bad_cnpj = con.execute(
                         "SELECT COUNT(*) FROM debitos_clientes "
                         "WHERE LENGTH(cnpj) != 14 OR cnpj GLOB '*[^0-9]*'"
@@ -414,6 +413,17 @@ def main():
                         sh_issues.append(
                             f"{bad_cnpj} CNPJs invalidos em debitos_clientes (R2)"
                         )
+                # Multi-canal architecture (DECISAO L3)
+                if "canais" not in tbls:
+                    sh_issues.append("tabela canais ausente (migration multi-canal nao aplicada)")
+                else:
+                    n_canais = con.execute("SELECT COUNT(*) FROM canais").fetchone()[0]
+                    if n_canais < 7:
+                        sh_issues.append(
+                            f"canais tem apenas {n_canais} registros (esperado seed >=7)"
+                        )
+                if "usuario_canal" not in tbls:
+                    sh_issues.append("tabela usuario_canal ausente (DECISAO L3)")
                 # ImportJob SALES_HUNTER recente
                 jobs = con.execute(
                     "SELECT COUNT(*) FROM import_jobs "
@@ -423,21 +433,21 @@ def main():
                     sh_warns.append(
                         "Nenhum ImportJob SALES_HUNTER CONCLUIDO ainda"
                     )
-                # Faturamento populado?
-                clientes_com_fat = con.execute(
-                    "SELECT COUNT(*) FROM clientes "
-                    "WHERE faturamento_total IS NOT NULL AND faturamento_total > 0"
-                ).fetchone()[0]
-                total_clientes = con.execute(
-                    "SELECT COUNT(*) FROM clientes"
-                ).fetchone()[0]
-                if total_clientes > 0:
-                    pct = clientes_com_fat / total_clientes * 100
-                    if pct < 20:
-                        sh_warns.append(
-                            f"Apenas {pct:.0f}% dos clientes tem faturamento populado "
-                            f"({clientes_com_fat}/{total_clientes})"
-                        )
+                # Faturamento + classificacao por canal populadas?
+                if "canais" in tbls:
+                    clientes_com_canal = con.execute(
+                        "SELECT COUNT(*) FROM clientes WHERE canal_id IS NOT NULL"
+                    ).fetchone()[0]
+                    total_clientes = con.execute(
+                        "SELECT COUNT(*) FROM clientes"
+                    ).fetchone()[0]
+                    if total_clientes > 0:
+                        pct_canal = clientes_com_canal / total_clientes * 100
+                        if pct_canal < 50:
+                            sh_warns.append(
+                                f"Apenas {pct_canal:.0f}% dos clientes tem canal_id "
+                                f"({clientes_com_canal}/{total_clientes})"
+                            )
                 con.close()
         except Exception as exc:
             sh_warns.append(f"Erro ao inspecionar DB: {exc}")

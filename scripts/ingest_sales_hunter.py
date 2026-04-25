@@ -632,6 +632,17 @@ def phase_3_clientes(
     stats = {"lidos": 0, "inseridos": 0, "atualizados": 0, "ignorados": 0}
     agregado: dict[str, dict] = {}
 
+    # Pre-load: canais (nome -> id) — DECISAO L3, todo canal extraido vira FK
+    canais_map: dict[str, int] = dict(
+        session.execute(text("SELECT nome, id FROM canais")).fetchall()
+    )
+    if not canais_map:
+        log.warning(
+            "Phase 3: tabela canais vazia — canal_id ficara NULL para todos"
+        )
+
+    canais_nao_mapeados: set[str] = set()
+
     for empresa in EMPRESAS:
         key = f"fat_cliente_{empresa}"
         path = xlsx_paths.get(key)
@@ -657,7 +668,10 @@ def phase_3_clientes(
             tipo_cliente = canal_venda_raw.split(" - ", 1)[0][:30] if canal_venda_raw else None
             faturado_mes = to_float(row[16])
             total_faturado = to_float(row[22])
-            canal = extrair_canal(row[3], row[4])
+            canal_nome = extrair_canal(row[3], row[4])
+            canal_id = canais_map.get(canal_nome) if canal_nome else None
+            if canal_nome and canal_id is None:
+                canais_nao_mapeados.add(canal_nome)
 
             registro = {
                 "cnpj": cnpj,
@@ -665,7 +679,7 @@ def phase_3_clientes(
                 "codigo_cliente": to_str(row[0], max_len=20),
                 "tipo_cliente_sap": grupo,
                 "tipo_cliente": tipo_cliente,
-                "canal": canal,
+                "canal_id": canal_id,
                 "uf": converter_uf(row[8]),
                 "cidade": to_str(row[9], max_len=100),
                 "faturado_mes": faturado_mes,
@@ -685,7 +699,7 @@ def phase_3_clientes(
                     ag["situacao"] = registro["situacao"]
                 # Preserva primeiros nao-nulos para campos descritivos
                 for k in ("nome_fantasia", "codigo_cliente", "tipo_cliente_sap",
-                          "tipo_cliente", "canal", "uf", "cidade"):
+                          "tipo_cliente", "canal_id", "uf", "cidade"):
                     if not ag.get(k) and registro.get(k):
                         ag[k] = registro[k]
             else:
@@ -707,7 +721,7 @@ def phase_3_clientes(
                           codigo_cliente = COALESCE(:codigo_cliente, codigo_cliente),
                           tipo_cliente_sap = COALESCE(:tipo_cliente_sap, tipo_cliente_sap),
                           tipo_cliente = COALESCE(:tipo_cliente, tipo_cliente),
-                          canal = COALESCE(:canal, canal),
+                          canal_id = COALESCE(:canal_id, canal_id),
                           uf = COALESCE(:uf, uf),
                           cidade = COALESCE(:cidade, cidade),
                           faturamento_total = :faturamento_total,
@@ -728,11 +742,11 @@ def phase_3_clientes(
                     text("""
                         INSERT INTO clientes (
                           cnpj, nome_fantasia, codigo_cliente, tipo_cliente_sap,
-                          tipo_cliente, canal, uf, cidade, faturamento_total, situacao,
+                          tipo_cliente, canal_id, uf, cidade, faturamento_total, situacao,
                           classificacao_3tier, created_at, updated_at
                         ) VALUES (
                           :cnpj, :nome_fantasia, :codigo_cliente, :tipo_cliente_sap,
-                          :tipo_cliente, :canal, :uf, :cidade, :faturamento_total, :situacao,
+                          :tipo_cliente, :canal_id, :uf, :cidade, :faturamento_total, :situacao,
                           'REAL', :now, :now
                         )
                     """),
@@ -750,6 +764,12 @@ def phase_3_clientes(
     # serao "criados" para nao filtrar todos como ign_cnpj. Em modo real, o
     # set sobrevive como redundancia (Phase 4 recarrega do DB tambem).
     stats["cnpjs_processados"] = set(agregado.keys())
+
+    if canais_nao_mapeados:
+        log.warning(
+            "Phase 3: canais extraidos sem registro em canais (%d): %s — clientes ficaram com canal_id=NULL",
+            len(canais_nao_mapeados), ", ".join(sorted(canais_nao_mapeados)),
+        )
 
     log.info(
         "Phase 3 clientes: lidos=%d unicos=%d inseridos=%d atualizados=%d ignorados=%d",
