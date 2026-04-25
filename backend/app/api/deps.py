@@ -165,3 +165,56 @@ def get_user_canal_ids_strict(
         return [c[0] for c in db.query(Canal.id).all()]
 
     return [c.id for c in (user.canais or [])]
+
+
+# ---------------------------------------------------------------------------
+# Helpers reutilizaveis para multi-canal scoping em queries
+# ---------------------------------------------------------------------------
+
+def cnpjs_permitidos_subquery(user_canal_ids: list[int] | None):
+    """
+    Retorna uma subquery SQL que enumera CNPJs cujo cliente pertence aos
+    canais permitidos do usuario.
+
+    Uso em endpoints que agregam Vendas/LogInteracoes/etc. e precisam
+    restringir por canal:
+
+        sub = cnpjs_permitidos_subquery(user_canal_ids)
+        if sub is not None:
+            stmt = stmt.where(Venda.cnpj.in_(sub))
+
+    Retorna None se user_canal_ids is None (admin — sem filtro).
+    Retorna subquery vazia (NOT IN) se user_canal_ids estiver vazio.
+    """
+    from sqlalchemy import select
+    from backend.app.models.cliente import Cliente
+
+    if user_canal_ids is None:
+        return None
+    if not user_canal_ids:
+        # Subquery que nunca retorna nada — forca lista vazia
+        return select(Cliente.cnpj).where(Cliente.id == -1)
+    return select(Cliente.cnpj).where(Cliente.canal_id.in_(user_canal_ids))
+
+
+def cliente_canal_filter(user_canal_ids: list[int] | None):
+    """
+    Retorna a clausula WHERE para filtrar Cliente por canal_id permitido.
+
+    Uso:
+        from backend.app.models.cliente import Cliente
+        clause = cliente_canal_filter(user_canal_ids)
+        if clause is not None:
+            stmt = stmt.where(clause)
+
+    Retorna None se admin (sem filtro). Retorna False-equivalent se sem
+    permissao (lista vazia).
+    """
+    from sqlalchemy import false
+    from backend.app.models.cliente import Cliente
+
+    if user_canal_ids is None:
+        return None
+    if not user_canal_ids:
+        return false()
+    return Cliente.canal_id.in_(user_canal_ids)

@@ -27,7 +27,12 @@ from pydantic import BaseModel, ConfigDict
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
-from backend.app.api.deps import get_current_user
+from backend.app.api.deps import (
+    cliente_canal_filter,
+    cnpjs_permitidos_subquery,
+    get_current_user,
+    get_user_canal_ids,
+)
 from backend.app.database import get_db
 from backend.app.models.cliente import Cliente
 from backend.app.models.log_interacao import LogInteracao
@@ -135,9 +140,9 @@ def _distribuicao(db: Session, coluna, total: int) -> list[DistribuicaoItem]:
 # ---------------------------------------------------------------------------
 
 @router.get("/kpis", response_model=KPIsResponse, summary="KPIs principais")
-@cached(ttl_seconds=60, key_prefix="/api/dashboard/kpis")
 def kpis(
     user: Usuario = Depends(get_current_user),
+    user_canal_ids: list[int] | None = Depends(get_user_canal_ids),
     db: Session = Depends(get_db),
 ) -> KPIsResponse:
     """
@@ -147,55 +152,96 @@ def kpis(
       Registros ALUCINACAO são excluídos (R8).
     - clientes_alerta: sinaleiro VERMELHO ou AMARELO.
     - followups_vencidos: followup_vencido = True.
+
+    Multi-canal (DECISAO L3): todos os agregados sao restringidos aos
+    canais permitidos do usuario logado (admin ve tudo).
+
+    Carteira (role): consultor/consultor_externo ve apenas a propria
+    carteira (Cliente.consultor == user.consultor_nome). Admin/gerente
+    ve agregado dos canais permitidos.
     """
-    total = db.scalar(select(func.count()).select_from(Cliente)) or 0
+    # Reusable scoping clauses (None se admin)
+    cliente_clause = cliente_canal_filter(user_canal_ids)
+    cnpjs_sub = cnpjs_permitidos_subquery(user_canal_ids)
+
+    # Filtro adicional por consultor para roles individuais
+    is_consultor_role = user.role in ("consultor", "consultor_externo")
+    consultor_key = (user.consultor_nome or "").upper() if is_consultor_role else None
+
+    def _scope_cliente(stmt):
+        if cliente_clause is not None:
+            stmt = stmt.where(cliente_clause)
+        if consultor_key:
+            stmt = stmt.where(Cliente.consultor == consultor_key)
+        return stmt
+
+    def _scope_cnpj(stmt, cnpj_col):
+        if cnpjs_sub is not None:
+            stmt = stmt.where(cnpj_col.in_(cnpjs_sub))
+        if consultor_key:
+            cnpjs_consultor = select(Cliente.cnpj).where(Cliente.consultor == consultor_key)
+            stmt = stmt.where(cnpj_col.in_(cnpjs_consultor))
+        return stmt
+
+    total = db.scalar(_scope_cliente(select(func.count()).select_from(Cliente))) or 0
 
     total_ativos = db.scalar(
-        select(func.count()).select_from(Cliente).where(Cliente.situacao == "ATIVO")
+        _scope_cliente(select(func.count()).select_from(Cliente).where(Cliente.situacao == "ATIVO"))
     ) or 0
 
     total_prospects = db.scalar(
-        select(func.count()).select_from(Cliente).where(Cliente.situacao == "PROSPECT")
+        _scope_cliente(select(func.count()).select_from(Cliente).where(Cliente.situacao == "PROSPECT"))
     ) or 0
 
     total_inativos = db.scalar(
-        select(func.count())
-        .select_from(Cliente)
-        .where(Cliente.situacao.in_(["INAT.REC", "INAT.ANT"]))
+        _scope_cliente(
+            select(func.count())
+            .select_from(Cliente)
+            .where(Cliente.situacao.in_(["INAT.REC", "INAT.ANT"]))
+        )
     ) or 0
 
     # R8: excluir ALUCINACAO do faturamento
     # Fonte de verdade: tabela vendas (Two-Base Architecture — R1/R7)
     fat_total = db.scalar(
-        select(func.coalesce(func.sum(Venda.valor_pedido), 0.0))
-        .where(Venda.classificacao_3tier.in_(["REAL", "SINTETICO"]))
+        _scope_cnpj(
+            select(func.coalesce(func.sum(Venda.valor_pedido), 0.0))
+            .where(Venda.classificacao_3tier.in_(["REAL", "SINTETICO"])),
+            Venda.cnpj,
+        )
     ) or 0.0
 
     media_score = db.scalar(
-        select(func.avg(Cliente.score))
+        _scope_cliente(select(func.avg(Cliente.score)))
     ) or 0.0
 
     clientes_alerta = db.scalar(
-        select(func.count())
-        .select_from(Cliente)
-        .where(Cliente.sinaleiro.in_(["VERMELHO", "AMARELO"]))
+        _scope_cliente(
+            select(func.count())
+            .select_from(Cliente)
+            .where(Cliente.sinaleiro.in_(["VERMELHO", "AMARELO"]))
+        )
     ) or 0
 
     clientes_criticos = db.scalar(
-        select(func.count())
-        .select_from(Cliente)
-        .where(Cliente.temperatura == "CRITICO")
+        _scope_cliente(
+            select(func.count())
+            .select_from(Cliente)
+            .where(Cliente.temperatura == "CRITICO")
+        )
     ) or 0
 
     followups_vencidos = db.scalar(
-        select(func.count())
-        .select_from(Cliente)
-        .where(Cliente.followup_vencido == True)  # noqa: E712
+        _scope_cliente(
+            select(func.count())
+            .select_from(Cliente)
+            .where(Cliente.followup_vencido == True)  # noqa: E712
+        )
     ) or 0
 
     # --- Activity counts (log_interacoes — Two-Base: zero monetary values) ---
     total_atividades = db.scalar(
-        select(func.count()).select_from(LogInteracao)
+        _scope_cnpj(select(func.count()).select_from(LogInteracao), LogInteracao.cnpj)
     ) or 0
 
     hoje = date.today()
@@ -207,30 +253,38 @@ def kpis(
         mes_fim_atual = hoje.replace(month=hoje.month + 1, day=1) - timedelta(days=1)
 
     atividades_mes_atual = db.scalar(
-        select(func.count())
-        .select_from(LogInteracao)
-        .where(
-            func.date(LogInteracao.data_interacao) >= mes_inicio_atual,
-            func.date(LogInteracao.data_interacao) <= mes_fim_atual,
+        _scope_cnpj(
+            select(func.count())
+            .select_from(LogInteracao)
+            .where(
+                func.date(LogInteracao.data_interacao) >= mes_inicio_atual,
+                func.date(LogInteracao.data_interacao) <= mes_fim_atual,
+            ),
+            LogInteracao.cnpj,
         )
     ) or 0
 
     # --- Positivacao current month (vendas table only — Two-Base: R1) ---
     # Distinct CNPJs with at least one venda in the current month (non-ALUCINACAO)
     positivados_mes = db.scalar(
-        select(func.count(func.distinct(Venda.cnpj)))
-        .where(
-            Venda.classificacao_3tier.in_(["REAL", "SINTETICO"]),
-            func.date(Venda.data_pedido) >= mes_inicio_atual,
-            func.date(Venda.data_pedido) <= mes_fim_atual,
+        _scope_cnpj(
+            select(func.count(func.distinct(Venda.cnpj)))
+            .where(
+                Venda.classificacao_3tier.in_(["REAL", "SINTETICO"]),
+                func.date(Venda.data_pedido) >= mes_inicio_atual,
+                func.date(Venda.data_pedido) <= mes_fim_atual,
+            ),
+            Venda.cnpj,
         )
     ) or 0
 
     # Total carteira excludes ALUCINACAO clients
     total_carteira = db.scalar(
-        select(func.count())
-        .select_from(Cliente)
-        .where(Cliente.classificacao_3tier != "ALUCINACAO")
+        _scope_cliente(
+            select(func.count())
+            .select_from(Cliente)
+            .where(Cliente.classificacao_3tier != "ALUCINACAO")
+        )
     ) or 0
 
     taxa_positivacao = round(positivados_mes / total_carteira * 100, 1) if total_carteira > 0 else 0.0
@@ -276,10 +330,11 @@ def distribuicao(
 @router.get("/top10", response_model=list[Top10Item], summary="Top 10 clientes por faturamento")
 def top10(
     user: Usuario = Depends(get_current_user),
+    user_canal_ids: list[int] | None = Depends(get_user_canal_ids),
     db: Session = Depends(get_db),
 ) -> list[Top10Item]:
     """
-    Os 10 clientes com maior faturamento_total.
+    Os 10 clientes com maior faturamento_total dentro dos canais permitidos.
     Apenas registros REAL ou SINTETICO (R8).
     """
     stmt = (
@@ -291,6 +346,11 @@ def top10(
         .order_by(Cliente.faturamento_total.desc())
         .limit(10)
     )
+    cliente_clause = cliente_canal_filter(user_canal_ids)
+    if cliente_clause is not None:
+        stmt = stmt.where(cliente_clause)
+    if user.role in ("consultor", "consultor_externo") and user.consultor_nome:
+        stmt = stmt.where(Cliente.consultor == user.consultor_nome.upper())
     clientes = db.scalars(stmt).all()
     return [Top10Item.model_validate(c) for c in clientes]
 

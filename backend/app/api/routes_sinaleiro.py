@@ -25,7 +25,12 @@ from sqlalchemy import func
 from sqlalchemy.orm import Session
 from backend.app.utils.cache import cache, cached
 
-from backend.app.api.deps import get_current_user, require_admin
+from backend.app.api.deps import (
+    cliente_canal_filter,
+    get_current_user,
+    get_user_canal_ids,
+    require_admin,
+)
 from backend.app.database import get_db
 from backend.app.models.cliente import Cliente
 from backend.app.models.rede import Rede
@@ -52,7 +57,6 @@ def _pct_safe(num: float, den: float) -> float:
     "",
     summary="Lista clientes com sinaleiro, maturidade e acao recomendada",
 )
-@cached(ttl_seconds=120, key_prefix="/api/sinaleiro")
 def sinaleiro_lista(
     cor: Optional[str] = Query(None, description="Filtrar por cor: VERDE/AMARELO/LARANJA/VERMELHO/ROXO"),
     consultor: Optional[str] = Query(None, description="Filtrar por consultor (MANU/LARISSA/DAIANE/JULIO)"),
@@ -60,6 +64,7 @@ def sinaleiro_lista(
     limit: int = Query(100, ge=1, le=1000, description="Maximo de registros"),
     offset: int = Query(0, ge=0, description="Offset para paginacao"),
     user: Usuario = Depends(get_current_user),
+    user_canal_ids: list[int] | None = Depends(get_user_canal_ids),
     db: Session = Depends(get_db),
 ) -> dict:
     """
@@ -82,9 +87,18 @@ def sinaleiro_lista(
         Cliente.classificacao_3tier.isnot(None),
     )
 
+    # Multi-canal scoping (DECISAO L3): admin vê tudo, demais filtram
+    cliente_clause = cliente_canal_filter(user_canal_ids)
+    if cliente_clause is not None:
+        base_q = base_q.filter(cliente_clause)
+
+    # Carteira por consultor para roles individuais
+    if user.role in ("consultor", "consultor_externo") and user.consultor_nome:
+        base_q = base_q.filter(Cliente.consultor == user.consultor_nome.upper())
+
     if cor:
         base_q = base_q.filter(Cliente.sinaleiro == cor.upper())
-    if consultor:
+    if consultor and user.role not in ("consultor", "consultor_externo"):
         base_q = base_q.filter(Cliente.consultor == consultor.upper())
     if rede:
         base_q = base_q.filter(Cliente.rede_regional == rede)
@@ -99,23 +113,22 @@ def sinaleiro_lista(
         .all()
     )
 
-    # Resumo por cor (sobre o conjunto filtrado)
-    resumo_rows = (
-        db.query(
-            Cliente.sinaleiro,
-            func.count().label("qt"),
-            func.coalesce(func.sum(Cliente.faturamento_total), 0.0).label("fat"),
-        )
-        .filter(
-            Cliente.classificacao_3tier != "ALUCINACAO",
-            Cliente.classificacao_3tier.isnot(None),
-            *(
-                [Cliente.consultor == consultor.upper()] if consultor else []
-            ),
-        )
-        .group_by(Cliente.sinaleiro)
-        .all()
+    # Resumo por cor (sobre o conjunto filtrado pelo mesmo escopo)
+    resumo_q = db.query(
+        Cliente.sinaleiro,
+        func.count().label("qt"),
+        func.coalesce(func.sum(Cliente.faturamento_total), 0.0).label("fat"),
+    ).filter(
+        Cliente.classificacao_3tier != "ALUCINACAO",
+        Cliente.classificacao_3tier.isnot(None),
     )
+    if cliente_clause is not None:
+        resumo_q = resumo_q.filter(cliente_clause)
+    if user.role in ("consultor", "consultor_externo") and user.consultor_nome:
+        resumo_q = resumo_q.filter(Cliente.consultor == user.consultor_nome.upper())
+    elif consultor:
+        resumo_q = resumo_q.filter(Cliente.consultor == consultor.upper())
+    resumo_rows = resumo_q.group_by(Cliente.sinaleiro).all()
 
     total_geral = sum(r.qt for r in resumo_rows) or 1
     resumo = [
