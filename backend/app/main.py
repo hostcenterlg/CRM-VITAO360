@@ -55,6 +55,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.types import ASGIApp
 
 from backend.app.api.routes_agenda import router as agenda_router
+from backend.app.api.routes_canais import router as canais_router
 from backend.app.api.routes_pipeline import router as pipeline_router
 from backend.app.api.routes_atendimentos import router as atendimentos_router
 from backend.app.api.routes_auth import router as auth_router
@@ -317,6 +318,7 @@ app.add_middleware(RateLimitMiddleware)
 # ---------------------------------------------------------------------------
 
 app.include_router(auth_router)
+app.include_router(canais_router)
 app.include_router(clientes_router)
 app.include_router(agenda_router)
 app.include_router(dashboard_router)

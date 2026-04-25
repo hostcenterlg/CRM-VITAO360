@@ -110,3 +110,58 @@ def require_admin_or_gerente(user: Usuario = Depends(get_current_user)) -> Usuar
             detail="Acesso restrito a administradores e gerentes",
         )
     return user
+
+
+# ---------------------------------------------------------------------------
+# Multi-canal (DECISAO L3 Leandro 25/Apr/2026)
+# ---------------------------------------------------------------------------
+
+def get_user_canal_ids(
+    user: Usuario = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> list[int] | None:
+    """
+    Resolve a lista de canal_ids que o usuario autenticado tem permissao.
+
+    Convencoes:
+      - admin: retorna None (sentinela para "todos os canais", inclusive
+               clientes legados com canal_id=NULL).
+      - gerente / consultor / consultor_externo: retorna list[int] com os
+        ids dos canais associados via tabela usuario_canal.
+      - usuario sem canal associado: retorna [] (lista vazia — bloqueia
+        listagens de clientes filtradas).
+
+    Uso em rotas de listagem:
+        canal_ids = Depends(get_user_canal_ids)
+        if canal_ids is None:
+            ...  # admin — sem filtro
+        elif not canal_ids:
+            return []  # sem permissao
+        else:
+            query = query.filter(Cliente.canal_id.in_(canal_ids))
+    """
+    if user.role == "admin":
+        return None  # admin ve tudo
+
+    # Carrega via association table (lazy on user.canais)
+    canais = list(user.canais or [])
+    return [c.id for c in canais]
+
+
+def get_user_canal_ids_strict(
+    user: Usuario = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> list[int]:
+    """
+    Variante de get_user_canal_ids que NUNCA retorna None.
+
+    Para admin retorna a lista completa de canal_ids existentes em canais.
+    Util para endpoints que precisam de lista concreta (ex.: filtrar por
+    canal especifico via query param).
+    """
+    from backend.app.models.canal import Canal
+
+    if user.role == "admin":
+        return [c[0] for c in db.query(Canal.id).all()]
+
+    return [c.id for c in (user.canais or [])]
