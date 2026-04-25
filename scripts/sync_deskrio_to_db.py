@@ -1,18 +1,25 @@
 """
 CRM VITAO360 — sync_deskrio_to_db.py
 ======================================
-Sincroniza dados do Deskrio (WhatsApp CRM) com o banco SQLite local.
+Sincroniza dados do Deskrio (WhatsApp CRM) com o banco do CRM (Postgres ou SQLite).
 
 Fontes:
-  data/deskrio/{YYYY-MM-DD}/contacts.json       — contatos WA (15k+)
+  data/deskrio/{YYYY-MM-DD}/contacts.json         — contatos WA (15k+)
   data/deskrio/{YYYY-MM-DD}/kanban_cards_20.json  — board "Vendas Vitao"
   data/deskrio/{YYYY-MM-DD}/kanban_cards_100.json — board "Vendas Vitao - Larissa"
+  data/deskrio/{YYYY-MM-DD}/tickets.json          — atendimentos WhatsApp 30d
+  data/deskrio/cnpj_bridge.json                   — contactId -> cnpj (verificado API)
 
-Regras INVIOLÁVEIS:
-  R2 — CNPJ = string 14 dígitos zero-padded, NUNCA float
-  R4 — Two-Base: log_interacoes NUNCA contém valor R$
-  R8 — NUNCA fabricar dados
-  Idempotente: pode rodar múltiplas vezes sem duplicar
+Conexao ao banco:
+  Le DATABASE_URL de .env e .env.local (override do .env.local quando presente).
+  Sem DATABASE_URL -> fallback SQLite local em data/crm_vitao360.db.
+  Aceita postgres://, postgresql://, sqlite:///. Neon/Supabase recebe sslmode=require.
+
+Regras INVIOLAVEIS:
+  R2 — CNPJ = string 14 digitos zero-padded, NUNCA float
+  R4 — Two-Base: log_interacoes NUNCA contem valor R$
+  R8 — NUNCA fabricar dados (sem CNPJ resolvido = skip, nao inventa)
+  Idempotente: pode rodar multiplas vezes sem duplicar
 
 Uso:
   python scripts/sync_deskrio_to_db.py
@@ -39,6 +46,46 @@ from typing import Optional
 SCRIPT_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = SCRIPT_DIR.parent
 sys.path.insert(0, str(PROJECT_ROOT))
+
+
+# ---------------------------------------------------------------------------
+# Carregamento de .env e .env.local — antes de qualquer import que dependa de DATABASE_URL.
+# .env  : defaults do repo (DATABASE_URL costuma estar vazia aqui)
+# .env.local : credenciais reais (Neon, Vercel) — TEM PRECEDENCIA quando valor nao-vazio
+# ---------------------------------------------------------------------------
+def _load_env_file(path: Path, override_when_empty: bool = True) -> None:
+    """Carrega KEY=VALUE de arquivo .env.
+
+    override_when_empty=True faz override se a env var atual estiver vazia/ausente.
+    Comportamento alinhado com o do recalc_score_batch.py + correcao para
+    DATABASE_URL="" no .env (caso real do projeto).
+    """
+    if not path.exists():
+        return
+    try:
+        for raw in path.read_text(encoding="utf-8").splitlines():
+            line = raw.strip()
+            if not line or line.startswith("#") or "=" not in line:
+                continue
+            k, v = line.split("=", 1)
+            k = k.strip()
+            v = v.strip().strip('"').strip("'")
+            if not v:
+                continue  # nunca persistimos vazio
+            atual = os.environ.get(k, "")
+            if not atual or override_when_empty:
+                os.environ[k] = v
+    except OSError:
+        pass
+
+# Ordem: .env primeiro (defaults), .env.local sobrescreve quando valor nao-vazio
+_load_env_file(PROJECT_ROOT / ".env", override_when_empty=False)
+_load_env_file(PROJECT_ROOT / ".env.local", override_when_empty=True)
+
+# Fallback: sem DATABASE_URL -> SQLite local
+if not os.environ.get("DATABASE_URL"):
+    os.environ["DATABASE_URL"] = f"sqlite:///{PROJECT_ROOT / 'data' / 'crm_vitao360.db'}"
+
 
 # SQLAlchemy
 try:
@@ -69,8 +116,8 @@ log = logging.getLogger("sync_deskrio")
 # ---------------------------------------------------------------------------
 # Constantes
 # ---------------------------------------------------------------------------
-DB_PATH = PROJECT_ROOT / "data" / "crm_vitao360.db"
 DESKRIO_ROOT = PROJECT_ROOT / "data" / "deskrio"
+CNPJ_BRIDGE_PATH = DESKRIO_ROOT / "cnpj_bridge.json"
 
 # Score mínimo para aceitar match fuzzy por nome (0-100)
 FUZZY_NOME_THRESHOLD = 72
@@ -728,13 +775,43 @@ def main() -> int:
 
     log.info("Processando extração: %s", data_dir)
 
-    # Valida banco
-    if not DB_PATH.exists():
-        log.error("Banco de dados não encontrado: %s", DB_PATH)
+    # Conecta ao banco — DATABASE_URL ja resolvida no topo do modulo
+    db_url = os.environ.get("DATABASE_URL", "")
+    if not db_url:
+        log.error("DATABASE_URL nao definida e fallback SQLite falhou")
         return 1
 
-    # Conecta ao banco
-    engine = create_engine(f"sqlite:///{DB_PATH}", echo=False)
+    # Render/Railway/Heroku usam postgres:// — SQLAlchemy 2.0 exige postgresql://
+    if db_url.startswith("postgres://"):
+        db_url = db_url.replace("postgres://", "postgresql://", 1)
+
+    # Connect args por provedor
+    if db_url.startswith("sqlite"):
+        # Validar que o arquivo existe (modo file:)
+        match = re.match(r"^sqlite:///(.+)$", db_url)
+        if match:
+            sqlite_path = Path(match.group(1))
+            if not sqlite_path.exists():
+                log.error("Banco SQLite nao encontrado: %s", sqlite_path)
+                return 1
+        connect_args = {"check_same_thread": False}
+    elif "neon" in db_url or "supabase" in db_url:
+        connect_args = {"sslmode": "require", "connect_timeout": 30}
+    elif "postgresql" in db_url:
+        connect_args = {"connect_timeout": 30}
+    else:
+        connect_args = {}
+
+    # Log mascarado: nao expor credenciais
+    log.info("Conectando em: %s://...", db_url.split("://")[0])
+
+    engine = create_engine(
+        db_url,
+        connect_args=connect_args,
+        echo=False,
+        pool_pre_ping=True,
+        pool_recycle=300,
+    )
     Session = sessionmaker(bind=engine)
     session = Session()
 
