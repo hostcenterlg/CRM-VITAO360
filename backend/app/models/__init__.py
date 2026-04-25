@@ -21,6 +21,7 @@ Ordem de importação respeita dependências de FK:
  13. Produto        — sem FK externa (catálogo de produtos)
  14. PrecoRegional  — FK → produtos.id
  15. VendaItem      — FK → vendas.id, produtos.id  (Two-Base: metade VENDA — R4)
+ 16. DebitoCliente  — FK lógica → clientes.cnpj    (Two-Base: metade VENDA — R1)
 """
 
 from .cliente import Cliente
@@ -38,6 +39,7 @@ from .audit_log import AuditLog
 from .produto import Produto
 from .preco_regional import PrecoRegional
 from .venda_item import VendaItem
+from .debito_cliente import DebitoCliente
 
 __all__ = [
     "Cliente",
@@ -55,4 +57,5 @@ __all__ = [
     "Produto",
     "PrecoRegional",
     "VendaItem",
+    "DebitoCliente",
 ]

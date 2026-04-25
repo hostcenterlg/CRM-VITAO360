@@ -5,7 +5,11 @@ Rastreia cada job de importação de dados executado no sistema.
 
 Tipos de importação:
   MERCOS        — relatório de vendas do Mercos (cuidado: R6, nomes mentem nas datas)
-  SAP           — exportação do ERP SAP (faturamento, produtos, clientes)
+  SAP           — exportação manual do ERP SAP (XLSX consolidado legado 2025)
+  SALES_HUNTER  — relatórios diários SAP via Sales Hunter (Phase 1 — GAP 2C):
+                  fat_cliente, fat_nf_det, fat_produto, debitos, devolucao,
+                  fat_empresa, pedidos_produto. Ingest via
+                  scripts/ingest_sales_hunter.py.
   DESKRIO       — histórico de atendimentos do CRM legado
   XLSX_COMPLETO — importação do Excel master (pipeline_output.json → banco)
 
@@ -46,7 +50,7 @@ class ImportJob(Base):
     # ------------------------------------------------------------------
     # Identificação do job
     # ------------------------------------------------------------------
-    # Tipo de fonte: MERCOS, SAP, DESKRIO, XLSX_COMPLETO
+    # Tipo de fonte: MERCOS, SAP, SALES_HUNTER, DESKRIO, XLSX_COMPLETO
     tipo = Column(String(20), nullable=False)
 
     # Nome do arquivo importado (opcional para jobs programáticos)

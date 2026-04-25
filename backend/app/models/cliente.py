@@ -110,6 +110,20 @@ class Cliente(Base):
     status_meta = Column(String(10))         # ACIMA / ALERTA / CRITICO
 
     # ------------------------------------------------------------------
+    # Sales Hunter SAP enrichment (Phase 1 — GAP 2C)
+    # Alimentado por debitos_*.xlsx + devolucao_cliente_*.xlsx.
+    # ------------------------------------------------------------------
+    # SUM(debitos_clientes.valor WHERE status='VENCIDO') — atualizado pelo
+    # ingest_sales_hunter.py
+    total_debitos = Column(Float, default=0)
+    # Percentual de devolucao acumulado (ex.: 0.05 = 5%)
+    pct_devolucao = Column(Float, nullable=True)
+    # Valor total devolvido R$ (acumulado no periodo do relatorio SAP)
+    total_devolucao = Column(Float, nullable=True)
+    # Risco classificado: 'BAIXO' (<5%) | 'MEDIO' (5-15%) | 'ALTO' (>15%)
+    risco_devolucao = Column(String(10), nullable=True)
+
+    # ------------------------------------------------------------------
     # Auditoria de registro
     # ------------------------------------------------------------------
     created_at = Column(DateTime, server_default=func.now())

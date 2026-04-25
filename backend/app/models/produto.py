@@ -83,6 +83,29 @@ class Produto(Base):
     ean = Column(String(20), nullable=True)
 
     # ------------------------------------------------------------------
+    # Sales Hunter SAP enrichment (Phase 1 — GAP 2C)
+    # Alimentado por fat_produto_*.xlsx e fat_nf_det_*.xlsx
+    # ------------------------------------------------------------------
+    # Subcategoria SAP (ex.: "AÇÚCAR", "AVEIA", "BISCOITO")
+    subcategoria = Column(String(100), nullable=True)
+    # SAP UM/embalagem comercial (ex.: "Caixa", "Fardo", "Unidade")
+    unidade_embalagem = Column(String(20), nullable=True)
+    # Quantidade por embalagem (ex.: 12 frascos por caixa)
+    qtd_por_embalagem = Column(Integer, nullable=True)
+    # Peso bruto kg da unidade comercial
+    peso_bruto_kg = Column(Float, nullable=True)
+    # Codigo NCM (Nomenclatura Comum do Mercosul, 8 digitos)
+    codigo_ncm = Column(String(10), nullable=True)
+    # Faturamento total acumulado R$ (Sales Hunter)
+    fat_total_historico = Column(Float, default=0)
+    # Curva ABC do produto: 'A' | 'B' | 'C'
+    # Calculada por fat_total_historico decrescente:
+    #   top 20% acumulado de faturamento -> A
+    #   proximos 30% -> B
+    #   resto -> C
+    curva_abc_produto = Column(String(1), nullable=True)
+
+    # ------------------------------------------------------------------
     # Status
     # ------------------------------------------------------------------
     ativo = Column(Boolean, nullable=False, default=True)
