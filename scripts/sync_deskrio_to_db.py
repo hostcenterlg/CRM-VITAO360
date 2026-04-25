@@ -283,6 +283,56 @@ def carregar_json(path: Path) -> list | dict:
         return []
 
 
+def carregar_cnpj_bridge() -> dict[int, str]:
+    """Le data/deskrio/cnpj_bridge.json e retorna {contact_id_int: cnpj_normalizado}.
+
+    A chave do bridge no JSON eh string (contactId do Deskrio, mesmo namespace
+    de contacts.json[].id e tickets[].contactId — confirmado pela amostra
+    interseccao 200/200).
+
+    R8: nunca fabricar — se cnpjs[0] for invalido, ignora a entrada (nao tenta
+    cnpjs[1] silenciosamente; usa o primeiro valido).
+    """
+    if not CNPJ_BRIDGE_PATH.exists():
+        log.warning("cnpj_bridge.json nao encontrado em %s — usando soh fuzzy/telefone", CNPJ_BRIDGE_PATH)
+        return {}
+
+    try:
+        with open(CNPJ_BRIDGE_PATH, encoding="utf-8") as f:
+            data = json.load(f)
+    except (OSError, json.JSONDecodeError) as exc:
+        log.error("Erro ao ler cnpj_bridge.json: %s", exc)
+        return {}
+
+    bridge_raw = data.get("cnpj_bridge", {})
+    if not isinstance(bridge_raw, dict):
+        log.error("cnpj_bridge.json em formato inesperado (sem chave 'cnpj_bridge')")
+        return {}
+
+    result: dict[int, str] = {}
+    invalidos = 0
+    for contact_id_str, info in bridge_raw.items():
+        try:
+            contact_id = int(contact_id_str)
+        except (TypeError, ValueError):
+            invalidos += 1
+            continue
+        cnpjs = info.get("cnpjs", []) if isinstance(info, dict) else []
+        if not isinstance(cnpjs, list):
+            invalidos += 1
+            continue
+        # Pega o primeiro CNPJ valido (R8: nao fabrica, soh aceita o que normaliza)
+        for raw in cnpjs:
+            cnpj = normalizar_cnpj(raw)
+            if cnpj:
+                result[contact_id] = cnpj
+                break
+
+    log.info("cnpj_bridge carregado: %d mappings contact_id->cnpj (invalidos=%d)",
+             len(result), invalidos)
+    return result
+
+
 # ---------------------------------------------------------------------------
 # Fase 1 — Sincronização de contatos
 # ---------------------------------------------------------------------------
@@ -493,7 +543,12 @@ class SyncKanban:
     chave de deduplicação.
     """
 
-    def __init__(self, session, dry_run: bool = False):
+    def __init__(
+        self,
+        session,
+        dry_run: bool = False,
+        cnpj_bridge: Optional[dict[int, str]] = None,
+    ):
         self.session = session
         self.dry_run = dry_run
         self.stats = {
@@ -502,6 +557,8 @@ class SyncKanban:
             "ja_existentes": 0,
             "inseridos": 0,
             "ignorados_sem_cnpj": 0,
+            "match_bridge": 0,
+            "match_fuzzy": 0,
         }
         # Cache de todos os CNPJs no banco para validação rápida
         rows = self.session.execute(text("SELECT cnpj FROM clientes")).fetchall()
@@ -509,6 +566,9 @@ class SyncKanban:
 
         # Cache de telefone para resolver contactId → CNPJ via contatos
         self._contact_id_cache: dict[int, Optional[str]] = {}
+
+        # cnpj_bridge: contact_id -> cnpj (fonte primaria, verificada via API)
+        self._bridge: dict[int, str] = cnpj_bridge or {}
 
     def _resolver_cnpj_por_nome_contato(self, contact_name: str) -> Optional[str]:
         """Tenta resolver CNPJ pelo nome do contato no card (fuzzy match)."""
@@ -621,27 +681,36 @@ class SyncKanban:
             # Resultado baseado no nome da coluna/card
             resultado = f"Kanban: {card_name}"[:50] if card_name else "Kanban"
 
-            # Resolver CNPJ via nome do contato
+            # Resolver CNPJ — cascata: bridge -> fuzzy nome
             contact_name = contact.get("name", "")
-            cnpj = None
+            contact_id = contact.get("id")
+            cnpj: Optional[str] = None
 
-            if contact_name:
-                # Guarda em cache por contactId para evitar reprocessar
-                contact_id = contact.get("id")
-                if contact_id in self._contact_id_cache:
-                    cnpj = self._contact_id_cache[contact_id]
-                else:
-                    cnpj = self._resolver_cnpj_por_nome_contato(contact_name)
-                    if contact_id:
-                        self._contact_id_cache[contact_id] = cnpj
+            # 1. cnpj_bridge (fonte primaria, verificada via API)
+            if contact_id and contact_id in self._bridge:
+                cnpj = self._bridge[contact_id]
+                self.stats["match_bridge"] += 1
+
+            # 2. Fallback: cache por contactId (fuzzy ja resolvido nesta execucao)
+            if not cnpj and contact_id is not None and contact_id in self._contact_id_cache:
+                cnpj = self._contact_id_cache[contact_id]
+
+            # 3. Fallback: fuzzy match por nome
+            if not cnpj and contact_name:
+                cnpj = self._resolver_cnpj_por_nome_contato(contact_name)
+                if cnpj:
+                    self.stats["match_fuzzy"] += 1
+                if contact_id is not None:
+                    self._contact_id_cache[contact_id] = cnpj
 
             if not cnpj:
                 self.stats["ignorados_sem_cnpj"] += 1
                 log.debug(
-                    "Card %d '%s' — sem CNPJ identificado para contato '%s'",
+                    "Card %d '%s' — sem CNPJ identificado para contato '%s' (id=%s)",
                     card_id,
                     card_name,
                     contact_name,
+                    contact_id,
                 )
                 continue
 
@@ -682,6 +751,293 @@ class SyncKanban:
 
 
 # ---------------------------------------------------------------------------
+# Fase 3 — Sincronização de Tickets (atendimentos WhatsApp)
+# ---------------------------------------------------------------------------
+
+class SyncTickets:
+    """Sincroniza tickets.json (atendimentos WhatsApp) com log_interacoes.
+
+    Two-Base Architecture: log_interacoes NUNCA contem valor R$.
+    tipo_contato fixo: 'WHATSAPP'.
+    resultado fixo: 'EM ATENDIMENTO' (refinado depois pelo motor de regras).
+
+    Idempotencia: descricao prefixada com '[Ticket#<id>|<origem>]' permite query
+    LIKE por ticket_id. Em Postgres % = wildcard, [ e ] sao literais — funciona.
+
+    Cascata para resolver CNPJ:
+      1. cnpj_bridge[contact_id] (fonte primaria, verificada via API Deskrio)
+      2. Match por telefone (contact.number) — usa _tel_cache ja construido
+      3. Fuzzy match por contact.name (threshold = FUZZY_NOME_THRESHOLD)
+      Se nenhum: skip (R8 — nao fabrica CNPJ).
+
+    Os campos calculados pelo motor (estagio_funil, fase, temperatura, etc.)
+    ficam NULL aqui — recalc_score_batch.py + futuro enrich_log_motor.py
+    refinam em passe separado.
+    """
+
+    def __init__(
+        self,
+        session,
+        dry_run: bool = False,
+        cnpj_bridge: Optional[dict[int, str]] = None,
+    ):
+        self.session = session
+        self.dry_run = dry_run
+        self.stats = {
+            "total_tickets": 0,
+            "inseridos": 0,
+            "ja_existentes": 0,
+            "sem_cnpj": 0,
+            "sem_cliente_db": 0,
+            "match_bridge": 0,
+            "match_telefone": 0,
+            "match_fuzzy": 0,
+            "data_invalida": 0,
+        }
+        self._bridge: dict[int, str] = cnpj_bridge or {}
+
+        # Cache cnpjs validos no banco (set para lookup O(1))
+        rows = self.session.execute(text("SELECT cnpj FROM clientes")).fetchall()
+        self._cnpjs_db: set[str] = {r[0] for r in rows}
+
+        # Cache telefone -> cnpj (mesmo padrao do SyncContatos)
+        rows_tel = self.session.execute(
+            text("SELECT cnpj, telefone FROM clientes WHERE telefone IS NOT NULL")
+        ).fetchall()
+        self._tel_cache: dict[str, str] = {}
+        for cnpj, telefone in rows_tel:
+            tel = normalizar_telefone_db(telefone)
+            if tel:
+                self._tel_cache[tel] = cnpj
+
+        # Cache nome -> cnpj para fuzzy match
+        rows_nome = self.session.execute(
+            text("SELECT cnpj, nome_fantasia, razao_social FROM clientes")
+        ).fetchall()
+        self._nome_cache: dict[str, str] = {}
+        for cnpj, nf, rs in rows_nome:
+            nome = ((nf or rs) or "").strip().upper()
+            if nome:
+                self._nome_cache[nome] = cnpj
+
+        # Cache de contactId resolvido (evita refazer fuzzy no mesmo dia)
+        self._contact_resolved: dict[int, Optional[str]] = {}
+
+    def _match_telefone(self, number: object) -> Optional[str]:
+        """Tenta resolver CNPJ pelo numero do contato Deskrio."""
+        tel = normalizar_telefone(number)
+        if not tel:
+            return None
+        if tel in self._tel_cache:
+            return self._tel_cache[tel]
+        # Fallback ultimos 8 digitos (sem DDD)
+        suf8 = tel[-8:]
+        for db_tel, cnpj in self._tel_cache.items():
+            if db_tel.endswith(suf8):
+                return cnpj
+        return None
+
+    def _match_fuzzy_nome(self, contact_name: str) -> Optional[str]:
+        """Fuzzy match no nome com threshold FUZZY_NOME_THRESHOLD."""
+        if not RAPIDFUZZ_AVAILABLE or not contact_name or not self._nome_cache:
+            return None
+        nome_limpo = contact_name.strip().upper()
+        partes = nome_limpo.split(" - ")
+        for n_partes in range(len(partes), 0, -1):
+            tentativa = " - ".join(partes[:n_partes]).strip()
+            resultado = rfuzz_process.extractOne(
+                tentativa,
+                self._nome_cache.keys(),
+                scorer=fuzz.token_sort_ratio,
+                score_cutoff=FUZZY_NOME_THRESHOLD,
+            )
+            if resultado:
+                matched_nome, _, _ = resultado
+                return self._nome_cache[matched_nome]
+        return None
+
+    def _ticket_log_existe(self, cnpj: str, ticket_id: int) -> bool:
+        """Verifica se ja existe log para este (cnpj, ticket_id) — idempotencia.
+
+        Usa LIKE no descricao porque log_interacoes nao tem coluna ticket_id.
+        Padrao do prefixo: '[Ticket#<id>|<origem>] ...'.
+
+        Em Postgres LIKE: % e _ sao wildcards; [, ], # e | sao literais.
+        Em SQLite tambem funciona identico (LIKE eh case-insensitive default mas
+        no nosso caso o prefixo eh consistente).
+        """
+        pattern = f"[Ticket#{ticket_id}|%"
+        row = self.session.execute(
+            text(
+                """
+                SELECT id FROM log_interacoes
+                WHERE cnpj = :cnpj
+                  AND tipo_contato = 'WHATSAPP'
+                  AND descricao LIKE :pattern
+                LIMIT 1
+                """
+            ),
+            {"cnpj": cnpj, "pattern": pattern},
+        ).fetchone()
+        return row is not None
+
+    def _inserir_log(
+        self,
+        cnpj: str,
+        data: datetime,
+        consultor: str,
+        descricao: str,
+    ) -> None:
+        """Insere log_interacao do ticket. tipo_contato=WHATSAPP, resultado=EM ATENDIMENTO.
+
+        Two-Base R4: nunca insere valor monetario aqui — schema impede + nao
+        passamos campo de valor.
+        Campos do motor (estagio_funil, fase, temperatura, ...) deixados NULL —
+        recalc/motor refinam em passe separado.
+        """
+        desc_truncada = (descricao or "")[:500]
+        if not self.dry_run:
+            self.session.execute(
+                text(
+                    """
+                    INSERT INTO log_interacoes
+                      (cnpj, data_interacao, consultor, resultado, descricao,
+                       tipo_contato, fase, created_at)
+                    VALUES
+                      (:cnpj, :data, :consultor, 'EM ATENDIMENTO', :descricao,
+                       'WHATSAPP', 'ATENDIMENTO_WA', :now)
+                    """
+                ),
+                {
+                    "cnpj": cnpj,
+                    "data": data,
+                    "consultor": consultor,
+                    "descricao": desc_truncada,
+                    "now": datetime.now(timezone.utc),
+                },
+            )
+
+    def _parse_ticket_date(self, ticket: dict) -> Optional[datetime]:
+        """Resolve data do ticket: lastMessageDate -> updatedAt -> createdAt."""
+        for key in ("lastMessageDate", "updatedAt", "createdAt"):
+            raw = ticket.get(key)
+            if not raw:
+                continue
+            try:
+                # ISO 8601 com .000Z — substituir Z por +00:00 para fromisoformat
+                s = str(raw).replace("Z", "+00:00")
+                dt = datetime.fromisoformat(s)
+                # Postgres timestamp without time zone — remover tzinfo para evitar warning
+                if dt.tzinfo is not None:
+                    dt = dt.astimezone(timezone.utc).replace(tzinfo=None)
+                return dt
+            except (ValueError, AttributeError):
+                continue
+        return None
+
+    def processar(self, tickets: list[dict]) -> None:
+        """Processa lista de tickets do Deskrio."""
+        self.stats["total_tickets"] = len(tickets)
+        log.info("Processando %d tickets (WhatsApp)", len(tickets))
+
+        for ticket in tickets:
+            ticket_id = ticket.get("id")
+            if not ticket_id:
+                continue
+
+            origin = (ticket.get("origin") or "").strip() or "Receptivo"
+            status = (ticket.get("status") or "").strip()
+            user_id = ticket.get("userId") or ticket.get("lastMessageUserId")
+            contact = ticket.get("contact") or {}
+            contact_id = ticket.get("contactId") or contact.get("id")
+            contact_name = contact.get("name") or ""
+            contact_number = contact.get("number") or ""
+            last_message = ticket.get("lastMessage") or ""
+
+            # Resolver consultor (preferir userId; fallback para responsavel da ultima msg)
+            user_name = None
+            consultor = resolver_consultor_por_userid(user_id, user_name)
+
+            # Resolver data
+            data_ticket = self._parse_ticket_date(ticket)
+            if data_ticket is None:
+                self.stats["data_invalida"] += 1
+                continue
+
+            # Resolver CNPJ — cascata bridge -> telefone -> fuzzy
+            cnpj: Optional[str] = None
+
+            # 1. Bridge (verificado via API)
+            if contact_id is not None and contact_id in self._bridge:
+                cnpj = self._bridge[contact_id]
+                self.stats["match_bridge"] += 1
+
+            # 2. Cache local (mesmo contactId nesta execucao)
+            elif contact_id is not None and contact_id in self._contact_resolved:
+                cnpj = self._contact_resolved[contact_id]
+
+            # 3. Telefone
+            if not cnpj and contact_number:
+                cnpj = self._match_telefone(contact_number)
+                if cnpj:
+                    self.stats["match_telefone"] += 1
+
+            # 4. Fuzzy nome
+            if not cnpj and contact_name:
+                cnpj = self._match_fuzzy_nome(contact_name)
+                if cnpj:
+                    self.stats["match_fuzzy"] += 1
+
+            # Cachear resultado (positivo ou negativo) para o contactId
+            if contact_id is not None:
+                self._contact_resolved[contact_id] = cnpj
+
+            if not cnpj:
+                self.stats["sem_cnpj"] += 1
+                log.debug(
+                    "Ticket %s sem CNPJ — contact_id=%s name=%r number=%r",
+                    ticket_id, contact_id, contact_name[:50], contact_number,
+                )
+                continue
+
+            # Validar CNPJ existe no banco
+            if cnpj not in self._cnpjs_db:
+                self.stats["sem_cliente_db"] += 1
+                continue
+
+            # Idempotencia
+            if self._ticket_log_existe(cnpj, ticket_id):
+                self.stats["ja_existentes"] += 1
+                continue
+
+            # Montar descricao com prefixo idempotente
+            desc = f"[Ticket#{ticket_id}|{origin}|{status}] {last_message}"
+            self._inserir_log(
+                cnpj=cnpj,
+                data=data_ticket,
+                consultor=consultor,
+                descricao=desc,
+            )
+            self.stats["inseridos"] += 1
+
+        if not self.dry_run:
+            self.session.commit()
+
+        log.info(
+            "Tickets: total=%d | inseridos=%d | ja_existentes=%d | sem_cnpj=%d | sem_db=%d "
+            "[match: bridge=%d tel=%d fuzzy=%d]",
+            self.stats["total_tickets"],
+            self.stats["inseridos"],
+            self.stats["ja_existentes"],
+            self.stats["sem_cnpj"],
+            self.stats["sem_cliente_db"],
+            self.stats["match_bridge"],
+            self.stats["match_telefone"],
+            self.stats["match_fuzzy"],
+        )
+
+
+# ---------------------------------------------------------------------------
 # Relatório final
 # ---------------------------------------------------------------------------
 
@@ -689,13 +1045,17 @@ def imprimir_relatorio(
     data_dir: Path,
     stats_contatos: dict,
     stats_kanban: dict,
+    stats_tickets: dict,
     dry_run: bool,
+    job_id: Optional[int] = None,
 ) -> None:
     """Imprime relatório completo da sincronização."""
     modo = "[DRY RUN — nenhuma alteração gravada]" if dry_run else "[GRAVADO NO BANCO]"
     print()
     print("=" * 60)
     print(f"  SYNC DESKRIO → CRM VITAO360  {modo}")
+    if job_id is not None:
+        print(f"  ImportJob id     : {job_id}")
     print("=" * 60)
     print(f"  Pasta processada : {data_dir}")
     print()
@@ -717,12 +1077,24 @@ def imprimir_relatorio(
     print(f"    Ja existentes   : {stats_kanban['ja_existentes']:>6}")
     print(f"    Sem CNPJ        : {stats_kanban['ignorados_sem_cnpj']:>6}")
     print(f"    Sem cliente DB  : {stats_kanban['sem_contato_no_db']:>6}")
+    print(f"    Match bridge    : {stats_kanban.get('match_bridge', 0):>6}")
+    print(f"    Match fuzzy     : {stats_kanban.get('match_fuzzy', 0):>6}")
+    print()
+    print("  TICKETS (tickets.json — WhatsApp 30d)")
+    print(f"    Total tickets   : {stats_tickets['total_tickets']:>6}")
+    print(f"    Inseridos DB    : {stats_tickets['inseridos']:>6}")
+    print(f"    Ja existentes   : {stats_tickets['ja_existentes']:>6}")
+    print(f"    Sem CNPJ        : {stats_tickets['sem_cnpj']:>6}")
+    print(f"    Sem cliente DB  : {stats_tickets['sem_cliente_db']:>6}")
+    print(f"    Match bridge    : {stats_tickets['match_bridge']:>6}")
+    print(f"    Match telefone  : {stats_tickets['match_telefone']:>6}")
+    print(f"    Match fuzzy     : {stats_tickets['match_fuzzy']:>6}")
     print()
     print("  REGRAS VERIFICADAS")
     print("    Two-Base (log sem R$) : OK — log_interacoes sem campo valor")
     print("    CNPJ string 14 dig    : OK — normalizar_cnpj() aplicado")
-    print("    Idempotencia          : OK — deduplicacao por (cnpj,data,kanban#)")
-    print("    Dados fabricados      : OK — apenas contatos com match real")
+    print("    Idempotencia          : OK — kanban#id e ticket#id como chave")
+    print("    Dados fabricados      : OK — sem CNPJ resolvido = skip (R8)")
     print("=" * 60)
     print()
 
@@ -815,31 +1187,76 @@ def main() -> int:
     Session = sessionmaker(bind=engine)
     session = Session()
 
+    # Stats vazias padrao (caso alguma fase aborte cedo, o relatorio ainda imprime)
+    stats_contatos: dict = {
+        k: 0 for k in [
+            "total_contatos_deskrio", "total_brasileiros",
+            "match_telefone", "match_nome_fuzzy", "sem_match",
+            "atualizados_telefone", "atualizados_email",
+            "skipped_grupo", "skipped_sem_numero_br",
+        ]
+    }
+    stats_kanban: dict = {
+        k: 0 for k in [
+            "total_cards", "sem_contato_no_db", "ja_existentes",
+            "inseridos", "ignorados_sem_cnpj", "match_bridge", "match_fuzzy",
+        ]
+    }
+    stats_tickets: dict = {
+        k: 0 for k in [
+            "total_tickets", "inseridos", "ja_existentes", "sem_cnpj",
+            "sem_cliente_db", "match_bridge", "match_telefone", "match_fuzzy",
+            "data_invalida",
+        ]
+    }
+
+    # ImportJob tracking — soh persiste fora de dry-run
+    job_id: Optional[int] = None
+    job = None
+    if not args.dry_run:
+        try:
+            from backend.app.models.import_job import ImportJob
+            arquivo_nome = str(data_dir.relative_to(PROJECT_ROOT)) if data_dir.is_relative_to(PROJECT_ROOT) else str(data_dir)
+            # Trim defensivo (campo VARCHAR(255))
+            arquivo_nome = arquivo_nome[:255]
+            job = ImportJob(
+                tipo="DESKRIO",
+                arquivo_nome=arquivo_nome,
+                status="PROCESSANDO",
+                iniciado_em=datetime.utcnow(),
+            )
+            session.add(job)
+            session.commit()
+            job_id = job.id
+            log.info("ImportJob criado: id=%s tipo=DESKRIO arquivo=%s", job_id, arquivo_nome)
+        except Exception as exc:
+            log.warning("Nao consegui criar ImportJob (seguindo sem tracking): %s", exc)
+            session.rollback()
+            job = None
+            job_id = None
+
     try:
+        # ---------------------------------------------------------------
+        # Fase 0 — cnpj_bridge (carregamento prioritario)
+        # ---------------------------------------------------------------
+        cnpj_bridge = carregar_cnpj_bridge()
+
         # ---------------------------------------------------------------
         # Fase 1 — Contatos
         # ---------------------------------------------------------------
         contacts_path = data_dir / "contacts.json"
         contacts = carregar_json(contacts_path)
-        if not contacts:
-            log.warning("contacts.json vazio ou ausente — fase 1 ignorada")
-            stats_contatos: dict = {
-                k: 0 for k in [
-                    "total_contatos_deskrio", "total_brasileiros",
-                    "match_telefone", "match_nome_fuzzy", "sem_match",
-                    "atualizados_telefone", "atualizados_email",
-                    "skipped_grupo", "skipped_sem_numero_br",
-                ]
-            }
-        else:
+        if contacts:
             sync_contatos = SyncContatos(session, dry_run=args.dry_run)
             sync_contatos.processar(contacts)
             stats_contatos = sync_contatos.stats
+        else:
+            log.warning("contacts.json vazio ou ausente — fase 1 ignorada")
 
         # ---------------------------------------------------------------
         # Fase 2 — Kanban cards
         # ---------------------------------------------------------------
-        sync_kanban = SyncKanban(session, dry_run=args.dry_run)
+        sync_kanban = SyncKanban(session, dry_run=args.dry_run, cnpj_bridge=cnpj_bridge)
 
         # Board 20: Vendas Vitao
         cards_20_path = data_dir / "kanban_cards_20.json"
@@ -856,15 +1273,75 @@ def main() -> int:
         stats_kanban = sync_kanban.stats
 
         # ---------------------------------------------------------------
+        # Fase 3 — Tickets (atendimentos WhatsApp 30d)
+        # ---------------------------------------------------------------
+        tickets_path = data_dir / "tickets.json"
+        tickets = carregar_json(tickets_path)
+        if tickets:
+            sync_tickets = SyncTickets(session, dry_run=args.dry_run, cnpj_bridge=cnpj_bridge)
+            sync_tickets.processar(tickets)
+            stats_tickets = sync_tickets.stats
+        else:
+            log.warning("tickets.json vazio ou ausente — fase 3 ignorada")
+
+        # ---------------------------------------------------------------
+        # Atualizar ImportJob com contadores finais
+        # ---------------------------------------------------------------
+        if job is not None and not args.dry_run:
+            try:
+                job.status = "CONCLUIDO"
+                job.concluido_em = datetime.utcnow()
+                job.registros_lidos = (
+                    stats_contatos.get("total_contatos_deskrio", 0)
+                    + stats_kanban.get("total_cards", 0)
+                    + stats_tickets.get("total_tickets", 0)
+                )
+                job.registros_inseridos = (
+                    stats_kanban.get("inseridos", 0)
+                    + stats_tickets.get("inseridos", 0)
+                )
+                job.registros_atualizados = (
+                    stats_contatos.get("atualizados_telefone", 0)
+                    + stats_contatos.get("atualizados_email", 0)
+                )
+                job.registros_ignorados = (
+                    stats_kanban.get("ja_existentes", 0)
+                    + stats_kanban.get("ignorados_sem_cnpj", 0)
+                    + stats_kanban.get("sem_contato_no_db", 0)
+                    + stats_tickets.get("ja_existentes", 0)
+                    + stats_tickets.get("sem_cnpj", 0)
+                    + stats_tickets.get("sem_cliente_db", 0)
+                    + stats_tickets.get("data_invalida", 0)
+                )
+                session.commit()
+                log.info("ImportJob %s -> CONCLUIDO (lidos=%d ins=%d ign=%d)",
+                         job_id, job.registros_lidos, job.registros_inseridos,
+                         job.registros_ignorados)
+            except Exception as exc:
+                log.warning("Nao consegui finalizar ImportJob: %s", exc)
+                session.rollback()
+
+        # ---------------------------------------------------------------
         # Relatório
         # ---------------------------------------------------------------
-        imprimir_relatorio(data_dir, stats_contatos, stats_kanban, args.dry_run)
+        imprimir_relatorio(data_dir, stats_contatos, stats_kanban,
+                           stats_tickets, args.dry_run, job_id=job_id)
 
         return 0
 
     except Exception as exc:
         log.exception("Erro fatal na sincronização: %s", exc)
         session.rollback()
+        # Marcar ImportJob como ERRO se foi criado
+        if job is not None and not args.dry_run:
+            try:
+                job.status = "ERRO"
+                job.concluido_em = datetime.utcnow()
+                job.erro_mensagem = str(exc)[:2000]
+                session.commit()
+                log.error("ImportJob %s -> ERRO: %s", job_id, str(exc)[:200])
+            except Exception:
+                session.rollback()
         return 1
     finally:
         session.close()
