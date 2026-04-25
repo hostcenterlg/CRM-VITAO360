@@ -1223,7 +1223,7 @@ def main() -> int:
                 tipo="DESKRIO",
                 arquivo_nome=arquivo_nome,
                 status="PROCESSANDO",
-                iniciado_em=datetime.utcnow(),
+                iniciado_em=datetime.now(timezone.utc).replace(tzinfo=None),
             )
             session.add(job)
             session.commit()
@@ -1290,7 +1290,7 @@ def main() -> int:
         if job is not None and not args.dry_run:
             try:
                 job.status = "CONCLUIDO"
-                job.concluido_em = datetime.utcnow()
+                job.concluido_em = datetime.now(timezone.utc).replace(tzinfo=None)
                 job.registros_lidos = (
                     stats_contatos.get("total_contatos_deskrio", 0)
                     + stats_kanban.get("total_cards", 0)
@@ -1336,7 +1336,7 @@ def main() -> int:
         if job is not None and not args.dry_run:
             try:
                 job.status = "ERRO"
-                job.concluido_em = datetime.utcnow()
+                job.concluido_em = datetime.now(timezone.utc).replace(tzinfo=None)
                 job.erro_mensagem = str(exc)[:2000]
                 session.commit()
                 log.error("ImportJob %s -> ERRO: %s", job_id, str(exc)[:200])
