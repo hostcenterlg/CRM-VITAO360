@@ -2,12 +2,13 @@
 """
 CRM VITAO360 — daily_pipeline.py
 ==================================
-Pipeline diario: snapshot Deskrio -> ingest -> recalc score.
+Pipeline diario: snapshot Deskrio -> sales_hunter -> ingest -> recalc score.
 
 Etapas (na ordem, parando ao primeiro fatal):
-  1. snapshot — extrai dados Deskrio para data/deskrio/{HOJE}/
-  2. ingest   — sincroniza JSONs do snapshot com banco (Postgres/SQLite)
-  3. recalc   — recalcula Score v2 + estagio_funil em todos os clientes
+  1. snapshot       — extrai dados Deskrio para data/deskrio/{HOJE}/
+  2. sales_hunter   — ingere XLSX SAP de data/sales_hunter/{HOJE}/morning/
+  3. ingest         — sincroniza JSONs Deskrio com banco (Postgres/SQLite)
+  4. recalc         — recalcula Score v2 + estagio_funil em todos os clientes
 
 Pensado para ser chamado por scheduler externo (cron, Render Cron Job, GitHub
 Actions, Vercel Cron). Nao tem self-scheduling — apenas orquestra.
@@ -18,8 +19,9 @@ Exit codes:
 
 Uso:
   python scripts/daily_pipeline.py
-  python scripts/daily_pipeline.py --skip-snapshot   # se snapshot ja foi feito
-  python scripts/daily_pipeline.py --skip-recalc     # apenas captura+ingest
+  python scripts/daily_pipeline.py --skip-snapshot      # se snapshot ja foi feito
+  python scripts/daily_pipeline.py --skip-sales-hunter  # pula SAP ingest
+  python scripts/daily_pipeline.py --skip-recalc        # apenas captura+ingest
 """
 from __future__ import annotations
 
@@ -33,16 +35,20 @@ ROOT = Path(__file__).resolve().parent.parent
 
 # Etapas: (nome, comando, codes_aceitos)
 # code 2 = sucesso parcial (alguma fase nao critica falhou) — toleramos.
+# sales_hunter precede ingest (Deskrio) para popular clientes/produtos antes
+# do score depender desses dados.
 ETAPAS: list[tuple[str, list[str], set[int]]] = [
-    ("snapshot", [sys.executable, "scripts/deskrio_daily_snapshot.py"], {0, 2}),
-    ("ingest",   [sys.executable, "scripts/sync_deskrio_to_db.py"],     {0, 2}),
-    ("recalc",   [sys.executable, "scripts/recalc_score_batch.py"],     {0, 2}),
+    ("snapshot",     [sys.executable, "scripts/deskrio_daily_snapshot.py"], {0, 2}),
+    ("sales_hunter", [sys.executable, "scripts/ingest_sales_hunter.py", "--skip-validation"], {0, 2}),
+    ("ingest",       [sys.executable, "scripts/sync_deskrio_to_db.py"],     {0, 2}),
+    ("recalc",       [sys.executable, "scripts/recalc_score_batch.py"],     {0, 2}),
 ]
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Pipeline diario CRM VITAO360")
     parser.add_argument("--skip-snapshot", action="store_true", help="Pula a etapa de snapshot")
+    parser.add_argument("--skip-sales-hunter", action="store_true", help="Pula a ingest SAP")
     parser.add_argument("--skip-ingest", action="store_true", help="Pula a etapa de ingestao")
     parser.add_argument("--skip-recalc", action="store_true", help="Pula a etapa de recalc")
     args = parser.parse_args()
@@ -50,6 +56,8 @@ def main() -> int:
     pular = set()
     if args.skip_snapshot:
         pular.add("snapshot")
+    if args.skip_sales_hunter:
+        pular.add("sales_hunter")
     if args.skip_ingest:
         pular.add("ingest")
     if args.skip_recalc:
