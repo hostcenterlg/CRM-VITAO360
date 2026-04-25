@@ -44,7 +44,7 @@ O CRM deve cruzar dados de vendas, atendimentos e prospecção de múltiplas fon
 <!-- Current scope. Building toward these. -->
 
 - [ ] PROJEÇÃO reconstruída com 18.180 fórmulas dinâmicas (CRÍTICO)
-- [ ] Faturamento mensal validado contra R$ 2.156.179 (PAINEL 2025)
+- [ ] Faturamento mensal validado contra R$ 2.091.000 (PAINEL 2025)
 - [ ] Timeline mensal por cliente populada (Jan-Dez 2025)
 - [ ] LOG completo com ~11.758 registros (atualmente 13.4%)
 - [ ] DASH redesenhada com 3 blocos compactos (~45 rows)
@@ -61,7 +61,7 @@ O CRM deve cruzar dados de vendas, atendimentos e prospecção de múltiplas fon
 
 ### Out of Scope
 
-- Migração para software web/SaaS — sistema permanece em Excel com Python para processamento
+- (REMOVIDO 2026-04-25) ~~Migração para software web/SaaS — sistema permanece em Excel com Python para processamento~~ — SaaS está em PROD desde Mar/2026 em crm-vitao360.vercel.app. Ver MASTER_PLAN.md
 - Dashboard em tempo real — operação é batch (exports manuais dos sistemas)
 - Automação de exports do Mercos/SAP/Deskrio — dependem de acesso que não temos
 - Mobile app — consultores usam Excel no desktop
@@ -89,7 +89,7 @@ O CRM deve cruzar dados de vendas, atendimentos e prospecção de múltiplas fon
 - **Fórmulas**: Devem ser em INGLÊS para openpyxl (IF, SUMIF, VLOOKUP)
 - **Slicers**: NUNCA usar openpyxl — apenas XML Surgery (zipfile + lxml)
 - **Dados**: Zero fabricação. Classificação 3-tier obrigatória (REAL / SINTÉTICO / ALUCINAÇÃO)
-- **Faturamento**: Validar SEMPRE contra R$ 2.156.179 (PAINEL 2025). Divergência > 0.5% = investigar
+- **Faturamento**: Validar SEMPRE contra R$ 2.091.000 (PAINEL 2025). Divergência > 0.5% = investigar
 - **Visual**: Tema LIGHT, Arial 9pt dados, 10pt headers. Cores: ATIVO=#00B050, INAT.REC=#FFC000, INAT.ANT=#FF0000
 - **CARTEIRA**: 46 colunas IMUTÁVEIS — Blueprint v2 expande via grupos [+], não altera as 46
 - **Header Mercos**: Linha 10 (skiprows=9)
