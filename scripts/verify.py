@@ -387,6 +387,72 @@ def main():
         for iss in desk_issues[:5]:
             print(f"    -> {iss}")
 
+    if args.all or args.claim == "sales_hunter":
+        print("\n[10] Sales Hunter integrity...")
+        sh_issues = []
+        sh_warns = []
+        try:
+            import sqlite3
+            db_path = ROOT / "data" / "crm_vitao360.db"
+            if not db_path.exists():
+                sh_issues.append("data/crm_vitao360.db não existe")
+            else:
+                con = sqlite3.connect(str(db_path))
+                # Tabela debitos_clientes existe?
+                tbls = {r[0] for r in con.execute(
+                    "SELECT name FROM sqlite_master WHERE type='table'"
+                ).fetchall()}
+                if "debitos_clientes" not in tbls:
+                    sh_issues.append("tabela debitos_clientes ausente (migration nao aplicada)")
+                else:
+                    # CNPJ no formato correto em debitos_clientes
+                    bad_cnpj = con.execute(
+                        "SELECT COUNT(*) FROM debitos_clientes "
+                        "WHERE LENGTH(cnpj) != 14 OR cnpj GLOB '*[^0-9]*'"
+                    ).fetchone()[0]
+                    if bad_cnpj > 0:
+                        sh_issues.append(
+                            f"{bad_cnpj} CNPJs invalidos em debitos_clientes (R2)"
+                        )
+                # ImportJob SALES_HUNTER recente
+                jobs = con.execute(
+                    "SELECT COUNT(*) FROM import_jobs "
+                    "WHERE tipo='SALES_HUNTER' AND status='CONCLUIDO'"
+                ).fetchone()[0]
+                if jobs == 0:
+                    sh_warns.append(
+                        "Nenhum ImportJob SALES_HUNTER CONCLUIDO ainda"
+                    )
+                # Faturamento populado?
+                clientes_com_fat = con.execute(
+                    "SELECT COUNT(*) FROM clientes "
+                    "WHERE faturamento_total IS NOT NULL AND faturamento_total > 0"
+                ).fetchone()[0]
+                total_clientes = con.execute(
+                    "SELECT COUNT(*) FROM clientes"
+                ).fetchone()[0]
+                if total_clientes > 0:
+                    pct = clientes_com_fat / total_clientes * 100
+                    if pct < 20:
+                        sh_warns.append(
+                            f"Apenas {pct:.0f}% dos clientes tem faturamento populado "
+                            f"({clientes_com_fat}/{total_clientes})"
+                        )
+                con.close()
+        except Exception as exc:
+            sh_warns.append(f"Erro ao inspecionar DB: {exc}")
+        status = "FAIL" if sh_issues else ("WARN" if sh_warns else "PASS")
+        results["sales_hunter"] = {
+            "status": status,
+            "issues": sh_issues + sh_warns,
+        }
+        all_msgs = sh_issues + sh_warns
+        print(
+            f"  {status}: {len(all_msgs)} issues" if all_msgs else f"  {status}"
+        )
+        for iss in all_msgs[:5]:
+            print(f"    -> {iss}")
+
     # Summary
     fails = sum(1 for r in results.values() if r["status"] == "FAIL")
     passes = sum(1 for r in results.values() if r["status"] == "PASS")
