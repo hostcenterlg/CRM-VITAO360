@@ -1,0 +1,396 @@
+{
+  "columns": [
+    {
+      "id": 419,
+      "name": "SUPORTE",
+      "isActive": true,
+      "isDefault": false,
+      "kanbanBoardId": 100,
+      "nextColumnId": 420,
+      "createdAt": "2026-01-23T19:33:41.000Z",
+      "updatedAt": "2026-01-23T19:34:38.000Z",
+      "cards": [
+        {
+          "id": 11840,
+          "name": "Suporte comercial",
+          "description": "Recebeu uma NFD no email, estou confirmando se está correto com a parte fiscal para dar retorno ao cliente",
+          "isActive": true,
+          "value": 0,
+          "expectedAt": "2026-02-06T15:00:00.000Z",
+          "kanbanColumnId": 419,
+          "responsibleUserId": 4400030,
+          "contactId": 2148055939,
+          "motiveId": null,
+          "ticketId": "66701734",
+          "nextCardId": 11668,
+          "createdAt": "2026-02-06T10:56:17.000Z",
+          "updatedAt": "2026-02-06T10:56:17.000Z",
+          "responsibleUser": {
+            "photo": "https://d2mytgzbagllkr.cloudfront.net/production/38/logo%20lp.png?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=CnErM5h3iIgCHCXsiFsMxxOfXLCBYWn9O08FoGdgoyRoXkffZZKWUcQ0cHxnWMY8OZQOrN5tVwk0370mzYYEZ6jC9hBZwE3IPBv1jPzvCsIwgRiltPE3XUiqapzsaeTPpT4UFkXwaKw~u8~6jGZDVhO0FQL81FOE0kiUlQQFrM-fXsjm1iF5RUjb15LUi2Ax-bYDs06ebAJyVAp-zGvYI4xVtyKzMVNv7J37CRjwjQ~OI0dQgtiaQYM-SBcd6hvwu~K-HtgOJ57wR8CPKOE1YswJ0We1MvNGGwDk5tBsftxACz3-2rNlzUGOCS0TTh94cpROz7tnSEfoE1P04huETw__",
+            "id": 4400030,
+            "name": "Larissa"
+          },
+          "contact": {
+            "id": 2148055939,
+            "name": "PUDIMZERA - MARCO - SP",
+            "profilePicUrl": "https://d2mytgzbagllkr.cloudfront.net/production/38/38-2148055939-profilePic?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=HtHP3AaJGrGWcyWh~Oc7tyRD6V1JMbbflhhYiSDSEczzgZFJXYcAULpH~GohfCqrVNesCU-OT~ezemY0WrmRCcJ2G5R3luHHLLVXYijWkrg92lupnpz5p7HBPZROQOUlpKeAQWgHtCWSCqHIyH8TXWq6I0hYl7hNfV4AMTnmgSSwtgdCMvzcSD7lSki0f4BQ9uX5y7K8MBuSS-sLr7QGJslfwvhHv1a5W3Ir34IcQH7CVVu1XkLqxaO-3Apbhl~EJBHABofgx6HjfNVxq1ktQAViLhaFuyQUZyy~iHcHGlnKXCP25-LLzgDKuiQZRAo9qBje~2JSv0SKUVQy9wF8HA__"
+          }
+        },
+        {
+          "id": 11668,
+          "name": "Suporte financeiro",
+          "description": "Aguardando retorno do financeiro quanto a carta de anuência",
+          "isActive": true,
+          "value": 0,
+          "expectedAt": "2026-01-27T15:00:00.000Z",
+          "kanbanColumnId": 419,
+          "responsibleUserId": 4400030,
+          "contactId": 2148489234,
+          "motiveId": null,
+          "ticketId": "66590204",
+          "nextCardId": null,
+          "createdAt": "2026-01-26T17:58:18.000Z",
+          "updatedAt": "2026-02-03T12:04:33.000Z",
+          "responsibleUser": {
+            "photo": "https://d2mytgzbagllkr.cloudfront.net/production/38/logo%20lp.png?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=CnErM5h3iIgCHCXsiFsMxxOfXLCBYWn9O08FoGdgoyRoXkffZZKWUcQ0cHxnWMY8OZQOrN5tVwk0370mzYYEZ6jC9hBZwE3IPBv1jPzvCsIwgRiltPE3XUiqapzsaeTPpT4UFkXwaKw~u8~6jGZDVhO0FQL81FOE0kiUlQQFrM-fXsjm1iF5RUjb15LUi2Ax-bYDs06ebAJyVAp-zGvYI4xVtyKzMVNv7J37CRjwjQ~OI0dQgtiaQYM-SBcd6hvwu~K-HtgOJ57wR8CPKOE1YswJ0We1MvNGGwDk5tBsftxACz3-2rNlzUGOCS0TTh94cpROz7tnSEfoE1P04huETw__",
+            "id": 4400030,
+            "name": "Larissa"
+          },
+          "contact": {
+            "id": 2148489234,
+            "name": "SEMENTE DE LUZ - MIRNA - BA",
+            "profilePicUrl": "https://d2mytgzbagllkr.cloudfront.net/production/38/38-2148489234-profilePic?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=pPhn76rG9ncy-9WgE2Np2yUAdvyhuJV3oltxtjnnPd5wb9mSFocXQRYq4DCXh7GIXpT-nDT8-ur9GQ0sEeSop-UzbwR-gdlXxId61OfeUi6Pd9KzKsA6ColNkh9kBo43r~6hJUjQoRPSEpPqSg5p~CZM42vdIkIrJaGKGenFtPTbpyaauS5A7CfgRF403CoXSwSJkI1H9YS-QMQcfOsxgTiW9EGKh9zivPYb20-muDyRGmJbS9Tlr8NxBtwUMP2JyEQg9kfaqwr~XxZ-f5mFvyZw7nM2kT8oB-6i6WI7-bFaJMXoQivQb~LXB3w4Egpmv54cq1uK1zknp~qDr3kdGg__"
+          }
+        }
+      ]
+    },
+    {
+      "id": 420,
+      "name": "NEGOCIAÇÃO/ORÇAMENTO",
+      "isActive": true,
+      "isDefault": false,
+      "kanbanBoardId": 100,
+      "nextColumnId": 422,
+      "createdAt": "2026-01-23T19:34:00.000Z",
+      "updatedAt": "2026-01-27T11:55:30.000Z",
+      "cards": [
+        {
+          "id": 11841,
+          "name": "Negociação",
+          "description": "Passei sobre a campanha dos doces com 15% OFF para negociarmos um pedido, disse que vai verificar",
+          "isActive": true,
+          "value": 0,
+          "expectedAt": "2026-02-10T15:00:00.000Z",
+          "kanbanColumnId": 420,
+          "responsibleUserId": 4400030,
+          "contactId": 2147635777,
+          "motiveId": null,
+          "ticketId": "66701274",
+          "nextCardId": 11661,
+          "createdAt": "2026-02-06T10:57:41.000Z",
+          "updatedAt": "2026-02-06T10:57:41.000Z",
+          "responsibleUser": {
+            "photo": "https://d2mytgzbagllkr.cloudfront.net/production/38/logo%20lp.png?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=CnErM5h3iIgCHCXsiFsMxxOfXLCBYWn9O08FoGdgoyRoXkffZZKWUcQ0cHxnWMY8OZQOrN5tVwk0370mzYYEZ6jC9hBZwE3IPBv1jPzvCsIwgRiltPE3XUiqapzsaeTPpT4UFkXwaKw~u8~6jGZDVhO0FQL81FOE0kiUlQQFrM-fXsjm1iF5RUjb15LUi2Ax-bYDs06ebAJyVAp-zGvYI4xVtyKzMVNv7J37CRjwjQ~OI0dQgtiaQYM-SBcd6hvwu~K-HtgOJ57wR8CPKOE1YswJ0We1MvNGGwDk5tBsftxACz3-2rNlzUGOCS0TTh94cpROz7tnSEfoE1P04huETw__",
+            "id": 4400030,
+            "name": "Larissa"
+          },
+          "contact": {
+            "id": 2147635777,
+            "name": "PORTGALI / ROTTA DO SOL - BRUNA - PE",
+            "profilePicUrl": "https://d2mytgzbagllkr.cloudfront.net/production/38/38-2147635777-profilePic?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=YCIndPezwJ1bBgRmgoCcIAJsQm8tAdR3zgXethYcW2WbWcRxExw3Oyb3nFlVYH-31u55s1X58VAVdAgCvLhy5iUBnaanAL2qbo-EbOyjFRi9sPyrONL0atQ0rKRzWsxVxvpTVDjwDTS7hTivVA1~DncNdP8t5rM6Sw6lGcqTXXHTRec-ZvTaZcKYNwmvJR28IB-g13H-4IZU3WbMdkqy88cU9BZ7~WP6kT661cHYwSeg438cMssh5FGK6n9MkI86054Ue8QfJP5slyirHtZrxPDTF6ZROWPEhPN1l4p8BRrqpzTdTGd9fW1cpjS4VxnHIELN6lKVxnRlo2D1ht1Nfg__"
+          }
+        },
+        {
+          "id": 11661,
+          "name": "Orçamento enviado",
+          "description": "Cliente solicitou orçamento, aguardando análise",
+          "isActive": true,
+          "value": 2121.6,
+          "expectedAt": "2026-01-27T15:00:00.000Z",
+          "kanbanColumnId": 420,
+          "responsibleUserId": 4400030,
+          "contactId": 2148140684,
+          "motiveId": null,
+          "ticketId": "66649950",
+          "nextCardId": 11659,
+          "createdAt": "2026-01-26T13:30:29.000Z",
+          "updatedAt": "2026-02-03T12:01:13.000Z",
+          "responsibleUser": {
+            "photo": "https://d2mytgzbagllkr.cloudfront.net/production/38/logo%20lp.png?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=CnErM5h3iIgCHCXsiFsMxxOfXLCBYWn9O08FoGdgoyRoXkffZZKWUcQ0cHxnWMY8OZQOrN5tVwk0370mzYYEZ6jC9hBZwE3IPBv1jPzvCsIwgRiltPE3XUiqapzsaeTPpT4UFkXwaKw~u8~6jGZDVhO0FQL81FOE0kiUlQQFrM-fXsjm1iF5RUjb15LUi2Ax-bYDs06ebAJyVAp-zGvYI4xVtyKzMVNv7J37CRjwjQ~OI0dQgtiaQYM-SBcd6hvwu~K-HtgOJ57wR8CPKOE1YswJ0We1MvNGGwDk5tBsftxACz3-2rNlzUGOCS0TTh94cpROz7tnSEfoE1P04huETw__",
+            "id": 4400030,
+            "name": "Larissa"
+          },
+          "contact": {
+            "id": 2148140684,
+            "name": "CPQ - CAMILA - SP",
+            "profilePicUrl": "https://d2mytgzbagllkr.cloudfront.net/production/38/38-2148140684-profilePic-1768393038380?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=zEG8RgC~3sijLJlGUfDyRJo4LZV8bT~EnWbzY~m4fgmv5ryj5dGzYV16gcGdxnyi1RYehKYCUCDRhES7LNN08PX1KWrPuQvcwP6rQDWqzG7AMpYrIzqO1klo6gp5Hv~et2YQ2HIuDmee8-KWgk03xr~m76FPkatsU2CuNj2QMmEgX4ScnZ6iLwvFXFrXXjtDMbLCCOGYocoDkHLCiTRDqi1pm772MY59Qd43gSS3KO-srH-AzztIko5HmngxELmdY30gXNgSr1d5UUkSjkizPLdmoyHdwzj2C6lo6w7JXyBzdr9DGGeCJKin36ZzAutRYpQ7QhbrjKG~0V60WgOm8w__"
+          }
+        },
+        {
+          "id": 11659,
+          "name": "Aguardando retorno sobre frete",
+          "description": "Aguardando retorno sobre frete",
+          "isActive": true,
+          "value": 845.57,
+          "expectedAt": "2026-01-27T15:00:00.000Z",
+          "kanbanColumnId": 420,
+          "responsibleUserId": 4400030,
+          "contactId": 2148765947,
+          "motiveId": null,
+          "ticketId": "66629850",
+          "nextCardId": null,
+          "createdAt": "2026-01-26T13:03:08.000Z",
+          "updatedAt": "2026-01-27T11:52:49.000Z",
+          "responsibleUser": {
+            "photo": "https://d2mytgzbagllkr.cloudfront.net/production/38/logo%20lp.png?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=CnErM5h3iIgCHCXsiFsMxxOfXLCBYWn9O08FoGdgoyRoXkffZZKWUcQ0cHxnWMY8OZQOrN5tVwk0370mzYYEZ6jC9hBZwE3IPBv1jPzvCsIwgRiltPE3XUiqapzsaeTPpT4UFkXwaKw~u8~6jGZDVhO0FQL81FOE0kiUlQQFrM-fXsjm1iF5RUjb15LUi2Ax-bYDs06ebAJyVAp-zGvYI4xVtyKzMVNv7J37CRjwjQ~OI0dQgtiaQYM-SBcd6hvwu~K-HtgOJ57wR8CPKOE1YswJ0We1MvNGGwDk5tBsftxACz3-2rNlzUGOCS0TTh94cpROz7tnSEfoE1P04huETw__",
+            "id": 4400030,
+            "name": "Larissa"
+          },
+          "contact": {
+            "id": 2148765947,
+            "name": "KAMILA - MG",
+            "profilePicUrl": "https://d2mytgzbagllkr.cloudfront.net/production/38/38-2148765947-profilePic?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=wu5FD-j7erFrSHlVMvsf-KfVLMm0h~YZ6rdTrZ0JLje6Xo7Lv6K0YnltpQ-6c4TUcL5bX0UOR~DwcQSBTXL21-3zLOEmwCYkFT-jA3a8xMdBVf4hDWlxcAH1U9wDhU2tpCc17GpBl5MDz1Ts~PoUCQzF7MCb8BTwTKCrBGzNQdkftKc-SdH0ynV3cn8aRYbO0mvcOE85-sDhZMCWVqDgHFOR9unfvTzB5-VGH7xnc~wOO-~IC8wUqdMjWNflnDPd1TCZLblV25ltY66KYiNf-Yur2hqpUBhuRLaiW7~ju02pEE7zpl1KxkquWcc9BYLvyrBnStYpYRvJ6twHcMtStA__"
+          }
+        }
+      ]
+    },
+    {
+      "id": 422,
+      "name": "VENDA REALIZADA",
+      "isActive": true,
+      "isDefault": false,
+      "kanbanBoardId": 100,
+      "nextColumnId": 418,
+      "createdAt": "2026-01-23T19:34:55.000Z",
+      "updatedAt": "2026-02-03T12:41:05.000Z",
+      "cards": []
+    },
+    {
+      "id": 418,
+      "name": "EM ATENDIMENTO",
+      "isActive": true,
+      "isDefault": false,
+      "kanbanBoardId": 100,
+      "nextColumnId": 423,
+      "createdAt": "2026-01-23T19:33:30.000Z",
+      "updatedAt": "2026-02-03T12:41:05.000Z",
+      "cards": [
+        {
+          "id": 11689,
+          "name": "LEAD",
+          "description": "LEAD",
+          "isActive": true,
+          "value": 0,
+          "expectedAt": "2026-01-29T15:00:00.000Z",
+          "kanbanColumnId": 418,
+          "responsibleUserId": 4400030,
+          "contactId": 2148778243,
+          "motiveId": null,
+          "ticketId": "66657479",
+          "nextCardId": 11682,
+          "createdAt": "2026-01-27T17:05:05.000Z",
+          "updatedAt": "2026-01-27T17:05:05.000Z",
+          "responsibleUser": {
+            "photo": "https://d2mytgzbagllkr.cloudfront.net/production/38/logo%20lp.png?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=CnErM5h3iIgCHCXsiFsMxxOfXLCBYWn9O08FoGdgoyRoXkffZZKWUcQ0cHxnWMY8OZQOrN5tVwk0370mzYYEZ6jC9hBZwE3IPBv1jPzvCsIwgRiltPE3XUiqapzsaeTPpT4UFkXwaKw~u8~6jGZDVhO0FQL81FOE0kiUlQQFrM-fXsjm1iF5RUjb15LUi2Ax-bYDs06ebAJyVAp-zGvYI4xVtyKzMVNv7J37CRjwjQ~OI0dQgtiaQYM-SBcd6hvwu~K-HtgOJ57wR8CPKOE1YswJ0We1MvNGGwDk5tBsftxACz3-2rNlzUGOCS0TTh94cpROz7tnSEfoE1P04huETw__",
+            "id": 4400030,
+            "name": "Larissa"
+          },
+          "contact": {
+            "id": 2148778243,
+            "name": "DIOGO - GO",
+            "profilePicUrl": "https://d2mytgzbagllkr.cloudfront.net/production/38/38-2148778243-profilePic?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=DnP0JGm82swKZ-qsvc06P2HBFWPEvtaG7bnaSkodfSs0THsJN4yvynj~UQ53bka8TRJzjDD2Cx1hW~HnJuvjt7ZL7uxnmqKArB1eR5dodX-XeXSlwN9GZ2K01n89m2yiKBV6WQkW07apUDsn3AOwqfaxQkOWsP0XmBueNzqtoh1HTTuvEyhBL7VSnub63G2QmvZi26xO8TcJgBWbpjF8wGUUg2qLG-qOPd~o48ZlGPZYHPN9PTehjwbYP6ixq9-GdMO9fg47GxUTlt-9eZ45D9aJyUzcq5EuerZiyxkp9NV8bR~Cy2GpvtLTCAzdJHmSQiIVjUNTHh616fg78xnpKA__"
+          }
+        },
+        {
+          "id": 11682,
+          "name": "LEAD",
+          "description": "LEAD",
+          "isActive": true,
+          "value": 0,
+          "expectedAt": "2026-01-28T15:00:00.000Z",
+          "kanbanColumnId": 418,
+          "responsibleUserId": 4400030,
+          "contactId": 2148777150,
+          "motiveId": null,
+          "ticketId": "66654992",
+          "nextCardId": 11681,
+          "createdAt": "2026-01-27T11:50:46.000Z",
+          "updatedAt": "2026-01-27T11:50:46.000Z",
+          "responsibleUser": {
+            "photo": "https://d2mytgzbagllkr.cloudfront.net/production/38/logo%20lp.png?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=CnErM5h3iIgCHCXsiFsMxxOfXLCBYWn9O08FoGdgoyRoXkffZZKWUcQ0cHxnWMY8OZQOrN5tVwk0370mzYYEZ6jC9hBZwE3IPBv1jPzvCsIwgRiltPE3XUiqapzsaeTPpT4UFkXwaKw~u8~6jGZDVhO0FQL81FOE0kiUlQQFrM-fXsjm1iF5RUjb15LUi2Ax-bYDs06ebAJyVAp-zGvYI4xVtyKzMVNv7J37CRjwjQ~OI0dQgtiaQYM-SBcd6hvwu~K-HtgOJ57wR8CPKOE1YswJ0We1MvNGGwDk5tBsftxACz3-2rNlzUGOCS0TTh94cpROz7tnSEfoE1P04huETw__",
+            "id": 4400030,
+            "name": "Larissa"
+          },
+          "contact": {
+            "id": 2148777150,
+            "name": "Rose☘️",
+            "profilePicUrl": null
+          }
+        },
+        {
+          "id": 11681,
+          "name": "LEAD",
+          "description": "LEAD",
+          "isActive": true,
+          "value": 0,
+          "expectedAt": "2026-01-28T15:00:00.000Z",
+          "kanbanColumnId": 418,
+          "responsibleUserId": 4400030,
+          "contactId": 2148777251,
+          "motiveId": null,
+          "ticketId": "66655198",
+          "nextCardId": 11680,
+          "createdAt": "2026-01-27T11:49:57.000Z",
+          "updatedAt": "2026-01-27T11:49:57.000Z",
+          "responsibleUser": {
+            "photo": "https://d2mytgzbagllkr.cloudfront.net/production/38/logo%20lp.png?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=CnErM5h3iIgCHCXsiFsMxxOfXLCBYWn9O08FoGdgoyRoXkffZZKWUcQ0cHxnWMY8OZQOrN5tVwk0370mzYYEZ6jC9hBZwE3IPBv1jPzvCsIwgRiltPE3XUiqapzsaeTPpT4UFkXwaKw~u8~6jGZDVhO0FQL81FOE0kiUlQQFrM-fXsjm1iF5RUjb15LUi2Ax-bYDs06ebAJyVAp-zGvYI4xVtyKzMVNv7J37CRjwjQ~OI0dQgtiaQYM-SBcd6hvwu~K-HtgOJ57wR8CPKOE1YswJ0We1MvNGGwDk5tBsftxACz3-2rNlzUGOCS0TTh94cpROz7tnSEfoE1P04huETw__",
+            "id": 4400030,
+            "name": "Larissa"
+          },
+          "contact": {
+            "id": 2148777251,
+            "name": "PAULA - SP",
+            "profilePicUrl": null
+          }
+        },
+        {
+          "id": 11680,
+          "name": "LEAD",
+          "description": "LEAD",
+          "isActive": true,
+          "value": 0,
+          "expectedAt": "2026-01-28T15:00:00.000Z",
+          "kanbanColumnId": 418,
+          "responsibleUserId": 4400030,
+          "contactId": 2148777187,
+          "motiveId": null,
+          "ticketId": "66655069",
+          "nextCardId": 11679,
+          "createdAt": "2026-01-27T11:49:03.000Z",
+          "updatedAt": "2026-01-27T11:49:03.000Z",
+          "responsibleUser": {
+            "photo": "https://d2mytgzbagllkr.cloudfront.net/production/38/logo%20lp.png?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=CnErM5h3iIgCHCXsiFsMxxOfXLCBYWn9O08FoGdgoyRoXkffZZKWUcQ0cHxnWMY8OZQOrN5tVwk0370mzYYEZ6jC9hBZwE3IPBv1jPzvCsIwgRiltPE3XUiqapzsaeTPpT4UFkXwaKw~u8~6jGZDVhO0FQL81FOE0kiUlQQFrM-fXsjm1iF5RUjb15LUi2Ax-bYDs06ebAJyVAp-zGvYI4xVtyKzMVNv7J37CRjwjQ~OI0dQgtiaQYM-SBcd6hvwu~K-HtgOJ57wR8CPKOE1YswJ0We1MvNGGwDk5tBsftxACz3-2rNlzUGOCS0TTh94cpROz7tnSEfoE1P04huETw__",
+            "id": 4400030,
+            "name": "Larissa"
+          },
+          "contact": {
+            "id": 2148777187,
+            "name": "VIVA MAIS SAÚDE - DAYANE - DF",
+            "profilePicUrl": "https://d2mytgzbagllkr.cloudfront.net/production/38/38-2148777187-profilePic?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=G-f4YSm0ZEV-X5k1I7wkrDOMH9FbRzuGyOgIKV3GCuSPhPFbVj4ynFAZzjgVgVNiJBRKCLF7UdDk-1TnILZ6-Jr~tTe8qN2PrlZ1CUz6ksw9H9Bp-sW0-PRbzxcwyWvlle5u1rXp7tIEJ9cKrAUovljQTm~altGw2R08zvuWCop11mARS5MsuqoX763B8K8zahscMMdJiFESKTmmnDvT61n9iJGaSn3RMke-OP0E0RH-FY9OqAGEjKOQtWtoYTJ2~sYcempT0z4DT-i0DEJoiO~2OgLvV0LSh7lwGG9CJHXsQOy0GxcEyq7HW8rfVNonE0chdEd1MTY4g0Ov3KJq6A__"
+          }
+        },
+        {
+          "id": 11679,
+          "name": "LEAD",
+          "description": "LEAD",
+          "isActive": true,
+          "value": 0,
+          "expectedAt": "2026-01-28T15:00:00.000Z",
+          "kanbanColumnId": 418,
+          "responsibleUserId": 4400030,
+          "contactId": 2148777448,
+          "motiveId": null,
+          "ticketId": "66655551",
+          "nextCardId": 11678,
+          "createdAt": "2026-01-27T11:47:49.000Z",
+          "updatedAt": "2026-01-27T11:47:49.000Z",
+          "responsibleUser": {
+            "photo": "https://d2mytgzbagllkr.cloudfront.net/production/38/logo%20lp.png?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=CnErM5h3iIgCHCXsiFsMxxOfXLCBYWn9O08FoGdgoyRoXkffZZKWUcQ0cHxnWMY8OZQOrN5tVwk0370mzYYEZ6jC9hBZwE3IPBv1jPzvCsIwgRiltPE3XUiqapzsaeTPpT4UFkXwaKw~u8~6jGZDVhO0FQL81FOE0kiUlQQFrM-fXsjm1iF5RUjb15LUi2Ax-bYDs06ebAJyVAp-zGvYI4xVtyKzMVNv7J37CRjwjQ~OI0dQgtiaQYM-SBcd6hvwu~K-HtgOJ57wR8CPKOE1YswJ0We1MvNGGwDk5tBsftxACz3-2rNlzUGOCS0TTh94cpROz7tnSEfoE1P04huETw__",
+            "id": 4400030,
+            "name": "Larissa"
+          },
+          "contact": {
+            "id": 2148777448,
+            "name": "Igor",
+            "profilePicUrl": null
+          }
+        },
+        {
+          "id": 11678,
+          "name": "LEAD",
+          "description": "LEAD",
+          "isActive": true,
+          "value": 0,
+          "expectedAt": "2026-01-28T15:00:00.000Z",
+          "kanbanColumnId": 418,
+          "responsibleUserId": 4400030,
+          "contactId": 2148777532,
+          "motiveId": null,
+          "ticketId": "66655679",
+          "nextCardId": 11677,
+          "createdAt": "2026-01-27T11:37:14.000Z",
+          "updatedAt": "2026-01-27T11:37:14.000Z",
+          "responsibleUser": {
+            "photo": "https://d2mytgzbagllkr.cloudfront.net/production/38/logo%20lp.png?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=CnErM5h3iIgCHCXsiFsMxxOfXLCBYWn9O08FoGdgoyRoXkffZZKWUcQ0cHxnWMY8OZQOrN5tVwk0370mzYYEZ6jC9hBZwE3IPBv1jPzvCsIwgRiltPE3XUiqapzsaeTPpT4UFkXwaKw~u8~6jGZDVhO0FQL81FOE0kiUlQQFrM-fXsjm1iF5RUjb15LUi2Ax-bYDs06ebAJyVAp-zGvYI4xVtyKzMVNv7J37CRjwjQ~OI0dQgtiaQYM-SBcd6hvwu~K-HtgOJ57wR8CPKOE1YswJ0We1MvNGGwDk5tBsftxACz3-2rNlzUGOCS0TTh94cpROz7tnSEfoE1P04huETw__",
+            "id": 4400030,
+            "name": "Larissa"
+          },
+          "contact": {
+            "id": 2148777532,
+            "name": "SERRA GRANEL - FERNANDA - MG",
+            "profilePicUrl": "https://d2mytgzbagllkr.cloudfront.net/production/38/38-2148777532-profilePic?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=Od9g4kCa7-w7t32KtjxBb~-RtOxrtv-2chf4swEqRxbD5ogLZSeWnAjCEss3kA66iNdcnJxJoPF0I8jwM8SySyiczIjG2jl95TKVCanG920prTXn6FYTOQ8tnKcC4KyKjCj2fw~dCgozYC9ygApx1YXz-adFfnEHTHfHtuJebSOFTtEEwW1SfgmI0U9g1tPacVDarVvYx9LP~7L9cNySe-FViRzDyJ5a-n6HSSBVimzyCMspJHLnu18xqnJkekfeodjzFiWBHrYqiGhN-jvHPWenlG1QDoHoyhcYSXiyX0bcenAnb9qaFpZzwTBGqhsb4qOlaPFz4Q2qpe9lzb8cuw__"
+          }
+        },
+        {
+          "id": 11677,
+          "name": "LEAD",
+          "description": "LEAD",
+          "isActive": true,
+          "value": 0,
+          "expectedAt": "2026-01-28T15:00:00.000Z",
+          "kanbanColumnId": 418,
+          "responsibleUserId": 4400030,
+          "contactId": 2148777061,
+          "motiveId": null,
+          "ticketId": "66654768",
+          "nextCardId": null,
+          "createdAt": "2026-01-27T11:34:16.000Z",
+          "updatedAt": "2026-01-27T11:54:36.000Z",
+          "responsibleUser": {
+            "photo": "https://d2mytgzbagllkr.cloudfront.net/production/38/logo%20lp.png?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=CnErM5h3iIgCHCXsiFsMxxOfXLCBYWn9O08FoGdgoyRoXkffZZKWUcQ0cHxnWMY8OZQOrN5tVwk0370mzYYEZ6jC9hBZwE3IPBv1jPzvCsIwgRiltPE3XUiqapzsaeTPpT4UFkXwaKw~u8~6jGZDVhO0FQL81FOE0kiUlQQFrM-fXsjm1iF5RUjb15LUi2Ax-bYDs06ebAJyVAp-zGvYI4xVtyKzMVNv7J37CRjwjQ~OI0dQgtiaQYM-SBcd6hvwu~K-HtgOJ57wR8CPKOE1YswJ0We1MvNGGwDk5tBsftxACz3-2rNlzUGOCS0TTh94cpROz7tnSEfoE1P04huETw__",
+            "id": 4400030,
+            "name": "Larissa"
+          },
+          "contact": {
+            "id": 2148777061,
+            "name": "ORGÂNICA - ALESSANDRA - ES",
+            "profilePicUrl": "https://d2mytgzbagllkr.cloudfront.net/production/38/38-2148777061-profilePic?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=FN~uDIGX59IMxq0KhUN0i-GCjQST3thpxwwuT-tGLd0FPeGH0VK4kfTQPTpNELgdMc64DSKoVbvYDXsI~1f5RNwPoWCxAr-p-nlYJjMC4RImHf7crrbxIexZ6OyQz53beIUrCBTHwK3nK~yDXeMmwF-STgV7gjA862uyGrJWiXiXoqZnkiVaZXPkyclsbtuWmv-K2oma9AhqHcUOkwGRTlAs5i7r9nkAdveuofvbCLgxat1FGh13yCkt1jd2SoOLerALZZiGcC~MWnTVVR4MlwualRS6OL6SDh8W3ONuqwRtA9X82ecpakElcz5Aw2Q-IrYJ2fjKl3cTCVisz7odLw__"
+          }
+        }
+      ]
+    },
+    {
+      "id": 423,
+      "name": "PÓS VENDA",
+      "isActive": true,
+      "isDefault": false,
+      "kanbanBoardId": 100,
+      "nextColumnId": 424,
+      "createdAt": "2026-01-23T19:35:09.000Z",
+      "updatedAt": "2026-01-23T19:35:26.000Z",
+      "cards": []
+    },
+    {
+      "id": 424,
+      "name": "CS/RECOMPRA",
+      "isActive": true,
+      "isDefault": false,
+      "kanbanBoardId": 100,
+      "nextColumnId": 425,
+      "createdAt": "2026-01-23T19:35:26.000Z",
+      "updatedAt": "2026-01-23T19:35:36.000Z",
+      "cards": []
+    },
+    {
+      "id": 425,
+      "name": "NUTRIÇÃO",
+      "isActive": true,
+      "isDefault": false,
+      "kanbanBoardId": 100,
+      "nextColumnId": null,
+      "createdAt": "2026-01-23T19:35:36.000Z",
+      "updatedAt": "2026-01-23T19:35:36.000Z",
+      "cards": []
+    }
+  ]
+}

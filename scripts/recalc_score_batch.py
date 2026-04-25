@@ -98,7 +98,15 @@ def main() -> int:
     db_url = args.db or os.environ.get("DATABASE_URL", "")
     log.info("Conectando em: %s", db_url.replace("@", "@***/").split("://")[0] + "://…")
 
-    engine = create_engine(db_url, echo=False)
+    # pool_pre_ping detecta conexões mortas (Neon serverless agressivo).
+    # pool_recycle reabre conexão antes de provedor matar.
+    engine = create_engine(
+        db_url,
+        echo=False,
+        pool_pre_ping=True,
+        pool_recycle=300,
+        connect_args={"connect_timeout": 30} if "postgresql" in db_url else {},
+    )
     Session = sessionmaker(bind=engine)
     db = Session()
 
@@ -117,6 +125,8 @@ def main() -> int:
         atualizados_estagio = 0
         atualizados_score = 0
         erros = 0
+        # Commit em chunks pra evitar timeout em provedores serverless (Neon).
+        COMMIT_EVERY = 100
 
         for i, cliente in enumerate(clientes, 1):
             # 1. Preencher estagio_funil se ausente
@@ -138,17 +148,26 @@ def main() -> int:
                 erros += 1
                 log.warning("Erro em cliente %s (%s): %s", cliente.cnpj, cliente.nome_fantasia, e)
 
-            # Progress a cada 200
-            if i % 200 == 0:
-                log.info("  progresso: %d/%d", i, total)
+            # Progress + commit periodico
+            if i % COMMIT_EVERY == 0:
+                if not args.dry_run:
+                    try:
+                        db.commit()
+                        log.info("  commit chunk: %d/%d", i, total)
+                    except Exception as e:
+                        log.error("Erro ao commitar chunk %d: %s — rollback parcial", i, e)
+                        db.rollback()
+                        erros += 1
+                else:
+                    log.info("  progresso: %d/%d", i, total)
 
-        # Commit
+        # Commit final
         if args.dry_run:
             log.info("DRY-RUN: rollback")
             db.rollback()
         else:
             db.commit()
-            log.info("COMMIT: %d atualizacoes persistidas", atualizados_score)
+            log.info("COMMIT FINAL: %d atualizacoes persistidas", atualizados_score)
 
         # Distribuicao final
         from collections import Counter

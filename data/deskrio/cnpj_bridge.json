@@ -1,0 +1,1733 @@
+{
+  "cnpj_bridge": {
+    "4400115": {
+      "number": "555132768353",
+      "name": "ARMAZEM DO GRANEL - LUCINARA - RS ",
+      "cnpjs": [
+        "39852887000181"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "4400126": {
+      "number": "555184104577",
+      "name": "BEROLA - MIRELA - RS",
+      "cnpjs": [
+        "03877787000162"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "4400158": {
+      "number": "554791312401",
+      "name": "BEM NATURAL - ADRIELLE - SC  (15%off)",
+      "cnpjs": [
+        "21824220000100",
+        "39557193000111"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "4400213": {
+      "number": "554796708639",
+      "name": "CIA DA SAÚDE - JOINVILLE - CAROL",
+      "cnpjs": [
+        "33210130000108",
+        "41899387000147",
+        "47163707000182"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "4400323": {
+      "number": "554998101137",
+      "name": "Cia Da Saude Sao Joaquim - Maicon ",
+      "cnpjs": [
+        "19731451000127"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "4400521": {
+      "number": "554991042034",
+      "name": "DIVINA TERRA - SILVANE - SC",
+      "cnpjs": [
+        "33760983000113"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "4400522": {
+      "number": "555191322184",
+      "name": "DIVINA TERRA - POA - VANESSA ",
+      "cnpjs": [
+        "30711388000108",
+        "52110308000193"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "4400566": {
+      "number": "554733074849",
+      "name": "ARMAZEM DO PEIXE - ELVIS - SCHROEDER - SC",
+      "cnpjs": [
+        "35061923000138"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "4400672": {
+      "number": "558499094336",
+      "name": "EQUILLIBRIUN - RN - EMANUEL",
+      "cnpjs": [
+        "12165772000162"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "4401381": {
+      "number": "554792803281",
+      "name": "SEMENTES DA TERRA - OSNILDO - SC ",
+      "cnpjs": [
+        "18958064000165"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "4401554": {
+      "number": "5521982480681",
+      "name": "VIDA NA VIDA - MARCUS - RJ",
+      "cnpjs": [
+        "39565216000130"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "4401587": {
+      "number": "555198926889",
+      "name": "WELLNESS E FITNESS SUPLE. - RS - MILENA ",
+      "cnpjs": [
+        "24500775000194"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "4401974": {
+      "number": "554796820555",
+      "name": "Financeiro/Compras ACIAS",
+      "cnpjs": [],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "4402082": {
+      "number": "555180517392",
+      "name": "RAIZES DA VIDA PROD. ORG. - RS - VINICIUS",
+      "cnpjs": [
+        "46384752000102"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "4402090": {
+      "number": "555197038430",
+      "name": "CIA DA SAÚDE - RS - ANA ",
+      "cnpjs": [
+        "22570775000135"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "4402128": {
+      "number": "556596389565",
+      "name": "NUTRICENTER - MARCELA - MT ",
+      "cnpjs": [
+        "08731485000103"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "4402247": {
+      "number": "5513981374265",
+      "name": "CHÁ E VITTA - FERNANDA - PR",
+      "cnpjs": [
+        "42435340000195",
+        "74073396000133"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "4402428": {
+      "number": "5518996859022",
+      "name": "T&T - EDUARDO - SP",
+      "cnpjs": [
+        "30597781000104"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "4403138": {
+      "number": "554498319464",
+      "name": "VIDA LEVE - DINÁ - PR",
+      "cnpjs": [
+        "10849277000147"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "4403571": {
+      "number": "553284523346",
+      "name": "VILA GRANEL - KAROL  - MG",
+      "cnpjs": [
+        "28781911000112"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "4404054": {
+      "number": "554899321060",
+      "name": "EMPORIO LEV - ELEMAR - SC",
+      "cnpjs": [
+        "65301344000186"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "4404678": {
+      "number": "556292088174",
+      "name": "BIO MUNDO - CAIO - GO",
+      "cnpjs": [
+        "52728269000192",
+        "48328162000180",
+        "54126104000176",
+        "63674221000165"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "4404685": {
+      "number": "554796539294",
+      "name": "CIA DA SAÚDE ITAJAÍ - SABRINA",
+      "cnpjs": [],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "4404802": {
+      "number": "5517992091540",
+      "name": "COMPRADOR VIDA LEVE - JEAN",
+      "cnpjs": [
+        "24200849000177"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "4404986": {
+      "number": "5511966453643",
+      "name": "VEGSIM - JAQUE E PRISCILA - SP",
+      "cnpjs": [
+        "37738174000166",
+        "37738174000247"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "4405110": {
+      "number": "5522981040677",
+      "name": "EXPRESSO CEREALISTA - JOSI - RJ",
+      "cnpjs": [
+        "49366518000132"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "4405333": {
+      "number": "553492681555",
+      "name": "Elaine Cristina",
+      "cnpjs": [],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "4405417": {
+      "number": "559491884586",
+      "name": "Elaine",
+      "cnpjs": [],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "4405505": {
+      "number": "5522988709405",
+      "name": "EMPORIO NUTREE GRAOS - MARIANA - RJ",
+      "cnpjs": [
+        "26839789000162"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "4405592": {
+      "number": "554688068366",
+      "name": "DIVINA TERRA - FRANCISCO BELTRAO PR - LUCAS",
+      "cnpjs": [
+        "48138751000103"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "4405615": {
+      "number": "554791028449",
+      "name": "Julica ",
+      "cnpjs": [
+        "08670165000182"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "4405637": {
+      "number": "554184174377",
+      "name": "Kelly Laura",
+      "cnpjs": [],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "4405874": {
+      "number": "5527999684965",
+      "name": "EMPORIO VITTA - LARY - ES",
+      "cnpjs": [
+        "36293214000140",
+        "52484010000143"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "4406054": {
+      "number": "556484396410",
+      "name": "Luciana Moreno",
+      "cnpjs": [
+        "50057657000163",
+        "34195326000133",
+        "16456714000149",
+        "11307619000160",
+        "36629257000154"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "4410780": {
+      "number": "554784042310",
+      "name": "DELLANA - ANA PAULA - SC",
+      "cnpjs": [
+        "45571404000173"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "4410876": {
+      "number": "5517997562600",
+      "name": "GRAO E VIDA - EIGLA - MS",
+      "cnpjs": [
+        "49620132000105"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "4410938": {
+      "number": "556434952074",
+      "name": "VITA - MATEUS - GO",
+      "cnpjs": [
+        "26282584000129",
+        "16762003000100"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "4411143": {
+      "number": "555491857301",
+      "name": "MIX DIVINO - SANDRA - RS",
+      "cnpjs": [
+        "14297376000114"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "4411256": {
+      "number": "5511978262111",
+      "name": "NIHON - SP",
+      "cnpjs": [
+        "48400276000193"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "4411266": {
+      "number": "554899277117",
+      "name": "FITLAND - LUCIANA - SC",
+      "cnpjs": [
+        "52261228000139",
+        "52261228000210"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "4411268": {
+      "number": "554991801104",
+      "name": "(49) 99180-1104",
+      "cnpjs": [],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "4411332": {
+      "number": "5511951478904",
+      "name": "RESERVA BRASIL - CAROL - SP",
+      "cnpjs": [
+        "52902829000183"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "4411549": {
+      "number": "554999104203",
+      "name": "499991042034",
+      "cnpjs": [],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "4411704": {
+      "number": "553185479609",
+      "name": "Fabíola",
+      "cnpjs": [],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "4411740": {
+      "number": "557187461653",
+      "name": "TROPICAL EMPÓRIO - BA",
+      "cnpjs": [
+        "34788475000106"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "4411758": {
+      "number": "5511978690191",
+      "name": " PIMENTA VERDE - SP - FABI SANCHES",
+      "cnpjs": [
+        "50047503000190",
+        "00000064000428"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "10024622": {
+      "number": "554891921751",
+      "name": "FITLAND CRIS- GOVERN.CELSO",
+      "cnpjs": [
+        "45160938000107",
+        "57057699000143"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "10028074": {
+      "number": "557199263746",
+      "name": "BRENDA - MUNDO VERDE",
+      "cnpjs": [],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "10028325": {
+      "number": "556195990526",
+      "name": "Tatiele Martins - BIO JOAO CACHOEIRA",
+      "cnpjs": [
+        "39757193000165",
+        "49049592000125"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "10032039": {
+      "number": "553184151491",
+      "name": "MUNDO VERDE - PAULO - MG",
+      "cnpjs": [
+        "15548794000108"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "10034082": {
+      "number": "557192470243",
+      "name": "JU - MUNDO VERDE",
+      "cnpjs": [
+        "03896769000128",
+        "16897065000111",
+        "43116919000158"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "10039562": {
+      "number": "557591942812",
+      "name": "🌹 Rosa",
+      "cnpjs": [
+        "20663011000169",
+        "09157537000134",
+        "09157537000134"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "11058859": {
+      "number": "5513997042664",
+      "name": "Rafael",
+      "cnpjs": [
+        "46785088000103"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "22099710": {
+      "number": "555499871346",
+      "name": "SABOR NATURAL - ANDRESSA - RS",
+      "cnpjs": [
+        "13152698000102"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "22120111": {
+      "number": "556881170930",
+      "name": "ALÉM DO CACAU - HALIANNE - AC",
+      "cnpjs": [
+        "42937075000143"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "22135696": {
+      "number": "5511975275067",
+      "name": "Roldão",
+      "cnpjs": [],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "23147896": {
+      "number": "5522999671730",
+      "name": "DIVINA TERRA - RJ - RUAN",
+      "cnpjs": [
+        "55429349000135"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "100038925": {
+      "number": "5512988363619",
+      "name": "Divina Terra Caraguatatuba Ane",
+      "cnpjs": [
+        "55026263000161"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2147521752": {
+      "number": "555184758002",
+      "name": "ARMAZEM NATURAL - Raquel",
+      "cnpjs": [
+        "31095916000104"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2147595636": {
+      "number": "554891399622",
+      "name": "FITLAND - ROSANE - SC",
+      "cnpjs": [
+        "57200778000161",
+        "60546169000173"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2147614766": {
+      "number": "553299533395",
+      "name": "SR A GRANEL - MATHEUS - MG",
+      "cnpjs": [
+        "35751273000152"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2147626136": {
+      "number": "556291223169",
+      "name": "SUPER PILOES - JOÃO - GO",
+      "cnpjs": [
+        "37015609000144"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2147634542": {
+      "number": "554799562163",
+      "name": "E-labore - NATALIA",
+      "cnpjs": [
+        "00000064000430",
+        "13495805000103"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2147648556": {
+      "number": "553599663997",
+      "name": "FINANCEIRO MISTER GRAOS - LIRIA - SP",
+      "cnpjs": [
+        "58434075000160"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2147686353": {
+      "number": "553194766841",
+      "name": "SUPERMERCADO - IVONE - MG",
+      "cnpjs": [
+        "16693613000353"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2147718627": {
+      "number": "553599900519",
+      "name": "EMPORIO BEM ESTAR - THALITA",
+      "cnpjs": [
+        "59902133000104"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2147728316": {
+      "number": "553186944732",
+      "name": "EMAGRECENTRO - MIZAEL - MG",
+      "cnpjs": [
+        "46796336000103"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2147728604": {
+      "number": "5516996100364",
+      "name": "MiniMercado Compre Mais RENATA🛒",
+      "cnpjs": [
+        "33589783000140"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2147731491": {
+      "number": "5521996572344",
+      "name": "SAFITA DOCES - SOMAR - RJ",
+      "cnpjs": [
+        "43023380000192"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2147732828": {
+      "number": "556182406973",
+      "name": "MULTIARMAZEM - THIAGO - DF",
+      "cnpjs": [
+        "59182148000137"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2147757380": {
+      "number": "554199720270",
+      "name": "DANI - INTELIGENCIA VITAO",
+      "cnpjs": [],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2147757981": {
+      "number": "553898723549",
+      "name": "VITAL SET - WELLINGTON - MG",
+      "cnpjs": [
+        "60764392000197"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2147758414": {
+      "number": "554896383709",
+      "name": "ERIKA - FLORICULTURA",
+      "cnpjs": [],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2147759422": {
+      "number": "5527992310947",
+      "name": "MIX TUDO - RICARDO - ES",
+      "cnpjs": [
+        "26249561000465"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2147786318": {
+      "number": "5511983697240",
+      "name": "PRISCILA - SP",
+      "cnpjs": [
+        "50342650000193"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2147801854": {
+      "number": "5512988122166",
+      "name": "REDE NOVO TEMPO - JAIR - SP",
+      "cnpjs": [
+        "01385423000130"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2147807767": {
+      "number": "553788512269",
+      "name": "JUST GO - RAYNARA - MG  (PODE COMPRAR NO CARTÃO, BOLETO NÃO)",
+      "cnpjs": [
+        "61819408000184"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2147815409": {
+      "number": "0",
+      "name": "0",
+      "cnpjs": [],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2147815808": {
+      "number": "5522981124904",
+      "name": "GRAOS E CIA - LUCIANE - RJ",
+      "cnpjs": [
+        "48527306000127"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2147911817": {
+      "number": "553399951133",
+      "name": "EMPORIO MUNDO FITNESS - VANESSA - MG",
+      "cnpjs": [
+        "37717783000139"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2147935591": {
+      "number": "5516982311881",
+      "name": "O2 NUTRIÇÃO - MARCO - SP",
+      "cnpjs": [
+        "53413839000118"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2147938999": {
+      "number": "5521983092998",
+      "name": "CARIOCA ZEN - JORGE",
+      "cnpjs": [],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148057906": {
+      "number": "553498721908",
+      "name": "SUPER LIDER - JAQUELINE - MG",
+      "cnpjs": [
+        "45120770000106"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148130847": {
+      "number": "5511964067326",
+      "name": "CONTORNO BISTRÔ - DIEGO - SP",
+      "cnpjs": [
+        "29466137000118"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148131595": {
+      "number": "559191637070",
+      "name": "POWER SUPLEMENTOS - OZEIAS - PA",
+      "cnpjs": [
+        "48606158000136"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148150617": {
+      "number": "557591750757",
+      "name": "LAURA - BA",
+      "cnpjs": [
+        "52655585000181"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148154421": {
+      "number": "554999128183",
+      "name": "VIDA LEVE - Jaisson Bordignon",
+      "cnpjs": [
+        "60670819000198"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148154792": {
+      "number": "558587792063",
+      "name": "Adriana Rodrigues 🕊",
+      "cnpjs": [],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148173328": {
+      "number": "559985012525",
+      "name": "PURO NATUREBA - ARIANNY - MA",
+      "cnpjs": [
+        "43830206000151"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148227186": {
+      "number": "5519991597034",
+      "name": "ARMAZEM DA VILA - VALDECI - SP",
+      "cnpjs": [
+        "37633350000103"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148240684": {
+      "number": "556284432869",
+      "name": "LEAF NUTRITION - LAILA - GO",
+      "cnpjs": [
+        "39695922000104"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148246097": {
+      "number": "5511989776336",
+      "name": "Rodrigo",
+      "cnpjs": [],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148282543": {
+      "number": "5521979701880",
+      "name": "CASAL MONSTRO - ALE - RJ",
+      "cnpjs": [
+        "29301639000199"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148393714": {
+      "number": "556984747043",
+      "name": "JOELLY - SIRLEY - RO",
+      "cnpjs": [
+        "30194738000360"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148489234": {
+      "number": "557398336448",
+      "name": "SEMENTE DE LUZ - MIRNA - BA",
+      "cnpjs": [
+        "62288560000140"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148567701": {
+      "number": "5517996823737",
+      "name": "VIDA LEVE - ANGELA - SP",
+      "cnpjs": [
+        "60209127000147"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148569506": {
+      "number": "555196787833",
+      "name": "EMPORIO DARI - INGRID - RS",
+      "cnpjs": [
+        "63488180000112"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148581466": {
+      "number": "5517988307140",
+      "name": "EMPÓRIO BALDUCCI - DEIVID - SP",
+      "cnpjs": [
+        "54758201000181"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148582309": {
+      "number": "558184682343",
+      "name": "ADASSYA - PE",
+      "cnpjs": [
+        "63835315000179"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148585016": {
+      "number": "557593012445",
+      "name": "Marcos Marciel",
+      "cnpjs": [],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148586471": {
+      "number": "558399404210",
+      "name": "MUSSAMBE - ALYSSON - PB",
+      "cnpjs": [
+        "63187605000153"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148587760": {
+      "number": "556299448165",
+      "name": "ÉVORA GASTRONOMIA - CAMILA",
+      "cnpjs": [
+        "49336255000119"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148604472": {
+      "number": "5519992968341",
+      "name": "LA FEE CAFETERIA - FABIANA - SP",
+      "cnpjs": [
+        "15735146000152"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148604536": {
+      "number": "5521970356767",
+      "name": "MAYS VIDA - ADRIANA - RJ",
+      "cnpjs": [
+        "52906490000193"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148612542": {
+      "number": "5528999268380",
+      "name": "GRAO D'TERRA - TAMIRES - ES",
+      "cnpjs": [
+        "63487473000185"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148626336": {
+      "number": "554891736961",
+      "name": "SOLAR MIRADOR - COMPRAS",
+      "cnpjs": [],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148632033": {
+      "number": "554199610232",
+      "name": "Verde Oliva Compras e Financeiro - Lilian Berta",
+      "cnpjs": [],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148659097": {
+      "number": "553284450006",
+      "name": "ZERO FREE - SILVANIA - MG",
+      "cnpjs": [
+        "59789273000100"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148754825": {
+      "number": "558382139000",
+      "name": "BE BETTER - GABRIELA - PB",
+      "cnpjs": [
+        "38538452000102"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148755166": {
+      "number": "556696990968",
+      "name": "DUCA VITTA - MARIA - MT",
+      "cnpjs": [
+        "63504589000185"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148761785": {
+      "number": "557598641501",
+      "name": "MATHEUS - BA",
+      "cnpjs": [
+        "33752323000190"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148761800": {
+      "number": "5513981415336",
+      "name": "LATTUGA - VALERIA - SP",
+      "cnpjs": [
+        "47247467000102"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148761810": {
+      "number": "554998282774",
+      "name": "NUTRIATIVA - SÃO LOURENÇO DO OESTE - SC",
+      "cnpjs": [],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148761811": {
+      "number": "5513982064333",
+      "name": "CM DIST - TATIANA - SP",
+      "cnpjs": [
+        "49959007000124"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148761819": {
+      "number": "557599939909",
+      "name": "NATURALIZZIE - GRAZIELLA - BA",
+      "cnpjs": [
+        "59421558000193"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148761856": {
+      "number": "5511920013193",
+      "name": "CASA RUSSEL - CAROLINA - SP",
+      "cnpjs": [
+        "63986421000153"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148764872": {
+      "number": "558192595179",
+      "name": "GRÃO E FLOR - JOSENILDO - PE",
+      "cnpjs": [
+        "41774112000187"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148769788": {
+      "number": "553197995613",
+      "name": "NOVA ERA SORVETES - ANA - MG",
+      "cnpjs": [
+        "46330680000102"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148830740": {
+      "number": "555599019972",
+      "name": "Casa Mia - Emily",
+      "cnpjs": [
+        "63292868000122"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148838227": {
+      "number": "559981197559",
+      "name": "Walisson Renato",
+      "cnpjs": [
+        "65156316000112"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148840867": {
+      "number": "5511997179577",
+      "name": "DELDA CAFÉ BAR - CAROL - SP",
+      "cnpjs": [
+        "57878772000148"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148842131": {
+      "number": "554898184477",
+      "name": "JVETEC",
+      "cnpjs": [],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148846638": {
+      "number": "5512996405400",
+      "name": "GF - LAISNARA - SP",
+      "cnpjs": [
+        "53533895000196"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148855338": {
+      "number": "555191783470",
+      "name": "NUTRIVIA - MARIANA - RS",
+      "cnpjs": [
+        "62163900000107"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148856647": {
+      "number": "554888230392",
+      "name": "Francine",
+      "cnpjs": [],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148856698": {
+      "number": "5527992658656",
+      "name": "Soul Muscle  - GABRIELA",
+      "cnpjs": [],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148856743": {
+      "number": "5521974844718",
+      "name": "MAIS NATURAL - JULIA ",
+      "cnpjs": [
+        "51813810000106"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148857081": {
+      "number": "5519988332922",
+      "name": "Mathias",
+      "cnpjs": [
+        "05521493000129"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148861216": {
+      "number": "5512991895073",
+      "name": "ESSENCIA DA PELE - MARCELLA - SP",
+      "cnpjs": [
+        "61993116000163"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148873836": {
+      "number": "554197576476",
+      "name": "Waldick",
+      "cnpjs": [],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148874901": {
+      "number": "553388811867",
+      "name": "AGS - ADALBERTO - MG",
+      "cnpjs": [
+        "39799839000177"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148875189": {
+      "number": "554884090394",
+      "name": "BIO MUNDO - ABIMAEL - SC",
+      "cnpjs": [
+        "46945954000178"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148961320": {
+      "number": "558381347869",
+      "name": "Cbsd",
+      "cnpjs": [
+        "64018175000109"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148966139": {
+      "number": "553298296950",
+      "name": "COR E SAÚDE - LORRAINE - MG",
+      "cnpjs": [
+        "61983867000107"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148970952": {
+      "number": "556492938706",
+      "name": "FITLAND - MARILEI - GO",
+      "cnpjs": [
+        "63677653000120"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148973912": {
+      "number": "5522997250868",
+      "name": "Fabricio Mattos",
+      "cnpjs": [
+        "44319426000188"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148978220": {
+      "number": "555193662889",
+      "name": "SOU ZERO - Maíra",
+      "cnpjs": [
+        "60328237000128"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148982027": {
+      "number": "5516996264004",
+      "name": "VIVER BEM - LEAD SITE",
+      "cnpjs": [
+        "23565678000117"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148982030": {
+      "number": "558396010541",
+      "name": "Nutrifit - LEAD SITE",
+      "cnpjs": [
+        "47308589000153"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148982042": {
+      "number": "5519995803184",
+      "name": "Damiane martins Queiroz Sanches",
+      "cnpjs": [
+        "64055853000103"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148982044": {
+      "number": "556184802028",
+      "name": "JG REICH COMERCIO DE PRODUTOS NATURAIS LTDA",
+      "cnpjs": [
+        "57913748000100"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148982047": {
+      "number": "5511988627572",
+      "name": "HORTIFRUTI E EMPÓRIO - ODAIR - SP",
+      "cnpjs": [
+        "50939107000178"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148982055": {
+      "number": "554498058363",
+      "name": "CRIS - LEAD SITE CONFEITARIA",
+      "cnpjs": [
+        "33151406000124"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148982059": {
+      "number": "5511995996099",
+      "name": "EMPORIO JABOTI",
+      "cnpjs": [
+        "52957802000198"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148982063": {
+      "number": "554396743767",
+      "name": "LHF SERVIÇOS -* LEAD SITE",
+      "cnpjs": [
+        "17040381000135"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148982067": {
+      "number": "555199634109",
+      "name": "Studio versatil",
+      "cnpjs": [
+        "53831416000118"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148982070": {
+      "number": "554788946758",
+      "name": "GESSER ODONTO - LEAD",
+      "cnpjs": [],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148982074": {
+      "number": "555191154139",
+      "name": "MERCADO CAIBI - JOSIANE",
+      "cnpjs": [
+        "22370825000130"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148982080": {
+      "number": "554598509626",
+      "name": "KLEIN E CIA  -  Aelcio",
+      "cnpjs": [
+        "17530579000105"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148982092": {
+      "number": "553399464775",
+      "name": "AGS PRODUTOS NATURAIS",
+      "cnpjs": [
+        "39799839000177"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148982103": {
+      "number": "553599594565",
+      "name": "ANA FLAVIA - LEAD",
+      "cnpjs": [
+        "62736007000123"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148982106": {
+      "number": "557791149881",
+      "name": "CEREALISTA KI BARATO - LAYLA - BA",
+      "cnpjs": [
+        "24647118000174"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148982114": {
+      "number": "558196070250",
+      "name": "LARISSA SASSI - LEAD SITE",
+      "cnpjs": [],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148982118": {
+      "number": "553491854186",
+      "name": "Vanessa Heloísa",
+      "cnpjs": [],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148982119": {
+      "number": "553399022927",
+      "name": "SIDINEY - LEAD SITE",
+      "cnpjs": [
+        "56438919000116"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148982122": {
+      "number": "553288994123",
+      "name": "DELICIAS ANA - LEAD SITE",
+      "cnpjs": [],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148982126": {
+      "number": "5521988081494",
+      "name": "Braga busness",
+      "cnpjs": [
+        "30219647000170"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148982130": {
+      "number": "5512991064547",
+      "name": "SALVA DOCES - LEAD SITE",
+      "cnpjs": [],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148982142": {
+      "number": "553397030940",
+      "name": "MICHELE PEREIRA",
+      "cnpjs": [
+        "62513253000116"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148982149": {
+      "number": "5511992396622",
+      "name": "AFFARE - lead ",
+      "cnpjs": [
+        "55008604000176"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148982155": {
+      "number": "5511978212790",
+      "name": "L&C SMART - LEAD SITE",
+      "cnpjs": [
+        "49905121000171"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148982170": {
+      "number": "553198738918",
+      "name": "PADARIA NOVO SABOR - SONIA",
+      "cnpjs": [
+        "07608131000103"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148982173": {
+      "number": "5524998124942",
+      "name": "VIVIANE DE FREITAS PEREIRA",
+      "cnpjs": [
+        "23496073000111"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148982177": {
+      "number": "553195353106",
+      "name": "Rodrigo Gomes - LEAD",
+      "cnpjs": [
+        "63493263000108"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148982180": {
+      "number": "556499768093",
+      "name": "Leidiane ",
+      "cnpjs": [
+        "39697656000140"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148982187": {
+      "number": "5515988018607",
+      "name": "ROSA VENTOS",
+      "cnpjs": [
+        "07526263000188"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148982191": {
+      "number": "556181896747",
+      "name": "IMPERIO ATACADO - PEDRO",
+      "cnpjs": [
+        "47287237000169"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148982196": {
+      "number": "5516982502384",
+      "name": "ELEVE STUDIO COMERCIO - DANIEL",
+      "cnpjs": [
+        "51609676000118"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148984152": {
+      "number": "554796243198",
+      "name": "LUCIANA - LEAD SITE",
+      "cnpjs": [
+        "52627816000143"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148984392": {
+      "number": "556592102074",
+      "name": "Canela produtos naturais Matriz",
+      "cnpjs": [
+        "42658840000196"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148984916": {
+      "number": "5511950191606",
+      "name": "Magda Bio Mundo abc ",
+      "cnpjs": [],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148985448": {
+      "number": "556184448106",
+      "name": "CRISTIANE - GO",
+      "cnpjs": [
+        "21439893000146"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148985513": {
+      "number": "553199584541",
+      "name": "FAÇA  A FESTA - ELINES - MG",
+      "cnpjs": [
+        "28825201000147"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148985576": {
+      "number": "556285053612",
+      "name": "Janduhi Vieira Diniz Neto",
+      "cnpjs": [],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148985577": {
+      "number": "556481526569",
+      "name": "BARBARA CARIAS QUIRINO ROCHA",
+      "cnpjs": [],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148985583": {
+      "number": "554891567223",
+      "name": "CAROLINE GLASENAPP",
+      "cnpjs": [],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148985587": {
+      "number": "555599834180",
+      "name": "GENUINA DALBERTO",
+      "cnpjs": [],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148986702": {
+      "number": "5522999624796",
+      "name": "Danubia",
+      "cnpjs": [],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148991832": {
+      "number": "5513991723131",
+      "name": "SEO CEREALISTA - LUANA - SP",
+      "cnpjs": [],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148992169": {
+      "number": "559884708694",
+      "name": "VIDA LEVE - LETICIA",
+      "cnpjs": [],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148992480": {
+      "number": "557582823759",
+      "name": "Mara Silva",
+      "cnpjs": [
+        "63788128000181"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148995133": {
+      "number": "558386432961",
+      "name": "SUPERMERCADO IRMÃOS NUNES - JOSELITO - PB",
+      "cnpjs": [
+        "35580851000135"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148995134": {
+      "number": "556182548987",
+      "name": "X-NUTRITION - CARINA - DF",
+      "cnpjs": [
+        "14270927000156"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148995397": {
+      "number": "553421500138",
+      "name": "Videira7 - Comercial 4",
+      "cnpjs": [],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148996083": {
+      "number": "5515997362488",
+      "name": "Biah Stef.",
+      "cnpjs": [],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148996675": {
+      "number": "553285011012",
+      "name": "Hugo Santos",
+      "cnpjs": [],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148996712": {
+      "number": "23665689239802",
+      "name": "23665689239802",
+      "cnpjs": [],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148997427": {
+      "number": "557196265878",
+      "name": "Boti Farma Salvador",
+      "cnpjs": [],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148998187": {
+      "number": "554199081819",
+      "name": "🇧🇷",
+      "cnpjs": [],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148998786": {
+      "number": "554591317111",
+      "name": "ED Engenharia Ltda",
+      "cnpjs": [],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148999052": {
+      "number": "555199286479",
+      "name": "Robson Souza",
+      "cnpjs": [
+        "65651367000110"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2148999438": {
+      "number": "554498801512",
+      "name": "mariagiogabi",
+      "cnpjs": [],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2149000164": {
+      "number": "5521982381167",
+      "name": "Mayara Da Silva 👑",
+      "cnpjs": [],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2149000274": {
+      "number": "558494587460",
+      "name": "R Filho",
+      "cnpjs": [],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2149000334": {
+      "number": "5521996249886",
+      "name": "Jheni doces - RJ  -  Rodrigo",
+      "cnpjs": [],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2149000426": {
+      "number": "554191080659",
+      "name": "Panificados - Compras",
+      "cnpjs": [],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2149000968": {
+      "number": "554797218762",
+      "name": "Thays Leticia",
+      "cnpjs": [],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2149001127": {
+      "number": "554497654502",
+      "name": "CHOCONTELLI / WILLIAN // INDUSTRIA",
+      "cnpjs": [],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2149002391": {
+      "number": "554499004940",
+      "name": "Fabiana Ferracioli",
+      "cnpjs": [],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    },
+    "2149002429": {
+      "number": "559681414655",
+      "name": "MINI BOX - RUAN - AP",
+      "cnpjs": [
+        "31450106000110"
+      ],
+      "last_checked": "2026-04-25T18:50:20.460497",
+      "status": "OK"
+    }
+  },
+  "stats": {
+    "total_contacts": 200,
+    "processed_today": 200,
+    "new_or_updated": 200,
+    "skipped": 0,
+    "last_run": "2026-04-25T18:50:20.460497",
+    "limit_per_day": 200
+  }
+}

@@ -1,0 +1,1749 @@
+{
+  "columns": [
+    {
+      "id": 387,
+      "name": "INICIO DE CONTATO",
+      "isActive": true,
+      "isDefault": false,
+      "kanbanBoardId": 20,
+      "nextColumnId": 388,
+      "createdAt": "2026-01-12T18:33:04.000Z",
+      "updatedAt": "2026-01-22T19:00:17.000Z",
+      "cards": [
+        {
+          "id": 11636,
+          "name": "Divina Terra Xanxerê",
+          "description": "ELA PEDIU A PLANILHA, PASSEI ACESSO ",
+          "isActive": true,
+          "value": 0,
+          "expectedAt": "2026-01-26T15:00:00.000Z",
+          "kanbanColumnId": 387,
+          "responsibleUserId": 4400002,
+          "contactId": 100030069,
+          "motiveId": null,
+          "ticketId": "66639746",
+          "nextCardId": 11531,
+          "createdAt": "2026-01-23T12:42:56.000Z",
+          "updatedAt": "2026-01-23T12:42:56.000Z",
+          "responsibleUser": {
+            "photo": null,
+            "id": 4400002,
+            "name": "Daiane Stavicki"
+          },
+          "contact": {
+            "id": 100030069,
+            "name": "Divina Terra Xanxerê - Renata",
+            "profilePicUrl": "https://d2mytgzbagllkr.cloudfront.net/files/38-100030069-profilePic?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=Q7D7-UMgsF6AIroEaq1HiZlb~M7Q0ME1rhnLBYFl1dl9k9IyRxygaOxcZdeLpr506xZ0vBChAPE8pcyqRuF98G8ptF20HwdVF3iZBAgIJZwuqsVxgfMyPe6FV29JiuW8XDrcftROQvMrHoCaDiDlELy~ApSWPNBtDR2iSPp~QopTG5TypzD~DEzWVan2P4428ngm8pYvN9UAEhWF6OMaDHKIkVJRmCnZFTGMueE0Z3MmXbxq-OkmLFS04R4Gn96Bp4jxe3DT-rLyxx55LXnPMYGAbg5zSn4h7VNyA-bQil5HzFXsIxsGAsPqiRbUJb6QECUQkeDTSJFjQ9564RtQ4g__"
+          }
+        },
+        {
+          "id": 11531,
+          "name": "LEAD SITE",
+          "description": "FICOU NO LIMBO",
+          "isActive": true,
+          "value": 0,
+          "expectedAt": "2026-01-21T15:00:00.000Z",
+          "kanbanColumnId": 387,
+          "responsibleUserId": 64000102,
+          "contactId": 2148604453,
+          "motiveId": null,
+          "ticketId": null,
+          "nextCardId": 11533,
+          "createdAt": "2026-01-20T13:01:23.000Z",
+          "updatedAt": "2026-01-22T19:02:03.000Z",
+          "responsibleUser": {
+            "photo": null,
+            "id": 64000102,
+            "name": "Manu  - Vitao"
+          },
+          "contact": {
+            "id": 2148604453,
+            "name": "VITALLE - IRACI",
+            "profilePicUrl": "https://d2mytgzbagllkr.cloudfront.net/production/38/38-2148604453-profilePic?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=2FRd9fe5GqnP1Vy47JhF7L1z7un6SyUgMjdzfJO3VJ4b2ltCP3IRQDnOhHv-RlC9SEZNMwRySITVJreIBWzCFsEVKxgc~rE05tmAAF0Rq2aPrvNA61~dZiL1i4nxDvp6yLClJJpizdECJwJ3BXFFH5ghJqtwb5KSOcJMM43uWoeac2ytnJ1uk6Rq2TYezJzJ~qMJZjknxEIqIj3PIs-RG3pqwHWSEe0O135LB~LIcvOq9VtVgaqussXm1D6Mmr914x1TbnIr5MgNGLuA4nlPhHriFuEomaGBonrOn0TczN7soJkE769XAd4gGyH7h2F3lH9hMNQmfkqJFhWQONYdyg__"
+          }
+        },
+        {
+          "id": 11533,
+          "name": "BODY",
+          "description": "LEAD DO SITE, FICOU NO LIMBO",
+          "isActive": true,
+          "value": 0,
+          "expectedAt": "2026-01-21T15:00:00.000Z",
+          "kanbanColumnId": 387,
+          "responsibleUserId": 64000102,
+          "contactId": 2148604533,
+          "motiveId": null,
+          "ticketId": null,
+          "nextCardId": 11536,
+          "createdAt": "2026-01-20T13:08:55.000Z",
+          "updatedAt": "2026-01-22T19:01:57.000Z",
+          "responsibleUser": {
+            "photo": null,
+            "id": 64000102,
+            "name": "Manu  - Vitao"
+          },
+          "contact": {
+            "id": 2148604533,
+            "name": "LUCAS LEAD SITE",
+            "profilePicUrl": "https://d2mytgzbagllkr.cloudfront.net/production/38/38-2148604533-profilePic?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=sEWOG3v~7qqiTyD5dyTTWzWo-BVyS7A69LBk3V7CghxIv6ybBuTkXIiQHHHog5gr3KxYT-Et3Jbewzi-DRaiDp7Uz0bQLGhRRexcrJJQJeLJ8YsIR2TBy6g2F1pzEitSBSf1uWT9DM3tNzYR5qHqLyUZxhZ2z623UWlPmdwvP8BN~1JF8rffbMar864bnmX01uxrjruiHnTLOCGOpOVx7njseueYrm99Yma1ru4Dfn~ynuwH-t5iJsO2m6z8mC34ZFc9SLpYvjKQ4Efj7eQczAZtlOqn-at7tTZdia3Hu800Y99Ld~e3tChAAXJSnPl3d5J3K38Ad2-yH-mI-PbEsA__"
+          }
+        },
+        {
+          "id": 11536,
+          "name": "LEAD. PRODUTOS NATURAIS",
+          "description": "TEM LOJA DE PRODUTOS, SE INTERESSOU. ENTROU NO LIMBO",
+          "isActive": true,
+          "value": 0,
+          "expectedAt": "1969-12-31T15:00:00.000Z",
+          "kanbanColumnId": 387,
+          "responsibleUserId": 64000102,
+          "contactId": 2148607065,
+          "motiveId": null,
+          "ticketId": null,
+          "nextCardId": 11543,
+          "createdAt": "2026-01-20T13:17:25.000Z",
+          "updatedAt": "2026-01-22T19:07:49.000Z",
+          "responsibleUser": {
+            "photo": null,
+            "id": 64000102,
+            "name": "Manu  - Vitao"
+          },
+          "contact": {
+            "id": 2148607065,
+            "name": "Vanessa",
+            "profilePicUrl": null
+          }
+        },
+        {
+          "id": 11543,
+          "name": "MERCADO ARAUCARIA",
+          "description": "LEAD SITE, GEROU PEQUENO INTERESSE, ENTROU NO LIMBO",
+          "isActive": true,
+          "value": 0,
+          "expectedAt": "2025-01-21T15:00:00.000Z",
+          "kanbanColumnId": 387,
+          "responsibleUserId": 64000102,
+          "contactId": 2148584247,
+          "motiveId": null,
+          "ticketId": null,
+          "nextCardId": 11534,
+          "createdAt": "2026-01-20T13:38:41.000Z",
+          "updatedAt": "2026-01-22T19:24:52.000Z",
+          "responsibleUser": {
+            "photo": null,
+            "id": 64000102,
+            "name": "Manu  - Vitao"
+          },
+          "contact": {
+            "id": 2148584247,
+            "name": "SUPERMERCADO TRES ESTRELAS",
+            "profilePicUrl": "https://d2mytgzbagllkr.cloudfront.net/production/38/38-2148584247-profilePic?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=EvTUNOqYYGkAQ8Yx7YVaYJrjgo4OpHjk9OAyfaet9gFD7jVa1cAzdkvS05ffQqFfsoMAeShE8rQg2bp75Ar6PIT5nNMhXweEwKBd6LZL4mRO-peYbreiQU0M7DYXrEidQIRh2ot1FORuLTFm8Za7-37xjV679CL-xtKmE76ymIaKXo28BiAEJ-~XMWsP0I0-pldDxJY0bK3wnUL48weH~MKg7K3L76w0ewRV~YGLezotFN96mBOyOwO9VXdlbMkZLvHyZdcoESsqtHlyaZmzGVFlryPbIN9fMWfM4a~84A-0jzRJUxrCmlVxaJj1Fa7MddXbx479zHifJpkfS8e-0A__"
+          }
+        },
+        {
+          "id": 11534,
+          "name": "COMPRA QUANDO QUER",
+          "description": "CLIENTE DIFICIL",
+          "isActive": true,
+          "value": 0,
+          "expectedAt": "2026-01-21T15:00:00.000Z",
+          "kanbanColumnId": 387,
+          "responsibleUserId": 64000102,
+          "contactId": 4403385,
+          "motiveId": null,
+          "ticketId": null,
+          "nextCardId": 11518,
+          "createdAt": "2026-01-20T13:10:51.000Z",
+          "updatedAt": "2026-01-28T12:41:56.000Z",
+          "responsibleUser": {
+            "photo": null,
+            "id": 64000102,
+            "name": "Manu  - Vitao"
+          },
+          "contact": {
+            "id": 4403385,
+            "name": "EMPÓRIO GAIA - RENATA - RS",
+            "profilePicUrl": "https://d2mytgzbagllkr.cloudfront.net/production/38/38-4403385-profilePic?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=MxHRQi2iz4Cc~Em0p0VUrN1KVxQVKA1fyFIdMkHEoX6yN3m08pwoZ-ZZpX5CPY0J6o9oBWH2XI-PBbQO~B1PzY-JAoMG5wV13QWs7bHNm2QmyqAERcwD-vswDA5~2pa4a7LqK0rpD6KNPb6rjA3e5wassHgywhNAc~XJ8tFKHU8inaDLpVeWGmYEPfS9BmYRqQcaEWuSWPRToJv-prc5qBoQwDF-HSURdG~EaWRjqbvzNsfMB7ep1Cwjgcysr5z4~CQsF5WN5NowUVirBHHRhpQ2lA1RQcxBvmn3DYDZ9~FeOKsRQtF1YOm4oYkh1vAuAGh7VodU63jeTcrEDFSB9g__"
+          }
+        },
+        {
+          "id": 11518,
+          "name": "EMPORIO DE LA VITA-LONDRINA",
+          "description": "PROSPECÇÃO / FICOU NO LIMBO",
+          "isActive": true,
+          "value": 0,
+          "expectedAt": "2026-01-21T15:00:00.000Z",
+          "kanbanColumnId": 387,
+          "responsibleUserId": 64000102,
+          "contactId": 4405535,
+          "motiveId": null,
+          "ticketId": null,
+          "nextCardId": null,
+          "createdAt": "2026-01-20T12:09:53.000Z",
+          "updatedAt": "2026-01-28T12:41:56.000Z",
+          "responsibleUser": {
+            "photo": null,
+            "id": 64000102,
+            "name": "Manu  - Vitao"
+          },
+          "contact": {
+            "id": 4405535,
+            "name": "EMPORIO DE LA VITA-LONDRINA",
+            "profilePicUrl": "https://pps.whatsapp.net/v/t61.24694-24/294572770_456622785937792_6821030662504681780_n.jpg?ccb=11-4&oh=01_AdQVIyXQvzObV4IaR5gQ9bYR4m3f24TuRR0MSa82w9Q_-w&oe=64749A26"
+          }
+        }
+      ]
+    },
+    {
+      "id": 388,
+      "name": "EM ATENDIMENTO",
+      "isActive": true,
+      "isDefault": false,
+      "kanbanBoardId": 20,
+      "nextColumnId": 99,
+      "createdAt": "2026-01-12T18:33:41.000Z",
+      "updatedAt": "2026-01-22T19:00:17.000Z",
+      "cards": [
+        {
+          "id": 11761,
+          "name": "Mundo Verde - Friburgo 2 - Gabrielly",
+          "description": "VENDO SOBRE REPOSIÇÃO",
+          "isActive": true,
+          "value": 0,
+          "expectedAt": "2026-02-03T15:00:00.000Z",
+          "kanbanColumnId": 388,
+          "responsibleUserId": 4400002,
+          "contactId": 2147760640,
+          "motiveId": null,
+          "ticketId": "66383027",
+          "nextCardId": 11526,
+          "createdAt": "2026-02-02T15:06:34.000Z",
+          "updatedAt": "2026-02-02T15:06:34.000Z",
+          "responsibleUser": {
+            "photo": null,
+            "id": 4400002,
+            "name": "Daiane Stavicki"
+          },
+          "contact": {
+            "id": 2147760640,
+            "name": "Mundo Verde - Friburgo 2 - Gabrielly",
+            "profilePicUrl": "https://d2mytgzbagllkr.cloudfront.net/production/38/38-2147760640-profilePic?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=rib0wAw2dpKqwKbQJJFlySgFFcZMfoUr5mhrEZSVeU01bYoiYL5VxM76iTw-rW4vfg9V18denPQAed4dAURTfvBpLFaEebnH3GpS0LQz13rcNS9xka15swFBIoGqzYI-mgJQXa3m2evfZz9UQpsDgjxC26011DTnKWvdzoWwGJX0C5JpQZxZJybbCgumCPFf7YZpcZMyqKfDKotwQ3vDn4xmvDWnb~ZZ3f9e96FGmMGzHn61v--lNfyT4ICK1Wk9F4JcWjRnNvkNb0aGZoMm5p3bJMcp~z~8xbKMS9FfK3pJEMpb1Slo7FDZYdGcBgtDsgR~aByi8hdq2CMnPOBDGQ__"
+          }
+        },
+        {
+          "id": 11526,
+          "name": "QUER CHOCOLATE",
+          "description": "CLIENTE FICA COMPARANDO VALOR COM SHOPPE - LIMBO\n\n",
+          "isActive": true,
+          "value": 0,
+          "expectedAt": "2026-01-21T15:00:00.000Z",
+          "kanbanColumnId": 388,
+          "responsibleUserId": 64000102,
+          "contactId": 2148595582,
+          "motiveId": null,
+          "ticketId": null,
+          "nextCardId": 11529,
+          "createdAt": "2026-01-20T12:30:42.000Z",
+          "updatedAt": "2026-01-22T19:24:29.000Z",
+          "responsibleUser": {
+            "photo": null,
+            "id": 64000102,
+            "name": "Manu  - Vitao"
+          },
+          "contact": {
+            "id": 2148595582,
+            "name": "Natali Dudek",
+            "profilePicUrl": null
+          }
+        },
+        {
+          "id": 11529,
+          "name": "TEM UMA PANIFICADORA",
+          "description": "CLIENTE ENTROU EM CONTATO POIS TINHA INTERESSE NAS GELEIAS, FICOU NO LIMBO",
+          "isActive": true,
+          "value": 0,
+          "expectedAt": "2026-01-21T15:00:00.000Z",
+          "kanbanColumnId": 388,
+          "responsibleUserId": 64000102,
+          "contactId": 2148004994,
+          "motiveId": null,
+          "ticketId": null,
+          "nextCardId": 11524,
+          "createdAt": "2026-01-20T12:56:32.000Z",
+          "updatedAt": "2026-01-22T19:24:23.000Z",
+          "responsibleUser": {
+            "photo": null,
+            "id": 64000102,
+            "name": "Manu  - Vitao"
+          },
+          "contact": {
+            "id": 2148004994,
+            "name": "Rafaela Ivanovick",
+            "profilePicUrl": "https://d2mytgzbagllkr.cloudfront.net/production/38/38-2148004994-profilePic?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=2RkfPcQJz-accB-qPCvSb0bNKeFvPxwqj8HoIt6Y9qHlr7tJCsy7Z5YeuHY7t45ANLiqoepJUQK3yAwE2OVbtDbW69~07eEScnKIgN6rKvLypMoZRmd7N~v-jNh83Lal6K2w4PmLx4v1-nCQMcikK2aY8Im6hfOWKU2nvtRNHSvH-32cUSNbK-xtNnzCyiLwXOQdhCIAh2nnY6QjWltrFJP2rPrMK5OxzqIliOs8amwZ3tJd4aRj9GPhnLsu93RTp6pnzepJjAEaDvoIRO-GoUcVcJ-ozN0tWUxtfM2G7mRqVY2ry4r9EBF9YcNHT7wznKS-Q~H0EsgdifIAi-RGzg__"
+          }
+        },
+        {
+          "id": 11524,
+          "name": "Ju Nicolau Seára",
+          "description": "PROSPECÇÃO, LIMBO",
+          "isActive": true,
+          "value": 0,
+          "expectedAt": "2026-01-21T15:00:00.000Z",
+          "kanbanColumnId": 388,
+          "responsibleUserId": 64000102,
+          "contactId": 4405411,
+          "motiveId": null,
+          "ticketId": null,
+          "nextCardId": 11540,
+          "createdAt": "2026-01-20T12:19:59.000Z",
+          "updatedAt": "2026-01-22T19:24:23.000Z",
+          "responsibleUser": {
+            "photo": null,
+            "id": 64000102,
+            "name": "Manu  - Vitao"
+          },
+          "contact": {
+            "id": 4405411,
+            "name": "Ju Nicolau Seára",
+            "profilePicUrl": "https://deskriointegracao.s3.sa-east-1.amazonaws.com/files/38-4405411-profilePic"
+          }
+        },
+        {
+          "id": 11540,
+          "name": "CONFEITARIA",
+          "description": "ENTROU NO LIMBO",
+          "isActive": true,
+          "value": 0,
+          "expectedAt": "2026-01-21T15:00:00.000Z",
+          "kanbanColumnId": 388,
+          "responsibleUserId": 64000102,
+          "contactId": 2148592439,
+          "motiveId": null,
+          "ticketId": null,
+          "nextCardId": 11541,
+          "createdAt": "2026-01-20T13:28:25.000Z",
+          "updatedAt": "2026-01-22T19:15:37.000Z",
+          "responsibleUser": {
+            "photo": null,
+            "id": 64000102,
+            "name": "Manu  - Vitao"
+          },
+          "contact": {
+            "id": 2148592439,
+            "name": "Camila",
+            "profilePicUrl": null
+          }
+        },
+        {
+          "id": 11541,
+          "name": "SEMENTES DA TERRA - ARAUCARIA",
+          "description": "TEVE INTERESSE, CHEGOU A MONTAR E-COMMERCE MAS AGORA ENTROU NO LIMBO",
+          "isActive": true,
+          "value": 0,
+          "expectedAt": "2026-01-21T15:00:00.000Z",
+          "kanbanColumnId": 388,
+          "responsibleUserId": 64000102,
+          "contactId": 2148489047,
+          "motiveId": null,
+          "ticketId": null,
+          "nextCardId": 11542,
+          "createdAt": "2026-01-20T13:32:38.000Z",
+          "updatedAt": "2026-01-22T19:15:30.000Z",
+          "responsibleUser": {
+            "photo": null,
+            "id": 64000102,
+            "name": "Manu  - Vitao"
+          },
+          "contact": {
+            "id": 2148489047,
+            "name": "Sementes da Terra - RAFAELA",
+            "profilePicUrl": null
+          }
+        },
+        {
+          "id": 11542,
+          "name": "GRANEL ENSEADA",
+          "description": "CRIOU INTERESSE / FICOU NO LIMBO",
+          "isActive": true,
+          "value": 0,
+          "expectedAt": "2026-01-21T15:00:00.000Z",
+          "kanbanColumnId": 388,
+          "responsibleUserId": 64000102,
+          "contactId": 4400980,
+          "motiveId": null,
+          "ticketId": null,
+          "nextCardId": 11554,
+          "createdAt": "2026-01-20T13:36:34.000Z",
+          "updatedAt": "2026-01-28T12:34:01.000Z",
+          "responsibleUser": {
+            "photo": null,
+            "id": 64000102,
+            "name": "Manu  - Vitao"
+          },
+          "contact": {
+            "id": 4400980,
+            "name": "GRANEL ENSEADA - LIRIAN - SC",
+            "profilePicUrl": "https://d2mytgzbagllkr.cloudfront.net/files/38-4400980-profilePic?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=zWJEMHKM8QnbVpaCpWf~itIA-DPVmPl1P18Ij29W9JTdHrSoRkf70WYPMqnR8E-1xGRBTQVdczww36Gkp8uCC0lvunqgmOqxB-kboa0d34-uCjrdkSTYbHC5vVgtveY-RmZkVbBDtRX8gz87lDbB2nXaF2xdLgyrKqMvGOnSQ6pzTiVAFqGzsmcaOl~nPTTvNX9RXXhcsntFdAK2BoG1s5yx46OP88mY4Q1P073dBIwQJloXuh7OyBa~k5rkEKdrpysyT5FzWcDbHPs3grGU0~E1RGuHaja7Q0HQ5Jyh7qxJgx~5qKuQH6vyW7M5ZN0mMsHoFbg0VirdLMQ0Ifw1sw__"
+          }
+        },
+        {
+          "id": 11554,
+          "name": "ESPACO MAIS SAUDE - garopaba",
+          "description": "SEM RETORNO, FICOU NO LIMBO",
+          "isActive": true,
+          "value": 0,
+          "expectedAt": "2026-01-21T15:00:00.000Z",
+          "kanbanColumnId": 388,
+          "responsibleUserId": 64000102,
+          "contactId": 4405627,
+          "motiveId": null,
+          "ticketId": null,
+          "nextCardId": 11563,
+          "createdAt": "2026-01-20T17:16:33.000Z",
+          "updatedAt": "2026-01-28T12:38:38.000Z",
+          "responsibleUser": {
+            "photo": null,
+            "id": 64000102,
+            "name": "Manu  - Vitao"
+          },
+          "contact": {
+            "id": 4405627,
+            "name": "ESPACO MAIS SAUDE - garopaba",
+            "profilePicUrl": "https://d2mytgzbagllkr.cloudfront.net/files/38-4405627-profilePic?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=NP8q5vUUCt~g05WVxdnBQPq3LKDnY2mMkx62FwW0mPfhgHIQhUnE74Xwna1U1Z1UsB9epx4PgT4c4pf-iCRIFkYh2OLX5tEqoru5Io0Wypw~YoTvTmr0W-dC~cMntGTl1aWc4khf4Vama-DybVGXIIXPBBljpJUuK05LnxXHm6Dc7b6LzuRMpWDn-o6qEDygWIZgpwt8TEs75i1t48L1yM6rMz2iwlxs3YZjxukTrnqSzaFQWFkhaNm6Mt~Cxzbi0H-XW9WMONI4YMG80DuCBklI2rggYSN3diMqkooca5w6vxVeQCw9i5C-kDVObINnBBz9BZOKgUKfF4Bphb0Frg__"
+          }
+        },
+        {
+          "id": 11563,
+          "name": "DA SERRA DELICATESSEN",
+          "description": "DEU ABERTURA, MAS ENTROU NO LIMBO",
+          "isActive": true,
+          "value": 0,
+          "expectedAt": "2026-01-22T15:00:00.000Z",
+          "kanbanColumnId": 388,
+          "responsibleUserId": 64000102,
+          "contactId": 4402314,
+          "motiveId": null,
+          "ticketId": null,
+          "nextCardId": 11564,
+          "createdAt": "2026-01-20T17:50:56.000Z",
+          "updatedAt": "2026-01-28T12:41:56.000Z",
+          "responsibleUser": {
+            "photo": null,
+            "id": 64000102,
+            "name": "Manu  - Vitao"
+          },
+          "contact": {
+            "id": 4402314,
+            "name": "DA SERRA DELICATESSEN - JÉSSICA - RS",
+            "profilePicUrl": "https://pps.whatsapp.net/v/t61.24694-24/174303978_301069128067722_622493676624875532_n.jpg?ccb=11-4&oh=01_AdRhssUIkunVyCqRuIxlHMvL-y3-6FxUE1b1SpdmCgi_zw&oe=642EFD03"
+          }
+        },
+        {
+          "id": 11564,
+          "name": "CASA DE DOCE  POTENCIAL",
+          "description": "CLIENTE FICOU NO LIMBO",
+          "isActive": true,
+          "value": 0,
+          "expectedAt": "2026-01-22T15:00:00.000Z",
+          "kanbanColumnId": 388,
+          "responsibleUserId": 64000102,
+          "contactId": 2148614895,
+          "motiveId": null,
+          "ticketId": null,
+          "nextCardId": 11566,
+          "createdAt": "2026-01-20T17:52:49.000Z",
+          "updatedAt": "2026-01-22T19:15:02.000Z",
+          "responsibleUser": {
+            "photo": null,
+            "id": 64000102,
+            "name": "Manu  - Vitao"
+          },
+          "contact": {
+            "id": 2148614895,
+            "name": "HIPER DOCE - LEANDRO",
+            "profilePicUrl": "https://d2mytgzbagllkr.cloudfront.net/production/38/38-2148614895-profilePic?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=CLbVggrVVv7~2ek4X082Xx~OzMFlrZ7VDbvDr~12sL5e1NhP~PYdEK1HiQewa7suuBrSS4iPNrUpAyGirSxs8o6xboyqyK-TFIp5r-jvikYh7W1b-pfRNY7hv113nZRDxlx2QbEgx-9Ds2z9pg5CiS6NtpBJjb34Iy6M2Yn07L2JJtboHJAXE7XkoCxWJE~eEvKOD-NEm1TaTAyhCNAhJVjWnnxkNUh0Y30kYhkdD~4e35hk0~HwjZ4J59NPvAmKmU-Lv3M4zr1cQi9pZarm548DsBIRvZ~YPsy96AEb6AMwBz7WvBHheU02yhAFeYruNfzRAABWU~l9pAPhx3RNzg__"
+          }
+        }
+      ]
+    },
+    {
+      "id": 99,
+      "name": "ORÇAMENTO / EM NEGOCIAÇÃO",
+      "isActive": true,
+      "isDefault": false,
+      "kanbanBoardId": 20,
+      "nextColumnId": 417,
+      "createdAt": "2025-04-14T19:17:45.000Z",
+      "updatedAt": "2026-01-22T18:59:01.000Z",
+      "cards": [
+        {
+          "id": 13597,
+          "name": "🟡 LORRANY - Rep. - Gislaine quer fechar provolone",
+          "description": "Representante com cliente Gislaine pronta para fechar pedido de provolone. Larissa sugeriu colocar na fila. Confirmar com Gislaine e fechar o pedido.",
+          "isActive": true,
+          "value": 0,
+          "expectedAt": "2026-03-26T15:00:00.000Z",
+          "kanbanColumnId": 99,
+          "responsibleUserId": 4400030,
+          "contactId": 2148241834,
+          "motiveId": null,
+          "ticketId": "66760330",
+          "nextCardId": 13590,
+          "createdAt": "2026-03-26T16:24:02.000Z",
+          "updatedAt": "2026-03-26T16:24:02.000Z",
+          "responsibleUser": {
+            "photo": "https://d2mytgzbagllkr.cloudfront.net/production/38/logo%20lp.png?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=CnErM5h3iIgCHCXsiFsMxxOfXLCBYWn9O08FoGdgoyRoXkffZZKWUcQ0cHxnWMY8OZQOrN5tVwk0370mzYYEZ6jC9hBZwE3IPBv1jPzvCsIwgRiltPE3XUiqapzsaeTPpT4UFkXwaKw~u8~6jGZDVhO0FQL81FOE0kiUlQQFrM-fXsjm1iF5RUjb15LUi2Ax-bYDs06ebAJyVAp-zGvYI4xVtyKzMVNv7J37CRjwjQ~OI0dQgtiaQYM-SBcd6hvwu~K-HtgOJ57wR8CPKOE1YswJ0We1MvNGGwDk5tBsftxACz3-2rNlzUGOCS0TTh94cpROz7tnSEfoE1P04huETw__",
+            "id": 4400030,
+            "name": "Larissa"
+          },
+          "contact": {
+            "id": 2148241834,
+            "name": "LORRANY",
+            "profilePicUrl": "https://d2mytgzbagllkr.cloudfront.net/production/38/38-2148241834-profilePic-1763469031239?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=GnzFw9ukNom4maSz22R0hR28NstunLZlo8Px~y36dhvqsN9SfQX4SfOmslytX7BoCMEGLwKbsUIw8aJwVeA~fxemvdi-Ed8ZaHnxOO-dM5AwNM-Egvg787JycYZ6bjTXPBSekKc6SYTMtqaMhzlajyL9u8mm3r5B9QMvqE-YZYy6-IGPPjsviVEjcLxnOC71GhlYLQ7ScdZaOMqOg1cMaW3W9DTZ2KQDnY88XTNOlbXU5-2-pI0b2boGLwJC~bQfbQwxC-AIteT51HpQsZOfO8lcRx87OtuJvUxknG6YRJH-cwI3LuM5kpgnYgb9Ifb26Z7I4KoPpGEMkTRcCmL-6w__"
+          }
+        },
+        {
+          "id": 13590,
+          "name": "🟡 MARGHERITA - MARY - Aguard. análise crédito",
+          "description": "Mary disse \"vou fazer o pedido daqui uns dias\". Enviou CNPJ para análise de crédito. Verificar status da análise e retornar para Mary.",
+          "isActive": true,
+          "value": 0,
+          "expectedAt": "2026-03-28T15:00:00.000Z",
+          "kanbanColumnId": 99,
+          "responsibleUserId": 64000102,
+          "contactId": 2148189457,
+          "motiveId": null,
+          "ticketId": "65940981",
+          "nextCardId": 13589,
+          "createdAt": "2026-03-26T16:01:16.000Z",
+          "updatedAt": "2026-03-26T16:01:16.000Z",
+          "responsibleUser": {
+            "photo": null,
+            "id": 64000102,
+            "name": "Manu  - Vitao"
+          },
+          "contact": {
+            "id": 2148189457,
+            "name": "MARGHERITA - MARY",
+            "profilePicUrl": "https://d2mytgzbagllkr.cloudfront.net/production/38/38-2148189457-profilePic?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=csYPfjtIL6GOOG9p-aLqI1udmaUYcZMfEKLtRJifdMkHWZRWdTpxB0MuJ8xH4QQQgGhNS6~mNHxUvIQqYUx0MeO6Jt-fdqQczhuT8buZrpm6jBoXUhA60xc68uxQZ-VXUiJKZvUDzqcUT5HB9-Lmf3VeeZFER1LZT2pdaHslz-WsCu-Xk1szjbPUofVb9Bfd18Yg8KUV8JOqbSfsSG8TB6CbZan1oJ~BsWEVkk1921D3Mzqjo798AdqtsR~Q-~S~ujnnxl5WbXKfS2w2-fQVulyy-x49VHoqYzXG9lgYQB3WIHapdlepMIlgQYI3L1dXLtG2~qidbxCdRgMTs94Mmw__"
+          }
+        },
+        {
+          "id": 13589,
+          "name": "🔥 EMPÓRIO MARGARIDA - CAMILE - Boleto 35/42 dias",
+          "description": "Camile confirmou boleto 35/42 dias. Rodrigo disse \"já estou dando sequência\". Confirmar geração do espelho/pedido e enviar para Camile.",
+          "isActive": true,
+          "value": 0,
+          "expectedAt": "2026-03-26T15:00:00.000Z",
+          "kanbanColumnId": 99,
+          "responsibleUserId": 64000104,
+          "contactId": 4402563,
+          "motiveId": null,
+          "ticketId": "66755397",
+          "nextCardId": 13588,
+          "createdAt": "2026-03-26T15:57:42.000Z",
+          "updatedAt": "2026-03-26T15:57:42.000Z",
+          "responsibleUser": {
+            "photo": null,
+            "id": 64000104,
+            "name": "Leandro  - Comercial Interno "
+          },
+          "contact": {
+            "id": 4402563,
+            "name": "EMPORIO MARGARIDA - CAMILE - SP",
+            "profilePicUrl": "https://d2mytgzbagllkr.cloudfront.net/production/38/38-4402563-profilePic?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=U4Kkz6ZmziPHUtsMX45waJjmxYBSTHHgrtoYfpetO2wC5Dvi~e4Qr5rn9tb-~hDwUP0rWGSzuBF-awSgOGkyYEDvgTFbAFygYFE2Wpm4uqbhF5hmR00A2owyUCV~92J3wM8US7uDD9DJFzSKlw76MoNzLfGMfMGQw88mMneAIYgOyflGN0FDwHLE5sk4xaH1rzWvIhxUvq6RaTpAXesX7ByxD5QLaAXST6LjB2FiIKwdoch68tOZOxhWbrQpnAfq4zbkfNpAgwKrZLFONHjoAIGYaj1p6PYGshfz7u-uzzfuZPro3L07oN2ZiPY7oQ3cu-6qbJj-PXYGdHG4s4mQxA__"
+          }
+        },
+        {
+          "id": 13588,
+          "name": "🏠 CASA MIA - EMILY - Pedido parado desde fev",
+          "description": "Pedido em aberto desde fevereiro. Manu perguntou \"o que acha de finalizarmos?\" sem resposta de Emily. Dar follow-up urgente ou ligar.",
+          "isActive": true,
+          "value": 0,
+          "expectedAt": "2026-03-26T15:00:00.000Z",
+          "kanbanColumnId": 99,
+          "responsibleUserId": 64000102,
+          "contactId": 2148830740,
+          "motiveId": null,
+          "ticketId": "66734440",
+          "nextCardId": 13582,
+          "createdAt": "2026-03-26T15:53:40.000Z",
+          "updatedAt": "2026-03-26T15:53:40.000Z",
+          "responsibleUser": {
+            "photo": null,
+            "id": 64000102,
+            "name": "Manu  - Vitao"
+          },
+          "contact": {
+            "id": 2148830740,
+            "name": "Casa Mia - Emily",
+            "profilePicUrl": null
+          }
+        },
+        {
+          "id": 13582,
+          "name": "🔴 AGRANOLLA - AMANDA - MG | SEM ESTOQUE - FECHAR AGORA",
+          "description": "CONSULTOR: Larissa | TICKET: #66698354\nSTATUS: Amanda está SEM ESTOQUE de lasca de chocolate ao leite. Pediu 5 pacotes com URGÊNCIA. Larissa disse \"vou agilizar\" mas NÃO enviou o valor do pix.\nAÇÃO: Cotar frete AGORA e enviar valor do pix para Amanda fechar!\nURGÊNCIA: 🔴 URGENTE - cliente produz brigadeiro e está parada",
+          "isActive": true,
+          "value": 0,
+          "expectedAt": "2026-03-18T15:00:00.000Z",
+          "kanbanColumnId": 99,
+          "responsibleUserId": 4400030,
+          "contactId": 2148416723,
+          "motiveId": null,
+          "ticketId": "66698354",
+          "nextCardId": 13581,
+          "createdAt": "2026-03-26T15:29:24.000Z",
+          "updatedAt": "2026-03-26T15:29:24.000Z",
+          "responsibleUser": {
+            "photo": "https://d2mytgzbagllkr.cloudfront.net/production/38/logo%20lp.png?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=CnErM5h3iIgCHCXsiFsMxxOfXLCBYWn9O08FoGdgoyRoXkffZZKWUcQ0cHxnWMY8OZQOrN5tVwk0370mzYYEZ6jC9hBZwE3IPBv1jPzvCsIwgRiltPE3XUiqapzsaeTPpT4UFkXwaKw~u8~6jGZDVhO0FQL81FOE0kiUlQQFrM-fXsjm1iF5RUjb15LUi2Ax-bYDs06ebAJyVAp-zGvYI4xVtyKzMVNv7J37CRjwjQ~OI0dQgtiaQYM-SBcd6hvwu~K-HtgOJ57wR8CPKOE1YswJ0We1MvNGGwDk5tBsftxACz3-2rNlzUGOCS0TTh94cpROz7tnSEfoE1P04huETw__",
+            "id": 4400030,
+            "name": "Larissa"
+          },
+          "contact": {
+            "id": 2148416723,
+            "name": "AGRANOLLA - AMANDA - MG",
+            "profilePicUrl": "https://d2mytgzbagllkr.cloudfront.net/production/38/38-2148416723-profilePic-1772816351264?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=OPa2~ho8gVfI7BmyHWhINzJsbRr0USsh15eZ6AT9q4MmwY1w7d-oiNrcbNnWvOq9PdPsy13TLiGwdLrawxA2JWwvKE~11tXcqFLxkv-363puR~dSlTG0t21OdYzSv2aQJEzOrNevECetv8DoUWZb-VE6xdV5~dCXyCKH~Ezi65xxxvYxk~AIaaPVlFyNEGQX3vdtISQrluHFCnQSZu1mdMV8EKABtNgvI6qj-kcYzi8zLOiqeQRmiqLQt~a5h0XeIi5A~r-o5A3xbWhwr1S-IBRPKI6EIXR7rSrZsTPIq1gOhr195WKfU0jLeR3z-O82F55AOe42D8mQJLB4Pzd5bA__"
+          }
+        },
+        {
+          "id": 13581,
+          "name": "🔥 MERCOCENTRO - GABRIEL | ENVIAR ESPELHO AGORA",
+          "description": "CONSULTOR: Manu | TICKET: #66659877\nSTATUS: Gabriel disse \"ok pode mandar\" às 10h58. Manu disse que vai montar espelho + bonificação R$7,37. ESPELHO NÃO ENVIADO.\nAÇÃO: Montar e enviar espelho com bonificação inclusa AGORA!\nURGÊNCIA: 🔴 AGORA",
+          "isActive": true,
+          "value": 0,
+          "expectedAt": "2026-03-26T15:00:00.000Z",
+          "kanbanColumnId": 99,
+          "responsibleUserId": 64000102,
+          "contactId": 2147942964,
+          "motiveId": null,
+          "ticketId": "66659877",
+          "nextCardId": 13580,
+          "createdAt": "2026-03-26T15:24:13.000Z",
+          "updatedAt": "2026-03-26T15:24:13.000Z",
+          "responsibleUser": {
+            "photo": null,
+            "id": 64000102,
+            "name": "Manu  - Vitao"
+          },
+          "contact": {
+            "id": 2147942964,
+            "name": "MERCOCENTRO - GABRIEL COMPRAS",
+            "profilePicUrl": "https://d2mytgzbagllkr.cloudfront.net/production/38/38-2147942964-profilePic?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=Q1g-hHblS8oGgmMAFfGmB3q1x3gGPrPP6JrHihlTaF1Fgtyb1NNGr8owksdESlP4Cg1tD6twadwas~waZ0Q5NdZSHyWXdNjF8~GmT-Ger4Sfg4jlIsFcJ-ujhtx3CABV99pOOpdNxm1GZtM~~5c~R-11d1XC3Gm2JOtzA5~KLWSNvuMRO4Q9iCFbWDSAC4vW17fHXM0toWIU90fryqt4Hkd39JKi~tVvaSa49m-7dbNTwSQgQw1K2FUTpwAxxyN2v3KY1RH0WmsQeL9YGATlIrKbt~gvd4JZDFektXYqO4gRVuX8KerRQ73llW7Uijq5nYtCB1Ukv-rMivMKeXsbOA__"
+          }
+        },
+        {
+          "id": 13580,
+          "name": "🔥 MERCADO CAIBI - JOSIANE | FECHAR HOJE",
+          "description": "CONSULTOR: Manu | TICKET: #67062118\nSTATUS: Josiane montou pedido detalhado e confirmou email. Manu disse OK mas NÃO enviou espelho nem finalizou pedido.\nAÇÃO: Montar espelho e enviar. Confirmar pix ou boleto e FECHAR!\nURGÊNCIA: 🔴 URGENTE",
+          "isActive": true,
+          "value": 0,
+          "expectedAt": "2026-03-26T15:00:00.000Z",
+          "kanbanColumnId": 99,
+          "responsibleUserId": 64000102,
+          "contactId": 2148982074,
+          "motiveId": null,
+          "ticketId": "67062118",
+          "nextCardId": 13579,
+          "createdAt": "2026-03-26T15:21:11.000Z",
+          "updatedAt": "2026-03-26T15:21:11.000Z",
+          "responsibleUser": {
+            "photo": null,
+            "id": 64000102,
+            "name": "Manu  - Vitao"
+          },
+          "contact": {
+            "id": 2148982074,
+            "name": "MERCADO CAIBI - JOSIANE",
+            "profilePicUrl": "https://d2mytgzbagllkr.cloudfront.net/production/38/38-2148982074-profilePic?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=n7DJ68hZKS1PblGZ6T-c7nGm74IVj34pfDa395lQhB7sowRxE6XGYFHAVKkvcFiPVyA5si11jIBJ5~40Tlufy-sX0MeTmAyI5LZmx4mu9YEGxTaGYXEfDz4hrwz1NAMsrMWktKfJYaEkV8~EfR5ABeArQQqYhce5Eqt0D7RFWjQvtHdQnaGWfo62t~5m2oIoyE3YMkoqiLzp-X-yLYjJ5rNE3pStv03K4iLkz8KWKbeCNDw8lklrZtSNS5tzwFu5gR4phlQbiTXuQoNencveTOKTZ5AYbnN0Qb8N07Ji~F6LPX-IAbfbFi3ebPUZ1iKdZT1ES-MuloMDBxeryaq4Ug__"
+          }
+        },
+        {
+          "id": 13579,
+          "name": "🔥 PEDIDOS DEBORA | FECHAR HOJE - R$1.058",
+          "description": "CONSULTOR: Manu | TICKET: #67026811\nSTATUS: Carrinho R$1.058,50 montado com frete grátis. Debora perguntou diferença entre lasca de chocolate fornecível e a outra. MANU NÃO RESPONDEU.\nAÇÃO: Responder a dúvida técnica e fechar o pedido hoje!\nURGÊNCIA: 🔴 AGORA",
+          "isActive": true,
+          "value": 0,
+          "expectedAt": "2026-03-26T15:00:00.000Z",
+          "kanbanColumnId": 99,
+          "responsibleUserId": 64000102,
+          "contactId": 2147748278,
+          "motiveId": null,
+          "ticketId": "67026811",
+          "nextCardId": 13578,
+          "createdAt": "2026-03-26T15:16:24.000Z",
+          "updatedAt": "2026-03-26T15:16:24.000Z",
+          "responsibleUser": {
+            "photo": null,
+            "id": 64000102,
+            "name": "Manu  - Vitao"
+          },
+          "contact": {
+            "id": 2147748278,
+            "name": "Saude e Forma - Debora",
+            "profilePicUrl": "https://d2mytgzbagllkr.cloudfront.net/production/38/38-2147748278-profilePic?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=bSFUwt0q6GIJrzzuVxYPknsFH-YhgwDOYjSsy57XG6PEfo0LBA3YJjWMHXjCRZI1nZacy9RlEJGIZsOEJ3bk9IeOdQ3UlB4Zda84Ri-Y7e~ghp6P5NeE6nrS50pCPqNaw3hUflqagqhlUbvjALKrCe4eRY4D12bKeU1dwLrsWQ1~99Y0XFhbHWpBzB4uWxLbXqyB37eJ3v39Df4QPAcd7hAcRQbNPou9U96v5do6d1JRX8CxaUCQ1wiGJ2DhwI2STzQa0gU~8pE9D0Mp36A-Tl12N2gO-AEhiIGGOt~pDIHyDP-Cus-Ondxxe0Cn0mtpfVa10SVzbmx6iHfVbuphqg__"
+          }
+        },
+        {
+          "id": 13578,
+          "name": "🔥 A.E PRODUTOS NATURAIS - André - PR | FECHAR HOJE",
+          "description": "CONSULTOR: Rodrigo | TICKET: #67034312\nSTATUS: Pedido finalizado no site. André perguntou qual sabor sai mais. Rodrigo NÃO respondeu.\nAÇÃO: Responder sabor mais vendido + confirmar pagamento 14/21 dias e FECHAR.\nURGÊNCIA: 🔴 AGORA",
+          "isActive": true,
+          "value": 0,
+          "expectedAt": "2026-03-26T15:00:00.000Z",
+          "kanbanColumnId": 99,
+          "responsibleUserId": 64000102,
+          "contactId": 2148969768,
+          "motiveId": null,
+          "ticketId": "67034312",
+          "nextCardId": 11777,
+          "createdAt": "2026-03-26T15:13:10.000Z",
+          "updatedAt": "2026-03-26T15:13:10.000Z",
+          "responsibleUser": {
+            "photo": null,
+            "id": 64000102,
+            "name": "Manu  - Vitao"
+          },
+          "contact": {
+            "id": 2148969768,
+            "name": "A.E PRODUTOS NATURAIS - André - PR",
+            "profilePicUrl": "https://d2mytgzbagllkr.cloudfront.net/production/38/38-2148969768-profilePic?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=dRaufSALKSGGebJne7pBO~1nsUf5-~PsnlsnX3-6cUlcJ7LAoK9bFIwCq6l-WSmKb9OJPMWPNP8DCAUhFJu~rn0OhJoyRaSHaku8yGaMSXpZhvQCZBfYC1SGoRfc0eFHWo9SQ5wes2R2T0wdMGRG0j1kOubVjFsV2TtDS4FB52tArLNeLyGLvVsMlgS6kOeKMcDyE-V0~WUiIQjY0wVbTjw9W2dJAAgMw6roJoYDTNng-RojHFS9mIPbstZIlL6EmFB96JQbondGSxVUoR1IB6NOPvmyls-PpdTpUztefVt6YS4Wgn5OJGL1E4E68adN5VNRUzn-89VrRIpdNc-DGA__"
+          }
+        },
+        {
+          "id": 11777,
+          "name": "VIDA LEVE - Jaisson Bordignon",
+          "description": "FALEI COM JAISSON ELE NÃO QUER PRODUTO QUE TENHA NO MERCADO",
+          "isActive": true,
+          "value": 0,
+          "expectedAt": "2026-02-04T15:00:00.000Z",
+          "kanbanColumnId": 99,
+          "responsibleUserId": 4400002,
+          "contactId": 2148154421,
+          "motiveId": null,
+          "ticketId": "65742271",
+          "nextCardId": 11609,
+          "createdAt": "2026-02-03T12:27:56.000Z",
+          "updatedAt": "2026-02-03T12:27:56.000Z",
+          "responsibleUser": {
+            "photo": null,
+            "id": 4400002,
+            "name": "Daiane Stavicki"
+          },
+          "contact": {
+            "id": 2148154421,
+            "name": "VIDA LEVE - Jaisson Bordignon",
+            "profilePicUrl": "https://d2mytgzbagllkr.cloudfront.net/production/38/38-2148154421-profilePic-1777063304305?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=HaJraO3baMis4ANA8Z6Agx1WBlX2jZyhNqhG6kw5biM-oqB1kA5LPsO0HXLimNPCRqA5BVQJDtC84~KsM2yH3U3bnYN6wI6gLo7VC2qS5dSVtmaptU7-SYE84VCYgDZ4wbgtCrdQavp2C05mmPN9ZqQFS14N9rz08HWlgkH0ApsEiGka426~AC1U5oK7~ttEaWnmgQ8m8eC-1DMPti8i3z3pFTCFPBe0liu6O8CXjQkGp9CJt0SQ83eeROq4dH-KSZf2BPUOzw7gGbQvad~wThWFqhpvm0p2tz8NsdXoYWI5hXMJbdGTEetBL8TEC-x1Ut4mMNtmz-oaqDvrColKvg__"
+          }
+        }
+      ]
+    },
+    {
+      "id": 417,
+      "name": "CADASTRO",
+      "isActive": true,
+      "isDefault": false,
+      "kanbanBoardId": 20,
+      "nextColumnId": 416,
+      "createdAt": "2026-01-22T18:57:38.000Z",
+      "updatedAt": "2026-01-22T18:58:22.000Z",
+      "cards": [
+        {
+          "id": 13605,
+          "name": "📋 CANELA PROD. NATURAIS - Aguard. IE e email",
+          "description": "Lead de hoje. Rodrigo pediu IE e email. Cliente ainda não respondeu. Assim que responder, gerar acesso imediatamente.",
+          "isActive": true,
+          "value": 0,
+          "expectedAt": "2026-03-26T15:00:00.000Z",
+          "kanbanColumnId": 417,
+          "responsibleUserId": 64000104,
+          "contactId": 2148984392,
+          "motiveId": null,
+          "ticketId": "67068068",
+          "nextCardId": 13594,
+          "createdAt": "2026-03-26T16:46:12.000Z",
+          "updatedAt": "2026-03-26T16:46:12.000Z",
+          "responsibleUser": {
+            "photo": null,
+            "id": 64000104,
+            "name": "Leandro  - Comercial Interno "
+          },
+          "contact": {
+            "id": 2148984392,
+            "name": "Canela produtos naturais Matriz",
+            "profilePicUrl": "https://d2mytgzbagllkr.cloudfront.net/production/38/38-2148984392-profilePic-1774536389448?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=TMias0In-~j-9qUrfAU6-mwyb7vXDKCP63DH73WcVO0FjDOS7lDN3eSFbkM6NbMU8yAM625SPCvP1lmGs9L-j0k8pS6yyYP9WIqQ2UxcA-G7OC-AKbSAX73qnOfGMd7AvYTPnIvoQ62ERei4ikEUR5cyTHDn6Qkv27GXpZSu-NCoTM99Zfgz2BHw1702xJbgpQ2a255JaUbw72ms-WeJsrkdAg0JiumWI1DQ6qLKIkf1VIakeWzOpGQpqA8BfMNDLAjpCSRIDeiwUS2dB4RHER07offisS2HPMwBxye2AVGk7Q3y5-9dxhEbq4bX-1p7Tp7AUQiky1I41oPTC2UFig__"
+          }
+        },
+        {
+          "id": 13594,
+          "name": "📋 ALEXANDRE - Cadastro em andamento",
+          "description": "Cadastro feito em 20/03. Daiane enviou documento hoje e tentou contato. Cliente não respondeu. Dar follow-up pedindo confirmação do acesso.",
+          "isActive": true,
+          "value": 0,
+          "expectedAt": "2026-03-26T15:00:00.000Z",
+          "kanbanColumnId": 417,
+          "responsibleUserId": 4400002,
+          "contactId": 2148971451,
+          "motiveId": null,
+          "ticketId": "67038249",
+          "nextCardId": null,
+          "createdAt": "2026-03-26T16:15:44.000Z",
+          "updatedAt": "2026-03-26T16:15:44.000Z",
+          "responsibleUser": {
+            "photo": null,
+            "id": 4400002,
+            "name": "Daiane Stavicki"
+          },
+          "contact": {
+            "id": 2148971451,
+            "name": "ALEXANDRE - ",
+            "profilePicUrl": null
+          }
+        }
+      ]
+    },
+    {
+      "id": 416,
+      "name": "FOLLOW UP",
+      "isActive": true,
+      "isDefault": false,
+      "kanbanBoardId": 20,
+      "nextColumnId": 100,
+      "createdAt": "2026-01-22T18:57:31.000Z",
+      "updatedAt": "2026-01-22T18:59:20.000Z",
+      "cards": [
+        {
+          "id": 13603,
+          "name": "🟡 SAUDE EM GRAOS - ALANA - Ovos páscoa",
+          "description": "Larissa enviou link de fotos dos ovos de páscoa. Sem resposta. Follow-up: \"Alana, gostou? Posso montar um orçamento?\"",
+          "isActive": true,
+          "value": 0,
+          "expectedAt": "2026-03-26T15:00:00.000Z",
+          "kanbanColumnId": 416,
+          "responsibleUserId": 4400030,
+          "contactId": 4405095,
+          "motiveId": null,
+          "ticketId": "67014160",
+          "nextCardId": 13602,
+          "createdAt": "2026-03-26T16:41:05.000Z",
+          "updatedAt": "2026-03-26T16:41:05.000Z",
+          "responsibleUser": {
+            "photo": "https://d2mytgzbagllkr.cloudfront.net/production/38/logo%20lp.png?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=CnErM5h3iIgCHCXsiFsMxxOfXLCBYWn9O08FoGdgoyRoXkffZZKWUcQ0cHxnWMY8OZQOrN5tVwk0370mzYYEZ6jC9hBZwE3IPBv1jPzvCsIwgRiltPE3XUiqapzsaeTPpT4UFkXwaKw~u8~6jGZDVhO0FQL81FOE0kiUlQQFrM-fXsjm1iF5RUjb15LUi2Ax-bYDs06ebAJyVAp-zGvYI4xVtyKzMVNv7J37CRjwjQ~OI0dQgtiaQYM-SBcd6hvwu~K-HtgOJ57wR8CPKOE1YswJ0We1MvNGGwDk5tBsftxACz3-2rNlzUGOCS0TTh94cpROz7tnSEfoE1P04huETw__",
+            "id": 4400030,
+            "name": "Larissa"
+          },
+          "contact": {
+            "id": 4405095,
+            "name": "SAUDE EM GRAOS - ALANA - MG",
+            "profilePicUrl": "https://d2mytgzbagllkr.cloudfront.net/production/38/38-4405095-profilePic?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=YIzUhtf967hlaJRYV3a63ljfaK13RJNJLr5QpydrZQi2k1TH6nOgsxsFnM3SGeqsKNrJ~G~4JvkNJSJ1M3iyQGpPbCsAjfk9BB3eDI~rGkkh4xzdcPxGouim5BwY9TFlBDyRs1Qdv1Zmzzs7olLU-VpAn797MzvyQ52PV62PYOKF4N5PwTEMIzDUSDZpesuvA1tGwn-Fqq3jd1Yi873VzSTlJ55BFjL9kkU3sHnxJ0tpXW5CDtTJOwr1DR1U0R5h0XEUCN2BrSco8XHVfXDCC3-Dec~0~nrGPpj8bjmBWsq6iLeMjlzY2lIxHfmzqUC1sA6kmlT660eOXzu8F6PGCg__"
+          }
+        },
+        {
+          "id": 13602,
+          "name": "🟡 E-LABORE - NATALIA - Aguard. decisão compra",
+          "description": "Natalia mandou áudio dizendo que está esperando decisão de outras pessoas. Manu aguardando. Follow-up amanhã: \"Naty, conseguiu um retorno?\"",
+          "isActive": true,
+          "value": 0,
+          "expectedAt": "2026-03-26T15:00:00.000Z",
+          "kanbanColumnId": 416,
+          "responsibleUserId": 64000102,
+          "contactId": 2147634542,
+          "motiveId": null,
+          "ticketId": "66156101",
+          "nextCardId": 13592,
+          "createdAt": "2026-03-26T16:38:46.000Z",
+          "updatedAt": "2026-03-26T16:38:46.000Z",
+          "responsibleUser": {
+            "photo": null,
+            "id": 64000102,
+            "name": "Manu  - Vitao"
+          },
+          "contact": {
+            "id": 2147634542,
+            "name": "E-labore - NATALIA",
+            "profilePicUrl": "https://d2mytgzbagllkr.cloudfront.net/production/38/38-2147634542-profilePic-1745947578668?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=VbHpOMImnfXLRXjPspBhk~DUlJpvGyYUUHNGr0DfWJCt4GtrBCR9iuiyyZVwmj9NncrDLJP9o5qaKh6fQ0ytT4qHbbLNaTGdAx3-EWLNObDyHThrwLpg2Bsto51RmsCcPBUpneeMp2XFEVrzAIWSwsv8ASmo63jPxySCQ5yp81YhOUnTwe3IA5GAOtBiNDlGUPU6GefH7~xVkLwjrrLZO1Mp4UynU6DG5asm~7rz4GYbTpMI2e~NubBWA15OzG6jaFXwbVx8OZb803JOl53RWVKOUeoK0B~6~skU0DzuyvOUXATpvuAqL82Mfmd3D7QPLxKMTA3OM09I4VqOrPCgKQ__"
+          }
+        },
+        {
+          "id": 13592,
+          "name": "🟡 BRENDA - ACADEMIA - Lead aguard. CNPJ",
+          "description": "Manu enviou catálogo mas Brenda não enviou CNPJ/email para liberar acesso. Follow-up: \"Brenda, curtiu algum produto? Posso montar algo ideal pra academia?\"",
+          "isActive": true,
+          "value": 0,
+          "expectedAt": "2026-03-26T15:00:00.000Z",
+          "kanbanColumnId": 416,
+          "responsibleUserId": null,
+          "contactId": 2148967621,
+          "motiveId": null,
+          "ticketId": "67029510",
+          "nextCardId": 13591,
+          "createdAt": "2026-03-26T16:10:35.000Z",
+          "updatedAt": "2026-03-26T16:10:35.000Z",
+          "responsibleUser": null,
+          "contact": {
+            "id": 2148967621,
+            "name": "BRENDA - ACADEMIA",
+            "profilePicUrl": null
+          }
+        },
+        {
+          "id": 13591,
+          "name": "🔴 DALZINHO (Adalberto) - MG - Responder AGORA",
+          "description": "Lead respondeu às 11h54 com nome e cidade. LARISSA PRECISA RESPONDER AGORA: pedir CNPJ, email e ramo de atuação.",
+          "isActive": true,
+          "value": 0,
+          "expectedAt": "2026-03-26T15:00:00.000Z",
+          "kanbanColumnId": 416,
+          "responsibleUserId": 4400030,
+          "contactId": 2148874901,
+          "motiveId": null,
+          "ticketId": "66826689",
+          "nextCardId": 13583,
+          "createdAt": "2026-03-26T16:05:10.000Z",
+          "updatedAt": "2026-03-26T16:05:10.000Z",
+          "responsibleUser": {
+            "photo": "https://d2mytgzbagllkr.cloudfront.net/production/38/logo%20lp.png?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=CnErM5h3iIgCHCXsiFsMxxOfXLCBYWn9O08FoGdgoyRoXkffZZKWUcQ0cHxnWMY8OZQOrN5tVwk0370mzYYEZ6jC9hBZwE3IPBv1jPzvCsIwgRiltPE3XUiqapzsaeTPpT4UFkXwaKw~u8~6jGZDVhO0FQL81FOE0kiUlQQFrM-fXsjm1iF5RUjb15LUi2Ax-bYDs06ebAJyVAp-zGvYI4xVtyKzMVNv7J37CRjwjQ~OI0dQgtiaQYM-SBcd6hvwu~K-HtgOJ57wR8CPKOE1YswJ0We1MvNGGwDk5tBsftxACz3-2rNlzUGOCS0TTh94cpROz7tnSEfoE1P04huETw__",
+            "id": 4400030,
+            "name": "Larissa"
+          },
+          "contact": {
+            "id": 2148874901,
+            "name": "AGS - ADALBERTO - MG",
+            "profilePicUrl": "https://d2mytgzbagllkr.cloudfront.net/production/38/38-2148874901-profilePic?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=i8EFp9i8wBzJuiZLv4U2u64aeBLqJIv~d-ODfszNgQPbJijPsFYHk0ZSDEH9odWJ3F3eX1unU~E8Mq~baJutzhned4Y~qmA3PfKwTTOLlH34aDlWGXOL955fJkVFMQrhMSoUQ4hgR-JOhzNrfPdIQBecbObSt50d6fO-0eM9AQWhLsFAPxhskf1CUWRpMZ05~JYJoKJKTRy0y2o2ho-L6MrtO1pGUNbMpYiCMljWR9-EkWQXgVPkn9rQBhWQu4GSt8qWyi1koVWQwjD07jmx9ppBXxwyul8sgNE4D8rbrvwSboLxw8qB-gGwry5sKxusiIDxoLeyYVIF7qXb91E5Qw__"
+          }
+        },
+        {
+          "id": 13583,
+          "name": "📋 PADARIA FELIPÃO | PROMETEU PEDIDO HOJE À TARDE",
+          "description": "CONSULTOR: Manu | TICKET: #66358065\nSTATUS: Cliente disse \"sim, hj a tarde te passo o pedido\" às 09h06. Manu informou prazo de entrega (8 dias úteis).\nAÇÃO: Aguardar até 14h. Se não enviar, cobrar: \"Oi linda, aqui pra te ajudar com o pedido!\"\nOBS: Cliente tem acesso ao portal. Carrinho antigo já montado.\nURGÊNCIA: 🟠 HOJE TARDE",
+          "isActive": true,
+          "value": 0,
+          "expectedAt": "2026-03-18T15:00:00.000Z",
+          "kanbanColumnId": 416,
+          "responsibleUserId": 64000102,
+          "contactId": 2148591130,
+          "motiveId": null,
+          "ticketId": "66358065",
+          "nextCardId": 11801,
+          "createdAt": "2026-03-26T15:33:02.000Z",
+          "updatedAt": "2026-03-26T15:33:02.000Z",
+          "responsibleUser": {
+            "photo": null,
+            "id": 64000102,
+            "name": "Manu  - Vitao"
+          },
+          "contact": {
+            "id": 2148591130,
+            "name": "PADARIA FELIPÃO - COMPRAS",
+            "profilePicUrl": "https://d2mytgzbagllkr.cloudfront.net/production/38/38-2148591130-profilePic?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=j0c2IHnNY-u4QaKVIDHVM5oN2cuweQ4HiZRgiOgDQt1uGusdfNrNBia4HA58XhHKCZ6ok3xyqFlvC5aHVGivLTV6IUi312hAZQfFmaEfHO9UgV0T5QDZsBev3kdgYlHFgmuqULMos-DgvHjGNsxAjkI-jeGpBQpii5qc42hEHsjr5XQktc9cMSMjvmgncfNq~td4j4vCrBoh9cHF-Fg8Zbk4KYu2HDhtrsORB~noJNsjm0uKZbfJM8US-Nb44GkGR-XrfDzSCqMpmKTD7lsY0ITaaHwxJcDcr6KNs~lcbBF~MJk2gA~E6zaga09bVSpSd8SnUDkISdp7KlA2OK6KCw__"
+          }
+        },
+        {
+          "id": 11801,
+          "name": "DIVINA TERRA LONDRINA ",
+          "description": "AGORA MANDEI MSG PRA ANE A AMANDA NUNCAAAA RESPONDEU",
+          "isActive": true,
+          "value": 0,
+          "expectedAt": "2026-02-04T15:00:00.000Z",
+          "kanbanColumnId": 416,
+          "responsibleUserId": 4400002,
+          "contactId": 2148617023,
+          "motiveId": null,
+          "ticketId": "66416697",
+          "nextCardId": 11560,
+          "createdAt": "2026-02-04T14:38:17.000Z",
+          "updatedAt": "2026-02-04T14:38:17.000Z",
+          "responsibleUser": {
+            "photo": null,
+            "id": 4400002,
+            "name": "Daiane Stavicki"
+          },
+          "contact": {
+            "id": 2148617023,
+            "name": "DIVINA TERRA LONDRINA - AMANDA ",
+            "profilePicUrl": null
+          }
+        },
+        {
+          "id": 11560,
+          "name": "FITIBU",
+          "description": "CLIENTE COMPRA CHOCOLATE / TEM ALGO EM HAVER",
+          "isActive": true,
+          "value": 0,
+          "expectedAt": "2026-01-26T15:00:00.000Z",
+          "kanbanColumnId": 416,
+          "responsibleUserId": 64000102,
+          "contactId": 2147745395,
+          "motiveId": null,
+          "ticketId": "65844896",
+          "nextCardId": 11538,
+          "createdAt": "2026-01-20T17:29:52.000Z",
+          "updatedAt": "2026-01-22T19:03:08.000Z",
+          "responsibleUser": {
+            "photo": null,
+            "id": 64000102,
+            "name": "Manu  - Vitao"
+          },
+          "contact": {
+            "id": 2147745395,
+            "name": "CRIS - BOLOS E DOCES FIT",
+            "profilePicUrl": "https://d2mytgzbagllkr.cloudfront.net/production/38/38-2147745395-profilePic?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=YzntW0bP-GWLlsFWp~WKb0RjbYS7sLZeG~7PtwJFRndC9esWmeZkH3Cb1TaDcL4~vIIRKl-UqsTZaFCxYRx0GMFb3Y2Yn4vCTfMEkLlZEWesJcowh1CsfBaqiSFDtbvyA7R34btsvB~O8Z3O1kXAi7QZ9jfBQHLT4yRqDhZiulTpyEpIuDAgPEyXcchBlkqP4Nhvw52ROVLUdOR79XVD0j-Tsf6HnExncU-9GoXhDLwkWwNKh34zd7IJgqliLdnG82Q8oejPj2RE66s5konQkMpZTh~Wh2Uplhvh1vDXhWppvBPXpN-9NSYJj3sDhuxmTeqsbWvCklfoqMH2FcowvQ__"
+          }
+        },
+        {
+          "id": 11538,
+          "name": "RESPONDE QUANDO QUER",
+          "description": "DIFICIL CONTATO",
+          "isActive": true,
+          "value": 0,
+          "expectedAt": "2026-01-21T15:00:00.000Z",
+          "kanbanColumnId": 416,
+          "responsibleUserId": 64000102,
+          "contactId": 4402082,
+          "motiveId": null,
+          "ticketId": "66160146",
+          "nextCardId": 11569,
+          "createdAt": "2026-01-20T13:20:26.000Z",
+          "updatedAt": "2026-01-22T19:05:32.000Z",
+          "responsibleUser": {
+            "photo": null,
+            "id": 64000102,
+            "name": "Manu  - Vitao"
+          },
+          "contact": {
+            "id": 4402082,
+            "name": "RAIZES DA VIDA PROD. ORG. - RS - VINICIUS",
+            "profilePicUrl": "https://deskriointegracao.s3.sa-east-1.amazonaws.com/files/38-4402082-profilePic"
+          }
+        },
+        {
+          "id": 11569,
+          "name": "HOTEL",
+          "description": "GRANDE POTENCIAL",
+          "isActive": true,
+          "value": 0,
+          "expectedAt": "2026-02-22T15:00:00.000Z",
+          "kanbanColumnId": 416,
+          "responsibleUserId": 64000102,
+          "contactId": 2148626336,
+          "motiveId": null,
+          "ticketId": null,
+          "nextCardId": 11520,
+          "createdAt": "2026-01-20T18:03:00.000Z",
+          "updatedAt": "2026-01-22T19:05:42.000Z",
+          "responsibleUser": {
+            "photo": null,
+            "id": 64000102,
+            "name": "Manu  - Vitao"
+          },
+          "contact": {
+            "id": 2148626336,
+            "name": "SOLAR MIRADOR - COMPRAS",
+            "profilePicUrl": "https://d2mytgzbagllkr.cloudfront.net/production/38/38-2148626336-profilePic?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=HdvwSBFUIoAvG-XOBhmbYAaEh3LbGYbhXIMeWfGSll6NQbf7aN669CfxFafDvs71WUM9KSObCf9kHcjmAyrV7VD2lkcnstY8NY1yle7PtjCynlCQSwhzloHRrEocyL246~wDOgyHu8qXJRz7l0gHvweGlEWC2WSROhR1DrsokuAEgJg7PQtcInziGQMy2ItNPGBc8BxP1M~o1WhNOQ1PC7AqWeXTCvRbjPk0CKUnnzAV4f4I8lDd7p4rQk3r5AqDvJQ61-xAfS3yHs6zvsrS0TWnceX6rBMz9XbU-LNeDMR4wb6W5JvlY1iwjNP0WKDy0Szhvl46jNQKxY-JpshMcw__"
+          }
+        },
+        {
+          "id": 11520,
+          "name": "NUTRITIVA BISTRO - ALANA",
+          "description": "PROSPECÇÃO, NUNCA TEVE RETORNO LIMBO",
+          "isActive": true,
+          "value": 0,
+          "expectedAt": "2026-01-21T15:00:00.000Z",
+          "kanbanColumnId": 416,
+          "responsibleUserId": 64000102,
+          "contactId": 2147721478,
+          "motiveId": null,
+          "ticketId": null,
+          "nextCardId": 11561,
+          "createdAt": "2026-01-20T12:12:26.000Z",
+          "updatedAt": "2026-01-22T19:05:49.000Z",
+          "responsibleUser": {
+            "photo": null,
+            "id": 64000102,
+            "name": "Manu  - Vitao"
+          },
+          "contact": {
+            "id": 2147721478,
+            "name": "NUTRITIVA BISTRO - ALANA",
+            "profilePicUrl": "https://d2mytgzbagllkr.cloudfront.net/production/38/38-2147721478-profilePic?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=uI8~1J4u0bQImP1efrYajce77emzcRJPpmYSwFUl0aLc2WTJCpKwkB-j7Zm4ANfkV9GR04xmXl-pmd3sWmA3fU3A-0htyQLlayzb43F53riu4YjVasMrYoGcBMl--pFSbgJYvtBZJhSxIm1njDuAnjydEIqIdoueo76IWHwy8wtaIkFoWlbr8igwXR9PINzeSQUrwNIHglKx45hYxX3h3dtwOKGjHbwxC~TPaaNdNdXRR4EejNaUWSzOPr-gB84B6O2l2Ksl7axC2EkwgKNXiw5O3LjdMNBvqFmweYwCuQH7mDCYo-RSiiZs9OeQJkFgobx-Y7TI3C3ReQDRPNNBbw__"
+          }
+        }
+      ]
+    },
+    {
+      "id": 100,
+      "name": "VENDA REALIZADA",
+      "isActive": true,
+      "isDefault": false,
+      "kanbanBoardId": 20,
+      "nextColumnId": 415,
+      "createdAt": "2025-04-14T19:18:30.000Z",
+      "updatedAt": "2026-01-22T18:59:20.000Z",
+      "cards": [
+        {
+          "id": 13601,
+          "name": "✅ LEGURME - PAULA - Pedido Jadlog caminho",
+          "description": "Pedido a caminho via Jadlog. Paula preocupada com prazo. Monitorar e avisar quando sair para entrega.",
+          "isActive": true,
+          "value": 0,
+          "expectedAt": "2026-03-26T15:00:00.000Z",
+          "kanbanColumnId": 100,
+          "responsibleUserId": 4400030,
+          "contactId": 2148618365,
+          "motiveId": null,
+          "ticketId": "66754909",
+          "nextCardId": 13600,
+          "createdAt": "2026-03-26T16:35:57.000Z",
+          "updatedAt": "2026-03-26T16:35:57.000Z",
+          "responsibleUser": {
+            "photo": "https://d2mytgzbagllkr.cloudfront.net/production/38/logo%20lp.png?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=CnErM5h3iIgCHCXsiFsMxxOfXLCBYWn9O08FoGdgoyRoXkffZZKWUcQ0cHxnWMY8OZQOrN5tVwk0370mzYYEZ6jC9hBZwE3IPBv1jPzvCsIwgRiltPE3XUiqapzsaeTPpT4UFkXwaKw~u8~6jGZDVhO0FQL81FOE0kiUlQQFrM-fXsjm1iF5RUjb15LUi2Ax-bYDs06ebAJyVAp-zGvYI4xVtyKzMVNv7J37CRjwjQ~OI0dQgtiaQYM-SBcd6hvwu~K-HtgOJ57wR8CPKOE1YswJ0We1MvNGGwDk5tBsftxACz3-2rNlzUGOCS0TTh94cpROz7tnSEfoE1P04huETw__",
+            "id": 4400030,
+            "name": "Larissa"
+          },
+          "contact": {
+            "id": 2148618365,
+            "name": "LEGURME - PAULA - SP",
+            "profilePicUrl": "https://d2mytgzbagllkr.cloudfront.net/production/38/38-2148618365-profilePic?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=n605sxN65iQG568x4teszjs7epjmtRIrSowZZUFO2hcsE8XkyrLNAbia17of5t7gxNMnv-qK-2eB5sKytBBJfsQ78GWXXWPNEctV5jAYj7-39kDajKA1~u48oJsm7qzOj7IKpJzSXy3JST73M2SRXRHW-Pd9kJQOd9Odf3dHmI-CGfdabauDuTNN3uiKE9c9IBpTO5H-9Ik1sBWl6TG67AycDURNtc-EN5UkBKeGiHXpk2OAVL6hhMhdQvSJalNdjMWMV6VGOzGTJzhqAUCTL5bsIQTtL1-VkQSeizOIdZhqmDVtCDLBKtsqKTOyx6pRnQY1utYr9Vo2TgHx-~DFZw__"
+          }
+        },
+        {
+          "id": 13600,
+          "name": "✅ SIMONE - SP - Pedido enviado, chegando semana",
+          "description": "Pedido enviado. Chegando semana que vem. Monitorar e confirmar entrega com a cliente.",
+          "isActive": true,
+          "value": 0,
+          "expectedAt": "2026-03-26T15:00:00.000Z",
+          "kanbanColumnId": 100,
+          "responsibleUserId": 4400030,
+          "contactId": 2148961397,
+          "motiveId": null,
+          "ticketId": "67013427",
+          "nextCardId": 13599,
+          "createdAt": "2026-03-26T16:32:39.000Z",
+          "updatedAt": "2026-03-26T16:32:39.000Z",
+          "responsibleUser": {
+            "photo": "https://d2mytgzbagllkr.cloudfront.net/production/38/logo%20lp.png?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=CnErM5h3iIgCHCXsiFsMxxOfXLCBYWn9O08FoGdgoyRoXkffZZKWUcQ0cHxnWMY8OZQOrN5tVwk0370mzYYEZ6jC9hBZwE3IPBv1jPzvCsIwgRiltPE3XUiqapzsaeTPpT4UFkXwaKw~u8~6jGZDVhO0FQL81FOE0kiUlQQFrM-fXsjm1iF5RUjb15LUi2Ax-bYDs06ebAJyVAp-zGvYI4xVtyKzMVNv7J37CRjwjQ~OI0dQgtiaQYM-SBcd6hvwu~K-HtgOJ57wR8CPKOE1YswJ0We1MvNGGwDk5tBsftxACz3-2rNlzUGOCS0TTh94cpROz7tnSEfoE1P04huETw__",
+            "id": 4400030,
+            "name": "Larissa"
+          },
+          "contact": {
+            "id": 2148961397,
+            "name": "SIMONE - SP",
+            "profilePicUrl": null
+          }
+        },
+        {
+          "id": 13599,
+          "name": "✅ DEBORA MARTINS - Páscoa R$2.051 - Em trânsito",
+          "description": "Pix realizado R$2.051,40. Larissa enviou rastreio. Em andamento. Confirmar chegada e pós-venda.",
+          "isActive": true,
+          "value": 2051.4,
+          "expectedAt": "2026-03-26T15:00:00.000Z",
+          "kanbanColumnId": 100,
+          "responsibleUserId": 4400030,
+          "contactId": 2148977775,
+          "motiveId": null,
+          "ticketId": "67053061",
+          "nextCardId": 13598,
+          "createdAt": "2026-03-26T16:29:36.000Z",
+          "updatedAt": "2026-03-26T16:29:36.000Z",
+          "responsibleUser": {
+            "photo": "https://d2mytgzbagllkr.cloudfront.net/production/38/logo%20lp.png?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=CnErM5h3iIgCHCXsiFsMxxOfXLCBYWn9O08FoGdgoyRoXkffZZKWUcQ0cHxnWMY8OZQOrN5tVwk0370mzYYEZ6jC9hBZwE3IPBv1jPzvCsIwgRiltPE3XUiqapzsaeTPpT4UFkXwaKw~u8~6jGZDVhO0FQL81FOE0kiUlQQFrM-fXsjm1iF5RUjb15LUi2Ax-bYDs06ebAJyVAp-zGvYI4xVtyKzMVNv7J37CRjwjQ~OI0dQgtiaQYM-SBcd6hvwu~K-HtgOJ57wR8CPKOE1YswJ0We1MvNGGwDk5tBsftxACz3-2rNlzUGOCS0TTh94cpROz7tnSEfoE1P04huETw__",
+            "id": 4400030,
+            "name": "Larissa"
+          },
+          "contact": {
+            "id": 2148977775,
+            "name": "Debora Martins - Ovos de páscoa ",
+            "profilePicUrl": "https://d2mytgzbagllkr.cloudfront.net/production/38/38-2148977775-profilePic?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=EErdNIQGeP-OVPEJFp6LyCK-BoxB2ESANK7bv1s-ahkeWoWq3WL6AOTxcO98y4RjR5d97yZPq8M4txgvORsfGxckY4010S2pQOX~DbEUu7B06j6OJqFSmcLzJsoMOtkHrLD2zGtBpauMCQVr9tcdcDtOKkkwaNXTNbp7xZbF15bPoRyBw6tNiiOV4Se-7xKDV8uf3DVAU92YpBYdjCnIeoGJkFAykxEu5~DcXTUFVaZQwZPgO2ToDlsiGYCRpHHLAyQ9QH6qhw4H-BgUUgMPFvvoH85A5coqIBQF-cxhvovx8uV56AYzTGoTXUnr8WhlLKSkn13I7Lma0U5MKvp4wQ__"
+          }
+        },
+        {
+          "id": 13598,
+          "name": "✅ GRAO VIDA - ALANA - Pedido fechado + provolone",
+          "description": "Pedido fechado. Provolone adicionado hoje. Em andamento. Aguardar envio e confirmar entrega.",
+          "isActive": true,
+          "value": 0,
+          "expectedAt": "2026-03-26T15:00:00.000Z",
+          "kanbanColumnId": 100,
+          "responsibleUserId": 4400030,
+          "contactId": 4410858,
+          "motiveId": null,
+          "ticketId": "67056998",
+          "nextCardId": 11612,
+          "createdAt": "2026-03-26T16:26:48.000Z",
+          "updatedAt": "2026-03-26T16:26:48.000Z",
+          "responsibleUser": {
+            "photo": "https://d2mytgzbagllkr.cloudfront.net/production/38/logo%20lp.png?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=CnErM5h3iIgCHCXsiFsMxxOfXLCBYWn9O08FoGdgoyRoXkffZZKWUcQ0cHxnWMY8OZQOrN5tVwk0370mzYYEZ6jC9hBZwE3IPBv1jPzvCsIwgRiltPE3XUiqapzsaeTPpT4UFkXwaKw~u8~6jGZDVhO0FQL81FOE0kiUlQQFrM-fXsjm1iF5RUjb15LUi2Ax-bYDs06ebAJyVAp-zGvYI4xVtyKzMVNv7J37CRjwjQ~OI0dQgtiaQYM-SBcd6hvwu~K-HtgOJ57wR8CPKOE1YswJ0We1MvNGGwDk5tBsftxACz3-2rNlzUGOCS0TTh94cpROz7tnSEfoE1P04huETw__",
+            "id": 4400030,
+            "name": "Larissa"
+          },
+          "contact": {
+            "id": 4410858,
+            "name": "GRAO VIDA - ALANA - SP/MG",
+            "profilePicUrl": "https://d2mytgzbagllkr.cloudfront.net/production/38/38-4410858-profilePic?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=Xc8RwJA9SN2hsIjwsEODsE03eX7goKRRdgtRUq-iNsDxRI7qGmrLdhvR~jaQ4hBLQJbsOCAyRPa1MYhfH6L5Xy3w3l3oRD23aAL9MFn5xxQp7gnGOfubDhAy4aODKJu5a7OnsJnzzOrCcuR4AMrza06gC5TimBT4KKjnpG1LIrTMjwHXIrNBKisiInIOyKF5j938WLHwdAmJxf9Ee6HlLfW05Xa4CLSqTCmTLvCJVosZHrk6exrAxL6zW~TGBx8YZt5X3Yi5kgbyWQLdGlQvr6spuAi~0nvUBDQXVPlVkmgubbriPMw-YjEVm2OBGUWDzXQqIr0nk30ORfO8LX7SPA__"
+          }
+        },
+        {
+          "id": 11612,
+          "name": "NATURVIDA - 15%OFF",
+          "description": "VENDA REALIZADA",
+          "isActive": true,
+          "value": 1083,
+          "expectedAt": "2026-01-21T15:00:00.000Z",
+          "kanbanColumnId": 100,
+          "responsibleUserId": 64000102,
+          "contactId": 2148177431,
+          "motiveId": null,
+          "ticketId": "65733382",
+          "nextCardId": 11582,
+          "createdAt": "2026-01-21T20:27:34.000Z",
+          "updatedAt": "2026-01-21T20:27:34.000Z",
+          "responsibleUser": {
+            "photo": null,
+            "id": 64000102,
+            "name": "Manu  - Vitao"
+          },
+          "contact": {
+            "id": 2148177431,
+            "name": "NATURVIDA - FABIO  *DESCONTO 15% OFF*",
+            "profilePicUrl": "https://d2mytgzbagllkr.cloudfront.net/production/38/38-2148177431-profilePic?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=Hx6fejX6vl59X2s4LaCLqwYSwGBtLjB5qkp54LiejFdHSCC8~KxEL~kDgKVm0NeuLo6BE5a9WykPzwIBoMMNnmLQiG1FveDVphytGuoyZhCPdcXrlQQZTc2DradGg9Um46M98ra03w72vKKreuD7XSmKfLk7dlBmQf0HNzZ5R7SLkgrSGRDGNwCv7YuCtCBwyErBedabd-b64AHxY~I-DRsiqJFkbl2W~UrBmYScXNx8RVSqyvN5Es5dmari5CgEPy-nsRC6sItePmM2kn6dDHhyqM3EpQoiIhBb9T6onHqSl97sDl4w0m3qBDpob36a6A2e7OxYB2DKMwEPDHYOBg__"
+          }
+        },
+        {
+          "id": 11582,
+          "name": "OFERTÃO",
+          "description": "VENDA FINALIZADA !! ",
+          "isActive": true,
+          "value": 1294,
+          "expectedAt": "2026-02-17T15:00:00.000Z",
+          "kanbanColumnId": 100,
+          "responsibleUserId": 64000102,
+          "contactId": 2148613403,
+          "motiveId": null,
+          "ticketId": "66408568",
+          "nextCardId": 11581,
+          "createdAt": "2026-01-20T20:16:29.000Z",
+          "updatedAt": "2026-01-20T20:16:29.000Z",
+          "responsibleUser": {
+            "photo": null,
+            "id": 64000102,
+            "name": "Manu  - Vitao"
+          },
+          "contact": {
+            "id": 2148613403,
+            "name": "OFERTÃO COMPRAS - AMAURI",
+            "profilePicUrl": null
+          }
+        },
+        {
+          "id": 11581,
+          "name": "VIDA LEVE - Angela",
+          "description": "Angela queria muito odrag de maracuja, mas acabei ofertando os demais, reposição ",
+          "isActive": true,
+          "value": 1260,
+          "expectedAt": "2026-02-20T15:00:00.000Z",
+          "kanbanColumnId": 100,
+          "responsibleUserId": null,
+          "contactId": 2148567701,
+          "motiveId": null,
+          "ticketId": "66319129",
+          "nextCardId": 11577,
+          "createdAt": "2026-01-20T19:52:55.000Z",
+          "updatedAt": "2026-01-20T19:52:55.000Z",
+          "responsibleUser": null,
+          "contact": {
+            "id": 2148567701,
+            "name": "VIDA LEVE - ANGELA - SP",
+            "profilePicUrl": "https://d2mytgzbagllkr.cloudfront.net/production/38/38-2148567701-profilePic?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=VbpTYG1iQDBtJSI-t5cRv16-iiOFF6zrSht6TdSc4hETO~9HD1T9Lmhj6RewdYFia0-M9Gw5dCZMUvP4f~Kh9VB2cXzRCAbzDv9ygRKLjkFl1cjkw6FI9Bx1D4coso7Awm5wz2Wuvd~gevXRgFkcLdUmDq7vrYdd0udKDccSQZ1tHvhgXMwEnWewR2d~iq0ak0nCABu8fVtX02Wt29lzIFbp3v1dTR8I-Mx-uYXqQ62ebtj0BfBN4BdK0z-4w~LHHuIK9p9WVixp2KT5QJXXkz~TfYS5z~4zqNstmKZMTZa18u5kJp8K3bYuBOexU8APlj1A-TbCenvJ~Q17HFJ3~g__"
+          }
+        },
+        {
+          "id": 11577,
+          "name": "CLIENTE POTENCIAL",
+          "description": "COMPRA BEM",
+          "isActive": true,
+          "value": 0,
+          "expectedAt": "2026-02-04T15:00:00.000Z",
+          "kanbanColumnId": 100,
+          "responsibleUserId": 64000102,
+          "contactId": 2148453131,
+          "motiveId": null,
+          "ticketId": "66107186",
+          "nextCardId": 11573,
+          "createdAt": "2026-01-20T18:23:34.000Z",
+          "updatedAt": "2026-01-20T18:23:34.000Z",
+          "responsibleUser": {
+            "photo": null,
+            "id": 64000102,
+            "name": "Manu  - Vitao"
+          },
+          "contact": {
+            "id": 2148453131,
+            "name": "Tailana Toledo",
+            "profilePicUrl": "https://d2mytgzbagllkr.cloudfront.net/production/38/38-2148453131-profilePic-1762364787722?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=Kjc21tSXJ0OAUHhIfyym9Q6o0Xh7wluUhGW8WVhpgR~GwFpEozFTNCIY6lHFfpGGdNoua2vyL~y-KwyRtNQotEJa8ggDgcG3BqQyO1Lvb9XaKkX3NBwqbkHviVxVIdkAA6SVdX0C6a-t59opOatHUIW4OdCQP3K8hpaHukUv7HWtved-GFemKfo5-pjpsadfP9ivFkffQWpCnw1vKlQw-NyPFhwrLeDCmj19IRZaXQMjF4FWMkWEULpyBuIxg4z2rCL7VYS3dmUbCmxrcZPZRfcqWym5-KjPF77ZAVLPI4vvx7r8cBP7hI9omGLy4saqFcazJf1PhM7FKHgcrSEZpA__"
+          }
+        },
+        {
+          "id": 11573,
+          "name": "COMPRA DE 3 EM 3 MESES",
+          "description": "CLIENTE POTENCIAL // COMPROU RECENTE",
+          "isActive": true,
+          "value": 1405,
+          "expectedAt": "2026-01-22T15:00:00.000Z",
+          "kanbanColumnId": 100,
+          "responsibleUserId": 64000102,
+          "contactId": 2147747399,
+          "motiveId": null,
+          "ticketId": "66352269",
+          "nextCardId": 11568,
+          "createdAt": "2026-01-20T18:11:29.000Z",
+          "updatedAt": "2026-01-20T18:11:29.000Z",
+          "responsibleUser": {
+            "photo": null,
+            "id": 64000102,
+            "name": "Manu  - Vitao"
+          },
+          "contact": {
+            "id": 2147747399,
+            "name": "ASSOCIACAO DOS FENILCETONURICOS",
+            "profilePicUrl": "https://d2mytgzbagllkr.cloudfront.net/production/38/38-2147747399-profilePic?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=uKh7KYoC11t5l0ia4pY3sGP40HcPEITrDPxQgPuWB3kIH5NccvvnM7UMTQLJoyrSshsAQVoqSHICwCqtJXLWR~y~LMQ1qalOvCFRZswemdkChdu0T7Lsd4mqOQkjbIrrocsYtAfQ4e0atGIPKGcRhVU29Eyotke1R9QMpxepotdrR3K0h7pvUZIsHTtOpvWsUx~kZg9Wk8-UHQe~t7Xtldw1rJTSlSBUCQ~YHjpMEeT-EFp6SeScS~ZqHGsQbym188zWF8hZ-6fTsJd8TEuEL4TaFgNEnLUzfTuVmoWmHWuolNSy~x5xA1ObyL2ikP7EEw1xAKsTVkrfPgdX3~9cMA__"
+          }
+        },
+        {
+          "id": 11568,
+          "name": "POSTO DE GASOLINA",
+          "description": "COMPRA POUCO PARA CONVENIENCIA",
+          "isActive": true,
+          "value": 0,
+          "expectedAt": "2026-02-04T15:00:00.000Z",
+          "kanbanColumnId": 100,
+          "responsibleUserId": 64000102,
+          "contactId": 2147912473,
+          "motiveId": null,
+          "ticketId": "66343144",
+          "nextCardId": 11553,
+          "createdAt": "2026-01-20T18:00:27.000Z",
+          "updatedAt": "2026-01-20T18:00:27.000Z",
+          "responsibleUser": {
+            "photo": null,
+            "id": 64000102,
+            "name": "Manu  - Vitao"
+          },
+          "contact": {
+            "id": 2147912473,
+            "name": "POSTOS LP - LUCAS - SC",
+            "profilePicUrl": "https://d2mytgzbagllkr.cloudfront.net/production/38/38-2147912473-profilePic?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=LwWxpGyk5IUHR7YOiPdZ7JEGg8dBgf53jlvrhbjmCI-Yhim3QUHaI8GKi1dGHWX8vXv3kIebT8xyndJ2ryxwWXGklQr3swOmb3ncM9LZ08vecGWaIF9TZGtBv7hHfYmq0wwf8KzlHekARvfWAqYB8Ezf7DH98RubTd3x97M1W~2kmgEV9UbX-wdJo2P5Jz9~LGv971rZ5R3UmPrlm3dn1x302O~KxXYe1fEzNFXp5IHe~x7SGS8zmXHXHrEfoJFe~6T6r0X4c9750Fdn1zkOPaLuuvOUfFua2brMNraIzCqdnqbCRbc1MVbUPlXQs-3M2i~uRgqH29nkVVcGDRpc1w__"
+          }
+        }
+      ]
+    },
+    {
+      "id": 415,
+      "name": "POS VENDA",
+      "isActive": true,
+      "isDefault": false,
+      "kanbanBoardId": 20,
+      "nextColumnId": 97,
+      "createdAt": "2026-01-22T18:57:23.000Z",
+      "updatedAt": "2026-01-22T18:59:57.000Z",
+      "cards": [
+        {
+          "id": 13596,
+          "name": "⚠️ MERCADO FERREIRA - Pedido atrasado entrega",
+          "description": "Pedido atrasado. Manu acompanhando transportadora. Rodrigo reclamando há dias. Dar posição definitiva até hoje. Se não entregar, compensar o cliente.",
+          "isActive": true,
+          "value": 0,
+          "expectedAt": "2026-03-26T15:00:00.000Z",
+          "kanbanColumnId": 415,
+          "responsibleUserId": 64000102,
+          "contactId": 2147772651,
+          "motiveId": null,
+          "ticketId": "65846814",
+          "nextCardId": 13595,
+          "createdAt": "2026-03-26T16:21:11.000Z",
+          "updatedAt": "2026-03-26T16:21:11.000Z",
+          "responsibleUser": {
+            "photo": null,
+            "id": 64000102,
+            "name": "Manu  - Vitao"
+          },
+          "contact": {
+            "id": 2147772651,
+            "name": "MERCADO FERREIRA - Rodrigo Ferreira",
+            "profilePicUrl": "https://d2mytgzbagllkr.cloudfront.net/production/38/38-2147772651-profilePic?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=umFuJ1Sev07lSNXBP7zIsryYtx2m4kdQoJ-Tlr4318OaMvsh7rbrvVCIYtGO9CPQUyt13b-zwGbLqR0qJZV7bNX-Oh7uEQ7foMmIbwaq1rOl12fm1KL2cFpQ~PltlLZbsHoxzQJlt9zAKI8ssbRqLZNH02m7US6uMeJI1yohMCqYBOYIPwv2hWszca1DGnRKhznJAAFDKxTctGXynu60u8r9cOKcpu7~eleKxOauGpJ1L~hPCoLQETRKg0mIyDFHtUnNTidi-drGvoIPipr8RaKFClW7wxgje5OGHa0HmpCB-tFy~mMpiLucaLPtbPB9lDhSUi7y~p8CT2NPjPCq2w__"
+          }
+        },
+        {
+          "id": 13595,
+          "name": "⚠️ PAMELA - Boleto sem retorno após pedido",
+          "description": "Pedido chegou dia 20/03 sem boleto. Pamela disse que vai verificar o e-mail do marido. Ninguém voltou pra saber se resolveu. Verificar se recebeu boleto.",
+          "isActive": true,
+          "value": 0,
+          "expectedAt": "2026-03-26T15:00:00.000Z",
+          "kanbanColumnId": 415,
+          "responsibleUserId": 4400002,
+          "contactId": 2148873471,
+          "motiveId": null,
+          "ticketId": "66823378",
+          "nextCardId": 13587,
+          "createdAt": "2026-03-26T16:18:29.000Z",
+          "updatedAt": "2026-03-26T16:18:29.000Z",
+          "responsibleUser": {
+            "photo": null,
+            "id": 4400002,
+            "name": "Daiane Stavicki"
+          },
+          "contact": {
+            "id": 2148873471,
+            "name": "Pamela",
+            "profilePicUrl": null
+          }
+        },
+        {
+          "id": 13587,
+          "name": "⚡ MISTER GRÃOS - NETO - SP | BONIFICAÇÃO PENDENTE",
+          "description": "CONSULTOR: Larissa | TICKET: #67060446\nSTATUS: Neto recebeu NF sem ter autorizado. Larissa ofereceu R$60 em bonificação. Perguntou \"Posso seguir?\" mas NETO NÃO RESPONDEU.\nAÇÃO: Aguardar mais 1h. Se não responder, ligar diretamente para Neto (empresa).\nOBS: Situação sensível - cliente irritado com NF não autorizada\nURGÊNCIA: 🟠 HOJE - resolver para não perder cliente",
+          "isActive": true,
+          "value": 0,
+          "expectedAt": "2026-03-18T15:00:00.000Z",
+          "kanbanColumnId": 415,
+          "responsibleUserId": 4400030,
+          "contactId": 2147648543,
+          "motiveId": null,
+          "ticketId": "67060446",
+          "nextCardId": 13586,
+          "createdAt": "2026-03-26T15:45:20.000Z",
+          "updatedAt": "2026-03-26T15:45:20.000Z",
+          "responsibleUser": {
+            "photo": "https://d2mytgzbagllkr.cloudfront.net/production/38/logo%20lp.png?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=CnErM5h3iIgCHCXsiFsMxxOfXLCBYWn9O08FoGdgoyRoXkffZZKWUcQ0cHxnWMY8OZQOrN5tVwk0370mzYYEZ6jC9hBZwE3IPBv1jPzvCsIwgRiltPE3XUiqapzsaeTPpT4UFkXwaKw~u8~6jGZDVhO0FQL81FOE0kiUlQQFrM-fXsjm1iF5RUjb15LUi2Ax-bYDs06ebAJyVAp-zGvYI4xVtyKzMVNv7J37CRjwjQ~OI0dQgtiaQYM-SBcd6hvwu~K-HtgOJ57wR8CPKOE1YswJ0We1MvNGGwDk5tBsftxACz3-2rNlzUGOCS0TTh94cpROz7tnSEfoE1P04huETw__",
+            "id": 4400030,
+            "name": "Larissa"
+          },
+          "contact": {
+            "id": 2147648543,
+            "name": "MISTER GRÃOS - NETO - SP",
+            "profilePicUrl": "https://d2mytgzbagllkr.cloudfront.net/production/38/38-2147648543-profilePic?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=hKaV9KjZqFhpJ0bLA8wF-n-5ttP7SDmbWfnx~BJg63E8xnYK-QKCJMlA-6R2nZ3EC7KU9AxVgoisQWoZhVaAwvTWmItJyADZf0mD9Jft9alh0HOExmN~DF7U3W6KdzijN5Lg10MBcNE7~9zEQ~KG~2ePChCs9V6HgVOaokPH~-0vxQSLlTs4LBEbD08GgvDqSYWGVoJV~XlGUGjWvKpxI~0jSwfiHdlpyOwQ8oJFIZ01tqClJSKiIPFK3KF3t~NXX5PFDdN9aYuKLuuh7iQhM2N9KRAoS6ZZIw0OaH4jftTaL8SjjIM1LLHFcAK4LG~cFQHAdyEVCb0MPgmO7CP--Q__"
+          }
+        },
+        {
+          "id": 13586,
+          "name": "🔴 JORDÃO ALIMENTOS - JOYSE | 7 DIAS SEM RESPOSTA",
+          "description": "CONSULTOR: Daiane | TICKET: #66797900\nSTATUS: Joyse perguntou posição do pedido em 19/03. Ficou SEM RESPOSTA por 7 dias. O ticket está marcado como \"GOLPE\" mas cliente está pedindo sinceramente.\nAÇÃO: 1) Verificar com financeiro a situação do pedido 2) Dar retorno à Joyse com posição definitiva 3) Se pedido ok, confirmar data de envio\nOBS: Cliente aguardou pacientemente - não abandonar!\nURGÊNCIA: 🔴 URGENTE",
+          "isActive": true,
+          "value": 0,
+          "expectedAt": "2026-03-18T15:00:00.000Z",
+          "kanbanColumnId": 415,
+          "responsibleUserId": 4400002,
+          "contactId": 2148862024,
+          "motiveId": null,
+          "ticketId": "66797900",
+          "nextCardId": 13584,
+          "createdAt": "2026-03-26T15:41:12.000Z",
+          "updatedAt": "2026-03-26T15:41:12.000Z",
+          "responsibleUser": {
+            "photo": null,
+            "id": 4400002,
+            "name": "Daiane Stavicki"
+          },
+          "contact": {
+            "id": 2148862024,
+            "name": "Jordão alimentos // Joyse // ACHO QUE É GOLPE",
+            "profilePicUrl": null
+          }
+        },
+        {
+          "id": 13584,
+          "name": "🔴 CASAS THEREZA - JOSÉ - RJ | PEDIDO SUMIU NA TRANSPORTADORA",
+          "description": "CONSULTOR: Larissa | TICKET: #66797869\nSTATUS: José perguntou posição do pedido. Larissa disse que transportadora não retornou. Pode precisar emitir NOVO PEDIDO. José respondeu \"Ok obrigado\" aguardando.\nAÇÃO: 1) Cobrar transportadora AGORA sobre o pedido 2) Dar posição definitiva ao José 3) Se necessário, emitir novo pedido e cancelar NF anterior\nURGÊNCIA: 🔴 URGENTE - Cliente esperando há dias",
+          "isActive": true,
+          "value": 0,
+          "expectedAt": "2026-03-18T15:00:00.000Z",
+          "kanbanColumnId": 415,
+          "responsibleUserId": 4400030,
+          "contactId": 2148782624,
+          "motiveId": null,
+          "ticketId": "66797869",
+          "nextCardId": null,
+          "createdAt": "2026-03-26T15:37:21.000Z",
+          "updatedAt": "2026-03-26T15:37:21.000Z",
+          "responsibleUser": {
+            "photo": "https://d2mytgzbagllkr.cloudfront.net/production/38/logo%20lp.png?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=CnErM5h3iIgCHCXsiFsMxxOfXLCBYWn9O08FoGdgoyRoXkffZZKWUcQ0cHxnWMY8OZQOrN5tVwk0370mzYYEZ6jC9hBZwE3IPBv1jPzvCsIwgRiltPE3XUiqapzsaeTPpT4UFkXwaKw~u8~6jGZDVhO0FQL81FOE0kiUlQQFrM-fXsjm1iF5RUjb15LUi2Ax-bYDs06ebAJyVAp-zGvYI4xVtyKzMVNv7J37CRjwjQ~OI0dQgtiaQYM-SBcd6hvwu~K-HtgOJ57wR8CPKOE1YswJ0We1MvNGGwDk5tBsftxACz3-2rNlzUGOCS0TTh94cpROz7tnSEfoE1P04huETw__",
+            "id": 4400030,
+            "name": "Larissa"
+          },
+          "contact": {
+            "id": 2148782624,
+            "name": "CASAS THEREZA - JOSÉ - RJ",
+            "profilePicUrl": "https://d2mytgzbagllkr.cloudfront.net/production/38/38-2148782624-profilePic-1770389979531?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=w6p7dM2Qkzj5tI5Ax572ASK0mIXUD-fJRI4svZ6TnC5fVulBa0T9LX907GrzyTHfUfN-sTmDIvW5XMLlFodlJnrnLAOp-IP~m3C~8e-w5XAak24MWaF~lZoPNmkO8l7V4qDga7VuOfmWmuhDOIaXGv74jHhYeyeU-SM3ZD0qHifVdnY574PTSixDNJJgZGbErgPLGpHT3pE~WsJKCNYKP560AfCeE-ws4ZJKciK9RDs-AtVJ3FNGWaKSU2iobVOzi67On97QZRegSllLPL5EMJ~VgQhhFY7ugNOeLsR~CO7KpPvzSEFnCFzXiIgIo2~NeQFAXYBa1kwkqni6PoFr5w__"
+          }
+        }
+      ]
+    },
+    {
+      "id": 97,
+      "name": "CS / RECOMPRA",
+      "isActive": true,
+      "isDefault": true,
+      "kanbanBoardId": 20,
+      "nextColumnId": 101,
+      "createdAt": "2025-04-14T19:00:57.000Z",
+      "updatedAt": "2026-01-22T19:03:42.000Z",
+      "cards": [
+        {
+          "id": 13604,
+          "name": "⭐ NUTRIVIA - MARIANA RS - Cliente amou! Recompra",
+          "description": "Mariana recebeu e AMOU o produto. Rodrigo encerrou sem oferecer recompra. OPORTUNIDADE: \"Que bom! Quer aproveitar e montar o próximo pedido com desconto especial?\"",
+          "isActive": true,
+          "value": 0,
+          "expectedAt": "2026-03-26T15:00:00.000Z",
+          "kanbanColumnId": 97,
+          "responsibleUserId": 64000104,
+          "contactId": 2148855338,
+          "motiveId": null,
+          "ticketId": "67010192",
+          "nextCardId": 11415,
+          "createdAt": "2026-03-26T16:43:34.000Z",
+          "updatedAt": "2026-03-26T16:43:34.000Z",
+          "responsibleUser": {
+            "photo": null,
+            "id": 64000104,
+            "name": "Leandro  - Comercial Interno "
+          },
+          "contact": {
+            "id": 2148855338,
+            "name": "NUTRIVIA - MARIANA - RS",
+            "profilePicUrl": "https://d2mytgzbagllkr.cloudfront.net/production/38/38-2148855338-profilePic-1773339461585?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=4ccmsRUm2esq7TEiwcjt7e3asj-O2pwCnyYW3UO-96OVtmpC1zlWlNT5qllATH2oGIk4y~rp9JqC4zs35P2Pu2tQC9rwFxBNhgygIHVFPcBv1Kcv6PePs2aDKawhCu4XcNM8sLIVFU0doGWSyzLPnDexXns9mrjvHUksfQGQj9JyeMcFVDIV-PpTBImNU4lgf0T1GdPUCZi2n8JujakjVfg42gwmQi6FNPsypcKeWYhIMd1KuBATwXEsq4DY7K2yHyywzMA6CTXJ4fFOPsu6rm-3WicbWfG6NK9Z6W-eWKWtoplt6zH44iVGv1aJNwBebmcLF3TX8hlin6k3qNwmXA__"
+          }
+        },
+        {
+          "id": 11415,
+          "name": " VIDA LEVE - Jaisson Bordig",
+          "description": "ELE QUER SAL - DRAGEADO E OS OUTROS PRODUTOS JÁ FEZ 1 COMPRA MAS AINDA TEM ESTOQUE ",
+          "isActive": true,
+          "value": 0,
+          "expectedAt": "2026-06-30T15:00:00.000Z",
+          "kanbanColumnId": 97,
+          "responsibleUserId": 4400002,
+          "contactId": 2148154421,
+          "motiveId": null,
+          "ticketId": "65742271",
+          "nextCardId": 11535,
+          "createdAt": "2026-01-12T14:36:48.000Z",
+          "updatedAt": "2026-01-21T20:30:04.000Z",
+          "responsibleUser": {
+            "photo": null,
+            "id": 4400002,
+            "name": "Daiane Stavicki"
+          },
+          "contact": {
+            "id": 2148154421,
+            "name": "VIDA LEVE - Jaisson Bordignon",
+            "profilePicUrl": "https://d2mytgzbagllkr.cloudfront.net/production/38/38-2148154421-profilePic-1777063304305?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=HaJraO3baMis4ANA8Z6Agx1WBlX2jZyhNqhG6kw5biM-oqB1kA5LPsO0HXLimNPCRqA5BVQJDtC84~KsM2yH3U3bnYN6wI6gLo7VC2qS5dSVtmaptU7-SYE84VCYgDZ4wbgtCrdQavp2C05mmPN9ZqQFS14N9rz08HWlgkH0ApsEiGka426~AC1U5oK7~ttEaWnmgQ8m8eC-1DMPti8i3z3pFTCFPBe0liu6O8CXjQkGp9CJt0SQ83eeROq4dH-KSZf2BPUOzw7gGbQvad~wThWFqhpvm0p2tz8NsdXoYWI5hXMJbdGTEetBL8TEC-x1Ut4mMNtmz-oaqDvrColKvg__"
+          }
+        },
+        {
+          "id": 11535,
+          "name": "QUITANDINHA",
+          "description": "FICOU DE FAZER REPOSIÇÃO, ENTROU NO LIMBO",
+          "isActive": true,
+          "value": 0,
+          "expectedAt": "2026-01-21T15:00:00.000Z",
+          "kanbanColumnId": 97,
+          "responsibleUserId": 64000102,
+          "contactId": 2148166984,
+          "motiveId": null,
+          "ticketId": "65735679",
+          "nextCardId": 11499,
+          "createdAt": "2026-01-20T13:11:56.000Z",
+          "updatedAt": "2026-01-21T20:30:11.000Z",
+          "responsibleUser": {
+            "photo": null,
+            "id": 64000102,
+            "name": "Manu  - Vitao"
+          },
+          "contact": {
+            "id": 2148166984,
+            "name": "MQ - Jean",
+            "profilePicUrl": "https://d2mytgzbagllkr.cloudfront.net/production/38/38-2148166984-profilePic?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=Kjv8riv21jFcQkzl89WInigZvEDzs5LDPMgI-QKwVDZflvp7DbxC4AcHUAeXf3LFrcLDjESp48eRHiTUZMkDHKDf~gAP804DjQiFNqPiJSlODhYec52tXHMozg787r4iVinb3s1YrBeEhKstljRcA~vU6l-XuZQSLn9txNCTgtnmdPhI0zR0xkG~eCiseKyvn8UmG1R0KQP4JAYVgDUcTx1ROU2RAZqOlnaG9Rg6gsoy7qfg2cjiRksaTIr2eWT10903jcOVlha-RS6DzIEkkBDN9usNU5tjY45F2FrRKD9irdORIve~hvnrEezRFPK-J7~o1e1WTxDuLM-sRsxeRg__"
+          }
+        },
+        {
+          "id": 11499,
+          "name": "THE HOUSE - THAIS CLIENTE DO IFOOD - PR",
+          "description": "CLIENTE TEVE UMA BOA SAIDA FIM DE ANO, E AGORA ESTA ESTRUTURANDO PARA FEVEREIRA, POSSIVEL RECOMPRA",
+          "isActive": true,
+          "value": 0,
+          "expectedAt": "2026-01-28T15:00:00.000Z",
+          "kanbanColumnId": 97,
+          "responsibleUserId": 64000102,
+          "contactId": 2148343373,
+          "motiveId": null,
+          "ticketId": "65741123",
+          "nextCardId": null,
+          "createdAt": "2026-01-19T12:22:44.000Z",
+          "updatedAt": "2026-01-21T20:30:11.000Z",
+          "responsibleUser": {
+            "photo": null,
+            "id": 64000102,
+            "name": "Manu  - Vitao"
+          },
+          "contact": {
+            "id": 2148343373,
+            "name": "THE HOUSE - THAIS CLIENTE DO IFOOD - PR",
+            "profilePicUrl": "https://d2mytgzbagllkr.cloudfront.net/production/38/38-2148343373-profilePic-1763473695068?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=XWeFsYIS1QD0GnzhLAUv81q44BCI5nu1yU8gCw7Mi9JY8mFZNh5S9F89yO24fJaIK0F2tM1tghUuInrO1OImJxPptu1~ls-2DT8XKJEN-VPGNCsTRLnCwnzJEOx-HZdvWf46I3slXODOaMhEY76cC9salHUAgE-il3bf9OV3LSvtGWFYvA5zLsIHJk5-xF6lKC9sqzsRrMLLQHAHa4scEeQXun~wH0-xdmSCZoN1QT7Wq99u0HnlpmOddJUNkPyPqwQPRoIMmna1FiKXuyrVAJYwlTuRFm6fOXnqYRjSC7NLo-zd0Sf-hOPkuBJsKEL-snN5Atu-fEbNWm3VfajhzA__"
+          }
+        }
+      ]
+    },
+    {
+      "id": 101,
+      "name": "NUTRIÇÃO",
+      "isActive": true,
+      "isDefault": false,
+      "kanbanBoardId": 20,
+      "nextColumnId": 98,
+      "createdAt": "2025-04-14T19:18:40.000Z",
+      "updatedAt": "2026-01-22T19:08:21.000Z",
+      "cards": [
+        {
+          "id": 11844,
+          "name": "OPÇÃO NATURAL",
+          "description": "cliente compra com distribuidor, não tem interesse em comprar com nos por que pega pouquissima quantidade quando ve necessidade, tentei argumentar e oferecer a granel, sem sucesso ! Nutrição",
+          "isActive": true,
+          "value": 0,
+          "expectedAt": "2026-02-06T15:00:00.000Z",
+          "kanbanColumnId": 101,
+          "responsibleUserId": null,
+          "contactId": 4404832,
+          "motiveId": null,
+          "ticketId": "66700684",
+          "nextCardId": 11525,
+          "createdAt": "2026-02-06T13:31:07.000Z",
+          "updatedAt": "2026-02-06T13:31:07.000Z",
+          "responsibleUser": null,
+          "contact": {
+            "id": 4404832,
+            "name": "Opção Natural- Sheila",
+            "profilePicUrl": "https://d2mytgzbagllkr.cloudfront.net/files/38-4404832-profilePic?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=VwnYWbhzcQ-H~FQuDDmM2uRueODWcTGT6SJCQ2xJqvouyWINYXifCsNQzDbUcCU4iVdeQm6tQfHoTEweFjmRvZ5-Y2B8N5ymoV~k5oPzAcuADXJbbxK6Jrsa-WrBVZ-8nJvwn35cSwv1C0Ludp89P0fnPcrjL~BekKfRCdQyNRaiSdCcXtk937KSNqBzJ6miHBya1h0~jXc~J0D~4E4J3U6wQ~Nj7~HpNG7nHti3rLO9f6flxDrTE3AFjXcFYl3~DY--URwZkWZu8agVoPRLHnwI3e5wg-evaOo4ldBkCPeL3rQtKpKkB92ceDwBOULnRKss~A0u3MCo--p0pSHAhQ__"
+          }
+        },
+        {
+          "id": 11525,
+          "name": "COMPRA COM DISTRIBUIDOOR",
+          "description": "COMPRA POUQUINHA QUANTIDADE, E ACHA QUE NÃO FAZ SENTIDO COMPRAR CONOSCO",
+          "isActive": true,
+          "value": 0,
+          "expectedAt": "2026-01-21T15:00:00.000Z",
+          "kanbanColumnId": 101,
+          "responsibleUserId": 64000102,
+          "contactId": 10030129,
+          "motiveId": null,
+          "ticketId": "66377162",
+          "nextCardId": 11567,
+          "createdAt": "2026-01-20T12:27:37.000Z",
+          "updatedAt": "2026-01-22T19:02:56.000Z",
+          "responsibleUser": {
+            "photo": null,
+            "id": 64000102,
+            "name": "Manu  - Vitao"
+          },
+          "contact": {
+            "id": 10030129,
+            "name": "FELIPE - MIL GRANO MERCADO NATURAL BC",
+            "profilePicUrl": ""
+          }
+        },
+        {
+          "id": 11567,
+          "name": "FELIPE DONO",
+          "description": "COMPROU UMA VEZ E NUNCA MAIS DEU RETORNO - INDICAÇÃO DAIANE",
+          "isActive": true,
+          "value": 0,
+          "expectedAt": "2026-01-22T15:00:00.000Z",
+          "kanbanColumnId": 101,
+          "responsibleUserId": 64000102,
+          "contactId": 10039454,
+          "motiveId": null,
+          "ticketId": "66161960",
+          "nextCardId": 11528,
+          "createdAt": "2026-01-20T17:59:10.000Z",
+          "updatedAt": "2026-01-22T19:03:32.000Z",
+          "responsibleUser": {
+            "photo": null,
+            "id": 64000102,
+            "name": "Manu  - Vitao"
+          },
+          "contact": {
+            "id": 10039454,
+            "name": "MS DISTRIBUIDORA - PR - FELIPE",
+            "profilePicUrl": "https://d2mytgzbagllkr.cloudfront.net/production/38/38-10039454-profilePic?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=DQRWwSztfUpE50fLzz0vcb1fDRXpiUbIYnRY2EbxUtcKgF5o3otxKB6xJ5UimvwtXRWYX20ybpc06b~En6Zffd8SEk3g6rELpOf6hZjkZch-H6tbHeerRs9FneZTR7voPZsDOp1SNsMqu6KV0Vua2QS2yC9h~ChdAbPvc2-nHxHxePFfQwV1BAuyeW4q7Rp7tWDMM8ULRr6djkgFneUsVVhuXQcvcZ3mwxyLLHdCZXLll7NZULaqy3J19t65Gqulp~SG2bahddHf12QQrcy7ER9kwWhcE5whF3Ln1qpdkBF4-YYCKCMcOwIetpDoF50PnYzBsqzk4tKd7r4UomaxGw__"
+          }
+        },
+        {
+          "id": 11528,
+          "name": "MAQUINAS DE COMIDA",
+          "description": "PRODUTO NOSSO NÃO GIRA",
+          "isActive": true,
+          "value": 0,
+          "expectedAt": "2026-01-21T15:00:00.000Z",
+          "kanbanColumnId": 101,
+          "responsibleUserId": 64000102,
+          "contactId": 2147784621,
+          "motiveId": null,
+          "ticketId": "66157417",
+          "nextCardId": 11557,
+          "createdAt": "2026-01-20T12:51:31.000Z",
+          "updatedAt": "2026-01-28T18:43:44.000Z",
+          "responsibleUser": {
+            "photo": null,
+            "id": 64000102,
+            "name": "Manu  - Vitao"
+          },
+          "contact": {
+            "id": 2147784621,
+            "name": "BR COMBOS - ANTÔNIO - SC",
+            "profilePicUrl": "https://d2mytgzbagllkr.cloudfront.net/production/38/38-2147784621-profilePic-1776347695198?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=p9TtQuaioTHMdGkIvKSJaH52XDBc1qLEVxp-p7XEDSfFqt-oyLt1q6hPrVQVlF6oAkn0UAmpXiNwHbtD7RrAGQp0l0HP-2mtCeCnHDT-D09QBCqsPU6~vIQ9siCg3HbtQ7U9JkMZ5aA~FxnNuEKW4X9TrUxLOlP31TGV~mvrKMnL8z0apR2jyyQvgJE58KWpyPGIhY5WotXYEubMviv-iCFu41ayIVMTfQwGUJjf0vpjTac6rNgIwF4dFyucSSQ~fu4W6qUu9f5dl7njDLtzL0I5e~GeQDcL~iZUKmLybYhZIRvUWth3j5AmzuwuRhTHfGHuDO4wjKF5eLrybVshUA__"
+          }
+        },
+        {
+          "id": 11557,
+          "name": "INSISTIR",
+          "description": "FICOU NO LIMBO",
+          "isActive": true,
+          "value": 0,
+          "expectedAt": "2026-01-21T15:00:00.000Z",
+          "kanbanColumnId": 101,
+          "responsibleUserId": 64000102,
+          "contactId": 4400028,
+          "motiveId": null,
+          "ticketId": null,
+          "nextCardId": null,
+          "createdAt": "2026-01-20T17:22:48.000Z",
+          "updatedAt": "2026-01-28T18:43:44.000Z",
+          "responsibleUser": {
+            "photo": null,
+            "id": 64000102,
+            "name": "Manu  - Vitao"
+          },
+          "contact": {
+            "id": 4400028,
+            "name": " Armazem Do Colono - ALICE",
+            "profilePicUrl": "https://d2mytgzbagllkr.cloudfront.net/production/38/38-4400028-profilePic?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=fQWoCzylMTcRE3rKAqCc-h~3j9qIKKIvt5iivlUAsVQqbrnjXHLOOh1MmT7qbmgEbM~yxUlDNj9sCCvRYfk169qq2Gyj5Gi4wa2Kfc9pr6t0jWLdibmT0Uqz8TFvIXISNr6k2y61FPTrC4qQ8-PA4gorSOY7s2o6Bhik3XnAR9ZQwi2e9b9tVD8yehuvcc3zlzQIMbj7cjQ9cK5YOjtm7VlM8fGyC7OnK8xecQsjA0dcbmH6PA0AyD~YFI0O-JHKZuIbibZhTDjgYRnJL8CQn1dEG2MhwST9Qj~vQl0C9b9mVE7jUDHoRDNXs4ufr6dCih84yh3BBYkKbXYNZztD7w__"
+          }
+        }
+      ]
+    },
+    {
+      "id": 98,
+      "name": "BACKUP",
+      "isActive": true,
+      "isDefault": true,
+      "kanbanBoardId": 20,
+      "nextColumnId": null,
+      "createdAt": "2025-04-14T19:00:57.000Z",
+      "updatedAt": "2026-01-22T19:08:21.000Z",
+      "cards": []
+    }
+  ]
+}

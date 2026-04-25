@@ -1,0 +1,27 @@
+{
+  "date": "2026-04-25",
+  "started_at": "2026-04-25T18:49:57.372483",
+  "finished_at": "2026-04-25T18:52:42.317615",
+  "duration_seconds": 164.9,
+  "results": {
+    "connections": "OK",
+    "contacts": "OK (15632 items)",
+    "extrainfo_fields": "SKIP (endpoint nao encontrado)",
+    "kanban_boards": "OK",
+    "kanban_columns_20": "OK",
+    "kanban_columns_100": "OK",
+    "kanban_columns": "OK (2 boards, 0 falhas)",
+    "tickets": "OK (297 items, 30d dedup)",
+    "messages": "OK (5/5)",
+    "kanban_cards": "SKIP (no _card_ids.json — endpoint de listagem nao publico)",
+    "cnpj_bridge": "OK (200 novos, 200 total)"
+  },
+  "exit_code": 0,
+  "token_email": "admin",
+  "counts": {
+    "contacts": 15632,
+    "tickets": 297,
+    "kanban_column_files": 2,
+    "cnpj_bridge_total": 200
+  }
+}

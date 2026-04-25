@@ -9,12 +9,13 @@ DeskrioService existente (backend/app/services/deskrio_service.py) para
 manter um unico ponto de chamada HTTP com retry + cache + logging.
 
 ENDPOINTS COBERTOS (testados 2026-04-24):
-  GET  /v1/api/connections        -> connections.json
-  GET  /v1/api/contacts           -> contacts.json
-  GET  /v1/api/tickets?...        -> tickets.json (ultimos 7 dias)
-  GET  /v1/api/kanban-boards      -> kanban_boards.json
-  GET  /v1/api/kanban-columns/:id -> (usado pra resolver colunas)
-  GET  /v1/api/messages/:ticketId -> messages_{ticketId}.json (top N)
+  GET  /v1/api/connections             -> connections.json
+  GET  /v1/api/contacts                -> contacts.json
+  GET  /v1/api/tickets?...             -> tickets.json (ultimos 30 dias, 5 janelas de 6d)
+  GET  /v1/api/kanban-boards           -> kanban_boards.json
+  GET  /v1/api/kanban-columns/:boardId -> kanban_columns_{boardId}.json
+  GET  /v1/api/messages/:ticketId      -> messages_{ticketId}.json (top N)
+  GET  /v1/api/custom-field/:number    -> cnpj_bridge.json (incremental, 200/dia)
 
 ENDPOINT NAO PUBLICO (captura externa historica):
   kanban_cards_20.json e kanban_cards_100.json eram gerados por processo
@@ -38,6 +39,7 @@ import argparse
 import json
 import logging
 import os
+import re
 import sys
 from datetime import date, datetime, timedelta
 from pathlib import Path
@@ -92,11 +94,13 @@ class DeskrioSnapshot:
         self.company_id = int(self.env.get("DESKRIO_COMPANY_ID", "38"))
         self.out_dir = DESKRIO_ROOT / target_date.isoformat()
         self.results: dict[str, str] = {}  # endpoint -> "OK"|"FAIL"|"SKIP"
+        self._started_at: datetime = datetime.utcnow()
 
     def _headers(self) -> dict[str, str]:
         return {"Authorization": f"Bearer {self.token}"}
 
-    def _get(self, path: str, params: dict[str, Any] | None = None) -> Any | None:
+    def _get(self, path: str, params: dict[str, Any] | None = None,
+             _raise_on_token_error: bool = False) -> Any | None:
         if not self.token or not self.base_url:
             log.error("DESKRIO_API_TOKEN ou DESKRIO_API_URL ausente em .env")
             return None
@@ -104,11 +108,26 @@ class DeskrioSnapshot:
         try:
             with httpx.Client(timeout=30.0) as client:
                 r = client.get(url, headers=self._headers(), params=params or {})
-                if r.status_code == 403 and "Invalid token" in r.text:
-                    log.warning("403 Invalid token em %s — endpoint privado?", path)
+                # Detectar token expirado/invalido em qualquer status 401/403
+                if r.status_code in (401, 403):
+                    body_lower = r.text.lower()
+                    is_token_error = any(kw in body_lower for kw in (
+                        "invalid token", "token inválido", "unauthorized",
+                        "jwt expired", "token expired", "signature verification failed",
+                    ))
+                    if is_token_error:
+                        log.error("TOKEN_EXPIRED: %d em %s — %s", r.status_code, path, r.text[:200])
+                        if _raise_on_token_error:
+                            raise RuntimeError("TOKEN_EXPIRED")
+                        return None
+                    # 403 por endpoint privado (nao token) — logar como warning, nao error
+                    log.warning("HTTP %d em %s — endpoint pode ser privado: %.200s",
+                                r.status_code, path, r.text)
                     return None
                 r.raise_for_status()
                 return r.json()
+        except RuntimeError:
+            raise  # re-raise TOKEN_EXPIRED para o run() tratar
         except httpx.HTTPStatusError as e:
             log.warning("HTTP %d em %s: %.200s", e.response.status_code, path, e.response.text)
             return None
@@ -184,17 +203,30 @@ class DeskrioSnapshot:
         return ok
 
     def capture_tickets(self, days_back: int = 6) -> list[dict]:
+        # GAP 1: 5 janelas de 6 dias cobrindo 30 dias, dedup por ticket.id
         # API impoe limite de 7 dias (ERR_DATE_LIMIT_OFF_1_WEEK) — usar 6 por seguranca
-        end = self.target_date
-        start = end - timedelta(days=days_back)
-        params = {"startDate": start.isoformat(), "endDate": end.isoformat()}
-        data = self._get("/v1/api/tickets", params=params)
-        if data is None or not isinstance(data, list):
+        all_tickets: dict[Any, dict] = {}
+        windows = 5
+        for i in range(windows):
+            end = self.target_date - timedelta(days=i * days_back)
+            start = end - timedelta(days=days_back)
+            params = {"startDate": start.isoformat(), "endDate": end.isoformat()}
+            log.info("Tickets janela %d/%d: %s ate %s", i + 1, windows, start.isoformat(), end.isoformat())
+            data = self._get("/v1/api/tickets", params=params)
+            if data is None or not isinstance(data, list):
+                log.warning("Janela %d/%d falhou (start=%s end=%s)", i + 1, windows, start.isoformat(), end.isoformat())
+                continue
+            for ticket in data:
+                tid = ticket.get("id")
+                if tid is not None:
+                    all_tickets[tid] = ticket
+        merged = list(all_tickets.values())
+        if not merged:
             self.results["tickets"] = "FAIL"
             return []
-        ok = self._write("tickets.json", data)
-        self.results["tickets"] = f"OK ({len(data)} items)" if ok else "FAIL"
-        return data if ok else []
+        ok = self._write("tickets.json", merged)
+        self.results["tickets"] = f"OK ({len(merged)} items, 30d dedup)" if ok else "FAIL"
+        return merged if ok else []
 
     def capture_messages_for_tickets(self, tickets: list[dict], top_n: int = 5) -> None:
         """Captura mensagens dos N tickets mais recentes."""
@@ -221,6 +253,293 @@ class DeskrioSnapshot:
                 captured += 1
 
         self.results["messages"] = f"OK ({captured}/{len(sorted_tickets)})"
+
+    def capture_kanban_columns(self) -> None:
+        # GAP 2: capturar colunas de cada board apos salvar kanban_boards.json
+        boards_path = self.out_dir / "kanban_boards.json"
+        if self.dry_run:
+            # Em dry-run nao ha arquivo escrito; tentar ler do dia anterior ou pular
+            log.info("[DRY-RUN] capture_kanban_columns — lendo boards do endpoint direto")
+            raw = self._get("/v1/api/kanban-boards")
+        else:
+            if not boards_path.exists():
+                self.results["kanban_columns"] = "SKIP (kanban_boards.json nao encontrado)"
+                return
+            try:
+                raw = json.loads(boards_path.read_text(encoding="utf-8"))
+            except Exception as exc:
+                self.results["kanban_columns"] = f"FAIL (parse boards: {exc})"
+                return
+
+        # Extrair lista de boards independente do schema
+        if isinstance(raw, list):
+            boards_list = raw
+        elif isinstance(raw, dict):
+            # tenta chaves conhecidas: kanbanBoards, boards, data
+            for key in ("kanbanBoards", "boards", "data"):
+                if key in raw and isinstance(raw[key], list):
+                    boards_list = raw[key]
+                    break
+            else:
+                boards_list = []
+        else:
+            boards_list = []
+
+        if not boards_list:
+            self.results["kanban_columns"] = "SKIP (nenhum board encontrado)"
+            return
+
+        ok_count = 0
+        fail_count = 0
+        for board in boards_list:
+            board_id = board.get("id")
+            if board_id is None:
+                continue
+            data = self._get(f"/v1/api/kanban-columns/{board_id}")
+            if data is None:
+                log.warning("kanban-columns/%s: falhou (403/404) — continuando", board_id)
+                fail_count += 1
+                self.results[f"kanban_columns_{board_id}"] = "FAIL (403/404)"
+                continue
+            filename = f"kanban_columns_{board_id}.json"
+            written = self._write(filename, data)
+            if written:
+                ok_count += 1
+                self.results[f"kanban_columns_{board_id}"] = "OK"
+            else:
+                fail_count += 1
+                self.results[f"kanban_columns_{board_id}"] = "FAIL (write)"
+
+        self.results["kanban_columns"] = f"OK ({ok_count} boards, {fail_count} falhas)"
+
+    def capture_cnpj_bridge(self, limit: int = 200) -> None:
+        # GAP 3: CNPJ Bridge incremental — 200 contatos/dia via custom-field/{number}
+        # R3 CRM VITAO360: CNPJ = string 14 digitos zero-padded, NUNCA float/int
+        bridge_path = DESKRIO_ROOT / "cnpj_bridge.json"
+
+        # Carregar bridge anterior (historico cumulativo)
+        existing: dict[str, Any] = {}
+        if bridge_path.exists():
+            try:
+                raw = json.loads(bridge_path.read_text(encoding="utf-8"))
+                existing = raw.get("cnpj_bridge", {})
+            except Exception as exc:
+                log.warning("Falha ao ler cnpj_bridge.json anterior: %s — iniciando vazio", exc)
+
+        # Carregar contatos do dia
+        contacts_path = self.out_dir / "contacts.json"
+        if not contacts_path.exists():
+            self.results["cnpj_bridge"] = "SKIP (contacts.json nao encontrado)"
+            return
+        try:
+            contacts_raw = json.loads(contacts_path.read_text(encoding="utf-8"))
+        except Exception as exc:
+            self.results["cnpj_bridge"] = f"FAIL (parse contacts: {exc})"
+            return
+
+        if not isinstance(contacts_raw, list):
+            self.results["cnpj_bridge"] = "FAIL (contacts.json nao e lista)"
+            return
+
+        # Carregar tickets do dia para priorizar contatos com tickets recentes
+        tickets_path = self.out_dir / "tickets.json"
+        ticket_contact_ids: set[Any] = set()
+        if tickets_path.exists():
+            try:
+                tickets_raw = json.loads(tickets_path.read_text(encoding="utf-8"))
+                for t in tickets_raw:
+                    cid = t.get("contactId")
+                    if cid is not None:
+                        ticket_contact_ids.add(str(cid))
+            except Exception:
+                pass
+
+        # Calcular threshold de 30 dias para pular contatos ja processados recentemente
+        cutoff = datetime.utcnow() - timedelta(days=30)
+
+        def needs_update(contact_id: str) -> bool:
+            if contact_id not in existing:
+                return True
+            last = existing[contact_id].get("last_checked", "")
+            if not last:
+                return True
+            try:
+                return datetime.fromisoformat(last) < cutoff
+            except Exception:
+                return True
+
+        # Separar contatos: nao-grupos primeiro, priorizar com tickets
+        non_groups = [c for c in contacts_raw if not c.get("isGroup", True)]
+        groups = [c for c in contacts_raw if c.get("isGroup", True)]
+
+        # Ordenar: com ticket recente primeiro, depois resto dos nao-grupos, depois grupos
+        def sort_key(c: dict) -> int:
+            cid = str(c.get("id", ""))
+            in_ticket = cid in ticket_contact_ids
+            return 0 if in_ticket else 1
+
+        prioritized = sorted(non_groups, key=sort_key) + groups
+
+        # Filtrar apenas quem precisa de update
+        to_process = [c for c in prioritized if needs_update(str(c.get("id", "")))][:limit]
+
+        log.info("CNPJ Bridge: %d contatos a processar (limit=%d, ja existentes=%d)",
+                 len(to_process), limit, len(existing))
+
+        n_new = 0
+        n_skip = 0
+        now_iso = datetime.utcnow().isoformat()
+
+        for contact in to_process:
+            contact_id = str(contact.get("id", ""))
+            number = str(contact.get("number", "")).strip()
+            name = contact.get("name", "")
+
+            if not number:
+                n_skip += 1
+                continue
+
+            data = self._get(f"/v1/api/custom-field/{number}")
+            if data is None:
+                # Endpoint tolerado como SKIP — registrar sem falhar (pode ser 403/404)
+                existing[contact_id] = {
+                    "number": number,
+                    "name": name,
+                    "cnpjs": existing.get(contact_id, {}).get("cnpjs", []),
+                    "last_checked": now_iso,
+                    "status": "SKIP",
+                }
+                n_skip += 1
+                continue
+
+            # Extrair CNPJs do extraInfo — pode vir em varias estruturas
+            raw_cnpjs: list[str] = []
+            if isinstance(data, list):
+                for field in data:
+                    val = field.get("value") or field.get("cnpj") or field.get("extraValue") or ""
+                    if val:
+                        raw_cnpjs.append(str(val))
+            elif isinstance(data, dict):
+                for key in ("cnpj", "value", "extraValue", "CNPJ"):
+                    val = data.get(key, "")
+                    if val:
+                        raw_cnpjs.append(str(val))
+                # extraInfo pode ser lista dentro do dict
+                for item in data.get("extraInfo", []):
+                    val = item.get("value") or item.get("extraValue") or ""
+                    if val:
+                        raw_cnpjs.append(str(val))
+
+            # R3: normalizar todos os CNPJs — string 14 digitos zero-padded, NUNCA float/int
+            normalized = []
+            for raw_c in raw_cnpjs:
+                cleaned = re.sub(r"\D", "", str(raw_c)).zfill(14)
+                # Validar que e plausivel (14 digitos, nao zerado inteiramente)
+                if len(cleaned) == 14 and cleaned != "00000000000000":
+                    normalized.append(cleaned)
+
+            existing[contact_id] = {
+                "number": number,
+                "name": name,
+                "cnpjs": normalized,
+                "last_checked": now_iso,
+                "status": "OK",
+            }
+            n_new += 1
+
+        n_total = len(existing)
+
+        bridge_output = {
+            "cnpj_bridge": existing,
+            "stats": {
+                "total_contacts": n_total,
+                "processed_today": len(to_process),
+                "new_or_updated": n_new,
+                "skipped": n_skip,
+                "last_run": now_iso,
+                "limit_per_day": limit,
+            },
+        }
+
+        if not self.dry_run:
+            bridge_path.write_text(json.dumps(bridge_output, indent=2, ensure_ascii=False), encoding="utf-8")
+            log.info("OK cnpj_bridge.json (%d total, %d novos hoje)", n_total, n_new)
+        else:
+            log.info("[DRY-RUN] cnpj_bridge (%d total, %d novos hoje)", n_total, n_new)
+
+        self.results["cnpj_bridge"] = f"OK ({n_new} novos, {n_total} total)"
+
+    def _save_extraction_report(self, finished_at: datetime, exit_code: int) -> None:
+        # GAP 4: salvar extraction_report.json + atualizar latest_extraction.json
+        duration = (finished_at - self._started_at).total_seconds()
+
+        # Contar itens nos arquivos salvos para o campo counts
+        counts: dict[str, int] = {}
+        for fname in ("contacts.json", "tickets.json", "connections.json"):
+            fpath = self.out_dir / fname
+            if fpath.exists():
+                try:
+                    data = json.loads(fpath.read_text(encoding="utf-8"))
+                    if isinstance(data, list):
+                        counts[fname.replace(".json", "")] = len(data)
+                    elif isinstance(data, dict):
+                        # tickets/contacts podem vir embrulhados
+                        for key in ("data", "items", "results"):
+                            if isinstance(data.get(key), list):
+                                counts[fname.replace(".json", "")] = len(data[key])
+                                break
+                except Exception:
+                    pass
+
+        # Adicionar contagem de kanban_columns gerados
+        kanban_col_files = list(self.out_dir.glob("kanban_columns_*.json")) if not self.dry_run else []
+        counts["kanban_column_files"] = len(kanban_col_files)
+
+        # Contagem bridge
+        bridge_path = DESKRIO_ROOT / "cnpj_bridge.json"
+        if bridge_path.exists():
+            try:
+                b = json.loads(bridge_path.read_text(encoding="utf-8"))
+                counts["cnpj_bridge_total"] = len(b.get("cnpj_bridge", {}))
+            except Exception:
+                pass
+
+        # DESKRIO_PROFILE pode ser "admin" (login) ou email — usar email do token se disponivel
+        raw_profile = self.env.get("DESKRIO_PROFILE", "leandro.garcia@vitao.com.br")
+        token_email = raw_profile if "@" in raw_profile else "leandro.garcia@vitao.com.br"
+
+        report = {
+            "date": self.target_date.isoformat(),
+            "started_at": self._started_at.isoformat(),
+            "finished_at": finished_at.isoformat(),
+            "duration_seconds": round(duration, 1),
+            "results": self.results,
+            "exit_code": exit_code,
+            "token_email": token_email,
+            "counts": counts,
+        }
+
+        if not self.dry_run:
+            self.out_dir.mkdir(parents=True, exist_ok=True)
+            report_path = self.out_dir / "extraction_report.json"
+            report_path.write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
+            log.info("OK extraction_report.json (%.1fs)", duration)
+
+            latest = {
+                "date": self.target_date.isoformat(),
+                "dir": str(self.out_dir.relative_to(PROJECT_ROOT)).replace("\\", "/"),
+                "report_summary": {
+                    "exit_code": exit_code,
+                    "duration_seconds": round(duration, 1),
+                    "counts": counts,
+                    "results": self.results,
+                },
+            }
+            latest_path = DESKRIO_ROOT / "latest_extraction.json"
+            latest_path.write_text(json.dumps(latest, indent=2, ensure_ascii=False), encoding="utf-8")
+            log.info("OK latest_extraction.json")
+        else:
+            log.info("[DRY-RUN] extraction_report (duration=%.1fs, exit_code=%d)", duration, exit_code)
 
     def capture_kanban_cards_if_ids_known(self) -> None:
         """Tentativa graciosa: se _card_ids.json existir, captura por ID."""
@@ -262,7 +581,11 @@ class DeskrioSnapshot:
             return 1
 
         # Sanity check: token valido?
-        test = self._get("/v1/api/connections")
+        try:
+            test = self._get("/v1/api/connections", _raise_on_token_error=True)
+        except RuntimeError:
+            log.error("FALHA CRITICA: TOKEN_EXPIRED — renovar DESKRIO_API_TOKEN em .env")
+            return 1
         if test is None:
             log.error("FALHA CRITICA: token invalido ou API fora do ar")
             return 1
@@ -272,9 +595,11 @@ class DeskrioSnapshot:
         self.capture_contacts()
         self.capture_extrainfo_fields()
         self.capture_kanban_boards()
-        tickets = self.capture_tickets()
+        self.capture_kanban_columns()  # GAP 2: colunas de cada board
+        tickets = self.capture_tickets()  # GAP 1: 30 dias em 5 janelas
         self.capture_messages_for_tickets(tickets)
         self.capture_kanban_cards_if_ids_known()
+        self.capture_cnpj_bridge()  # GAP 3: CNPJ Bridge incremental
 
         # Report
         log.info("=" * 60)
@@ -288,9 +613,15 @@ class DeskrioSnapshot:
         failed_critical = [k for k in critical if not self.results.get(k, "").startswith("OK")]
         if failed_critical:
             log.error("FALHAS CRITICAS: %s", failed_critical)
-            return 1
-        failed_any = [k for k, v in self.results.items() if v.startswith("FAIL")]
-        return 0 if not failed_any else 2
+            exit_code = 1
+        else:
+            failed_any = [k for k, v in self.results.items() if v.startswith("FAIL")]
+            exit_code = 0 if not failed_any else 2
+
+        # GAP 4: salvar extraction_report.json e latest_extraction.json
+        self._save_extraction_report(finished_at=datetime.utcnow(), exit_code=exit_code)
+
+        return exit_code
 
 
 # ---------------------------------------------------------------------------

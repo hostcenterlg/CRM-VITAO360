@@ -1,0 +1,98 @@
+{
+  "kanbanBoards": [
+    {
+      "id": 20,
+      "name": "Vendas Vitao",
+      "isActive": 1,
+      "kanbanType": "vendas",
+      "creatorUserId": 4400034,
+      "companyId": 38,
+      "createdAt": "2025-04-14T19:00:57.000Z",
+      "updatedAt": "2025-04-14T19:00:57.000Z",
+      "users": [
+        {
+          "photo": null,
+          "id": 4400002,
+          "name": "Daiane Stavicki",
+          "KanbanBoardsUsers": {
+            "kanbanBoardId": 20,
+            "userId": 4400002,
+            "createdAt": "2025-04-14T19:00:57.000Z",
+            "updatedAt": "2025-04-14T19:00:57.000Z"
+          }
+        },
+        {
+          "photo": "https://d2mytgzbagllkr.cloudfront.net/production/38/logo%20lp.png?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=CnErM5h3iIgCHCXsiFsMxxOfXLCBYWn9O08FoGdgoyRoXkffZZKWUcQ0cHxnWMY8OZQOrN5tVwk0370mzYYEZ6jC9hBZwE3IPBv1jPzvCsIwgRiltPE3XUiqapzsaeTPpT4UFkXwaKw~u8~6jGZDVhO0FQL81FOE0kiUlQQFrM-fXsjm1iF5RUjb15LUi2Ax-bYDs06ebAJyVAp-zGvYI4xVtyKzMVNv7J37CRjwjQ~OI0dQgtiaQYM-SBcd6hvwu~K-HtgOJ57wR8CPKOE1YswJ0We1MvNGGwDk5tBsftxACz3-2rNlzUGOCS0TTh94cpROz7tnSEfoE1P04huETw__",
+          "id": 4400030,
+          "name": "Larissa",
+          "KanbanBoardsUsers": {
+            "kanbanBoardId": 20,
+            "userId": 4400030,
+            "createdAt": "2025-04-14T19:00:57.000Z",
+            "updatedAt": "2025-04-14T19:00:57.000Z"
+          }
+        },
+        {
+          "photo": null,
+          "id": 4400034,
+          "name": "Administrador",
+          "KanbanBoardsUsers": {
+            "kanbanBoardId": 20,
+            "userId": 4400034,
+            "createdAt": "2025-04-14T19:00:57.000Z",
+            "updatedAt": "2025-04-14T19:00:57.000Z"
+          }
+        },
+        {
+          "photo": null,
+          "id": 64000102,
+          "name": "Manu  - Vitao",
+          "KanbanBoardsUsers": {
+            "kanbanBoardId": 20,
+            "userId": 64000102,
+            "createdAt": "2026-01-19T20:34:14.000Z",
+            "updatedAt": "2026-01-19T20:34:14.000Z"
+          }
+        },
+        {
+          "photo": null,
+          "id": 64000104,
+          "name": "Leandro  - Comercial Interno ",
+          "KanbanBoardsUsers": {
+            "kanbanBoardId": 20,
+            "userId": 64000104,
+            "createdAt": "2025-04-14T19:00:57.000Z",
+            "updatedAt": "2025-04-14T19:00:57.000Z"
+          }
+        }
+      ],
+      "motives": []
+    },
+    {
+      "id": 100,
+      "name": "Vendas Vitao - Larissa",
+      "isActive": 1,
+      "kanbanType": "vendas",
+      "creatorUserId": 4400030,
+      "companyId": 38,
+      "createdAt": "2026-01-23T19:29:42.000Z",
+      "updatedAt": "2026-01-23T19:36:12.000Z",
+      "users": [
+        {
+          "photo": "https://d2mytgzbagllkr.cloudfront.net/production/38/logo%20lp.png?Expires=1893456000&Key-Pair-Id=K1I60S7Y6MHGME&Signature=CnErM5h3iIgCHCXsiFsMxxOfXLCBYWn9O08FoGdgoyRoXkffZZKWUcQ0cHxnWMY8OZQOrN5tVwk0370mzYYEZ6jC9hBZwE3IPBv1jPzvCsIwgRiltPE3XUiqapzsaeTPpT4UFkXwaKw~u8~6jGZDVhO0FQL81FOE0kiUlQQFrM-fXsjm1iF5RUjb15LUi2Ax-bYDs06ebAJyVAp-zGvYI4xVtyKzMVNv7J37CRjwjQ~OI0dQgtiaQYM-SBcd6hvwu~K-HtgOJ57wR8CPKOE1YswJ0We1MvNGGwDk5tBsftxACz3-2rNlzUGOCS0TTh94cpROz7tnSEfoE1P04huETw__",
+          "id": 4400030,
+          "name": "Larissa",
+          "KanbanBoardsUsers": {
+            "kanbanBoardId": 100,
+            "userId": 4400030,
+            "createdAt": "2026-01-23T19:29:42.000Z",
+            "updatedAt": "2026-01-23T19:29:42.000Z"
+          }
+        }
+      ],
+      "motives": []
+    }
+  ],
+  "hasMore": false,
+  "count": 2
+}
