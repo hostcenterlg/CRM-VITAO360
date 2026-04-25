@@ -31,6 +31,7 @@ from sqlalchemy.orm import Session
 
 from backend.app.api.deps import (
     get_current_user,
+    get_user_canal_ids,
     require_admin,
     require_admin_or_gerente,
     require_consultor_or_admin,
@@ -233,6 +234,10 @@ def listar_vendas(
     ),
     data_inicio: Optional[date] = Query(None, description="Data inicio (YYYY-MM-DD), inclusivo"),
     data_fim: Optional[date] = Query(None, description="Data fim (YYYY-MM-DD), inclusivo"),
+    canal_id: Optional[int] = Query(
+        None,
+        description="Restringe a um canal (id em canais). Obriga estar nos canais permitidos do user.",
+    ),
     # Paginacao padronizada (page/per_page) — preferida
     page: Optional[int] = Query(None, ge=1, description="Pagina atual (1-based). Tem precedencia sobre offset."),
     per_page: Optional[int] = Query(None, ge=1, le=200, description="Itens por pagina (max 200). Tem precedencia sobre limit."),
@@ -241,6 +246,7 @@ def listar_vendas(
     offset: int = Query(default=0, ge=0, description="Numero de registros a pular (legado: usar page)"),
     db: Session = Depends(get_db),
     usuario: Usuario = Depends(get_current_user),
+    user_canal_ids: list[int] | None = Depends(get_user_canal_ids),
 ) -> VendasPaginatedResponse:
     """
     Lista vendas com paginacao padronizada e filtros opcionais.
@@ -264,8 +270,28 @@ def listar_vendas(
     # Query base (sem paginacao — para contar total)
     base_stmt = select(Venda).order_by(Venda.data_pedido.desc())
 
-    # Isolamento automatico por consultor — consultor ve apenas seus registros
-    if usuario.role == "consultor":
+    # ----------------------------------------------------------------------
+    # Multi-canal scoping (DECISAO L3 Leandro 25/Apr/2026)
+    # Vendas nao tem canal_id direto — JOIN via cnpj com clientes.canal_id.
+    # ----------------------------------------------------------------------
+    if user_canal_ids is not None:
+        if not user_canal_ids:
+            return VendasPaginatedResponse.build(
+                items=[], total=0, params=pagination,
+            )
+        if canal_id is not None and canal_id not in user_canal_ids:
+            raise HTTPException(403, "Canal nao autorizado para este usuario")
+        cnpjs_canal = select(Cliente.cnpj).where(
+            Cliente.canal_id.in_(user_canal_ids)
+        )
+        base_stmt = base_stmt.where(Venda.cnpj.in_(cnpjs_canal))
+    if canal_id is not None:
+        cnpjs_specific = select(Cliente.cnpj).where(Cliente.canal_id == canal_id)
+        base_stmt = base_stmt.where(Venda.cnpj.in_(cnpjs_specific))
+
+    # Isolamento automatico por consultor — consultor (interno ou externo)
+    # ve apenas seus registros
+    if usuario.role in ("consultor", "consultor_externo"):
         nome_consultor = (usuario.consultor_nome or usuario.nome or "").upper()
         base_stmt = base_stmt.where(Venda.consultor == nome_consultor)
 
