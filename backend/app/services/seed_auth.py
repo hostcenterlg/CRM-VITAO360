@@ -91,19 +91,40 @@ USUARIOS_INICIAIS = [
 
 def seed_usuarios(db: Session) -> int:
     """
-    Cria os 5 usuarios iniciais se ainda nao existirem.
+    Cria os 5 usuarios iniciais se ainda nao existirem e normaliza
+    consultor_nome de usuarios existentes para chave curta DE-PARA.
 
     Usuarios: Leandro (admin), Manu (consultor), Larissa (consultor),
     Daiane (consultor), Julio Gadret (consultor_externo — Cia Saude + Fitland).
 
-    Idempotente: verifica por email antes de inserir.
-    Retorna a quantidade de usuarios efetivamente criados.
+    Normalizacao de consultor_nome (alinha com clientes.consultor):
+      'HEMANUELE DITZEL (MANU)' -> 'MANU'
+      'LARISSA PADILHA'         -> 'LARISSA'
+      'DAIANE STAVICKI'         -> 'DAIANE'
+      'JULIO GADRET'            -> 'JULIO'
+
+    Razao: clientes.consultor armazena chave DE-PARA curta (CLAUDE.md);
+    routes_clientes.py filtra Cliente.consultor == user.consultor_nome.
+    Sem normalizacao, consultores logados veem total=0.
+
+    Idempotente: verifica por email antes de inserir e so faz UPDATE quando
+    o valor existente difere do canonico.
+
+    Retorna a quantidade de usuarios efetivamente criados (UPDATEs nao
+    contam — sao normalizacao silenciosa).
     """
     criados = 0
+    # Mapping email -> consultor_nome canonico (None para admin)
+    canonico = {u["email"]: u["consultor_nome"] for u in USUARIOS_INICIAIS}
+
     for u in USUARIOS_INICIAIS:
         existe = db.query(Usuario).filter(Usuario.email == u["email"]).first()
         if existe:
-            continue  # ja existe, pular
+            # Normaliza consultor_nome se diferente do canonico
+            esperado = canonico.get(existe.email)
+            if existe.consultor_nome != esperado:
+                existe.consultor_nome = esperado
+            continue
 
         usuario = Usuario(
             email=u["email"],
@@ -116,8 +137,7 @@ def seed_usuarios(db: Session) -> int:
         db.add(usuario)
         criados += 1
 
-    if criados:
-        db.commit()
+    db.commit()
 
     return criados
 

@@ -351,8 +351,8 @@ def listar_clientes(
     if canal_id is not None:
         stmt = stmt.where(Cliente.canal_id == canal_id)
 
-    # Filtro automatico por carteira para role=consultor
-    if user.role == "consultor" and user.consultor_nome:
+    # Filtro automatico por carteira para consultores (internos e externos)
+    if user.role in ("consultor", "consultor_externo") and user.consultor_nome:
         stmt = stmt.where(Cliente.consultor == user.consultor_nome.upper())
     elif consultor:
         stmt = stmt.where(Cliente.consultor == consultor.upper())
