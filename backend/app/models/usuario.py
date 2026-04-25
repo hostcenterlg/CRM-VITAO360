@@ -15,6 +15,7 @@ Relacionamento: um Usuario pode ser criado_por de ImportJob e LogInteracao.
 from __future__ import annotations
 
 from sqlalchemy import Boolean, Column, DateTime, Integer, String
+from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
 from backend.app.database import Base
@@ -61,6 +62,11 @@ class Usuario(Base):
     ativo = Column(Boolean, default=True)
     created_at = Column(DateTime, server_default=func.now())
     last_login = Column(DateTime, nullable=True)
+
+    # Relacionamento N:N com canais (DECISAO L3 — quem ve o que)
+    canais = relationship(
+        "Canal", secondary="usuario_canal", back_populates="usuarios"
+    )
 
     def __repr__(self) -> str:
         return (

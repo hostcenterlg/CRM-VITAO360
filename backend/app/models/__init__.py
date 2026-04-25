@@ -22,11 +22,16 @@ Ordem de importação respeita dependências de FK:
  14. PrecoRegional  — FK → produtos.id
  15. VendaItem      — FK → vendas.id, produtos.id  (Two-Base: metade VENDA — R4)
  16. DebitoCliente  — FK lógica → clientes.cnpj    (Two-Base: metade VENDA — R1)
+ 17. Canal          — sem FK externa (workspace dimension — DECISAO L3)
+ 18. UsuarioCanal   — FK → usuarios.id, canais.id (associacao N:N)
 """
 
+# Canal antes de Cliente porque Cliente.canal_id -> canais.id
+from .canal import Canal
 from .cliente import Cliente
 from .agenda import AgendaItem
 from .usuario import Usuario
+from .usuario_canal import UsuarioCanal
 from .venda import Venda
 from .log_interacao import LogInteracao
 from .regra_motor import RegraMotor
@@ -42,9 +47,11 @@ from .venda_item import VendaItem
 from .debito_cliente import DebitoCliente
 
 __all__ = [
+    "Canal",
     "Cliente",
     "AgendaItem",
     "Usuario",
+    "UsuarioCanal",
     "Venda",
     "LogInteracao",
     "RegraMotor",

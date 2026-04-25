@@ -12,7 +12,8 @@ REGRAS CRÍTICAS:
 
 from __future__ import annotations
 
-from sqlalchemy import Boolean, Column, DateTime, Float, Integer, String
+from sqlalchemy import Boolean, Column, DateTime, Float, ForeignKey, Integer, String
+from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
 from backend.app.database import Base
@@ -123,18 +124,25 @@ class Cliente(Base):
     # Risco classificado: 'BAIXO' (<5%) | 'MEDIO' (5-15%) | 'ALTO' (>15%)
     risco_devolucao = Column(String(10), nullable=True)
 
-    # SAP sales channel — extraido de fat_cliente.grupo (regex sobre 2o token
-    # apos "06 - ") com fallback via canal_venda sigla (DG/DI/FA/IN/FO/VI).
-    # Valores canonicos: DIRETO, INDIRETO, INTERNO, FOOD_SERVICE, FARMA,
-    # BODY, DIGITAL, NAO_APLICAVEL, OUTROS.
-    # Baseline R7 R$ 2.091.000 = canal=DIRETO no SAP.
-    canal = Column(String(20), nullable=True, index=True)
+    # SAP sales channel — FK para canais (DECISAO L3 Leandro 25/Apr/2026).
+    # NULL = cliente legado nao-classificado (Mercos pre-SAP).
+    # Extraido por ingest_sales_hunter.py via fat_cliente.grupo (e.g.
+    # "06 - DIRETO - CONDOR - PR") -> nome canonico -> id em canais.
+    canal_id = Column(
+        Integer,
+        ForeignKey("canais.id", ondelete="SET NULL"),
+        nullable=True,
+        index=True,
+    )
 
     # ------------------------------------------------------------------
     # Auditoria de registro
     # ------------------------------------------------------------------
     created_at = Column(DateTime, server_default=func.now())
     updated_at = Column(DateTime, onupdate=func.now())
+
+    # Relacionamento canal (DECISAO L3)
+    canal = relationship("Canal", back_populates="clientes")
 
     def __repr__(self) -> str:
         return (
