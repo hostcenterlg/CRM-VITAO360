@@ -123,6 +123,13 @@ class Cliente(Base):
     # Risco classificado: 'BAIXO' (<5%) | 'MEDIO' (5-15%) | 'ALTO' (>15%)
     risco_devolucao = Column(String(10), nullable=True)
 
+    # SAP sales channel — extraido de fat_cliente.grupo (regex sobre 2o token
+    # apos "06 - ") com fallback via canal_venda sigla (DG/DI/FA/IN/FO/VI).
+    # Valores canonicos: DIRETO, INDIRETO, INTERNO, FOOD_SERVICE, FARMA,
+    # BODY, DIGITAL, NAO_APLICAVEL, OUTROS.
+    # Baseline R7 R$ 2.091.000 = canal=DIRETO no SAP.
+    canal = Column(String(20), nullable=True, index=True)
+
     # ------------------------------------------------------------------
     # Auditoria de registro
     # ------------------------------------------------------------------

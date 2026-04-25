@@ -318,6 +318,61 @@ def converter_uf(estado: object) -> Optional[str]:
     return ESTADOS_DEPARA.get(s)
 
 
+_CANAL_REGEX = re.compile(r"-\s*([A-Z]{2})\s*-")
+
+
+def extrair_canal(grupo: object, canal_venda: object) -> Optional[str]:
+    """Extrai canal SAP do par (grupo, canal_venda) do fat_cliente.
+
+    Estrategia em 2 estagios:
+      1. grupo = "06 - {CANAL} - {NOME} - {UF}" -> 2o token apos split " - "
+      2. fallback: canal_venda contem sigla "{XX}" (DG/DI/FA/IN/FO/VI)
+
+    Valores canonicos: DIRETO, INDIRETO, INTERNO, FOOD_SERVICE, FARMA,
+    BODY, DIGITAL, VAREJO, NAO_APLICAVEL, OUTROS.
+
+    Baseline R7 R$ 2.091.000 = canal=DIRETO. Demais canais (DIGITAL,
+    FOOD_SERVICE, FARMA, INTERNO, BODY) sao agregadores adicionais.
+    """
+    g = to_str(grupo)
+    if g:
+        partes = [p.strip() for p in g.split(" - ")]
+        if len(partes) >= 2:
+            tok = partes[1].upper()
+            if "DIRETO" in tok:
+                return "DIRETO"
+            if "INDIRETO" in tok:
+                return "INDIRETO"
+            if "FARMA" in tok:
+                return "FARMA"
+            if "FOOD" in tok:
+                return "FOOD_SERVICE"
+            if "INTERN" in tok:
+                return "INTERNO"
+            if "BODY" in tok:
+                return "BODY"
+            if "DIGITAL" in tok:
+                return "DIGITAL"
+            if "NAO APLIC" in tok or "NAO_APLIC" in tok:
+                return "NAO_APLICAVEL"
+
+    cv = to_str(canal_venda)
+    if cv:
+        m = _CANAL_REGEX.search(cv)
+        if m:
+            sig = m.group(1)
+            return {
+                "DG": "DIGITAL",
+                "DI": "DIRETO",
+                "FA": "FARMA",
+                "IN": "INDIRETO",
+                "FO": "FOOD_SERVICE",
+                "VI": "VAREJO",
+                "NA": "NAO_APLICAVEL",
+            }.get(sig, "OUTROS")
+    return None
+
+
 def resolver_consultor(vendedor_str: object) -> Optional[str]:
     """Resolve nome de vendedor SAP para consultor CRM via DE-PARA.
 
@@ -597,11 +652,12 @@ def phase_3_clientes(
                 continue
 
             grupo = to_str(row[3], max_len=50)
-            canal = to_str(row[4], max_len=80)
+            canal_venda_raw = to_str(row[4], max_len=80)
             # tipo_cliente extrai parte antes do ' - ' (ex.: "31 - IN - DISTR. VAREJO" -> "31")
-            tipo_cliente = canal.split(" - ", 1)[0][:30] if canal else None
+            tipo_cliente = canal_venda_raw.split(" - ", 1)[0][:30] if canal_venda_raw else None
             faturado_mes = to_float(row[16])
             total_faturado = to_float(row[22])
+            canal = extrair_canal(row[3], row[4])
 
             registro = {
                 "cnpj": cnpj,
@@ -609,6 +665,7 @@ def phase_3_clientes(
                 "codigo_cliente": to_str(row[0], max_len=20),
                 "tipo_cliente_sap": grupo,
                 "tipo_cliente": tipo_cliente,
+                "canal": canal,
                 "uf": converter_uf(row[8]),
                 "cidade": to_str(row[9], max_len=100),
                 "faturado_mes": faturado_mes,
@@ -628,7 +685,7 @@ def phase_3_clientes(
                     ag["situacao"] = registro["situacao"]
                 # Preserva primeiros nao-nulos para campos descritivos
                 for k in ("nome_fantasia", "codigo_cliente", "tipo_cliente_sap",
-                          "tipo_cliente", "uf", "cidade"):
+                          "tipo_cliente", "canal", "uf", "cidade"):
                     if not ag.get(k) and registro.get(k):
                         ag[k] = registro[k]
             else:
@@ -650,6 +707,7 @@ def phase_3_clientes(
                           codigo_cliente = COALESCE(:codigo_cliente, codigo_cliente),
                           tipo_cliente_sap = COALESCE(:tipo_cliente_sap, tipo_cliente_sap),
                           tipo_cliente = COALESCE(:tipo_cliente, tipo_cliente),
+                          canal = COALESCE(:canal, canal),
                           uf = COALESCE(:uf, uf),
                           cidade = COALESCE(:cidade, cidade),
                           faturamento_total = :faturamento_total,
@@ -670,11 +728,11 @@ def phase_3_clientes(
                     text("""
                         INSERT INTO clientes (
                           cnpj, nome_fantasia, codigo_cliente, tipo_cliente_sap,
-                          tipo_cliente, uf, cidade, faturamento_total, situacao,
+                          tipo_cliente, canal, uf, cidade, faturamento_total, situacao,
                           classificacao_3tier, created_at, updated_at
                         ) VALUES (
                           :cnpj, :nome_fantasia, :codigo_cliente, :tipo_cliente_sap,
-                          :tipo_cliente, :uf, :cidade, :faturamento_total, :situacao,
+                          :tipo_cliente, :canal, :uf, :cidade, :faturamento_total, :situacao,
                           'REAL', :now, :now
                         )
                     """),
