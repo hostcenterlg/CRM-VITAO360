@@ -5,7 +5,7 @@ CRM VITAO360 — ingest_sales_hunter.py
 Ingestao dos relatorios diarios do Sales Hunter (interface web SAP VITAO).
 Le 13 XLSX de data/sales_hunter/YYYY-MM-DD/morning/ e popula o banco.
 
-Fontes processadas (CWB + VV onde existirem):
+Fontes processadas (CWB apenas — VV identico a CWB, skipado L3#5b 2026-04-26):
   fat_produto       -> upsert produtos
   fat_cliente       -> upsert clientes (faturamento_total, situacao, devolucao)
   fat_nf_det        -> insert vendas + venda_itens (notas fiscais detalhadas)
@@ -195,8 +195,14 @@ VENDEDOR_DEPARA: dict[str, Optional[str]] = {
     "ana": "LEGADO",
 }
 
-# Empresas processadas — CWB primeiro, VV depois (dedup CWB+VV)
-EMPRESAS = ("cwb", "vv")
+# Approach (b) aprovado L3#5b 2026-04-26: VV retorna dataset 100% identico a CWB.
+# VITAO opera como single tenant SAP (Centro 7000 — Curitiba); os endpoints
+# /cwb e /vv do Sales Hunter entregam o mesmo consolidado nacional.
+# Processar ambos duplicava valores 2x no pedidos_buffer (Phase 4).
+# Investigacao completa: data/audits/B1_faturamento_reconciliation.md sec 7.
+# ATENCAO: se os tamanhos dos arquivos CWB e VV divergirem em ingest futuro,
+# revisar esta decisao — pode indicar que VV passou a retornar dataset proprio.
+EMPRESAS = ("cwb",)  # VV identico a CWB — skip para evitar duplicacao 2x
 
 
 # ---------------------------------------------------------------------------
@@ -795,8 +801,8 @@ def phase_4_vendas(
       12=tipo_documento, 13=cod_pedido, 16=cpf_cnpj.
 
     Filtra apenas tipo_documento='Venda (F2B)'.
-    Dedup CWB+VV: mesma chave (cnpj, numero_pedido, data_pedido) =
-    SAME pedido (XLSX VV duplica CWB neste momento).
+    Processa apenas CWB (VV skipado via EMPRESAS=("cwb",) — L3#5b 2026-04-26).
+    VV retorna dataset 100% identico a CWB; processar ambos duplicava valores 2x.
 
     Performance: batch insert em chunks de 500 — fat_nf_det tem ~25K linhas
     por empresa.
@@ -1134,7 +1140,7 @@ def phase_6_debitos(
     }
     hoje = date.today()
 
-    # Dedup CWB+VV por chave logica
+    # VV skipado (EMPRESAS=("cwb",) — L3#5b 2026-04-26). Buffer mantido para extensibilidade.
     debitos_buffer: dict[tuple, dict] = {}
 
     for empresa in EMPRESAS:
@@ -1273,7 +1279,7 @@ def phase_7_devolucao(
     """
     stats = {"lidos": 0, "atualizados": 0, "sem_match": 0, "ignorados_cnpj": 0}
 
-    # Dedup CWB+VV — manter MAX (defensivo: VV pode duplicar CWB)
+    # VV skipado (EMPRESAS=("cwb",) — L3#5b 2026-04-26). Dict mantido para extensibilidade.
     devolucoes: dict[str, dict] = {}
 
     for empresa in EMPRESAS:
@@ -1383,7 +1389,7 @@ def phase_8_validacao(
         log.info("Phase 8 validacao: SKIPPED (--skip-validation)")
         return result
 
-    # Soma fat_empresa (CWB + VV) col 12 = total_faturado
+    # Soma fat_empresa CWB col 12 = total_faturado (VV skipado — L3#5b 2026-04-26)
     total_xlsx = 0.0
     for empresa in EMPRESAS:
         key = f"fat_empresa_{empresa}"
