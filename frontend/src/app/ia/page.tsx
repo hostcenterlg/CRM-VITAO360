@@ -75,8 +75,9 @@ function ClienteAutocomplete({ onSelect }: ClienteAutocompleteProps) {
     setLoading(true);
     fetchClientes({ busca: q, limit: 8 })
       .then((res) => {
-        setResults(res.registros);
-        setOpen(res.registros.length > 0);
+        const registros = res.registros ?? [];
+        setResults(registros);
+        setOpen(registros.length > 0);
       })
       .catch(() => setResults([]))
       .finally(() => setLoading(false));
@@ -299,13 +300,13 @@ function CardBriefing({ cnpj }: { cnpj: string | null }) {
             </div>
           </div>
 
-          {data.ultimas_compras.length > 0 && (
+          {(data.ultimas_compras?.length ?? 0) > 0 && (
             <div>
               <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1">
                 Ultimas compras
               </p>
               <ul className="space-y-0.5">
-                {data.ultimas_compras.slice(0, 3).map((c, i) => (
+                {(data.ultimas_compras ?? []).slice(0, 3).map((c, i) => (
                   <li key={i} className="flex justify-between text-xs text-gray-700">
                     <span className="text-gray-500">{c.data}</span>
                     <span className="font-medium tabular-nums">{formatBRL(c.valor)}</span>
@@ -503,13 +504,13 @@ function CardChurn({ cnpj }: { cnpj: string | null }) {
             </span>
           </div>
 
-          {data.fatores.length > 0 && (
+          {(data.fatores?.length ?? 0) > 0 && (
             <div>
               <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1">
                 Fatores de risco
               </p>
               <ul className="space-y-0.5">
-                {data.fatores.map((f, i) => (
+                {(data.fatores ?? []).map((f, i) => (
                   <li key={i} className="flex items-start gap-1.5 text-xs text-gray-700">
                     <span
                       className="w-1.5 h-1.5 rounded-full flex-shrink-0 mt-1"
@@ -577,9 +578,9 @@ function CardSugestaoProduto({ cnpj }: { cnpj: string | null }) {
             </p>
           )}
 
-          {data.produtos_sugeridos.length > 0 ? (
+          {(data.produtos_sugeridos?.length ?? 0) > 0 ? (
             <ul className="space-y-2">
-              {data.produtos_sugeridos.map((p) => (
+              {(data.produtos_sugeridos ?? []).map((p) => (
                 <li key={p.id} className="flex items-start gap-2 p-2 bg-amber-50 rounded-lg border border-amber-100">
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-semibold text-gray-900 leading-tight">{p.nome}</p>
@@ -670,13 +671,13 @@ function CardResumoSemanal() {
           </div>
 
           {/* Pipeline */}
-          {data.pipeline.length > 0 && (
+          {(data.pipeline?.length ?? 0) > 0 && (
             <div>
               <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1">
                 Pipeline
               </p>
               <div className="flex flex-wrap gap-1.5">
-                {data.pipeline.map((p) => (
+                {(data.pipeline ?? []).map((p) => (
                   <span key={p.estagio}
                     className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-purple-100 text-purple-800">
                     {p.estagio}: {p.qtd}
@@ -687,13 +688,13 @@ function CardResumoSemanal() {
           )}
 
           {/* Top clientes */}
-          {data.top_clientes.length > 0 && (
+          {(data.top_clientes?.length ?? 0) > 0 && (
             <div>
               <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1">
                 Top clientes da semana
               </p>
               <ul className="space-y-1">
-                {data.top_clientes.map((c) => (
+                {(data.top_clientes ?? []).map((c) => (
                   <li key={c.cnpj} className="flex items-start justify-between gap-2 text-xs">
                     <div className="min-w-0">
                       <p className="font-medium text-gray-900 truncate leading-tight">{c.nome}</p>
@@ -821,13 +822,13 @@ function CardSentimento({ cnpj }: { cnpj: string | null }) {
           </div>
 
           {/* Historico mini */}
-          {data.historico.length > 0 && (
+          {(data.historico?.length ?? 0) > 0 && (
             <div>
               <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1">
                 Historico recente
               </p>
               <ul className="space-y-0.5">
-                {data.historico.slice(0, 4).map((h, i) => (
+                {(data.historico ?? []).slice(0, 4).map((h, i) => (
                   <li key={i} className="flex items-center justify-between text-xs text-gray-700 gap-2">
                     <span className="text-gray-400 tabular-nums">{h.data}</span>
                     <span className="truncate flex-1 text-gray-600">{h.resultado}</span>
@@ -937,13 +938,13 @@ function CardPrevisaoFechamento({ cnpj }: { cnpj: string | null }) {
           </div>
 
           {/* Fatores como barras */}
-          {data.fatores.length > 0 && (
+          {(data.fatores?.length ?? 0) > 0 && (
             <div>
               <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
                 Fatores
               </p>
               <ul className="space-y-1.5">
-                {data.fatores.map((f, i) => (
+                {(data.fatores ?? []).map((f, i) => (
                   <li key={i}>
                     <div className="flex items-center justify-between text-xs mb-0.5">
                       <span className="text-gray-700 truncate pr-2">{f.nome}</span>
@@ -1065,13 +1066,13 @@ function CardCoach() {
 
           {/* Pontos fortes / fracos */}
           <div className="grid grid-cols-2 gap-2">
-            {data.pontos_fortes.length > 0 && (
+            {(data.pontos_fortes?.length ?? 0) > 0 && (
               <div>
                 <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1">
                   Pontos fortes
                 </p>
                 <ul className="space-y-0.5">
-                  {data.pontos_fortes.map((p, i) => (
+                  {(data.pontos_fortes ?? []).map((p, i) => (
                     <li key={i} className="flex items-start gap-1 text-xs text-gray-700">
                       <span className="font-bold text-green-600 flex-shrink-0">✓</span>
                       {p}
@@ -1080,13 +1081,13 @@ function CardCoach() {
                 </ul>
               </div>
             )}
-            {data.pontos_fracos.length > 0 && (
+            {(data.pontos_fracos?.length ?? 0) > 0 && (
               <div>
                 <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1">
                   A melhorar
                 </p>
                 <ul className="space-y-0.5">
-                  {data.pontos_fracos.map((p, i) => (
+                  {(data.pontos_fracos ?? []).map((p, i) => (
                     <li key={i} className="flex items-start gap-1 text-xs text-gray-700">
                       <span className="font-bold text-red-500 flex-shrink-0">✗</span>
                       {p}
@@ -1098,13 +1099,13 @@ function CardCoach() {
           </div>
 
           {/* Recomendacoes */}
-          {data.recomendacoes.length > 0 && (
+          {(data.recomendacoes?.length ?? 0) > 0 && (
             <div>
               <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1">
                 Recomendacoes
               </p>
               <ul className="space-y-1.5">
-                {data.recomendacoes.map((r, i) => (
+                {(data.recomendacoes ?? []).map((r, i) => (
                   <li key={i} className="flex items-start gap-2 text-xs">
                     <span
                       className="text-[10px] font-bold px-1.5 py-0.5 rounded flex-shrink-0"
@@ -1174,12 +1175,12 @@ function CardAlertaOportunidade() {
             {data.total} oportunidade{data.total !== 1 ? 's' : ''} identificada{data.total !== 1 ? 's' : ''}
           </p>
 
-          {data.oportunidades.length === 0 && (
+          {(data.oportunidades?.length ?? 0) === 0 && (
             <EmptyState msg="Nenhuma oportunidade identificada no momento." />
           )}
 
           <ul className="space-y-2 max-h-72 overflow-y-auto pr-1">
-            {data.oportunidades.map((op, i) => (
+            {(data.oportunidades ?? []).map((op, i) => (
               <li
                 key={i}
                 className="p-2.5 rounded-lg border border-gray-100 bg-gray-50 hover:bg-red-50 hover:border-red-100 transition-colors"

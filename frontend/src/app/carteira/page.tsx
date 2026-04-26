@@ -203,9 +203,9 @@ function CarteiraInner() {
     (fs: FiltrosServidor, fc: FiltrosCliente, novoOffset: number, novoSort: SortState) => {
       const params = new URLSearchParams();
       Object.entries(fs).forEach(([k, v]) => { if (v) params.set(k, v); });
-      if ((fc?.situacoes?.length ?? 0) > 0) params.set('situacoes', fc.situacoes.join(','));
-      if ((fc?.abcs?.length ?? 0) > 0) params.set('abcs', fc.abcs.join(','));
-      if ((fc?.temperaturas?.length ?? 0) > 0) params.set('temperaturas', fc.temperaturas.join(','));
+      if ((fc?.situacoes?.length ?? 0) > 0) params.set('situacoes', (fc.situacoes ?? []).join(','));
+      if ((fc?.abcs?.length ?? 0) > 0) params.set('abcs', (fc.abcs ?? []).join(','));
+      if ((fc?.temperaturas?.length ?? 0) > 0) params.set('temperaturas', (fc.temperaturas ?? []).join(','));
       if (novoOffset > 0) params.set('offset', String(novoOffset));
       if (novoSort.by !== DEFAULT_SORT.by || novoSort.dir !== DEFAULT_SORT.dir) {
         params.set('sort_by', novoSort.by);
@@ -631,7 +631,7 @@ function CarteiraInner() {
               );
             })}
             {/* Multi-selects cliente */}
-            {filtrosC.situacoes.map((s) => (
+            {(filtrosC.situacoes ?? []).map((s) => (
               <ChipAtivo
                 key={`sit-${s}`}
                 rotulo="Situacao"
@@ -640,7 +640,7 @@ function CarteiraInner() {
                 cor={SITUACAO_CHIP_COLORS[s]}
               />
             ))}
-            {filtrosC.abcs.map((a) => (
+            {(filtrosC.abcs ?? []).map((a) => (
               <ChipAtivo
                 key={`abc-${a}`}
                 rotulo="ABC"
@@ -649,7 +649,7 @@ function CarteiraInner() {
                 cor={ABC_CHIP_COLORS[a]}
               />
             ))}
-            {filtrosC.temperaturas.map((t) => (
+            {(filtrosC.temperaturas ?? []).map((t) => (
               <ChipAtivo
                 key={`tmp-${t}`}
                 rotulo="Temp."
