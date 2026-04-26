@@ -711,57 +711,97 @@ def phase_3_clientes(
             else:
                 agregado[cnpj] = registro
 
-    # UPSERT
-    for cnpj, reg in agregado.items():
-        existente = session.execute(
-            text("SELECT id FROM clientes WHERE cnpj = :cnpj"),
-            {"cnpj": cnpj},
-        ).fetchone()
+    # UPSERT (batched commits every 200 rows to avoid Neon timeout on long txns)
+    # Uses ON CONFLICT for Postgres; SELECT-then-INSERT for SQLite
+    BATCH_SIZE = 200
+    batch_counter = 0
+    is_postgres = "postgresql" in str(session.bind.url) if session.bind else False
 
-        if existente:
-            if not dry_run:
-                session.execute(
-                    text("""
-                        UPDATE clientes SET
-                          nome_fantasia = COALESCE(:nome_fantasia, nome_fantasia),
-                          codigo_cliente = COALESCE(:codigo_cliente, codigo_cliente),
-                          tipo_cliente_sap = COALESCE(:tipo_cliente_sap, tipo_cliente_sap),
-                          tipo_cliente = COALESCE(:tipo_cliente, tipo_cliente),
-                          canal_id = COALESCE(:canal_id, canal_id),
-                          uf = COALESCE(:uf, uf),
-                          cidade = COALESCE(:cidade, cidade),
-                          faturamento_total = :faturamento_total,
-                          situacao = :situacao,
-                          classificacao_3tier = COALESCE(classificacao_3tier, 'REAL'),
-                          updated_at = :now
-                        WHERE cnpj = :cnpj
-                    """),
-                    {
-                        **reg,
-                        "now": datetime.now(timezone.utc).replace(tzinfo=None),
-                    },
-                )
+    for cnpj, reg in agregado.items():
+        params = {
+            **reg,
+            "now": datetime.now(timezone.utc).replace(tzinfo=None),
+        }
+
+        if is_postgres and not dry_run:
+            # Postgres: true UPSERT via ON CONFLICT — fully idempotent
+            session.execute(
+                text("""
+                    INSERT INTO clientes (
+                      cnpj, nome_fantasia, codigo_cliente, tipo_cliente_sap,
+                      tipo_cliente, canal_id, uf, cidade, faturamento_total, situacao,
+                      classificacao_3tier, created_at, updated_at
+                    ) VALUES (
+                      :cnpj, :nome_fantasia, :codigo_cliente, :tipo_cliente_sap,
+                      :tipo_cliente, :canal_id, :uf, :cidade, :faturamento_total, :situacao,
+                      'REAL', :now, :now
+                    )
+                    ON CONFLICT (cnpj) DO UPDATE SET
+                      nome_fantasia = COALESCE(EXCLUDED.nome_fantasia, clientes.nome_fantasia),
+                      codigo_cliente = COALESCE(EXCLUDED.codigo_cliente, clientes.codigo_cliente),
+                      tipo_cliente_sap = COALESCE(EXCLUDED.tipo_cliente_sap, clientes.tipo_cliente_sap),
+                      tipo_cliente = COALESCE(EXCLUDED.tipo_cliente, clientes.tipo_cliente),
+                      canal_id = COALESCE(EXCLUDED.canal_id, clientes.canal_id),
+                      uf = COALESCE(EXCLUDED.uf, clientes.uf),
+                      cidade = COALESCE(EXCLUDED.cidade, clientes.cidade),
+                      faturamento_total = EXCLUDED.faturamento_total,
+                      situacao = EXCLUDED.situacao,
+                      classificacao_3tier = COALESCE(clientes.classificacao_3tier, 'REAL'),
+                      updated_at = EXCLUDED.updated_at
+                """),
+                params,
+            )
             stats["atualizados"] += 1
         else:
-            if not dry_run:
-                session.execute(
-                    text("""
-                        INSERT INTO clientes (
-                          cnpj, nome_fantasia, codigo_cliente, tipo_cliente_sap,
-                          tipo_cliente, canal_id, uf, cidade, faturamento_total, situacao,
-                          classificacao_3tier, created_at, updated_at
-                        ) VALUES (
-                          :cnpj, :nome_fantasia, :codigo_cliente, :tipo_cliente_sap,
-                          :tipo_cliente, :canal_id, :uf, :cidade, :faturamento_total, :situacao,
-                          'REAL', :now, :now
-                        )
-                    """),
-                    {
-                        **reg,
-                        "now": datetime.now(timezone.utc).replace(tzinfo=None),
-                    },
-                )
-            stats["inseridos"] += 1
+            # SQLite path: SELECT then INSERT/UPDATE
+            existente = session.execute(
+                text("SELECT id FROM clientes WHERE cnpj = :cnpj"),
+                {"cnpj": cnpj},
+            ).fetchone()
+
+            if existente:
+                if not dry_run:
+                    session.execute(
+                        text("""
+                            UPDATE clientes SET
+                              nome_fantasia = COALESCE(:nome_fantasia, nome_fantasia),
+                              codigo_cliente = COALESCE(:codigo_cliente, codigo_cliente),
+                              tipo_cliente_sap = COALESCE(:tipo_cliente_sap, tipo_cliente_sap),
+                              tipo_cliente = COALESCE(:tipo_cliente, tipo_cliente),
+                              canal_id = COALESCE(:canal_id, canal_id),
+                              uf = COALESCE(:uf, uf),
+                              cidade = COALESCE(:cidade, cidade),
+                              faturamento_total = :faturamento_total,
+                              situacao = :situacao,
+                              classificacao_3tier = COALESCE(classificacao_3tier, 'REAL'),
+                              updated_at = :now
+                            WHERE cnpj = :cnpj
+                        """),
+                        params,
+                    )
+                stats["atualizados"] += 1
+            else:
+                if not dry_run:
+                    session.execute(
+                        text("""
+                            INSERT INTO clientes (
+                              cnpj, nome_fantasia, codigo_cliente, tipo_cliente_sap,
+                              tipo_cliente, canal_id, uf, cidade, faturamento_total, situacao,
+                              classificacao_3tier, created_at, updated_at
+                            ) VALUES (
+                              :cnpj, :nome_fantasia, :codigo_cliente, :tipo_cliente_sap,
+                              :tipo_cliente, :canal_id, :uf, :cidade, :faturamento_total, :situacao,
+                              'REAL', :now, :now
+                            )
+                        """),
+                        params,
+                    )
+                stats["inseridos"] += 1
+
+        batch_counter += 1
+        if not dry_run and batch_counter % BATCH_SIZE == 0:
+            session.commit()
+            log.info("  Phase 3 batch commit: %d/%d", batch_counter, len(agregado))
 
     if not dry_run:
         session.commit()
@@ -926,30 +966,49 @@ def phase_4_vendas(
         else:
             mes_ref = ped["data_pedido"].strftime("%Y-%m")
             if not dry_run:
-                result = session.execute(
-                    text("""
-                        INSERT INTO vendas (
-                          cnpj, data_pedido, numero_pedido, valor_pedido,
-                          consultor, fonte, classificacao_3tier, mes_referencia,
-                          created_at
-                        ) VALUES (
-                          :cnpj, :data_pedido, :numero_pedido, :valor_pedido,
-                          :consultor, 'SAP', 'REAL', :mes_referencia,
-                          :now
-                        )
-                    """),
-                    {
-                        "cnpj": cnpj,
-                        "data_pedido": ped["data_pedido"],
-                        "numero_pedido": ped["numero_pedido"],
-                        "valor_pedido": ped["valor_total"],
-                        # Phase 5 enriquece com consultor real via pedidos_produto
-                        "consultor": "SAP_PENDENTE",
-                        "mes_referencia": mes_ref,
-                        "now": datetime.now(timezone.utc).replace(tzinfo=None),
-                    },
-                )
-                venda_id = result.lastrowid
+                params = {
+                    "cnpj": cnpj,
+                    "data_pedido": ped["data_pedido"],
+                    "numero_pedido": ped["numero_pedido"],
+                    "valor_pedido": ped["valor_total"],
+                    # Phase 5 enriquece com consultor real via pedidos_produto
+                    "consultor": "SAP_PENDENTE",
+                    "mes_referencia": mes_ref,
+                    "now": datetime.now(timezone.utc).replace(tzinfo=None),
+                }
+                is_pg = "postgresql" in str(session.bind.url) if session.bind else False
+                if is_pg:
+                    result = session.execute(
+                        text("""
+                            INSERT INTO vendas (
+                              cnpj, data_pedido, numero_pedido, valor_pedido,
+                              consultor, fonte, classificacao_3tier, mes_referencia,
+                              status_pedido, created_at
+                            ) VALUES (
+                              :cnpj, :data_pedido, :numero_pedido, :valor_pedido,
+                              :consultor, 'SAP', 'REAL', :mes_referencia,
+                              'FATURADO', :now
+                            ) RETURNING id
+                        """),
+                        params,
+                    )
+                    venda_id = result.scalar()
+                else:
+                    result = session.execute(
+                        text("""
+                            INSERT INTO vendas (
+                              cnpj, data_pedido, numero_pedido, valor_pedido,
+                              consultor, fonte, classificacao_3tier, mes_referencia,
+                              status_pedido, created_at
+                            ) VALUES (
+                              :cnpj, :data_pedido, :numero_pedido, :valor_pedido,
+                              :consultor, 'SAP', 'REAL', :mes_referencia,
+                              'FATURADO', :now
+                            )
+                        """),
+                        params,
+                    )
+                    venda_id = result.lastrowid
             else:
                 venda_id = -1
             stats["vendas_inseridas"] += 1
@@ -962,30 +1021,51 @@ def phase_4_vendas(
             produto_id = produto_codigo_to_id.get(cod)
             if produto_id is None:
                 if not dry_run:
-                    result = session.execute(
-                        text("""
-                            INSERT INTO produtos (
-                              codigo, nome, categoria, unidade, peso_bruto_kg,
-                              fabricante, preco_tabela, preco_minimo,
-                              comissao_pct, ipi_pct, ativo,
-                              created_at, updated_at
-                            ) VALUES (
-                              :codigo, :nome, :categoria, :unidade, :peso,
-                              'VITAO', 0.0, 0.0,
-                              0.0, 0.0, 1,
-                              :now, :now
-                            )
-                        """),
-                        {
-                            "codigo": cod,
-                            "nome": it["material_nome"],
-                            "categoria": it["categoria"],
-                            "unidade": it["unidade"],
-                            "peso": it["peso"],
-                            "now": datetime.now(timezone.utc).replace(tzinfo=None),
-                        },
-                    )
-                    produto_id = result.lastrowid
+                    p_params = {
+                        "codigo": cod,
+                        "nome": it["material_nome"],
+                        "categoria": it["categoria"],
+                        "unidade": it["unidade"],
+                        "peso": it["peso"],
+                        "now": datetime.now(timezone.utc).replace(tzinfo=None),
+                    }
+                    is_pg = "postgresql" in str(session.bind.url) if session.bind else False
+                    if is_pg:
+                        result = session.execute(
+                            text("""
+                                INSERT INTO produtos (
+                                  codigo, nome, categoria, unidade, peso_bruto_kg,
+                                  fabricante, preco_tabela, preco_minimo,
+                                  comissao_pct, ipi_pct, ativo,
+                                  created_at, updated_at
+                                ) VALUES (
+                                  :codigo, :nome, :categoria, :unidade, :peso,
+                                  'VITAO', 0.0, 0.0,
+                                  0.0, 0.0, true,
+                                  :now, :now
+                                ) RETURNING id
+                            """),
+                            p_params,
+                        )
+                        produto_id = result.scalar()
+                    else:
+                        result = session.execute(
+                            text("""
+                                INSERT INTO produtos (
+                                  codigo, nome, categoria, unidade, peso_bruto_kg,
+                                  fabricante, preco_tabela, preco_minimo,
+                                  comissao_pct, ipi_pct, ativo,
+                                  created_at, updated_at
+                                ) VALUES (
+                                  :codigo, :nome, :categoria, :unidade, :peso,
+                                  'VITAO', 0.0, 0.0,
+                                  0.0, 0.0, 1,
+                                  :now, :now
+                                )
+                            """),
+                            p_params,
+                        )
+                        produto_id = result.lastrowid
                 else:
                     produto_id = -1
                 produto_codigo_to_id[cod] = produto_id
@@ -1087,7 +1167,9 @@ def phase_5_consultor(
         if key not in pedido_consultor:
             pedido_consultor[key] = consultor
 
-    # UPDATE em batch
+    # UPDATE em batch (commits every 500 to avoid Neon timeout)
+    P5_BATCH = 500
+    p5_counter = 0
     for (cnpj, num_ped), consultor in pedido_consultor.items():
         if not dry_run:
             result = session.execute(
@@ -1105,6 +1187,10 @@ def phase_5_consultor(
                 stats["sem_match"] += 1
         else:
             stats["atualizados"] += 1
+
+        p5_counter += 1
+        if not dry_run and p5_counter % P5_BATCH == 0:
+            session.commit()
 
     if not dry_run:
         session.commit()
@@ -1202,6 +1288,9 @@ def phase_6_debitos(
                 debitos_buffer[chave] = registro
 
     # Insercao com idempotencia (SELECT antes de INSERT)
+    # Batched commits every 200 rows to avoid Neon timeout on long txns
+    DEBITOS_BATCH = 200
+    debitos_counter = 0
     for chave, reg in debitos_buffer.items():
         cnpj, nro_nfe, parcela = chave
         existente = session.execute(
@@ -1235,6 +1324,11 @@ def phase_6_debitos(
                 reg,
             )
         stats["inseridos"] += 1
+
+        debitos_counter += 1
+        if not dry_run and debitos_counter % DEBITOS_BATCH == 0:
+            session.commit()
+            log.info("  Phase 6 batch commit: %d/%d debitos", debitos_counter, len(debitos_buffer))
 
     if not dry_run:
         session.commit()
@@ -1797,7 +1891,14 @@ def main() -> int:
     if db_url.startswith("sqlite"):
         connect_args = {"check_same_thread": False}
     elif "neon" in db_url or "supabase" in db_url:
-        connect_args = {"sslmode": "require", "connect_timeout": 30}
+        connect_args = {
+            "sslmode": "require",
+            "connect_timeout": 30,
+            "keepalives": 1,
+            "keepalives_idle": 30,
+            "keepalives_interval": 10,
+            "keepalives_count": 5,
+        }
     elif "postgresql" in db_url:
         connect_args = {"connect_timeout": 30}
     else:
