@@ -28,21 +28,32 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
-    """Upgrade schema."""
-    with op.batch_alter_table("vendas", schema=None) as batch_op:
-        batch_op.add_column(
-            sa.Column(
-                "status_pedido",
-                sa.String(length=20),
-                nullable=False,
-                server_default="DIGITADO",
-            )
-        )
-        batch_op.add_column(
-            sa.Column("condicao_pagamento", sa.String(length=100), nullable=True)
-        )
-        batch_op.add_column(sa.Column("observacao", sa.Text(), nullable=True))
-        batch_op.create_index("ix_vendas_status_pedido", ["status_pedido"])
+    """Upgrade schema.
+
+    Idempotent: columns may already exist from manual SQL in prior session.
+    Uses raw DDL with IF NOT EXISTS for PostgreSQL compatibility.
+    """
+    bind = op.get_bind()
+
+    # Add columns idempotently (PostgreSQL supports ADD COLUMN IF NOT EXISTS)
+    bind.execute(sa.text(
+        "ALTER TABLE vendas ADD COLUMN IF NOT EXISTS "
+        "status_pedido VARCHAR(20) NOT NULL DEFAULT 'DIGITADO'"
+    ))
+    bind.execute(sa.text(
+        "ALTER TABLE vendas ADD COLUMN IF NOT EXISTS "
+        "condicao_pagamento VARCHAR(100)"
+    ))
+    bind.execute(sa.text(
+        "ALTER TABLE vendas ADD COLUMN IF NOT EXISTS "
+        "observacao TEXT"
+    ))
+
+    # Create index idempotently
+    bind.execute(sa.text(
+        "CREATE INDEX IF NOT EXISTS ix_vendas_status_pedido "
+        "ON vendas (status_pedido)"
+    ))
 
     # Backfill: vendas SAP existentes ja foram faturadas
     op.execute(
