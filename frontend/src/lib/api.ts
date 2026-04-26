@@ -417,7 +417,15 @@ export async function fetchClientes(
   qs.set('limit', String(params.limit ?? 50));
   qs.set('offset', String(params.offset ?? 0));
 
-  return fetchJson<ClientesResponse>(`/api/clientes?${qs.toString()}`);
+  const res = await fetchJson<ClientesResponse>(`/api/clientes?${qs.toString()}`);
+  // Defensivo: backend pode retornar registros=null em casos edge
+  return {
+    ...res,
+    registros: res.registros ?? [],
+    total: res.total ?? 0,
+    limit: res.limit ?? 50,
+    offset: res.offset ?? 0,
+  };
 }
 
 export interface AtendimentoHistoricoItem {
