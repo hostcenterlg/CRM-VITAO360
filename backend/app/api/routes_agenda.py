@@ -20,7 +20,12 @@ from pydantic import BaseModel, ConfigDict
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
-from backend.app.api.deps import get_current_user, require_admin
+from backend.app.api.deps import (
+    cnpjs_permitidos_subquery,
+    get_current_user,
+    get_user_canal_ids,
+    require_admin,
+)
 from backend.app.database import get_db
 from backend.app.models.agenda import AgendaItem
 from backend.app.models.usuario import Usuario
@@ -94,12 +99,16 @@ def _data_mais_recente(db: Session, consultor: Optional[str] = None) -> date | N
 def agenda_hoje(
     data: Optional[str] = Query(None, description="Data no formato YYYY-MM-DD (padrão: mais recente)"),
     user: Usuario = Depends(get_current_user),
+    user_canal_ids: list[int] | None = Depends(get_user_canal_ids),
     db: Session = Depends(get_db),
 ) -> list[AgendaConsultorResponse]:
     """
     Retorna a agenda agrupada por consultor para a data informada.
     Se nenhuma data for fornecida, retorna a agenda mais recente disponível.
     Consultores com agenda vazia não aparecem na resposta.
+
+    Multi-canal: itens filtrados por canais permitidos do usuario.
+    Carteira: consultor/consultor_externo ve apenas a propria agenda.
     """
     data_ref = _parse_data(data) or _data_mais_recente(db) or date.today()
 
@@ -108,6 +117,14 @@ def agenda_hoje(
         .where(AgendaItem.data_agenda == data_ref)
         .order_by(AgendaItem.consultor, AgendaItem.posicao)
     )
+
+    # Multi-canal scoping (DECISAO L3)
+    cnpjs_sub = cnpjs_permitidos_subquery(user_canal_ids)
+    if cnpjs_sub is not None:
+        stmt = stmt.where(AgendaItem.cnpj.in_(cnpjs_sub))
+    if user.role in ("consultor", "consultor_externo") and user.consultor_nome:
+        stmt = stmt.where(AgendaItem.consultor == user.consultor_nome.upper())
+
     itens = db.scalars(stmt).all()
 
     # Agrupar por consultor
@@ -173,6 +190,7 @@ def agenda_historico(
     data: Optional[str] = Query(None, description="Data no formato YYYY-MM-DD (padrão: hoje)"),
     consultor: Optional[str] = Query(None, description="Filtrar por consultor (MANU, LARISSA, DAIANE, JULIO)"),
     user: Usuario = Depends(get_current_user),
+    user_canal_ids: list[int] | None = Depends(get_user_canal_ids),
     db: Session = Depends(get_db),
 ) -> list[AgendaItemSchema]:
     """
@@ -180,6 +198,8 @@ def agenda_historico(
 
     Útil para consultar histórico de agendas passadas.
     Pode ser filtrado por consultor via query param.
+
+    Multi-canal: itens filtrados por canais permitidos do usuario.
 
     Formato da data: YYYY-MM-DD.
     Se omitida, retorna a agenda de hoje.
@@ -191,7 +211,14 @@ def agenda_historico(
         .where(AgendaItem.data_agenda == target)
         .order_by(AgendaItem.consultor, AgendaItem.posicao)
     )
-    if consultor:
+
+    # Multi-canal scoping (DECISAO L3)
+    cnpjs_sub = cnpjs_permitidos_subquery(user_canal_ids)
+    if cnpjs_sub is not None:
+        stmt = stmt.where(AgendaItem.cnpj.in_(cnpjs_sub))
+    if user.role in ("consultor", "consultor_externo") and user.consultor_nome:
+        stmt = stmt.where(AgendaItem.consultor == user.consultor_nome.upper())
+    elif consultor:
         stmt = stmt.where(AgendaItem.consultor == consultor.upper())
 
     itens = db.scalars(stmt).all()
@@ -207,6 +234,7 @@ def agenda_consultor(
     consultor: str,
     data: Optional[str] = Query(None, description="Data no formato YYYY-MM-DD (padrão: mais recente)"),
     user: Usuario = Depends(get_current_user),
+    user_canal_ids: list[int] | None = Depends(get_user_canal_ids),
     db: Session = Depends(get_db),
 ) -> AgendaConsultorResponse:
     """
@@ -214,9 +242,22 @@ def agenda_consultor(
     Se nenhuma data for fornecida, retorna a agenda mais recente.
     Retorna lista vazia se não houver itens.
 
+    Multi-canal: itens filtrados por canais permitidos.
+    Carteira: consultor/consultor_externo so pode pedir a propria agenda
+    (403 se path consultor != consultor_nome do user).
+
     Consultores válidos: MANU, LARISSA, DAIANE, JULIO.
     """
     consultor_upper = consultor.upper()
+
+    # Carteira enforcement: consultor/_externo so ve a propria agenda
+    if user.role in ("consultor", "consultor_externo") and user.consultor_nome:
+        if consultor_upper != user.consultor_nome.upper():
+            raise HTTPException(
+                status_code=403,
+                detail="Acesso restrito a agenda propria",
+            )
+
     data_ref = _parse_data(data) or _data_mais_recente(db, consultor_upper) or date.today()
 
     stmt = (
@@ -227,6 +268,12 @@ def agenda_consultor(
         )
         .order_by(AgendaItem.posicao)
     )
+
+    # Multi-canal scoping
+    cnpjs_sub = cnpjs_permitidos_subquery(user_canal_ids)
+    if cnpjs_sub is not None:
+        stmt = stmt.where(AgendaItem.cnpj.in_(cnpjs_sub))
+
     itens = db.scalars(stmt).all()
 
     return AgendaConsultorResponse(
