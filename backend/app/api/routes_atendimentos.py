@@ -24,7 +24,12 @@ from pydantic import BaseModel, Field, model_validator
 from sqlalchemy import desc, func
 from sqlalchemy.orm import Session
 
-from backend.app.api.deps import get_current_user, require_consultor_or_admin
+from backend.app.api.deps import (
+    cnpjs_permitidos_subquery,
+    get_current_user,
+    get_user_canal_ids,
+    require_consultor_or_admin,
+)
 from backend.app.database import get_db
 from backend.app.models.cliente import Cliente
 from backend.app.models.log_interacao import LogInteracao
@@ -232,6 +237,7 @@ def listar_atendimentos(
     limit: int = Query(50, ge=1, le=200, description="Quantidade maxima de registros (legado; ignorado quando page e fornecido)"),
     offset: int = Query(0, ge=0, description="Registros a pular (legado; ignorado quando page e fornecido)"),
     user: Usuario = Depends(get_current_user),
+    user_canal_ids: list[int] | None = Depends(get_user_canal_ids),
     db: Session = Depends(get_db),
 ) -> AtendimentosHistoricoResponse:
     """
@@ -260,8 +266,16 @@ def listar_atendimentos(
 
     q = db.query(LogInteracao)
 
-    # Filtro automatico por role — consultor ve apenas os seus
-    if user.role == "consultor" and user.consultor_nome:
+    # Multi-canal scoping (DECISAO L3): admin sem filtro;
+    # demais users restritos a CNPJs cujo cliente esta em canais permitidos.
+    cnpjs_sub = cnpjs_permitidos_subquery(user_canal_ids)
+    if cnpjs_sub is not None:
+        q = q.filter(LogInteracao.cnpj.in_(cnpjs_sub))
+
+    # Filtro automatico por role — consultor (interno ou externo) ve apenas
+    # os proprios atendimentos. consultor_nome ja foi normalizado para chave
+    # curta DE-PARA (MANU/LARISSA/DAIANE/JULIO).
+    if user.role in ("consultor", "consultor_externo") and user.consultor_nome:
         q = q.filter(LogInteracao.consultor == user.consultor_nome)
     elif consultor:
         q = q.filter(LogInteracao.consultor == consultor)
@@ -481,12 +495,14 @@ def bulk_atendimentos(
 )
 def stats_atendimentos(
     user: Usuario = Depends(get_current_user),
+    user_canal_ids: list[int] | None = Depends(get_user_canal_ids),
     db: Session = Depends(get_db),
 ) -> dict:
     """
     Retorna contagens de atendimentos agrupadas por resultado e por consultor.
 
     Util para o dashboard de producao da equipe comercial.
+    Multi-canal: agregados respeitam canais permitidos do usuario.
     """
     # Contagem por resultado
     q_resultado = db.query(
@@ -500,7 +516,13 @@ def stats_atendimentos(
         func.count(LogInteracao.id).label("total"),
     ).group_by(LogInteracao.consultor)
 
-    if user.role == "consultor" and user.consultor_nome:
+    # Multi-canal scoping
+    cnpjs_sub = cnpjs_permitidos_subquery(user_canal_ids)
+    if cnpjs_sub is not None:
+        q_resultado = q_resultado.filter(LogInteracao.cnpj.in_(cnpjs_sub))
+        q_consultor = q_consultor.filter(LogInteracao.cnpj.in_(cnpjs_sub))
+
+    if user.role in ("consultor", "consultor_externo") and user.consultor_nome:
         q_resultado = q_resultado.filter(LogInteracao.consultor == user.consultor_nome)
         q_consultor = q_consultor.filter(LogInteracao.consultor == user.consultor_nome)
 
@@ -538,9 +560,9 @@ def detalhe_atendimento(
     if not log:
         raise HTTPException(status_code=404, detail="Atendimento nao encontrado")
 
-    # Restricao por role: consultor nao pode ver atendimentos de outros
+    # Restricao por role: consultor (interno/externo) nao pode ver atendimentos de outros
     if (
-        user.role == "consultor"
+        user.role in ("consultor", "consultor_externo")
         and user.consultor_nome
         and log.consultor != user.consultor_nome
     ):
