@@ -45,7 +45,12 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
-from backend.app.api.deps import get_current_user, require_consultor_or_admin
+from backend.app.api.deps import (
+    cnpjs_permitidos_subquery,
+    get_current_user,
+    get_user_canal_ids,
+    require_consultor_or_admin,
+)
 from backend.app.database import get_db
 from backend.app.models.cliente import Cliente
 from backend.app.models.rnc import RNC
@@ -328,6 +333,7 @@ def listar_rncs(
     offset: int = Query(default=0, ge=0, description="Offset para paginacao"),
     db: Session = Depends(get_db),
     usuario: Usuario = Depends(get_current_user),
+    user_canal_ids: list[int] | None = Depends(get_user_canal_ids),
 ) -> ListaRNCResponse:
     """
     Lista RNCs com filtros opcionais e resumo percentual de status.
@@ -341,8 +347,13 @@ def listar_rncs(
     """
     filtros = []
 
-    # Isolamento automatico para role=consultor
-    if usuario.role == "consultor" and usuario.consultor_nome:
+    # Multi-canal scoping (DECISAO L3): RNC tem cnpj — filtra via canal do cliente
+    cnpjs_sub = cnpjs_permitidos_subquery(user_canal_ids)
+    if cnpjs_sub is not None:
+        filtros.append(RNC.cnpj.in_(cnpjs_sub))
+
+    # Isolamento automatico para role=consultor (interno e externo)
+    if usuario.role in ("consultor", "consultor_externo") and usuario.consultor_nome:
         filtros.append(RNC.consultor == usuario.consultor_nome.upper())
     elif consultor:
         filtros.append(RNC.consultor == consultor.upper())
@@ -413,8 +424,8 @@ def detalhe_rnc(
             detail=f"RNC com id={rnc_id} nao encontrada.",
         )
 
-    # Isolamento: consultores nao podem ver RNCs de outros consultores
-    if usuario.role == "consultor":
+    # Isolamento: consultores (interno/externo) nao podem ver RNCs de outros
+    if usuario.role in ("consultor", "consultor_externo"):
         nome_consultor = (usuario.consultor_nome or usuario.nome or "").upper()
         if rnc.consultor != nome_consultor:
             raise HTTPException(

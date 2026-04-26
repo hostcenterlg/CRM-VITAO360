@@ -289,11 +289,22 @@ def projecao_consultor(
     Meta mensal: soma de meta_sap dos clientes do consultor no periodo.
     Realizado: soma de valor_pedido da tabela vendas (R8: exclui ALUCINACAO).
 
+    Multi-canal: consultor/consultor_externo so podem ver projecao propria
+    (403 caso contrario). Admin/gerente veem qualquer.
+
     Consultores validos: MANU, LARISSA, DAIANE, JULIO.
 
     Requer autenticacao JWT.
     """
     consultor_upper = consultor.upper()
+
+    # Carteira enforcement: consultor/_externo so ve a propria
+    if user.role in ("consultor", "consultor_externo") and user.consultor_nome:
+        if consultor_upper != user.consultor_nome.upper():
+            raise HTTPException(
+                status_code=403,
+                detail="Acesso restrito a projecao propria",
+            )
 
     if consultor_upper not in CONSULTORES_ALVO:
         raise HTTPException(

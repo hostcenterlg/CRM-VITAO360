@@ -27,7 +27,11 @@ from __future__ import annotations
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-from backend.app.api.deps import get_current_user
+from backend.app.api.deps import (
+    cliente_canal_filter,
+    get_current_user,
+    get_user_canal_ids,
+)
 from backend.app.database import get_db
 from backend.app.models.cliente import Cliente
 from backend.app.models.rede import Rede
@@ -47,20 +51,32 @@ def _pct(numerador: float, denominador: float) -> float:
     return round(numerador / denominador * 100, 1)
 
 
-def _lojas_da_rede(db: Session, nome_rede: str) -> list[Cliente]:
+def _lojas_da_rede(
+    db: Session,
+    nome_rede: str,
+    user_canal_ids: list[int] | None = None,
+    consultor_filter: str | None = None,
+) -> list[Cliente]:
     """
     Retorna clientes vinculados a uma rede pelo campo rede_regional.
     Exclui ALUCINACAO (R8).
+
+    Multi-canal: filtra por canais permitidos do usuario e (opcional)
+    pela carteira do consultor.
     """
-    return (
+    q = (
         db.query(Cliente)
         .filter(
             Cliente.rede_regional == nome_rede,
             Cliente.classificacao_3tier != "ALUCINACAO",
         )
-        .order_by(Cliente.nome_fantasia)
-        .all()
     )
+    cliente_clause = cliente_canal_filter(user_canal_ids)
+    if cliente_clause is not None:
+        q = q.filter(cliente_clause)
+    if consultor_filter:
+        q = q.filter(Cliente.consultor == consultor_filter.upper())
+    return q.order_by(Cliente.nome_fantasia).all()
 
 
 # ---------------------------------------------------------------------------
@@ -73,6 +89,7 @@ def _lojas_da_rede(db: Session, nome_rede: str) -> list[Cliente]:
 )
 def listar_redes(
     user: Usuario = Depends(get_current_user),
+    user_canal_ids: list[int] | None = Depends(get_user_canal_ids),
     db: Session = Depends(get_db),
 ) -> dict:
     """
@@ -89,10 +106,19 @@ def listar_redes(
         db.query(Rede).order_by(Rede.faturamento_real.desc()).all()
     )
 
+    # Carteira do user (so para consultor/_externo)
+    consultor_filter = (
+        user.consultor_nome
+        if user.role in ("consultor", "consultor_externo") and user.consultor_nome
+        else None
+    )
+
     resultado: list[dict] = []
 
     for r in redes:
-        lojas_clientes = _lojas_da_rede(db, r.nome)
+        lojas_clientes = _lojas_da_rede(
+            db, r.nome, user_canal_ids=user_canal_ids, consultor_filter=consultor_filter,
+        )
 
         # Distribuicao de sinaleiro entre as lojas encontradas
         dist: dict[str, int] = {"VERDE": 0, "AMARELO": 0, "VERMELHO": 0, "ROXO": 0}
