@@ -97,3 +97,13 @@ data/MERCOS_*.json
 data/deskrio_*.json
 data/mercos_*.json
 data/sales_hunter/**/*.csv
+
+# === Adicionado 28/Abr/2026 — sessão BLOCOS 3-6 ===
+# Snapshots regeneráveis (gerados por scripts diários)
+data/deskrio/2026-*/
+data/sales_hunter/2026-*/
+data/backups/
+
+# Backups efêmeros locais
+.env.local.bak
+.env*.bak
