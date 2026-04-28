@@ -218,8 +218,15 @@ def _formatar_data(valor: date | datetime | None) -> str:
 
 
 def _formatar_moeda(valor: float | None) -> str:
-    """Formata valor monetário para PT-BR."""
+    """Formata valor monetário para PT-BR. Defensivo contra None e NaN."""
     if valor is None:
+        return "R$ 0,00"
+    try:
+        # Detecta NaN explicitamente (math.nan, Decimal('nan'), etc.)
+        # — se valor != valor é True apenas para NaN
+        if valor != valor:  # noqa: PLR0124
+            return "R$ 0,00"
+    except TypeError:
         return "R$ 0,00"
     return f"R$ {valor:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
 
@@ -856,7 +863,7 @@ class IAService:
             .all()
         )
 
-        total_vendas_semana = sum(v.valor_pedido for v in vendas_semana)
+        total_vendas_semana = sum((v.valor_pedido or 0) for v in vendas_semana)
         qtd_vendas_semana = len(vendas_semana)
 
         # R4: clientes contactados na semana (tabela log_interacoes — sem R$)
