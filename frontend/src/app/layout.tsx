@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import { AuthProvider } from '@/contexts/AuthContext';
+import { CanalProvider } from '@/contexts/CanalContext';
 import RouteGuard from '@/components/RouteGuard';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import { Analytics } from '@vercel/analytics/react';
@@ -63,9 +64,11 @@ export default function RootLayout({
           Ambos sao client components — layout.tsx (server) apenas os importa.
         */}
         <AuthProvider>
-          <ErrorBoundary>
-            <RouteGuard>{children}</RouteGuard>
-          </ErrorBoundary>
+          <CanalProvider>
+            <ErrorBoundary>
+              <RouteGuard>{children}</RouteGuard>
+            </ErrorBoundary>
+          </CanalProvider>
         </AuthProvider>
         <Analytics />
       </body>

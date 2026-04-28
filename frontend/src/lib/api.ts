@@ -694,6 +694,46 @@ export async function atualizarUsuario(id: number, data: Partial<UsuarioAdmin> &
 }
 
 // ---------------------------------------------------------------------------
+// Canais endpoints (multi-canal)
+// ---------------------------------------------------------------------------
+
+export type CanalStatus = 'ATIVO' | 'EM_BREVE' | 'ADMIN_ONLY';
+
+export interface Canal {
+  id: number;
+  nome: string;
+  status: string; // ATIVO | EM_BREVE | ADMIN_ONLY (string p/ tolerar valores futuros)
+  descricao?: string | null;
+}
+
+export interface UsuarioCanaisACL {
+  usuario_id: number;
+  canais: Canal[];
+}
+
+/** Canais visiveis ao usuario logado (admin = todos, demais = via usuario_canal). */
+export async function fetchMeusCanais(): Promise<Canal[]> {
+  return fetchJson<Canal[]>('/api/canais/meus');
+}
+
+/** Lista canais permitidos para um usuario especifico (admin only). */
+export async function fetchCanaisDoUsuario(usuarioId: number): Promise<UsuarioCanaisACL> {
+  return fetchJson<UsuarioCanaisACL>(`/api/usuarios/${usuarioId}/canais`);
+}
+
+/** Substitui ACL de canais do usuario (admin only). */
+export async function atualizarCanaisDoUsuario(
+  usuarioId: number,
+  canalIds: number[],
+): Promise<UsuarioCanaisACL> {
+  return mutateJson<UsuarioCanaisACL>(
+    `/api/usuarios/${usuarioId}/canais`,
+    'PUT',
+    { canal_ids: canalIds },
+  );
+}
+
+// ---------------------------------------------------------------------------
 // Redes endpoints
 // ---------------------------------------------------------------------------
 
