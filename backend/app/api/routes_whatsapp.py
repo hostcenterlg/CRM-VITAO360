@@ -31,10 +31,15 @@ from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from pydantic import BaseModel, Field
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from backend.app.api.deps import require_consultor_or_admin
+from backend.app.api.deps import (
+    get_user_canal_ids,
+    require_consultor_or_admin,
+)
 from backend.app.database import get_db
+from backend.app.models.cliente import Cliente
 from backend.app.models.usuario import Usuario
 from backend.app.services.deskrio_service import deskrio_service
 
@@ -50,6 +55,44 @@ router = APIRouter(prefix="/api/whatsapp", tags=["WhatsApp"])
 def _normalizar_cnpj(cnpj: str) -> str:
     """R5: remove pontuacao e zero-pad para 14 digitos."""
     return re.sub(r"\D", "", str(cnpj)).zfill(14)
+
+
+def _verificar_cnpj_no_escopo(
+    db: Session,
+    cnpj_norm: str,
+    user_canal_ids: list[int] | None,
+) -> None:
+    """
+    Multi-canal: verifica se o CNPJ pertence a um cliente cujo canal_id
+    esta entre os canais permitidos do usuario.
+
+    Para admin (user_canal_ids=None): nao bloqueia.
+    Para usuario sem canais (lista vazia): 403.
+    Para CNPJ inexistente no banco: nao bloqueia (deixa fluxo Deskrio
+    decidir — pode haver contato sem cadastro local).
+    Para CNPJ existente fora do escopo: 403.
+
+    R5 — Cliente esta cadastrado com CNPJ 14 digitos string.
+    """
+    if user_canal_ids is None:
+        return
+    if not user_canal_ids:
+        raise HTTPException(
+            status_code=403,
+            detail="Usuario sem canais autorizados",
+        )
+    canal_id_cliente = db.scalar(
+        select(Cliente.canal_id).where(Cliente.cnpj == cnpj_norm)
+    )
+    if canal_id_cliente is None:
+        # Cliente nao cadastrado: nao bloqueia (Deskrio pode ter contatos
+        # sem cadastro local — manter comportamento gracioso atual)
+        return
+    if canal_id_cliente not in user_canal_ids:
+        raise HTTPException(
+            status_code=403,
+            detail="Cliente fora do seu escopo de canais",
+        )
 
 
 # ---------------------------------------------------------------------------
@@ -185,6 +228,8 @@ def get_status(
 def get_contato_por_cnpj(
     cnpj: str,
     user: Usuario = Depends(require_consultor_or_admin),
+    user_canal_ids: list[int] | None = Depends(get_user_canal_ids),
+    db: Session = Depends(get_db),
 ) -> WhatsAppContatoResponse:
     """
     Busca contato WhatsApp associado ao CNPJ informado.
@@ -193,9 +238,13 @@ def get_contato_por_cnpj(
     Retorna encontrado=false se Deskrio nao estiver configurado ou contato
     nao existir — nunca levanta 404 para nao bloquear o fluxo do CRM.
 
+    Multi-canal: bloqueia (403) se o CNPJ pertencer a cliente fora do
+    escopo de canais permitidos do usuario.
+
     Requer autenticacao JWT.
     """
     cnpj_norm = _normalizar_cnpj(cnpj)
+    _verificar_cnpj_no_escopo(db, cnpj_norm, user_canal_ids)
 
     logger.info(
         "GET /api/whatsapp/contato/%s | usuario=%s",
@@ -242,6 +291,7 @@ def get_contato_por_cnpj(
 def post_enviar(
     payload: EnviarWhatsAppInput,
     user: Usuario = Depends(require_consultor_or_admin),
+    user_canal_ids: list[int] | None = Depends(get_user_canal_ids),
     db: Session = Depends(get_db),
 ) -> WhatsAppEnviarResponse:
     """
@@ -249,13 +299,16 @@ def post_enviar(
 
     Fluxo:
       1. Normaliza CNPJ (R5)
-      2. Busca numero de telefone do contato no Deskrio
-      3. Envia mensagem via API Deskrio
-      4. Retorna resultado (enviado / erro)
+      2. Verifica escopo de canais do usuario (403 se fora)
+      3. Busca numero de telefone do contato no Deskrio
+      4. Envia mensagem via API Deskrio
+      5. Retorna resultado (enviado / erro)
 
+    Multi-canal: 403 se CNPJ fora do escopo de canais permitidos.
     Requer autenticacao JWT.
     """
     cnpj_norm = _normalizar_cnpj(payload.cnpj)
+    _verificar_cnpj_no_escopo(db, cnpj_norm, user_canal_ids)
 
     logger.info(
         "POST /api/whatsapp/enviar | cnpj=%s usuario=%s texto_len=%d",
@@ -329,6 +382,8 @@ def get_tickets(
     cnpj: str = Query(..., description="CNPJ do cliente (qualquer formato)"),
     dias: int = Query(7, ge=1, le=90, description="Numero de dias para buscar (1-90)"),
     user: Usuario = Depends(require_consultor_or_admin),
+    user_canal_ids: list[int] | None = Depends(get_user_canal_ids),
+    db: Session = Depends(get_db),
 ) -> WhatsAppTicketsResponse:
     """
     Retorna tickets de atendimento Deskrio para um cliente.
@@ -340,9 +395,11 @@ def get_tickets(
     Retorna lista vazia (sem erro) se cliente nao tiver contato no Deskrio
     ou se nao houver tickets no periodo.
 
+    Multi-canal: 403 se CNPJ fora do escopo de canais permitidos.
     Requer autenticacao JWT.
     """
     cnpj_norm = _normalizar_cnpj(cnpj)
+    _verificar_cnpj_no_escopo(db, cnpj_norm, user_canal_ids)
 
     logger.info(
         "GET /api/whatsapp/tickets | cnpj=%s dias=%d usuario=%s",
@@ -499,14 +556,19 @@ class MensagensTicketResponse(BaseModel):
 def get_conversa(
     cnpj: str,
     user: Usuario = Depends(require_consultor_or_admin),
+    user_canal_ids: list[int] | None = Depends(get_user_canal_ids),
+    db: Session = Depends(get_db),
 ) -> ConversaResponse:
     """
     Retorna conversa WhatsApp real de um cliente.
 
     Fluxo: CNPJ -> contato Deskrio -> tickets -> mensagens do ticket.
     Retorna lista vazia (sem erro) se nao encontrar contato ou tickets.
+
+    Multi-canal: 403 se CNPJ fora do escopo de canais permitidos.
     """
     cnpj_norm = _normalizar_cnpj(cnpj)
+    _verificar_cnpj_no_escopo(db, cnpj_norm, user_canal_ids)
 
     logger.info(
         "GET /api/whatsapp/conversa/%s | usuario=%s",
@@ -636,6 +698,8 @@ def get_inbox(
         description="Filtrar por status: 'open', 'closed', ou omitir para todos",
     ),
     user: Usuario = Depends(require_consultor_or_admin),
+    user_canal_ids: list[int] | None = Depends(get_user_canal_ids),
+    db: Session = Depends(get_db),
 ) -> InboxResponse:
     """
     Retorna inbox de todos os atendimentos WhatsApp recentes.
@@ -643,8 +707,10 @@ def get_inbox(
     Fluxo:
       1. Chama listar_tickets() para os ultimos N dias (sem filtro de numero)
       2. Filtra por status se informado
-      3. Calcula aguardando_resposta comparando datas das ultimas mensagens
-      4. Ordena: abertos primeiro, depois por lastMessageDate desc
+      3. Multi-canal: filtra tickets cujo numero pertenca a Cliente em
+         canal permitido do usuario (admin: sem filtro)
+      4. Calcula aguardando_resposta comparando datas das ultimas mensagens
+      5. Ordena: abertos primeiro, depois por lastMessageDate desc
 
     Graceful degradation: se Deskrio nao estiver configurado, retorna lista
     vazia com configurado=false — nunca levanta excecao.
@@ -661,6 +727,10 @@ def get_inbox(
     if not deskrio_service.configurado:
         return InboxResponse(total=0, tickets=[], configurado=False)
 
+    # Multi-canal: usuario sem nenhum canal nao ve nenhum ticket
+    if user_canal_ids is not None and not user_canal_ids:
+        return InboxResponse(total=0, tickets=[], configurado=True)
+
     hoje = date.today()
     inicio = hoje - timedelta(days=dias)
 
@@ -672,6 +742,23 @@ def get_inbox(
     except Exception:  # noqa: BLE001
         logger.exception("Erro ao listar tickets da inbox | dias=%d", dias)
         return InboxResponse(total=0, tickets=[], configurado=True)
+
+    # Multi-canal: pre-carrega telefones dos clientes em canais permitidos
+    # para filtrar tickets pos-fetch via numero do contato.
+    telefones_permitidos: set[str] | None = None
+    if user_canal_ids is not None:
+        rows_tel = db.execute(
+            select(Cliente.telefone).where(
+                Cliente.canal_id.in_(user_canal_ids),
+                Cliente.telefone.isnot(None),
+            )
+        ).all()
+        # Normaliza: apenas digitos para match com numero Deskrio
+        telefones_permitidos = {
+            re.sub(r"\D", "", str(r[0])) for r in rows_tel if r[0]
+        }
+        # Manter apenas sufixos de 11 digitos (sem DDI) para match flexivel
+        telefones_permitidos = {t for t in telefones_permitidos if t}
 
     items: list[InboxTicketItem] = []
 
@@ -692,6 +779,25 @@ def get_inbox(
             contato_raw.get("number") or ""
             if isinstance(contato_raw, dict) else ""
         )
+
+        # Multi-canal: filtrar tickets cujo numero nao bate com clientes
+        # em canal permitido. Match por sufixo (ultimos 11 digitos sem DDI).
+        if telefones_permitidos is not None:
+            num_norm = re.sub(r"\D", "", str(contato_numero or ""))
+            if not num_norm:
+                continue
+            sufixo = num_norm[-11:] if len(num_norm) >= 11 else num_norm
+            # Match exato ou sufixo
+            match = False
+            for tel in telefones_permitidos:
+                if not tel:
+                    continue
+                tel_suf = tel[-11:] if len(tel) >= 11 else tel
+                if tel == num_norm or tel_suf == sufixo:
+                    match = True
+                    break
+            if not match:
+                continue
 
         # --- Dados do atendente ---
         user_raw = t.get("user") or {}
