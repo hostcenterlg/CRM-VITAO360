@@ -70,6 +70,7 @@ from backend.app.api.routes_projecao import router as projecao_router
 from backend.app.api.routes_redes import router as redes_router
 from backend.app.api.routes_rnc import router as rnc_router
 from backend.app.api.routes_sinaleiro import router as sinaleiro_router
+from backend.app.api.routes_usuarios import router as usuarios_router
 from backend.app.api.routes_vendas import router as vendas_router
 from backend.app.api.routes_produtos import router as produtos_router
 from backend.app.database import Base, SessionLocal, engine
@@ -319,6 +320,7 @@ app.add_middleware(RateLimitMiddleware)
 
 app.include_router(auth_router)
 app.include_router(canais_router)
+app.include_router(usuarios_router)
 app.include_router(clientes_router)
 app.include_router(agenda_router)
 app.include_router(dashboard_router)
