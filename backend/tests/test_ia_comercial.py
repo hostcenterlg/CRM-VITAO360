@@ -29,6 +29,7 @@ from sqlalchemy.orm import Session, sessionmaker
 
 from backend.app.database import Base, get_db
 from backend.app.main import app
+from backend.app.models.canal import Canal
 from backend.app.models.cliente import Cliente
 from backend.app.models.log_interacao import LogInteracao
 from backend.app.models.produto import Produto
@@ -91,6 +92,15 @@ def db_session(engine_mem) -> Session:
     _Session = sessionmaker(bind=engine_mem)
     session = _Session()
 
+    # ---- Canal default (multi-canal scoping L3 25/Apr/2026) ----
+    canal_default = Canal(
+        nome="REVENDA",
+        descricao="Canal de teste",
+        status="ativo",
+    )
+    session.add(canal_default)
+    session.commit()
+
     # ---- Usuários ----
     admin = Usuario(
         email="leandro@vitao.com.br",
@@ -108,6 +118,7 @@ def db_session(engine_mem) -> Session:
         hashed_password=hash_password("vitao2026"),
         ativo=True,
     )
+    manu_user.canais = [canal_default]
     session.add_all([admin, manu_user])
     session.commit()
 
@@ -262,6 +273,9 @@ def db_session(engine_mem) -> Session:
         followup_dias=0,
         tentativas="T3",
     )
+    # Multi-canal: associar todos os clientes ao canal default
+    for c in (cliente_ativo, cliente_inat_rec, cliente_prospect, cliente_em_risco):
+        c.canal_id = canal_default.id
     session.add_all([cliente_ativo, cliente_inat_rec, cliente_prospect, cliente_em_risco])
     session.commit()
 

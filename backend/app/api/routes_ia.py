@@ -26,14 +26,20 @@ R4 — Two-Base: o serviço lê vendas e logs em tabelas separadas.
 from __future__ import annotations
 
 import logging
+import re
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel, Field
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from backend.app.api.deps import require_consultor_or_admin
+from backend.app.api.deps import (
+    get_user_canal_ids,
+    require_consultor_or_admin,
+)
 from backend.app.database import get_db
+from backend.app.models.cliente import Cliente
 from backend.app.models.usuario import Usuario
 from backend.app.services.ia_service import ia_service
 
@@ -157,6 +163,49 @@ class SugestaoProdutoResponse(BaseModel):
 
 
 # ---------------------------------------------------------------------------
+# Helpers — Multi-canal scoping (DECISAO L3 Leandro 25/Apr/2026)
+# ---------------------------------------------------------------------------
+
+def _normalizar_cnpj(cnpj: str) -> str:
+    """R5: 14 digitos, zero-padded."""
+    return re.sub(r"\D", "", str(cnpj or "")).zfill(14)
+
+
+def _verificar_cnpj_no_escopo(
+    db: Session,
+    cnpj_norm: str,
+    user_canal_ids: list[int] | None,
+) -> None:
+    """
+    Bloqueia (403) se o CNPJ pertencer a cliente fora do escopo de canais
+    permitidos do usuario.
+
+    - admin (None): nao bloqueia
+    - sem canais ([]): 403
+    - CNPJ inexistente: nao bloqueia (downstream service retorna 404 com
+      mensagem proper — preserva comportamento atual)
+    - CNPJ existente fora do escopo: 403
+    """
+    if user_canal_ids is None:
+        return
+    if not user_canal_ids:
+        raise HTTPException(
+            status_code=403,
+            detail="Usuario sem canais autorizados",
+        )
+    canal_id_cliente = db.scalar(
+        select(Cliente.canal_id).where(Cliente.cnpj == cnpj_norm)
+    )
+    if canal_id_cliente is None:
+        return  # cliente nao existe, deixa o service tratar o 404
+    if canal_id_cliente not in user_canal_ids:
+        raise HTTPException(
+            status_code=403,
+            detail="Cliente fora do seu escopo de canais",
+        )
+
+
+# ---------------------------------------------------------------------------
 # Endpoints
 # ---------------------------------------------------------------------------
 
@@ -174,6 +223,7 @@ class SugestaoProdutoResponse(BaseModel):
 async def get_briefing(
     cnpj: str,
     user: Usuario = Depends(require_consultor_or_admin),
+    user_canal_ids: list[int] | None = Depends(get_user_canal_ids),
     db: Session = Depends(get_db),
 ) -> BriefingResponse:
     """
@@ -183,9 +233,11 @@ async def get_briefing(
     é normalizado automaticamente para 14 dígitos.
 
     Retorna 404 se o CNPJ não existir na base de clientes.
+    Multi-canal: 403 se CNPJ fora do escopo de canais permitidos.
 
     Requer autenticação JWT.
     """
+    _verificar_cnpj_no_escopo(db, _normalizar_cnpj(cnpj), user_canal_ids)
     logger.info(
         "Requisição de briefing | cnpj=%s usuario=%s role=%s",
         cnpj,
@@ -228,6 +280,7 @@ async def get_briefing(
 async def get_mensagem_wa_automatica(
     cnpj: str,
     user: Usuario = Depends(require_consultor_or_admin),
+    user_canal_ids: list[int] | None = Depends(get_user_canal_ids),
     db: Session = Depends(get_db),
 ) -> MensagemWAAutomaticaResponse:
     """
@@ -236,9 +289,11 @@ async def get_mensagem_wa_automatica(
     O CNPJ pode ser enviado formatado; é normalizado automaticamente.
 
     Retorna 404 se o CNPJ não existir na base de clientes.
+    Multi-canal: 403 se CNPJ fora do escopo de canais permitidos.
 
     Requer autenticação JWT.
     """
+    _verificar_cnpj_no_escopo(db, _normalizar_cnpj(cnpj), user_canal_ids)
     logger.info(
         "Requisição de mensagem WA automática | cnpj=%s usuario=%s",
         cnpj,
@@ -286,6 +341,7 @@ async def post_mensagem_whatsapp(
     cnpj: str,
     payload: MensagemWhatsAppInput,
     user: Usuario = Depends(require_consultor_or_admin),
+    user_canal_ids: list[int] | None = Depends(get_user_canal_ids),
     db: Session = Depends(get_db),
 ) -> MensagemWhatsAppResponse:
     """
@@ -295,9 +351,11 @@ async def post_mensagem_whatsapp(
     O campo 'objetivo' define o contexto e tom da mensagem (mín. 5 caracteres).
 
     Retorna 404 se o CNPJ não existir na base de clientes.
+    Multi-canal: 403 se CNPJ fora do escopo de canais permitidos.
 
     Requer autenticação JWT.
     """
+    _verificar_cnpj_no_escopo(db, _normalizar_cnpj(cnpj), user_canal_ids)
     logger.info(
         "Requisição de mensagem WA | cnpj=%s objetivo=%.60s usuario=%s",
         cnpj,
@@ -351,10 +409,20 @@ async def get_resumo_semanal(
     O nome do consultor é normalizado para UPPERCASE.
     Consultores reconhecidos pelo DE-PARA: MANU, LARISSA, DAIANE, JULIO.
 
+    Multi-canal: consultor (interno/externo) so pode ver o proprio resumo.
+    Admin/gerente: pode ver qualquer consultor.
+
     Se o consultor não tiver dados na base, retorna resumo com métricas zeradas.
 
     Requer autenticação JWT.
     """
+    # Consultor (interno/externo) so pode consultar a si mesmo
+    if user.role in ("consultor", "consultor_externo") and user.consultor_nome:
+        if consultor.upper() != user.consultor_nome.upper():
+            raise HTTPException(
+                status_code=403,
+                detail="Consultor pode ver apenas o proprio resumo",
+            )
     logger.info(
         "Requisição de resumo semanal | consultor=%s usuario=%s role=%s",
         consultor,
@@ -416,6 +484,7 @@ async def get_resumo_semanal(
 async def get_churn_risk(
     cnpj: str,
     user: Usuario = Depends(require_consultor_or_admin),
+    user_canal_ids: list[int] | None = Depends(get_user_canal_ids),
     db: Session = Depends(get_db),
 ) -> ChurnRiskResponse:
     """
@@ -424,9 +493,11 @@ async def get_churn_risk(
     O CNPJ pode ser enviado formatado; é normalizado automaticamente.
 
     Retorna 404 se o CNPJ não existir na base de clientes.
+    Multi-canal: 403 se CNPJ fora do escopo de canais permitidos.
 
     Requer autenticação JWT.
     """
+    _verificar_cnpj_no_escopo(db, _normalizar_cnpj(cnpj), user_canal_ids)
     logger.info(
         "Requisição de churn risk | cnpj=%s usuario=%s",
         cnpj,
@@ -475,6 +546,7 @@ async def get_churn_risk(
 async def get_sugestao_produto(
     cnpj: str,
     user: Usuario = Depends(require_consultor_or_admin),
+    user_canal_ids: list[int] | None = Depends(get_user_canal_ids),
     db: Session = Depends(get_db),
 ) -> SugestaoProdutoResponse:
     """
@@ -483,9 +555,11 @@ async def get_sugestao_produto(
     O CNPJ pode ser enviado formatado; é normalizado automaticamente.
 
     Retorna 404 se o CNPJ não existir na base de clientes.
+    Multi-canal: 403 se CNPJ fora do escopo de canais permitidos.
 
     Requer autenticação JWT.
     """
+    _verificar_cnpj_no_escopo(db, _normalizar_cnpj(cnpj), user_canal_ids)
     logger.info(
         "Requisição de sugestão de produto | cnpj=%s usuario=%s",
         cnpj,
@@ -644,6 +718,7 @@ class DashboardIAResponse(BaseModel):
 async def get_sentimento(
     cnpj: str,
     user: Usuario = Depends(require_consultor_or_admin),
+    user_canal_ids: list[int] | None = Depends(get_user_canal_ids),
     db: Session = Depends(get_db),
 ) -> SentimentoResponse:
     """
@@ -652,9 +727,11 @@ async def get_sentimento(
     O CNPJ pode ser enviado formatado; é normalizado automaticamente.
 
     Retorna 404 se o CNPJ não existir na base de clientes.
+    Multi-canal: 403 se CNPJ fora do escopo de canais permitidos.
 
     Requer autenticação JWT.
     """
+    _verificar_cnpj_no_escopo(db, _normalizar_cnpj(cnpj), user_canal_ids)
     logger.info(
         "Requisição de sentimento | cnpj=%s usuario=%s",
         cnpj,
@@ -707,6 +784,7 @@ async def get_sentimento(
 async def get_previsao_fechamento(
     cnpj: str,
     user: Usuario = Depends(require_consultor_or_admin),
+    user_canal_ids: list[int] | None = Depends(get_user_canal_ids),
     db: Session = Depends(get_db),
 ) -> PrevisaoFechamentoResponse:
     """
@@ -715,9 +793,11 @@ async def get_previsao_fechamento(
     O CNPJ pode ser enviado formatado; é normalizado automaticamente.
 
     Retorna 404 se o CNPJ não existir na base de clientes.
+    Multi-canal: 403 se CNPJ fora do escopo de canais permitidos.
 
     Requer autenticação JWT.
     """
+    _verificar_cnpj_no_escopo(db, _normalizar_cnpj(cnpj), user_canal_ids)
     logger.info(
         "Requisição de previsão de fechamento | cnpj=%s usuario=%s",
         cnpj,
@@ -773,9 +853,16 @@ async def get_coach_vendas(
     Retorna análise de performance e recomendações de coaching para o consultor.
 
     O nome do consultor é normalizado para UPPERCASE.
+    Multi-canal: consultor (interno/externo) so pode ver o proprio coach.
 
     Requer autenticação JWT.
     """
+    if user.role in ("consultor", "consultor_externo") and user.consultor_nome:
+        if consultor.upper() != user.consultor_nome.upper():
+            raise HTTPException(
+                status_code=403,
+                detail="Consultor pode ver apenas o proprio coach",
+            )
     logger.info(
         "Requisição de coach de vendas | consultor=%s usuario=%s",
         consultor,
@@ -826,15 +913,21 @@ async def get_coach_vendas(
 )
 async def get_alerta_oportunidade(
     user: Usuario = Depends(require_consultor_or_admin),
+    user_canal_ids: list[int] | None = Depends(get_user_canal_ids),
     db: Session = Depends(get_db),
 ) -> AlertaOportunidadeResponse:
     """
     Retorna as top 10 oportunidades de venda detectadas automaticamente.
 
     Não requer parâmetros de rota — analisa a carteira completa.
+    Multi-canal: oportunidades filtradas pelos canais permitidos do usuario.
+    Consultor/externo: tambem filtra pela carteira propria.
 
     Requer autenticação JWT.
     """
+    if user_canal_ids is not None and not user_canal_ids:
+        return AlertaOportunidadeResponse(total=0, oportunidades=[])
+
     logger.info(
         "Requisição de alertas de oportunidade | usuario=%s",
         getattr(user, "email", user.id),
@@ -846,9 +939,42 @@ async def get_alerta_oportunidade(
         logger.exception("Erro ao detectar oportunidades: %s — retornando fallback", exc)
         return AlertaOportunidadeResponse(total=0, oportunidades=[])
 
+    oportunidades_raw = resultado["oportunidades"]
+
+    # Pos-filtro multi-canal + consultor
+    consultor_logado = (
+        user.consultor_nome.upper()
+        if user.role in ("consultor", "consultor_externo") and user.consultor_nome
+        else None
+    )
+    if user_canal_ids is not None or consultor_logado:
+        cnpjs_op = {op.get("cnpj") for op in oportunidades_raw if op.get("cnpj")}
+        if cnpjs_op:
+            rows = db.execute(
+                select(Cliente.cnpj, Cliente.canal_id, Cliente.consultor).where(
+                    Cliente.cnpj.in_(cnpjs_op)
+                )
+            ).all()
+            mapa: dict[str, tuple] = {r[0]: (r[1], r[2]) for r in rows}
+        else:
+            mapa = {}
+
+        def _passa(op: dict) -> bool:
+            info = mapa.get(op.get("cnpj") or "")
+            if info is None:
+                return user_canal_ids is None and consultor_logado is None
+            canal_id_cli, consultor_cli = info
+            if user_canal_ids is not None and canal_id_cli not in user_canal_ids:
+                return False
+            if consultor_logado and (consultor_cli or "").upper() != consultor_logado:
+                return False
+            return True
+
+        oportunidades_raw = [op for op in oportunidades_raw if _passa(op)]
+
     return AlertaOportunidadeResponse(
-        total=resultado["total"],
-        oportunidades=[OportunidadeItem(**op) for op in resultado["oportunidades"]],
+        total=len(oportunidades_raw),
+        oportunidades=[OportunidadeItem(**op) for op in oportunidades_raw],
     )
 
 
@@ -865,13 +991,28 @@ async def get_alerta_oportunidade(
 )
 async def get_dashboard_ia(
     user: Usuario = Depends(require_consultor_or_admin),
+    user_canal_ids: list[int] | None = Depends(get_user_canal_ids),
     db: Session = Depends(get_db),
 ) -> DashboardIAResponse:
     """
     Retorna KPIs agregados do módulo de IA para o painel executivo.
 
+    Multi-canal: contagens recalculadas com filtro de canal_id quando o
+    usuario nao e admin. Consultor/externo: tambem filtra pela carteira
+    propria.
+
     Requer autenticação JWT.
     """
+    if user_canal_ids is not None and not user_canal_ids:
+        return DashboardIAResponse(
+            briefings_disponiveis=0,
+            alertas_ativos=0,
+            oportunidades=0,
+            clientes_em_risco=0,
+            consultor_destaque=ConsultorDestaqueItem(nome="—", motivo="Sem canais"),
+            insight_do_dia="Sem canais autorizados.",
+        )
+
     logger.info(
         "Requisição de dashboard IA | usuario=%s role=%s",
         getattr(user, "email", user.id),
@@ -891,11 +1032,71 @@ async def get_dashboard_ia(
             insight_do_dia="Dashboard IA temporariamente indisponível.",
         )
 
+    briefings = resultado["briefings_disponiveis"]
+    alertas = resultado["alertas_ativos"]
+    em_risco = resultado["clientes_em_risco"]
+    oportunidades_count = resultado["oportunidades"]
+
+    # Multi-canal: recalcula contagens de Cliente respeitando canal_id e
+    # consultor logado.
+    consultor_logado = (
+        user.consultor_nome.upper()
+        if user.role in ("consultor", "consultor_externo") and user.consultor_nome
+        else None
+    )
+
+    if user_canal_ids is not None or consultor_logado:
+        from sqlalchemy import func as sqlfunc
+
+        def _count(condition) -> int:
+            stmt = select(sqlfunc.count(Cliente.id)).where(condition)
+            if user_canal_ids is not None:
+                stmt = stmt.where(Cliente.canal_id.in_(user_canal_ids))
+            if consultor_logado:
+                stmt = stmt.where(sqlfunc.upper(Cliente.consultor) == consultor_logado)
+            return db.scalar(stmt) or 0
+
+        briefings = _count(
+            Cliente.situacao.in_(["ATIVO", "INAT.REC"]) & Cliente.cnpj.isnot(None)
+        )
+        alertas = _count(Cliente.sinaleiro.in_(["VERMELHO", "LARANJA"]))
+        em_risco = _count(Cliente.situacao.in_(["EM_RISCO", "INAT.ANT"]))
+
+        # Oportunidades dentro do escopo: reutiliza endpoint logico
+        try:
+            ops_resultado = await ia_service.detectar_oportunidades(db=db)
+            ops_raw = ops_resultado.get("oportunidades", [])
+            cnpjs_op = {op.get("cnpj") for op in ops_raw if op.get("cnpj")}
+            if cnpjs_op:
+                rows = db.execute(
+                    select(Cliente.cnpj, Cliente.canal_id, Cliente.consultor).where(
+                        Cliente.cnpj.in_(cnpjs_op)
+                    )
+                ).all()
+                mapa: dict[str, tuple] = {r[0]: (r[1], r[2]) for r in rows}
+            else:
+                mapa = {}
+            count_ops = 0
+            for op in ops_raw:
+                info = mapa.get(op.get("cnpj") or "")
+                if info is None:
+                    continue
+                canal_id_cli, consultor_cli = info
+                if user_canal_ids is not None and canal_id_cli not in user_canal_ids:
+                    continue
+                if consultor_logado and (consultor_cli or "").upper() != consultor_logado:
+                    continue
+                count_ops += 1
+            oportunidades_count = count_ops
+        except Exception:  # noqa: BLE001
+            logger.exception("Erro ao recalcular oportunidades scoped no dashboard IA")
+            oportunidades_count = 0
+
     return DashboardIAResponse(
-        briefings_disponiveis=resultado["briefings_disponiveis"],
-        alertas_ativos=resultado["alertas_ativos"],
-        oportunidades=resultado["oportunidades"],
-        clientes_em_risco=resultado["clientes_em_risco"],
+        briefings_disponiveis=briefings,
+        alertas_ativos=alertas,
+        oportunidades=oportunidades_count,
+        clientes_em_risco=em_risco,
         consultor_destaque=ConsultorDestaqueItem(**resultado["consultor_destaque"]),
         insight_do_dia=resultado["insight_do_dia"],
     )
