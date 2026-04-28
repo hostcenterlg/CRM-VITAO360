@@ -759,8 +759,8 @@ function ChipGroup({ label, opcoes, selecionados, cores, onToggle }: ChipGroupPr
             className="inline-flex items-center px-2.5 py-1 text-[11px] font-semibold rounded-full border cursor-pointer transition-all select-none"
             style={
               ativo
-                ? { backgroundColor: cor.bg, color: cor.text, borderColor: cor.border, boxShadow: `0 0 0 2px ${cor.border}40` }
-                : { backgroundColor: '#f9fafb', color: '#9ca3af', borderColor: '#e5e7eb' }
+                ? { backgroundColor: cor.border, color: '#ffffff', borderColor: cor.border, boxShadow: `0 1px 2px ${cor.border}66` }
+                : { backgroundColor: '#ffffff', color: '#52525b', borderColor: '#d1d5db' }
             }
           >
             {opcao}
