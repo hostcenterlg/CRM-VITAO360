@@ -5,6 +5,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import Sidebar, { HamburgerButton } from './Sidebar';
 import { useAuth } from '@/contexts/AuthContext';
 import { fetchNotificacoes, Alerta } from '@/lib/api';
+import CanalSelector from './CanalSelector';
 import SearchModal from './SearchModal';
 import Onboarding from './Onboarding';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
@@ -426,6 +427,9 @@ export default function AppShell({ children, pageTitle }: AppShellProps) {
               </kbd>
             </span>
           </button>
+
+          {/* Seletor de canal — admin (todos) / consultor (canais permitidos) */}
+          <CanalSelector />
 
           {/* Sino de notificacoes */}
           <SinoBell />
