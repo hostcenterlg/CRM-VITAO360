@@ -556,10 +556,10 @@ export default function DashboardPage() {
                 type="button"
                 onClick={() => setActiveTab(tab.id)}
                 className={[
-                  'px-3 sm:px-4 py-2.5 text-xs font-semibold uppercase tracking-wider whitespace-nowrap transition-all duration-150',
+                  'px-3 sm:px-4 py-2.5 text-xs uppercase tracking-wider whitespace-nowrap transition-all duration-150',
                   isActive
-                    ? 'text-green-700 bg-green-50 border-b-2 border-green-600'
-                    : 'text-gray-500 hover:text-gray-800 hover:bg-gray-50 border-b-2 border-transparent',
+                    ? 'text-gray-900 font-semibold border-b-2 border-green-600 bg-white'
+                    : 'text-gray-700 font-medium hover:text-gray-900 hover:bg-gray-50 border-b-2 border-transparent',
                 ].join(' ')}
               >
                 <span className="sm:hidden">{tab.labelMobile}</span>
