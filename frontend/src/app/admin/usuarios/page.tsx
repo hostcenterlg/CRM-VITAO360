@@ -5,7 +5,11 @@ import {
   fetchUsuarios,
   criarUsuario,
   atualizarUsuario,
+  fetchMeusCanais,
+  fetchCanaisDoUsuario,
+  atualizarCanaisDoUsuario,
   UsuarioAdmin,
+  type Canal,
 } from '@/lib/api';
 
 // ---------------------------------------------------------------------------
@@ -68,11 +72,18 @@ function AtivoToggle({ ativo, onChange }: { ativo: boolean; onChange: () => void
 
 interface ModalUsuarioProps {
   usuario: UsuarioAdmin | null;
+  canaisDisponiveis: Canal[];
   onClose: () => void;
-  onSalvar: (form: UsuarioForm, id?: number) => Promise<void>;
+  onSalvar: (form: UsuarioForm, canalIds: number[], id?: number) => Promise<void>;
 }
 
-function ModalUsuario({ usuario, onClose, onSalvar }: ModalUsuarioProps) {
+const CANAL_STATUS_COLORS: Record<string, string> = {
+  ATIVO: '#00B050',
+  EM_BREVE: '#FFC000',
+  ADMIN_ONLY: '#6B7280',
+};
+
+function ModalUsuario({ usuario, canaisDisponiveis, onClose, onSalvar }: ModalUsuarioProps) {
   const isEdicao = usuario !== null;
   const [form, setForm] = useState<UsuarioForm>({
     nome: usuario?.nome ?? '',
@@ -82,9 +93,36 @@ function ModalUsuario({ usuario, onClose, onSalvar }: ModalUsuarioProps) {
     consultor_nome: usuario?.consultor_nome ?? '',
     ativo: usuario?.ativo ?? true,
   });
+  const [canalIds, setCanalIds] = useState<number[]>([]);
+  const [carregandoCanais, setCarregandoCanais] = useState<boolean>(false);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Partial<Record<keyof UsuarioForm, string>>>({});
   const [apiError, setApiError] = useState<string | null>(null);
+
+  // Carregar ACL atual quando edita um usuario existente
+  useEffect(() => {
+    if (!usuario) {
+      setCanalIds([]);
+      return;
+    }
+    let mounted = true;
+    setCarregandoCanais(true);
+    fetchCanaisDoUsuario(usuario.id)
+      .then(acl => {
+        if (mounted) setCanalIds(acl.canais.map(c => c.id));
+      })
+      .catch(() => {
+        if (mounted) setCanalIds([]);
+      })
+      .finally(() => {
+        if (mounted) setCarregandoCanais(false);
+      });
+    return () => { mounted = false; };
+  }, [usuario]);
+
+  function toggleCanal(id: number) {
+    setCanalIds(ids => (ids.includes(id) ? ids.filter(x => x !== id) : [...ids, id]));
+  }
 
   function validate(): boolean {
     const e: Partial<Record<keyof UsuarioForm, string>> = {};
@@ -101,7 +139,7 @@ function ModalUsuario({ usuario, onClose, onSalvar }: ModalUsuarioProps) {
     setLoading(true);
     setApiError(null);
     try {
-      await onSalvar(form, usuario?.id);
+      await onSalvar(form, canalIds, usuario?.id);
       onClose();
     } catch (err: unknown) {
       setApiError(err instanceof Error ? err.message : 'Erro ao salvar usuario');
@@ -232,6 +270,56 @@ function ModalUsuario({ usuario, onClose, onSalvar }: ModalUsuarioProps) {
             {errors.senha && <p className="mt-1 text-[10px] text-red-600">{errors.senha}</p>}
           </div>
 
+          {/* Canais de Acesso */}
+          <div className="pt-1">
+            <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wide">
+              Canais de Acesso {form.role === 'admin' && <span className="text-[10px] text-gray-400 normal-case ml-1">(admin ve tudo)</span>}
+            </label>
+
+            {form.role === 'admin' ? (
+              <p className="text-[11px] text-gray-500 italic px-2 py-1.5 bg-gray-50 border border-gray-200 rounded">
+                Administradores tem acesso a todos os canais automaticamente.
+              </p>
+            ) : isEdicao && carregandoCanais ? (
+              <div className="flex items-center justify-center py-3">
+                <div className="w-4 h-4 border-2 border-gray-300 border-t-green-600 rounded-full animate-spin" />
+              </div>
+            ) : canaisDisponiveis.length === 0 ? (
+              <p className="text-[11px] text-red-500 italic">Nenhum canal cadastrado no sistema.</p>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 max-h-48 overflow-y-auto p-2 border border-gray-200 rounded bg-gray-50">
+                {canaisDisponiveis.map(canal => {
+                  const checked = canalIds.includes(canal.id);
+                  const dotColor = CANAL_STATUS_COLORS[canal.status] ?? '#9CA3AF';
+                  return (
+                    <label
+                      key={canal.id}
+                      className={`flex items-center gap-2 px-2 py-1.5 rounded cursor-pointer transition-colors ${
+                        checked ? 'bg-green-50 border border-green-200' : 'bg-white border border-gray-200 hover:bg-gray-50'
+                      }`}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={checked}
+                        onChange={() => toggleCanal(canal.id)}
+                        className="w-3.5 h-3.5 rounded border-gray-300 text-green-600 focus:ring-green-500"
+                      />
+                      <span aria-hidden="true" className="inline-block w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: dotColor }} />
+                      <span className="text-[11px] font-medium text-gray-800 truncate">{canal.nome}</span>
+                    </label>
+                  );
+                })}
+              </div>
+            )}
+            {form.role !== 'admin' && canaisDisponiveis.length > 0 && (
+              <p className="mt-1 text-[10px] text-gray-400">
+                {canalIds.length === 0
+                  ? 'Sem canal: usuario nao vera clientes ou vendas.'
+                  : `${canalIds.length} canal(is) selecionado(s).`}
+              </p>
+            )}
+          </div>
+
           {/* Status */}
           <div className="flex items-center justify-between pt-1">
             <label className="text-xs font-semibold text-gray-700 uppercase tracking-wide">Status</label>
@@ -271,16 +359,23 @@ function ModalUsuario({ usuario, onClose, onSalvar }: ModalUsuarioProps) {
 
 export default function AdminUsuariosPage() {
   const [usuarios, setUsuarios] = useState<UsuarioAdmin[]>([]);
+  const [canais, setCanais] = useState<Canal[]>([]);
   const [loading, setLoading] = useState(true);
   const [apiError, setApiError] = useState<string | null>(null);
+  const [sucesso, setSucesso] = useState<string | null>(null);
   const [modalUsuario, setModalUsuario] = useState<UsuarioAdmin | null | 'novo'>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
     setApiError(null);
     try {
-      const data = await fetchUsuarios();
-      setUsuarios(data);
+      // Carrega usuarios e canais em paralelo. Admin recebe todos canais via /api/canais/meus.
+      const [dataUsuarios, dataCanais] = await Promise.all([
+        fetchUsuarios(),
+        fetchMeusCanais().catch(() => [] as Canal[]),
+      ]);
+      setUsuarios(dataUsuarios);
+      setCanais(dataCanais);
     } catch (err: unknown) {
       setApiError(err instanceof Error ? err.message : 'Erro ao carregar usuarios');
     } finally {
@@ -290,7 +385,15 @@ export default function AdminUsuariosPage() {
 
   useEffect(() => { void load(); }, [load]);
 
-  async function handleSalvar(form: UsuarioForm, id?: number) {
+  // Limpar mensagem de sucesso apos 3s
+  useEffect(() => {
+    if (!sucesso) return;
+    const t = setTimeout(() => setSucesso(null), 3000);
+    return () => clearTimeout(t);
+  }, [sucesso]);
+
+  async function handleSalvar(form: UsuarioForm, canalIds: number[], id?: number) {
+    let alvoId: number;
     if (id) {
       await atualizarUsuario(id, {
         nome: form.nome,
@@ -300,8 +403,9 @@ export default function AdminUsuariosPage() {
         ativo: form.ativo,
         ...(form.senha ? { senha: form.senha } : {}),
       });
+      alvoId = id;
     } else {
-      await criarUsuario({
+      const criado = await criarUsuario({
         nome: form.nome,
         email: form.email,
         role: form.role as UsuarioAdmin['role'],
@@ -309,7 +413,23 @@ export default function AdminUsuariosPage() {
         ativo: form.ativo,
         senha: form.senha,
       });
+      alvoId = criado.id;
     }
+
+    // Persistir ACL de canais (skip para admin — tem acesso total automaticamente)
+    if (form.role !== 'admin') {
+      try {
+        await atualizarCanaisDoUsuario(alvoId, canalIds);
+      } catch (err: unknown) {
+        // Nao reverter o save do usuario; apenas alertar via apiError
+        throw new Error(
+          'Usuario salvo, mas falha ao atualizar canais: '
+          + (err instanceof Error ? err.message : String(err))
+        );
+      }
+    }
+
+    setSucesso(id ? 'Permissoes atualizadas com sucesso.' : 'Usuario criado com sucesso.');
     await load();
   }
 
@@ -364,6 +484,13 @@ export default function AdminUsuariosPage() {
           <button type="button" onClick={() => void load()} className="ml-2 underline">
             Tentar novamente
           </button>
+        </div>
+      )}
+
+      {/* Sucesso */}
+      {sucesso && (
+        <div role="status" className="p-3 bg-green-50 border border-green-200 rounded-lg text-xs text-green-700">
+          {sucesso}
         </div>
       )}
 
@@ -448,6 +575,7 @@ export default function AdminUsuariosPage() {
       {mostrarModal && (
         <ModalUsuario
           usuario={usuarioParaModal}
+          canaisDisponiveis={canais}
           onClose={() => setModalUsuario(null)}
           onSalvar={handleSalvar}
         />
