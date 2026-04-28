@@ -143,8 +143,10 @@ def get_user_canal_ids(
     if user.role == "admin":
         return None  # admin ve tudo
 
-    # Carrega via association table (lazy on user.canais)
-    canais = list(user.canais or [])
+    # Carrega via association table (lazy on user.canais).
+    # getattr com default [] tolera mocks/SimpleNamespace de testes que
+    # nao tem o relationship ORM populado.
+    canais = list(getattr(user, "canais", None) or [])
     return [c.id for c in canais]
 
 
@@ -164,7 +166,7 @@ def get_user_canal_ids_strict(
     if user.role == "admin":
         return [c[0] for c in db.query(Canal.id).all()]
 
-    return [c.id for c in (user.canais or [])]
+    return [c.id for c in (getattr(user, "canais", None) or [])]
 
 
 # ---------------------------------------------------------------------------

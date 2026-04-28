@@ -30,11 +30,19 @@ from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from pydantic import BaseModel, Field
-from backend.app.utils.cache import cache, cached
+from backend.app.utils.cache import cache
 from sqlalchemy.orm import Session
 
-from backend.app.api.deps import get_current_user, require_admin
+from sqlalchemy import select
+
+from backend.app.api.deps import (
+    get_current_user,
+    get_user_canal_ids,
+    require_admin,
+)
 from backend.app.database import get_db
+from backend.app.models.cliente import Cliente
+from backend.app.models.usuario import Usuario
 from backend.app.services.pipeline_service import pipeline_service
 
 logger = logging.getLogger(__name__)
@@ -228,10 +236,10 @@ def get_pipeline_logs(_admin=Depends(require_admin)):
         "Disponivel para qualquer usuario autenticado."
     ),
 )
-@cached(ttl_seconds=30, key_prefix="/api/notificacoes")
 def get_notificacoes(
     db: Session = Depends(get_db),
-    _user=Depends(get_current_user),
+    user: Usuario = Depends(get_current_user),
+    user_canal_ids: list[int] | None = Depends(get_user_canal_ids),
 ):
     """
     Retorna lista de alertas priorizados.
@@ -242,9 +250,52 @@ def get_notificacoes(
       FOLLOWUP_VENCIDO   — followup_vencido=True
       META_RISCO         — pct_alcancado < 50% da meta anual
 
+    Multi-canal: alertas filtrados pelos canais permitidos do usuario.
+    Consultor (interno/externo): tambem filtra pela carteira propria.
     Ordenado: ALTA antes de MEDIA.
+
+    Nota: cache desabilitado (key precisa ser por-usuario; sem isso vazaria
+    alertas entre usuarios de canais diferentes).
     """
+    # Multi-canal: lista vazia => sem alertas
+    if user_canal_ids is not None and not user_canal_ids:
+        return NotificacoesResponse(total=0, alertas=[])
+
     alertas = pipeline_service.get_notifications(db)
+
+    # Pos-filtro multi-canal: monta mapa CNPJ -> (canal_id, consultor) e filtra.
+    if user_canal_ids is not None or user.role in ("consultor", "consultor_externo"):
+        cnpjs_alertados = {a["cnpj"] for a in alertas if a.get("cnpj")}
+        if cnpjs_alertados:
+            rows = db.execute(
+                select(Cliente.cnpj, Cliente.canal_id, Cliente.consultor).where(
+                    Cliente.cnpj.in_(cnpjs_alertados)
+                )
+            ).all()
+            mapa: dict[str, tuple] = {r[0]: (r[1], r[2]) for r in rows}
+        else:
+            mapa = {}
+
+        consultor_logado = (
+            user.consultor_nome.upper()
+            if user.role in ("consultor", "consultor_externo") and user.consultor_nome
+            else None
+        )
+
+        def _passa(a: dict) -> bool:
+            info = mapa.get(a.get("cnpj") or "")
+            if info is None:
+                # Cliente nao encontrado — descartar por seguranca quando ha
+                # qualquer scoping ativo
+                return user_canal_ids is None and consultor_logado is None
+            canal_id_cli, consultor_cli = info
+            if user_canal_ids is not None and canal_id_cli not in user_canal_ids:
+                return False
+            if consultor_logado is not None and (consultor_cli or "").upper() != consultor_logado:
+                return False
+            return True
+
+        alertas = [a for a in alertas if _passa(a)]
 
     return NotificacoesResponse(
         total=len(alertas),
