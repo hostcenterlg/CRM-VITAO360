@@ -105,6 +105,41 @@ def meus_canais(
 
 
 @router.get(
+    "/meus",
+    response_model=list[CanalResponse],
+    summary="Canais visiveis ao usuario atual (alias pt-BR)",
+)
+def listar_meus_canais(
+    user: Usuario = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> list[Canal]:
+    """
+    Endpoint dedicado para o componente <CanalSelector/> do front.
+
+    Difere de /me porque a ordenacao eh por `id` (nao por status), o que
+    estabiliza o dropdown e mantem as cores dos badges previsiveis.
+
+    - admin (role='admin'): retorna TODOS os canais (`SELECT * FROM canais ORDER BY id`).
+    - demais roles: retorna apenas canais associados via tabela `usuario_canal`
+      (`SELECT canais.* FROM canais JOIN usuario_canal ON canais.id = usuario_canal.canal_id
+      WHERE usuario_canal.usuario_id = :user_id ORDER BY canais.id`).
+
+    Resposta vazia indica usuario sem canal — front deve mostrar empty state
+    pedindo ao admin para conceder acesso.
+    """
+    if user.role == "admin":
+        return db.query(Canal).order_by(Canal.id).all()
+
+    return (
+        db.query(Canal)
+        .join(UsuarioCanal, Canal.id == UsuarioCanal.canal_id)
+        .filter(UsuarioCanal.usuario_id == user.id)
+        .order_by(Canal.id)
+        .all()
+    )
+
+
+@router.get(
     "/all",
     response_model=list[CanalResponse],
     summary="Lista TODOS canais (admin)",
