@@ -32,7 +32,11 @@ from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 from starlette.responses import StreamingResponse
 
-from backend.app.api.deps import get_current_user
+from backend.app.api.deps import (
+    cnpjs_permitidos_subquery,
+    get_current_user,
+    get_user_canal_ids,
+)
 from backend.app.database import get_db
 from backend.app.models.cliente import Cliente
 from backend.app.models.log_interacao import LogInteracao
@@ -160,6 +164,13 @@ def _xlsx_response(buf: BytesIO, filename: str) -> StreamingResponse:
 
 
 # ---------------------------------------------------------------------------
+# Multi-canal scoping (DECISAO L3 Leandro 25/Apr/2026)
+# Filtra dados por canais permitidos do user via Cliente.canal_id.
+# Endpoints de admin: user_canal_ids=None => sem filtro.
+# ---------------------------------------------------------------------------
+
+
+# ---------------------------------------------------------------------------
 # Catalog endpoint
 # ---------------------------------------------------------------------------
 
@@ -234,6 +245,7 @@ def relatorio_vendas(
         description="Filtrar por consultor (MANU, LARISSA, DAIANE, JULIO).",
     ),
     user: Usuario = Depends(get_current_user),
+    user_canal_ids: list[int] | None = Depends(get_user_canal_ids),
     db: Session = Depends(get_db),
 ) -> StreamingResponse:
     """
@@ -244,6 +256,8 @@ def relatorio_vendas(
 
     R1  — Two-Base: usa APENAS tabela vendas (valor_pedido > 0).
     R8  — Exclui classificacao_3tier = 'ALUCINACAO'.
+    Multi-canal: vendas filtradas via JOIN com clientes.canal_id.
+    Consultores (interno/externo) veem apenas seus registros.
     Requer autenticação JWT.
     """
     hoje = date.today()
@@ -271,7 +285,27 @@ def relatorio_vendas(
         .order_by(Venda.data_pedido.desc(), Venda.consultor)
     )
 
-    if consultor:
+    # Multi-canal scoping
+    if user_canal_ids is not None:
+        if not user_canal_ids:
+            # Sem canal permitido: retorna XLSX vazio (header apenas)
+            buf_empty = _create_xlsx(
+                title="Vendas",
+                headers=[
+                    "Data", "Nº Pedido", "Cliente (Nome Fantasia)", "CNPJ",
+                    "Consultor", "Valor (R$)", "Status", "Condição Pagamento",
+                ],
+                rows=[],
+            )
+            return _xlsx_response(buf_empty, "vendas_sem_canal.xlsx")
+        cnpjs_sub = cnpjs_permitidos_subquery(user_canal_ids)
+        if cnpjs_sub is not None:
+            stmt = stmt.where(Venda.cnpj.in_(cnpjs_sub))
+
+    # Consultor (interno/externo) ve apenas seus registros
+    if user.role in ("consultor", "consultor_externo") and user.consultor_nome:
+        stmt = stmt.where(Venda.consultor == user.consultor_nome.upper())
+    elif consultor:
         stmt = stmt.where(Venda.consultor == consultor.upper())
 
     rows_db = db.execute(stmt).all()
@@ -341,6 +375,7 @@ def relatorio_positivacao(
         description="Filtrar por consultor (MANU, LARISSA, DAIANE, JULIO).",
     ),
     user: Usuario = Depends(get_current_user),
+    user_canal_ids: list[int] | None = Depends(get_user_canal_ids),
     db: Session = Depends(get_db),
 ) -> StreamingResponse:
     """
@@ -352,6 +387,8 @@ def relatorio_positivacao(
 
     R1  — Two-Base: positivação via tabela vendas.
     R8  — Exclui ALUCINACAO.
+    Multi-canal: filtra Cliente.canal_id pelos canais permitidos do user.
+    Consultores (interno/externo) veem apenas a propria carteira.
     Requer autenticação JWT.
     """
     hoje = date.today()
@@ -365,13 +402,27 @@ def relatorio_positivacao(
     else:
         dt_fim = date(ano_ref, mes_ref + 1, 1) - timedelta(days=1)
 
+    # Multi-canal scoping
+    headers_pos = [
+        "Cliente (Nome Fantasia)", "CNPJ", "Consultor", "Situação",
+        "Data Último Pedido", "Dias Sem Compra", "Positivado",
+    ]
+    if user_canal_ids is not None and not user_canal_ids:
+        buf_empty = _create_xlsx(title="Positivação", headers=headers_pos, rows=[])
+        return _xlsx_response(buf_empty, "positivacao_sem_canal.xlsx")
+
     # Fetch all non-ALUCINACAO clients
     clientes_q = (
         select(Cliente)
         .where(Cliente.classificacao_3tier != "ALUCINACAO")
         .order_by(Cliente.consultor, Cliente.nome_fantasia)
     )
-    if consultor:
+    if user_canal_ids is not None:
+        clientes_q = clientes_q.where(Cliente.canal_id.in_(user_canal_ids))
+
+    if user.role in ("consultor", "consultor_externo") and user.consultor_nome:
+        clientes_q = clientes_q.where(Cliente.consultor == user.consultor_nome.upper())
+    elif consultor:
         clientes_q = clientes_q.where(Cliente.consultor == consultor.upper())
 
     clientes = db.scalars(clientes_q).all()
@@ -385,7 +436,14 @@ def relatorio_positivacao(
             Venda.data_pedido <= dt_fim,
         )
     )
-    if consultor:
+    if user_canal_ids is not None:
+        cnpjs_sub = cnpjs_permitidos_subquery(user_canal_ids)
+        if cnpjs_sub is not None:
+            positivados_q = positivados_q.where(Venda.cnpj.in_(cnpjs_sub))
+
+    if user.role in ("consultor", "consultor_externo") and user.consultor_nome:
+        positivados_q = positivados_q.where(Venda.consultor == user.consultor_nome.upper())
+    elif consultor:
         positivados_q = positivados_q.where(Venda.consultor == consultor.upper())
 
     positivados_set: set[str] = {row[0] for row in db.execute(positivados_q).all()}
@@ -453,6 +511,7 @@ def relatorio_atividades(
         description="Filtrar por consultor (MANU, LARISSA, DAIANE, JULIO).",
     ),
     user: Usuario = Depends(get_current_user),
+    user_canal_ids: list[int] | None = Depends(get_user_canal_ids),
     db: Session = Depends(get_db),
 ) -> StreamingResponse:
     """
@@ -462,11 +521,22 @@ def relatorio_atividades(
 
     R1  — Two-Base: usa APENAS log_interacoes (sem R$).
     R8  — Exclui clientes com classificacao_3tier = 'ALUCINACAO' via join.
+    Multi-canal: filtra LogInteracao via subquery de CNPJs permitidos.
+    Consultores (interno/externo) veem apenas seus registros.
     Requer autenticação JWT.
     """
     hoje = date.today()
     dt_inicio = data_inicio or hoje.replace(day=1)
     dt_fim = data_fim or hoje
+
+    headers_at = [
+        "Data", "Cliente", "CNPJ", "Consultor",
+        "Tipo Contato", "Resultado", "Descrição",
+    ]
+
+    if user_canal_ids is not None and not user_canal_ids:
+        buf_empty = _create_xlsx(title="Atividades", headers=headers_at, rows=[])
+        return _xlsx_response(buf_empty, "atividades_sem_canal.xlsx")
 
     stmt = (
         select(
@@ -486,7 +556,15 @@ def relatorio_atividades(
         .order_by(LogInteracao.data_interacao.desc())
     )
 
-    if consultor:
+    # Multi-canal scoping
+    if user_canal_ids is not None:
+        cnpjs_sub = cnpjs_permitidos_subquery(user_canal_ids)
+        if cnpjs_sub is not None:
+            stmt = stmt.where(LogInteracao.cnpj.in_(cnpjs_sub))
+
+    if user.role in ("consultor", "consultor_externo") and user.consultor_nome:
+        stmt = stmt.where(LogInteracao.consultor == user.consultor_nome.upper())
+    elif consultor:
         stmt = stmt.where(LogInteracao.consultor == consultor.upper())
 
     rows_db = db.execute(stmt).all()
@@ -541,6 +619,7 @@ def relatorio_clientes_inativos(
         description="Filtrar por consultor (MANU, LARISSA, DAIANE, JULIO).",
     ),
     user: Usuario = Depends(get_current_user),
+    user_canal_ids: list[int] | None = Depends(get_user_canal_ids),
     db: Session = Depends(get_db),
 ) -> StreamingResponse:
     """
@@ -552,8 +631,19 @@ def relatorio_clientes_inativos(
 
     R8  — Exclui ALUCINACAO.
     R1  — Faturamento Total vem APENAS de registros VENDA (campo faturamento_total no cliente).
+    Multi-canal: filtra Cliente.canal_id pelos canais permitidos do user.
+    Consultores (interno/externo) veem apenas a propria carteira.
     Requer autenticação JWT.
     """
+    headers_inat = [
+        "Cliente (Nome Fantasia)", "CNPJ", "Consultor", "Situação",
+        "Dias Sem Compra", "Último Pedido (R$)", "Faturamento Total (R$)",
+        "Curva ABC", "Score",
+    ]
+    if user_canal_ids is not None and not user_canal_ids:
+        buf_empty = _create_xlsx(title="Clientes Inativos", headers=headers_inat, rows=[])
+        return _xlsx_response(buf_empty, "clientes_inativos_sem_canal.xlsx")
+
     stmt = (
         select(Cliente)
         .where(
@@ -563,7 +653,13 @@ def relatorio_clientes_inativos(
         .order_by(Cliente.score.desc().nulls_last())
     )
 
-    if consultor:
+    # Multi-canal scoping
+    if user_canal_ids is not None:
+        stmt = stmt.where(Cliente.canal_id.in_(user_canal_ids))
+
+    if user.role in ("consultor", "consultor_externo") and user.consultor_nome:
+        stmt = stmt.where(Cliente.consultor == user.consultor_nome.upper())
+    elif consultor:
         stmt = stmt.where(Cliente.consultor == consultor.upper())
 
     clientes = db.scalars(stmt).all()
@@ -636,6 +732,7 @@ def relatorio_metas(
         description="Filtrar por consultor específico.",
     ),
     user: Usuario = Depends(get_current_user),
+    user_canal_ids: list[int] | None = Depends(get_user_canal_ids),
     db: Session = Depends(get_db),
 ) -> StreamingResponse:
     """
@@ -650,11 +747,11 @@ def relatorio_metas(
 
     R1  — Two-Base: realizado vem da tabela vendas (valor_pedido).
     R8  — Exclui ALUCINACAO.
+    Multi-canal: meta e realizado filtrados pelos CNPJs em canais permitidos.
+    Consultor (interno/externo) ve apenas a si mesmo.
     Requer autenticação JWT.
     """
     hoje = date.today()
-    consultores_alvo = [consultor.upper()] if consultor else _CONSULTORES_PADRAO
-
     headers = [
         "Consultor",
         "Meta Anual (R$)",
@@ -664,26 +761,48 @@ def relatorio_metas(
         "Status",
     ]
 
+    if user_canal_ids is not None and not user_canal_ids:
+        buf_empty = _create_xlsx(title="Metas", headers=headers, rows=[])
+        return _xlsx_response(buf_empty, "metas_sem_canal.xlsx")
+
+    # Restringir consultores alvo: consultor logado ve so a si mesmo
+    if user.role in ("consultor", "consultor_externo") and user.consultor_nome:
+        consultores_alvo = [user.consultor_nome.upper()]
+    else:
+        consultores_alvo = [consultor.upper()] if consultor else _CONSULTORES_PADRAO
+
     rows: list[list] = []
 
     for cons in consultores_alvo:
         # Soma das metas individuais dos clientes desse consultor
-        meta_db = db.scalar(
+        meta_q = (
             select(func.coalesce(func.sum(Cliente.meta_anual), 0.0))
             .where(Cliente.consultor == cons)
-        ) or 0.0
+        )
+        if user_canal_ids is not None:
+            meta_q = meta_q.where(Cliente.canal_id.in_(user_canal_ids))
+        meta_db = db.scalar(meta_q) or 0.0
 
         # Fallback: distribuição proporcional ao baseline quando meta não está preenchida
-        meta_anual = float(meta_db) if float(meta_db) > 0 else _METAS_FALLBACK.get(cons, 0.0)
+        # Multi-canal: nao usa fallback (subset de carteira pode ter meta menor)
+        if user_canal_ids is None:
+            meta_anual = float(meta_db) if float(meta_db) > 0 else _METAS_FALLBACK.get(cons, 0.0)
+        else:
+            meta_anual = float(meta_db)
 
         # Realizado: soma das vendas REAL/SINTETICO deste consultor (R1/R8)
-        realizado = db.scalar(
+        realizado_q = (
             select(func.coalesce(func.sum(Venda.valor_pedido), 0.0))
             .where(
                 Venda.consultor == cons,
                 Venda.classificacao_3tier.in_(["REAL", "SINTETICO"]),
             )
-        ) or 0.0
+        )
+        if user_canal_ids is not None:
+            cnpjs_sub = cnpjs_permitidos_subquery(user_canal_ids)
+            if cnpjs_sub is not None:
+                realizado_q = realizado_q.where(Venda.cnpj.in_(cnpjs_sub))
+        realizado = db.scalar(realizado_q) or 0.0
         realizado = round(float(realizado), 2)
 
         pct = round(realizado / meta_anual * 100, 1) if meta_anual > 0 else 0.0
