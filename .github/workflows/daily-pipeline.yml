@@ -1,0 +1,64 @@
+name: Daily Pipeline CRM
+
+# Pipeline diario completo: snapshot Deskrio -> download Sales Hunter ->
+# ingest -> sync DB -> recalculo de scores -> verify final.
+#
+# Cron: 07:00 BRT (UTC-3) seg-sex = 10:00 UTC.
+# Steps de coleta externos (Sales Hunter, ingest) rodam com
+# continue-on-error: True para nao bloquear quando o saleshunter
+# estiver fora do ar — o step "Verify" no final ainda valida o estado
+# atual do banco.
+
+on:
+  schedule:
+    - cron: '0 10 * * 1-5'  # 07:00 BRT seg-sex
+  workflow_dispatch: {}
+
+env:
+  DATABASE_URL: ${{ secrets.DATABASE_URL_NEON }}
+  DESKRIO_API_TOKEN: ${{ secrets.DESKRIO_API_TOKEN }}
+  DESKRIO_API_URL: ${{ secrets.DESKRIO_API_URL }}
+  SALES_HUNTER_USER: ${{ secrets.SALES_HUNTER_USER }}
+  SALES_HUNTER_PASS: ${{ secrets.SALES_HUNTER_PASS }}
+
+jobs:
+  pipeline:
+    name: Daily Pipeline
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+
+      - name: Install deps
+        run: pip install -r requirements.txt
+
+      - name: 1. Deskrio Snapshot
+        run: python scripts/deskrio_daily_snapshot.py
+
+      - name: 2. Sales Hunter Download
+        run: python scripts/download_sales_hunter.py
+        continue-on-error: true
+
+      - name: 3. Sales Hunter Ingest
+        run: python scripts/ingest_sales_hunter.py
+        continue-on-error: true
+
+      - name: 4. Deskrio Sync to DB
+        run: python scripts/sync_deskrio_to_db.py
+
+      - name: 5. Recalc Scores
+        run: python scripts/recalc_score_batch.py
+        continue-on-error: true
+
+      - name: 6. Verify
+        run: python scripts/verify.py --all
+
+      - name: Notify on failure
+        if: failure()
+        run: echo "Pipeline falhou em $(date)" >> "$GITHUB_STEP_SUMMARY"
