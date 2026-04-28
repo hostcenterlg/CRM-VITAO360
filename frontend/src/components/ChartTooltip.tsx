@@ -56,7 +56,7 @@ function formatValor(value: number, isBRL: boolean): string {
   if (isBRL) {
     return formatBRL(value);
   }
-  return value.toLocaleString('pt-BR');
+  return (value ?? 0).toLocaleString('pt-BR');
 }
 
 function calcDelta(atual: number, anterior: number): string {

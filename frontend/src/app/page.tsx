@@ -752,13 +752,13 @@ function TabResumo({
     <div className="space-y-6">
       {/* KPI cards */}
       <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-3">
-        <KpiCard title="CONTATOS" value={loading ? null : totalContatos.toLocaleString('pt-BR')}
+        <KpiCard title="CONTATOS" value={loading ? null : (totalContatos ?? 0).toLocaleString('pt-BR')}
           subtitle="total atendimentos" color="#00B050" />
-        <KpiCard title="VENDAS" value={loading ? null : totalVendas.toLocaleString('pt-BR')}
+        <KpiCard title="VENDAS" value={loading ? null : (totalVendas ?? 0).toLocaleString('pt-BR')}
           subtitle="pedidos fechados" color="#2563eb" />
-        <KpiCard title="ORCAMENTOS" value={loading ? null : totalProspects.toLocaleString('pt-BR')}
+        <KpiCard title="ORCAMENTOS" value={loading ? null : (totalProspects ?? 0).toLocaleString('pt-BR')}
           subtitle="em pipeline" color="#FF8C00" />
-        <KpiCard title="NAO ATENDE" value={loading ? null : naoAtende.toLocaleString('pt-BR')}
+        <KpiCard title="NAO ATENDE" value={loading ? null : (naoAtende ?? 0).toLocaleString('pt-BR')}
           subtitle="sem resposta" color="#FF0000" />
         <KpiCard title="% CONVERSAO" value={loading ? null : `${pctConversao.toFixed(1)}%`}
           subtitle="vendas / contatos" color="#7030A0" />
@@ -810,7 +810,7 @@ function TabResumo({
                     style={{ borderColor: color, backgroundColor: color + '10' }}
                   >
                     <p className="text-[10px] font-semibold uppercase tracking-wider" style={{ color }}>{item.label}</p>
-                    <p className="text-xl font-bold text-gray-900">{item.count.toLocaleString('pt-BR')}</p>
+                    <p className="text-xl font-bold text-gray-900">{(item.count ?? 0).toLocaleString('pt-BR')}</p>
                     <p className="text-[10px] text-gray-500">{formatPercent(item.pct)}</p>
                   </div>
                 );
@@ -957,7 +957,7 @@ function TabOperacional({ performance, atividades, positivacao, loading, ativida
                     <tr key={row.tipo} className="border-t border-gray-50 hover:bg-gray-50 transition-colors">
                       <td className="px-4 py-2.5 font-medium text-gray-900">{row.tipo}</td>
                       <td className="px-4 py-2.5 text-right text-gray-700 font-mono">
-                        {row.count.toLocaleString('pt-BR')}
+                        {(row.count ?? 0).toLocaleString('pt-BR')}
                       </td>
                       <td className="px-4 py-2.5 text-right text-gray-500">
                         {pct.toFixed(1)}%
@@ -1038,14 +1038,14 @@ function TabOperacional({ performance, atividades, positivacao, loading, ativida
               <div className="rounded-lg p-4 border-l-4 border-green-500 bg-green-50">
                 <p className="text-[10px] font-semibold uppercase tracking-wider text-green-700">Positivados</p>
                 <p className="text-2xl font-bold text-gray-900 mt-1">
-                  {positivacao.total_positivados.toLocaleString('pt-BR')}
+                  {(positivacao.total_positivados ?? 0).toLocaleString('pt-BR')}
                 </p>
                 <p className="text-xs text-gray-500 mt-0.5">clientes com compra no período</p>
               </div>
               <div className="rounded-lg p-4 border-l-4 border-blue-400 bg-blue-50">
                 <p className="text-[10px] font-semibold uppercase tracking-wider text-blue-700">Total Carteira</p>
                 <p className="text-2xl font-bold text-gray-900 mt-1">
-                  {positivacao.total_carteira.toLocaleString('pt-BR')}
+                  {(positivacao.total_carteira ?? 0).toLocaleString('pt-BR')}
                 </p>
                 <p className="text-xs text-gray-500 mt-0.5">clientes na base ativa</p>
               </div>
@@ -1167,7 +1167,7 @@ function TabFunil({
               {loading ? (
                 <div className="h-7 w-16 mt-1 bg-gray-100 animate-pulse rounded" />
               ) : (
-                <p className="text-2xl font-bold text-gray-900 mt-1">{ch.qtd.toLocaleString('pt-BR')}</p>
+                <p className="text-2xl font-bold text-gray-900 mt-1">{(ch.qtd ?? 0).toLocaleString('pt-BR')}</p>
               )}
             </div>
           ))}
@@ -1198,7 +1198,7 @@ function TabFunil({
                   />
                   {loading ? null : (
                     <span className="relative z-10 text-xs font-bold text-white">
-                      {stage.value.toLocaleString('pt-BR')}
+                      {(stage.value ?? 0).toLocaleString('pt-BR')}
                     </span>
                   )}
                 </div>
@@ -1303,7 +1303,7 @@ function TabPerformance({ performance, projecao, loading }: TabPerformanceProps)
                       <p className="text-[10px] text-gray-400">Atingimento</p>
                     </div>
                     <div>
-                      <p className="text-lg font-bold text-gray-900">{p.total_clientes.toLocaleString('pt-BR')}</p>
+                      <p className="text-lg font-bold text-gray-900">{(p.total_clientes ?? 0).toLocaleString('pt-BR')}</p>
                       <p className="text-[10px] text-gray-400">Clientes</p>
                     </div>
                   </div>
@@ -1402,7 +1402,7 @@ function TabSaude({ kpis, distribuicao, positivacao, loading, totalInativos, pos
             {loading ? (
               <div className="h-7 w-16 mt-1 bg-gray-100 animate-pulse rounded" />
             ) : (
-              <p className="text-2xl font-bold text-gray-900 mt-1">{item.value.toLocaleString('pt-BR')}</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">{(item.value ?? 0).toLocaleString('pt-BR')}</p>
             )}
           </div>
         ))}
@@ -1502,7 +1502,7 @@ function TabSaude({ kpis, distribuicao, positivacao, loading, totalInativos, pos
                   </div>
                 </div>
                 <span className="w-12 text-xs font-mono text-right text-gray-700 flex-shrink-0">
-                  {loading ? '—' : row.value.toLocaleString('pt-BR')}
+                  {loading ? '—' : (row.value ?? 0).toLocaleString('pt-BR')}
                 </span>
               </div>
             );
@@ -1582,7 +1582,7 @@ function TabRedes({ sinaleiro, loading }: TabRedesProps) {
                   <p className="text-[10px] font-semibold uppercase tracking-wider" style={{ color }}>
                     {cor}
                   </p>
-                  <p className="text-2xl font-bold text-gray-900 mt-1">{item.count.toLocaleString('pt-BR')}</p>
+                  <p className="text-2xl font-bold text-gray-900 mt-1">{(item.count ?? 0).toLocaleString('pt-BR')}</p>
                   <p className="text-[11px] text-gray-500 mt-0.5">{sublabel[cor] ?? cor}</p>
                   <p className="text-[11px] font-semibold mt-0.5" style={{ color }}>
                     {formatPercent(item.pct)}
@@ -1905,7 +1905,7 @@ function TabProdutividade({ performance, kpis, loading }: TabProdutividadeProps)
         <SectionHeader label="Benchmark de Produtividade" accentColor={VERDE} />
         <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
           <BenchmarkCard label="Conversao atual" value={loading ? null : `${totalVendas > 0 && totalContatos > 0 ? ((totalVendas / totalContatos) * 100).toFixed(1) : '0.0'}%`} meta="Meta: 15%" color={VERDE} />
-          <BenchmarkCard label="Prospects ativos" value={loading ? null : totalProspects.toLocaleString('pt-BR')} meta="Meta: 50+" color="#0891b2" />
+          <BenchmarkCard label="Prospects ativos" value={loading ? null : (totalProspects ?? 0).toLocaleString('pt-BR')} meta="Meta: 50+" color="#0891b2" />
           <BenchmarkCard label="Score medio carteira" value={loading ? null : (kpis?.media_score ?? 0).toFixed(1)} meta="Meta: 70+" color={AMARELO} />
         </div>
       </div>
@@ -2215,7 +2215,7 @@ function TabIndicadores({
                       return (
                         <div className="bg-white border border-gray-200 rounded-lg shadow-lg p-3 text-sm">
                           <p className="font-semibold text-gray-700 mb-1">Curva {d.name}</p>
-                          <p className="text-gray-600">Clientes: <span className="font-medium">{d.value.toLocaleString('pt-BR')}</span></p>
+                          <p className="text-gray-600">Clientes: <span className="font-medium">{(d.value ?? 0).toLocaleString('pt-BR')}</span></p>
                           <p className="text-gray-600">Faturamento: <span className="font-medium">{formatCompact(d.faturamento)}</span></p>
                         </div>
                       );
@@ -2268,7 +2268,7 @@ function TabIndicadores({
               <div className="rounded-lg p-4 border-l-4 border-purple-500 bg-purple-50">
                 <p className="text-[10px] font-semibold uppercase tracking-wider text-purple-700">Clientes E-comm</p>
                 <p className="text-2xl font-bold text-gray-900 mt-1">
-                  {ecommerce.total_clientes_ecommerce.toLocaleString('pt-BR')}
+                  {(ecommerce.total_clientes_ecommerce ?? 0).toLocaleString('pt-BR')}
                 </p>
                 <p className="text-xs text-gray-500 mt-0.5">clientes ativos no canal</p>
               </div>
@@ -2282,7 +2282,7 @@ function TabIndicadores({
               <div className="rounded-lg p-4 border-l-4 border-green-500 bg-green-50">
                 <p className="text-[10px] font-semibold uppercase tracking-wider text-green-700">Pedidos</p>
                 <p className="text-2xl font-bold text-gray-900 mt-1">
-                  {ecommerce.total_pedidos.toLocaleString('pt-BR')}
+                  {(ecommerce.total_pedidos ?? 0).toLocaleString('pt-BR')}
                 </p>
                 <p className="text-xs text-gray-500 mt-0.5">pedidos no periodo</p>
               </div>
@@ -2521,7 +2521,7 @@ function PerformanceTable({
                   </div>
                 </td>
                 <td className="px-4 py-3 text-gray-500 text-xs">{row.territorio}</td>
-                <td className="px-4 py-3 text-gray-700 font-medium">{row.total_clientes.toLocaleString('pt-BR')}</td>
+                <td className="px-4 py-3 text-gray-700 font-medium">{(row.total_clientes ?? 0).toLocaleString('pt-BR')}</td>
                 <td className="px-4 py-3 font-mono text-gray-800 whitespace-nowrap font-medium">{formatCompact(row.faturamento_real)}</td>
                 <td className="px-4 py-3 font-mono text-gray-600 whitespace-nowrap">{formatCompact(row.meta_2026)}</td>
                 <td className="px-4 py-3">
