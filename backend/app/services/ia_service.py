@@ -1763,7 +1763,7 @@ class IAService:
             )
             .all()
         )
-        total_vendas_valor = sum(v.valor_pedido for v in vendas_30d)
+        total_vendas_valor = sum((v.valor_pedido or 0) for v in vendas_30d)
         qtd_vendas = len(vendas_30d)
         ticket_medio = (total_vendas_valor / qtd_vendas) if qtd_vendas > 0 else 0.0
 
