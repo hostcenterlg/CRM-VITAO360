@@ -350,6 +350,44 @@ export async function fetchTendencias(): Promise<TendenciasResponse> {
 }
 
 // ---------------------------------------------------------------------------
+// Hero section (Dashboard) — 4 KPI cards + Curva ABC + Top 5 clientes
+// ---------------------------------------------------------------------------
+
+export interface KPICardVariacao {
+  valor: number;
+  variacao: number | null;
+  direcao: 'up' | 'down' | 'flat' | null;
+  referencia: string | null;
+}
+
+export interface CurvaABCBar {
+  clientes: number;
+  pct_faturamento: number;
+  valor: number;
+}
+
+export interface Top5Cliente {
+  cnpj: string;
+  nome_fantasia: string;
+  curva_abc: string | null;
+  faturamento_mes: number;
+  pedidos_mes: number;
+}
+
+export interface KPIsHeroResponse {
+  positivacao: KPICardVariacao;
+  ticket_medio: KPICardVariacao;
+  clientes_ativos: KPICardVariacao;
+  conversao: KPICardVariacao;
+  curva_abc: Record<string, CurvaABCBar>;
+  top_5: Top5Cliente[];
+}
+
+export async function fetchDashboardHero(): Promise<KPIsHeroResponse> {
+  return fetchJson<KPIsHeroResponse>('/api/dashboard/hero');
+}
+
+// ---------------------------------------------------------------------------
 // Sinaleiro endpoints
 // ---------------------------------------------------------------------------
 

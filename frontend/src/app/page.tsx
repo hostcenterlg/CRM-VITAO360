@@ -37,6 +37,7 @@ import {
   fetchCurvaABCDetalhe,
   fetchEcommerce,
   fetchIADashboard,
+  fetchDashboardHero,
   IADashboardResponse,
   KPIs,
   Distribuicao,
@@ -54,6 +55,10 @@ import {
   AtendimentosDiariosResponse,
   CurvaABCDetalheResponse,
   EcommerceResponse,
+  KPIsHeroResponse,
+  KPICardVariacao,
+  CurvaABCBar,
+  Top5Cliente,
   formatBRL,
   formatPercent,
 } from '@/lib/api';
@@ -217,6 +222,10 @@ export default function DashboardPage() {
   // IA Dashboard widget
   const [iaDashboard, setIaDashboard]  = useState<IADashboardResponse | null>(null);
 
+  // Hero section — 4 KPI cards + Curva ABC + Top 5 clientes (graceful degrade)
+  const [hero, setHero]               = useState<KPIsHeroResponse | null>(null);
+  const [heroLoading, setHeroLoading] = useState(true);
+
   // Optional data source error flags
   const [atividadesError, setAtividadesError]           = useState(false);
   const [positivacaoError, setPositivacaoError]         = useState(false);
@@ -258,6 +267,13 @@ export default function DashboardPage() {
 
     // Insight do Dia — fire-and-forget, nao bloqueia o dashboard principal
     fetchIADashboard().then(setIaDashboard).catch(() => null);
+
+    // Hero section — fire-and-forget, graceful degrade se endpoint falhar
+    setHeroLoading(true);
+    fetchDashboardHero()
+      .then(setHero)
+      .catch(() => setHero(null))
+      .finally(() => setHeroLoading(false));
 
     Promise.all([
       fetchKPIs(),
@@ -548,6 +564,60 @@ export default function DashboardPage() {
           )}
         </div>
       </div>
+
+      {/* ------------------------------------------------------------------ */}
+      {/* Hero section — KPIs Mercos + Curva ABC + Top 5 clientes              */}
+      {/* Fixa, nao muda com tab. Renderiza ACIMA da navegacao de tabs.        */}
+      {/* ------------------------------------------------------------------ */}
+      <section className="space-y-4 mb-6">
+        {/* 4 KPI cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <KpiHeroCard
+            label="Positivacao"
+            value={hero ? `${(hero.positivacao.valor ?? 0).toFixed(0)}%` : '—'}
+            variation={hero?.positivacao}
+            borderColor="border-vitao-green"
+            loading={heroLoading}
+            unit="pp"
+          />
+          <KpiHeroCard
+            label="Ticket Medio"
+            value={hero ? formatBRL(hero.ticket_medio.valor) : '—'}
+            variation={hero?.ticket_medio}
+            borderColor="border-vitao-blue"
+            loading={heroLoading}
+            unit="brl"
+          />
+          <KpiHeroCard
+            label="Clientes Ativos"
+            value={hero ? (hero.clientes_ativos.valor ?? 0).toLocaleString('pt-BR') : '—'}
+            variation={hero?.clientes_ativos}
+            borderColor="border-vitao-orange"
+            loading={heroLoading}
+            unit="int"
+          />
+          <KpiHeroCard
+            label="Taxa Conversao"
+            value={hero ? `${(hero.conversao.valor ?? 0).toFixed(0)}%` : '—'}
+            variation={hero?.conversao}
+            borderColor="border-vitao-purple"
+            loading={heroLoading}
+            unit="pp"
+          />
+        </div>
+
+        {/* Curva ABC + Top 5 lado a lado */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <div className="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-100 p-5">
+            <h2 className="text-sm font-bold text-gray-900 mb-4">Curva ABC</h2>
+            <CurvaABCBars data={hero?.curva_abc} loading={heroLoading} />
+          </div>
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
+            <h2 className="text-sm font-bold text-gray-900 mb-4">Top 5 Clientes (Mes)</h2>
+            <Top5Table rows={hero?.top_5 ?? []} loading={heroLoading} />
+          </div>
+        </div>
+      </section>
 
       {/* ------------------------------------------------------------------ */}
       {/* Tab navigation                                                       */}
@@ -2565,4 +2635,166 @@ function RankBadge({ rank }: { rank: number }) {
       <span className="inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold text-white" style={{ backgroundColor: '#CD7F32' }}>3</span>
     );
   return <span className="text-gray-400 font-mono text-xs">{rank}</span>;
+}
+
+// ---------------------------------------------------------------------------
+// Hero section helpers — KpiHeroCard, CurvaABCBars, Top5Table
+// ---------------------------------------------------------------------------
+
+type KpiUnit = 'pp' | 'brl' | 'int';
+
+function KpiHeroCard({
+  label,
+  value,
+  variation,
+  borderColor,
+  loading,
+  unit,
+}: {
+  label: string;
+  value: string;
+  variation?: KPICardVariacao | null;
+  borderColor: string;
+  loading: boolean;
+  unit: KpiUnit;
+}) {
+  const dir = variation?.direcao;
+  const arrowColor =
+    dir === 'up' ? 'text-vitao-green' : dir === 'down' ? 'text-vitao-red' : 'text-gray-500';
+  const arrow = dir === 'up' ? '↑' : dir === 'down' ? '↓' : dir === 'flat' ? '→' : '';
+
+  let variacaoTexto = '';
+  if (variation && variation.variacao != null) {
+    const abs = Math.abs(variation.variacao);
+    let formatted: string;
+    if (unit === 'brl') {
+      formatted = formatBRL(abs);
+    } else if (unit === 'pp') {
+      formatted = `${abs.toFixed(1)} pp`;
+    } else {
+      formatted = abs.toLocaleString('pt-BR');
+    }
+    variacaoTexto = `${arrow} ${formatted}${variation.referencia ? ` ${variation.referencia}` : ''}`.trim();
+  } else if (variation?.referencia) {
+    variacaoTexto = variation.referencia;
+  }
+
+  return (
+    <div className={`bg-white p-6 rounded-xl shadow-sm border-l-4 ${borderColor}`}>
+      <div className="text-sm text-gray-600 mb-2">{label}</div>
+      <div className="text-4xl font-bold text-gray-900 mb-2">
+        {loading ? (
+          <span className="inline-block w-20 h-9 bg-gray-100 rounded animate-pulse" />
+        ) : (
+          value
+        )}
+      </div>
+      <div className={`text-xs font-medium ${arrowColor}`}>{variacaoTexto || '—'}</div>
+    </div>
+  );
+}
+
+function CurvaABCBars({
+  data,
+  loading,
+}: {
+  data?: Record<string, CurvaABCBar>;
+  loading: boolean;
+}) {
+  if (loading) {
+    return (
+      <div className="space-y-3">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="h-16 bg-gray-50 animate-pulse rounded" />
+        ))}
+      </div>
+    );
+  }
+  if (!data) return <p className="text-sm text-gray-500">Sem dados</p>;
+
+  const rows: Array<{ key: string; label: string; pctClientes: string; barColor: string }> = [
+    { key: 'A', label: 'Curva A', pctClientes: '20%', barColor: 'bg-vitao-green' },
+    { key: 'B', label: 'Curva B', pctClientes: '30%', barColor: 'bg-vitao-blue' },
+    { key: 'C', label: 'Curva C', pctClientes: '50%', barColor: 'bg-gray-400' },
+  ];
+
+  return (
+    <div className="space-y-3">
+      {rows.map((r) => {
+        const item = data[r.key];
+        if (!item) return null;
+        const pct = item.pct_faturamento ?? 0;
+        return (
+          <div key={r.key}>
+            <div className="flex items-center justify-between text-xs mb-1">
+              <span className="font-semibold text-gray-700">
+                {r.label} ({r.pctClientes})
+              </span>
+              <span className="text-gray-500">
+                {(item.clientes ?? 0).toLocaleString('pt-BR')} clientes
+              </span>
+            </div>
+            <div className="w-full bg-gray-200 rounded-full h-4 relative overflow-hidden">
+              <div
+                className={`${r.barColor} h-full rounded-full flex items-center justify-end pr-2 transition-all`}
+                style={{ width: `${Math.max(pct, 4)}%` }}
+              >
+                <span className="text-white text-[10px] font-bold">{pct.toFixed(0)}%</span>
+              </div>
+            </div>
+            <div className="text-xs text-gray-500 mt-1">
+              {pct.toFixed(0)}% do faturamento • {formatBRL(item.valor ?? 0)}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function Top5Table({ rows, loading }: { rows: Top5Cliente[]; loading: boolean }) {
+  if (loading) {
+    return (
+      <div className="space-y-2">
+        {[1, 2, 3, 4, 5].map((i) => (
+          <div key={i} className="h-8 bg-gray-50 animate-pulse rounded" />
+        ))}
+      </div>
+    );
+  }
+  if (rows.length === 0) {
+    return <p className="text-sm text-gray-500">Sem vendas no mes ainda</p>;
+  }
+
+  const curvaBg: Record<string, string> = {
+    A: 'bg-vitao-green text-white',
+    B: 'bg-vitao-blue text-white',
+    C: 'bg-gray-400 text-white',
+  };
+
+  return (
+    <ul className="divide-y divide-gray-100">
+      {rows.map((r, i) => (
+        <li key={r.cnpj} className="flex items-center gap-3 py-2 text-xs">
+          <span className="text-gray-400 font-bold w-4">{i + 1}</span>
+          <span className="flex-1 min-w-0 truncate font-medium text-gray-900">
+            {r.nome_fantasia}
+          </span>
+          {r.curva_abc && (
+            <span
+              className={`text-[9px] font-bold rounded-full px-2 py-0.5 ${
+                curvaBg[r.curva_abc] ?? 'bg-gray-200 text-gray-600'
+              }`}
+            >
+              {r.curva_abc}
+            </span>
+          )}
+          <span className="font-mono font-semibold text-gray-900">
+            {formatBRL(r.faturamento_mes)}
+          </span>
+          <span className="text-gray-500 w-16 text-right">{r.pedidos_mes ?? 0} ped.</span>
+        </li>
+      ))}
+    </ul>
+  );
 }
