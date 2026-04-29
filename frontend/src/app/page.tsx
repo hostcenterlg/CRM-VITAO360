@@ -64,6 +64,7 @@ import {
 } from '@/lib/api';
 import StatusBadge from '@/components/StatusBadge';
 import ChartTooltip from '@/components/ChartTooltip';
+import { ProjecaoView } from '@/components/dashboard/ProjecaoView';
 
 // ---------------------------------------------------------------------------
 // Tab definitions
@@ -79,6 +80,7 @@ const TABS = [
   { id: 'motivos',      label: 'MOTIVOS + RNC',     labelMobile: 'MOT' },
   { id: 'produtividade', label: 'PRODUTIVIDADE',    labelMobile: 'PRD' },
   { id: 'indicadores',  label: 'INDICADORES',       labelMobile: 'IND' },
+  { id: 'projecao',     label: 'PROJECAO',          labelMobile: 'PRJ' },
 ] as const;
 
 type TabId = (typeof TABS)[number]['id'];
@@ -767,6 +769,9 @@ export default function DashboardPage() {
             curvaABCDetalheError={curvaABCDetalheError}
             ecommerceError={ecommerceError}
           />
+        )}
+        {mounted && activeTab === 'projecao' && (
+          <ProjecaoView />
         )}
       </div>
     </div>
