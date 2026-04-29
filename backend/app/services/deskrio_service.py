@@ -155,11 +155,17 @@ class DeskrioService:
 
     @property
     def base_url(self) -> str:
-        return os.getenv("DESKRIO_API_URL", "").rstrip("/")
+        # strip() defensivo: env vars copiadas pra Vercel podem trazer
+        # whitespace ou newline residual que quebra a request HTTP.
+        return os.getenv("DESKRIO_API_URL", "").strip().rstrip("/")
 
     @property
     def token(self) -> str:
-        return os.getenv("DESKRIO_API_TOKEN", "")
+        # strip() obrigatorio: tokens copiados manualmente para o painel
+        # Vercel frequentemente trazem '\n' no final, causando
+        # httpx LocalProtocolError "Illegal header value" e falha
+        # silenciosa em _get/_post (incident 29/Apr/2026).
+        return os.getenv("DESKRIO_API_TOKEN", "").strip()
 
     @property
     def company_id(self) -> int:
