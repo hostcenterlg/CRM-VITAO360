@@ -66,6 +66,11 @@ def main() -> int:
         action="store_true",
         help="Repassa --dry-run para sync_deskrio_to_db.py.",
     )
+    parser.add_argument(
+        "--skip-contatos",
+        action="store_true",
+        help="Repassa --skip-contatos para sync_deskrio_to_db.py (pula SyncContatos ~12min/dia).",
+    )
     args = parser.parse_args()
 
     since: date | None = None
@@ -102,6 +107,8 @@ def main() -> int:
         ]
         if args.dry_run:
             cmd.append("--dry-run")
+        if args.skip_contatos:
+            cmd.append("--skip-contatos")
 
         result = subprocess.run(cmd, cwd=ROOT)
         if result.returncode == 0:

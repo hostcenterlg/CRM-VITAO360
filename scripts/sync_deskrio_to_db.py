@@ -1124,6 +1124,11 @@ def main() -> int:
         action="store_true",
         help="Ativa logging DEBUG.",
     )
+    parser.add_argument(
+        "--skip-contatos",
+        action="store_true",
+        help="Pula Fase 1 (SyncContatos). Reduz tempo em ~12min/dia.",
+    )
     args = parser.parse_args()
 
     if args.verbose:
@@ -1245,13 +1250,16 @@ def main() -> int:
         # Fase 1 — Contatos
         # ---------------------------------------------------------------
         contacts_path = data_dir / "contacts.json"
-        contacts = carregar_json(contacts_path)
-        if contacts:
-            sync_contatos = SyncContatos(session, dry_run=args.dry_run)
-            sync_contatos.processar(contacts)
-            stats_contatos = sync_contatos.stats
+        if getattr(args, "skip_contatos", False):
+            log.info("Fase 1 IGNORADA (--skip-contatos ativo)")
         else:
-            log.warning("contacts.json vazio ou ausente — fase 1 ignorada")
+            contacts = carregar_json(contacts_path)
+            if contacts:
+                sync_contatos = SyncContatos(session, dry_run=args.dry_run)
+                sync_contatos.processar(contacts)
+                stats_contatos = sync_contatos.stats
+            else:
+                log.warning("contacts.json vazio ou ausente — fase 1 ignorada")
 
         # ---------------------------------------------------------------
         # Fase 2 — Kanban cards
