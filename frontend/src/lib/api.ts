@@ -57,11 +57,11 @@ async function mutateJson<T>(
 // Utilitarios de formatacao
 // ---------------------------------------------------------------------------
 
-export function formatBRL(value: number): string {
-  return new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
-    currency: 'BRL',
-  }).format(value);
+export function formatBRL(value: number | null | undefined): string {
+  if (value == null || !Number.isFinite(value)) {
+    return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(0);
+  }
+  return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
 }
 
 export function formatPercent(value: number, decimals = 1): string {
