@@ -756,11 +756,11 @@ function ChipGroup({ label, opcoes, selecionados, cores, onToggle }: ChipGroupPr
             type="button"
             onClick={() => onToggle(opcao)}
             aria-pressed={ativo}
-            className="inline-flex items-center px-2.5 py-1 text-[11px] font-semibold rounded-full border cursor-pointer transition-all select-none"
+            className="inline-flex items-center px-2.5 py-1 text-[11px] font-semibold rounded-full border cursor-pointer transition-all select-none hover:opacity-100"
             style={
               ativo
                 ? { backgroundColor: cor.border, color: '#ffffff', borderColor: cor.border, boxShadow: `0 1px 2px ${cor.border}66` }
-                : { backgroundColor: '#ffffff', color: '#52525b', borderColor: '#d1d5db' }
+                : { backgroundColor: cor.bg, color: cor.text, borderColor: cor.border, opacity: 0.85 }
             }
           >
             {opcao}
