@@ -20,7 +20,7 @@ Todos os endpoints requerem autenticacao JWT (Bearer token).
 from __future__ import annotations
 
 from datetime import date, timedelta
-from typing import Optional
+from typing import Literal, Optional
 
 from fastapi import APIRouter, Depends, Query
 from pydantic import BaseModel, ConfigDict
@@ -2049,4 +2049,368 @@ def ecommerce(
         pct_ecommerce=pct,
         pedidos_ecommerce=pedidos_ecommerce,
         valor_ecommerce=round(float(valor_ecommerce), 2),
+    )
+
+
+# ---------------------------------------------------------------------------
+# Hero Section — KPI cards + Curva ABC + Top 5 (demo MVP)
+# Two-Base R4: valor R$ APENAS de vendas. Zero fabricacao R8.
+# ---------------------------------------------------------------------------
+
+
+class KPICardVariacao(BaseModel):
+    """KPI card com valor + variacao numerica vs periodo anterior."""
+
+    valor: float
+    variacao: Optional[float] = None  # diferenca numerica vs periodo anterior
+    direcao: Optional[Literal["up", "down", "flat"]] = None
+    referencia: Optional[str] = None  # ex.: "vs mes anterior", "de 1.250 na carteira"
+
+
+class CurvaABCBar(BaseModel):
+    """Linha da Curva ABC: contagem de clientes + faturamento agregado."""
+
+    clientes: int
+    pct_faturamento: float
+    valor: float
+
+
+class Top5Cliente(BaseModel):
+    """Cliente no Top 5 por faturamento do mes atual."""
+
+    cnpj: str
+    nome_fantasia: str
+    curva_abc: Optional[str] = None
+    faturamento_mes: float
+    pedidos_mes: int
+
+
+class KPIsHeroResponse(BaseModel):
+    """Resposta consolidada para a secao hero do dashboard."""
+
+    positivacao: KPICardVariacao
+    ticket_medio: KPICardVariacao
+    clientes_ativos: KPICardVariacao
+    conversao: KPICardVariacao
+    curva_abc: dict[str, CurvaABCBar]  # {"A": ..., "B": ..., "C": ...}
+    top_5: list[Top5Cliente]
+
+
+def _direcao_from_delta(delta: float, eps: float = 0.001) -> Literal["up", "down", "flat"]:
+    """Classifica a direcao da variacao com tolerancia para evitar 'flat' quase-zero."""
+    if delta > eps:
+        return "up"
+    if delta < -eps:
+        return "down"
+    return "flat"
+
+
+def _periodo_mes(ref: date) -> tuple[date, date]:
+    """Retorna (primeiro_dia, ultimo_dia) do mes da data ref."""
+    inicio = ref.replace(day=1)
+    if ref.month == 12:
+        fim = ref.replace(year=ref.year + 1, month=1, day=1) - timedelta(days=1)
+    else:
+        fim = ref.replace(month=ref.month + 1, day=1) - timedelta(days=1)
+    return inicio, fim
+
+
+@router.get(
+    "/hero",
+    response_model=KPIsHeroResponse,
+    summary="Hero do dashboard — 4 KPIs + Curva ABC + Top 5 clientes",
+)
+def hero(
+    user: Usuario = Depends(get_current_user),
+    user_canal_ids: list[int] | None = Depends(get_user_canal_ids),
+    db: Session = Depends(get_db),
+) -> KPIsHeroResponse:
+    """
+    Indicadores hero do dashboard (demo MVP):
+
+      * positivacao    — % de clientes ATIVOS que compraram no mes atual,
+                          com variacao vs mes anterior (pontos percentuais).
+      * ticket_medio   — SUM(valor_pedido) / COUNT(DISTINCT id) das vendas
+                          do mes atual; variacao vs mes anterior.
+      * clientes_ativos— COUNT(DISTINCT cnpj) com venda nos ultimos 90 dias;
+                          referencia traz o total da carteira (sem variacao).
+      * conversao      — sem tabela prospects/leads no schema atual:
+                          retorna valor=0 e variacao=null (R8 — nao fabrica).
+      * curva_abc      — agg de clientes.curva_abc + SUM(vendas.valor_pedido)
+                          do ano corrente, com pct sobre o total do ano.
+      * top_5          — 5 maiores clientes por faturamento no mes atual.
+
+    Regras (R1/R4/R7/R8):
+      - Apenas vendas REAL/SINTETICO (R8).
+      - Two-Base: valor R$ vem APENAS de vendas (R4).
+      - Multi-canal: agregados restritos aos canais permitidos do usuario.
+      - Carteira: consultor/consultor_externo ve apenas a propria carteira.
+    """
+    # Reusable scoping clauses (None se admin — mesmo padrao de /kpis)
+    cliente_clause = cliente_canal_filter(user_canal_ids)
+    cnpjs_sub = cnpjs_permitidos_subquery(user_canal_ids)
+
+    is_consultor_role = user.role in ("consultor", "consultor_externo")
+    consultor_key = (user.consultor_nome or "").upper() if is_consultor_role else None
+
+    def _scope_cliente(stmt):
+        if cliente_clause is not None:
+            stmt = stmt.where(cliente_clause)
+        if consultor_key:
+            stmt = stmt.where(Cliente.consultor == consultor_key)
+        return stmt
+
+    def _scope_cnpj(stmt, cnpj_col):
+        if cnpjs_sub is not None:
+            stmt = stmt.where(cnpj_col.in_(cnpjs_sub))
+        if consultor_key:
+            cnpjs_consultor = select(Cliente.cnpj).where(Cliente.consultor == consultor_key)
+            stmt = stmt.where(cnpj_col.in_(cnpjs_consultor))
+        return stmt
+
+    hoje = date.today()
+    mes_atual_ini, mes_atual_fim = _periodo_mes(hoje)
+    # Mes anterior: ultimo dia do mes passado e seu primeiro dia
+    mes_ant_fim = mes_atual_ini - timedelta(days=1)
+    mes_ant_ini, _ = _periodo_mes(mes_ant_fim)
+
+    base_vendas_filter = Venda.classificacao_3tier.in_(["REAL", "SINTETICO"])
+
+    # ---------------- 1) Positivacao (atual vs mes anterior) ----------------
+    total_ativos = db.scalar(
+        _scope_cliente(
+            select(func.count())
+            .select_from(Cliente)
+            .where(Cliente.situacao == "ATIVO")
+        )
+    ) or 0
+
+    positivados_atual = db.scalar(
+        _scope_cnpj(
+            select(func.count(func.distinct(Venda.cnpj)))
+            .where(
+                base_vendas_filter,
+                Venda.data_pedido >= mes_atual_ini,
+                Venda.data_pedido <= mes_atual_fim,
+            ),
+            Venda.cnpj,
+        )
+    ) or 0
+
+    positivados_ant = db.scalar(
+        _scope_cnpj(
+            select(func.count(func.distinct(Venda.cnpj)))
+            .where(
+                base_vendas_filter,
+                Venda.data_pedido >= mes_ant_ini,
+                Venda.data_pedido <= mes_ant_fim,
+            ),
+            Venda.cnpj,
+        )
+    ) or 0
+
+    pct_pos_atual = (positivados_atual / total_ativos * 100) if total_ativos > 0 else 0.0
+    pct_pos_ant = (positivados_ant / total_ativos * 100) if total_ativos > 0 else 0.0
+    delta_pos = pct_pos_atual - pct_pos_ant
+
+    positivacao = KPICardVariacao(
+        valor=round(pct_pos_atual, 1),
+        variacao=round(delta_pos, 1),
+        direcao=_direcao_from_delta(delta_pos),
+        referencia="vs mes anterior",
+    )
+
+    # ---------------- 2) Ticket medio (atual vs mes anterior) ---------------
+    soma_atual = db.scalar(
+        _scope_cnpj(
+            select(func.coalesce(func.sum(Venda.valor_pedido), 0.0))
+            .where(
+                base_vendas_filter,
+                Venda.data_pedido >= mes_atual_ini,
+                Venda.data_pedido <= mes_atual_fim,
+            ),
+            Venda.cnpj,
+        )
+    ) or 0.0
+    qt_atual = db.scalar(
+        _scope_cnpj(
+            select(func.count(func.distinct(Venda.id)))
+            .where(
+                base_vendas_filter,
+                Venda.data_pedido >= mes_atual_ini,
+                Venda.data_pedido <= mes_atual_fim,
+            ),
+            Venda.cnpj,
+        )
+    ) or 0
+    ticket_atual = float(soma_atual) / qt_atual if qt_atual > 0 else 0.0
+
+    soma_ant = db.scalar(
+        _scope_cnpj(
+            select(func.coalesce(func.sum(Venda.valor_pedido), 0.0))
+            .where(
+                base_vendas_filter,
+                Venda.data_pedido >= mes_ant_ini,
+                Venda.data_pedido <= mes_ant_fim,
+            ),
+            Venda.cnpj,
+        )
+    ) or 0.0
+    qt_ant = db.scalar(
+        _scope_cnpj(
+            select(func.count(func.distinct(Venda.id)))
+            .where(
+                base_vendas_filter,
+                Venda.data_pedido >= mes_ant_ini,
+                Venda.data_pedido <= mes_ant_fim,
+            ),
+            Venda.cnpj,
+        )
+    ) or 0
+    ticket_ant = float(soma_ant) / qt_ant if qt_ant > 0 else 0.0
+
+    delta_ticket = ticket_atual - ticket_ant
+    ticket_medio = KPICardVariacao(
+        valor=round(ticket_atual, 2),
+        variacao=round(delta_ticket, 2) if qt_ant > 0 else None,
+        direcao=_direcao_from_delta(delta_ticket) if qt_ant > 0 else None,
+        referencia="vs mes anterior" if qt_ant > 0 else "sem mes anterior comparavel",
+    )
+
+    # ---------------- 3) Clientes ativos (ultimos 90 dias) ------------------
+    dt_90 = hoje - timedelta(days=90)
+    clientes_ativos_count = db.scalar(
+        _scope_cnpj(
+            select(func.count(func.distinct(Venda.cnpj)))
+            .where(
+                base_vendas_filter,
+                Venda.data_pedido >= dt_90,
+            ),
+            Venda.cnpj,
+        )
+    ) or 0
+
+    total_carteira = db.scalar(
+        _scope_cliente(
+            select(func.count())
+            .select_from(Cliente)
+            .where(
+                Cliente.situacao.in_(["ATIVO", "EM RISCO", "INAT.REC"]),
+                Cliente.classificacao_3tier != "ALUCINACAO",
+            )
+        )
+    ) or 0
+
+    clientes_ativos = KPICardVariacao(
+        valor=int(clientes_ativos_count),
+        variacao=None,
+        direcao=None,
+        referencia=f"de {int(total_carteira):,} na carteira".replace(",", "."),
+    )
+
+    # ---------------- 4) Conversao (sem tabela prospects no schema) ---------
+    # R8: zero fabricacao — nao existe tabela prospects/leads. Retorna 0.
+    conversao = KPICardVariacao(
+        valor=0.0,
+        variacao=None,
+        direcao=None,
+        referencia="indisponivel — sem tabela prospects",
+    )
+
+    # ---------------- 5) Curva ABC (ano corrente) --------------------------
+    ano_ini = date(hoje.year, 1, 1)
+    ano_fim = date(hoje.year, 12, 31)
+
+    fat_ano_total = db.scalar(
+        _scope_cnpj(
+            select(func.coalesce(func.sum(Venda.valor_pedido), 0.0))
+            .where(
+                base_vendas_filter,
+                Venda.data_pedido >= ano_ini,
+                Venda.data_pedido <= ano_fim,
+            ),
+            Venda.cnpj,
+        )
+    ) or 0.0
+
+    curva_abc: dict[str, CurvaABCBar] = {}
+    for letra in ("A", "B", "C"):
+        clientes_curva = db.scalar(
+            _scope_cliente(
+                select(func.count())
+                .select_from(Cliente)
+                .where(
+                    Cliente.curva_abc == letra,
+                    Cliente.classificacao_3tier != "ALUCINACAO",
+                )
+            )
+        ) or 0
+
+        # Faturamento do ano corrente para clientes desta curva. JOIN via cnpj.
+        cnpjs_curva_sub = select(Cliente.cnpj).where(Cliente.curva_abc == letra)
+        if cliente_clause is not None:
+            cnpjs_curva_sub = cnpjs_curva_sub.where(cliente_clause)
+        if consultor_key:
+            cnpjs_curva_sub = cnpjs_curva_sub.where(Cliente.consultor == consultor_key)
+
+        fat_curva = db.scalar(
+            select(func.coalesce(func.sum(Venda.valor_pedido), 0.0))
+            .where(
+                base_vendas_filter,
+                Venda.data_pedido >= ano_ini,
+                Venda.data_pedido <= ano_fim,
+                Venda.cnpj.in_(cnpjs_curva_sub),
+            )
+        ) or 0.0
+
+        pct_fat = (float(fat_curva) / float(fat_ano_total) * 100.0) if fat_ano_total > 0 else 0.0
+        curva_abc[letra] = CurvaABCBar(
+            clientes=int(clientes_curva),
+            pct_faturamento=round(pct_fat, 1),
+            valor=round(float(fat_curva), 2),
+        )
+
+    # ---------------- 6) Top 5 clientes (mes atual) ------------------------
+    top5_stmt = (
+        select(
+            Cliente.cnpj,
+            Cliente.nome_fantasia,
+            Cliente.curva_abc,
+            func.coalesce(func.sum(Venda.valor_pedido), 0.0).label("fat"),
+            func.count(func.distinct(Venda.id)).label("pedidos"),
+        )
+        .join(Cliente, Cliente.cnpj == Venda.cnpj)
+        .where(
+            base_vendas_filter,
+            Venda.data_pedido >= mes_atual_ini,
+            Venda.data_pedido <= mes_atual_fim,
+        )
+        .group_by(Cliente.cnpj, Cliente.nome_fantasia, Cliente.curva_abc)
+        .order_by(func.sum(Venda.valor_pedido).desc())
+        .limit(5)
+    )
+    if cliente_clause is not None:
+        top5_stmt = top5_stmt.where(cliente_clause)
+    if consultor_key:
+        top5_stmt = top5_stmt.where(Cliente.consultor == consultor_key)
+
+    top5_rows = db.execute(top5_stmt).all()
+    top_5: list[Top5Cliente] = [
+        Top5Cliente(
+            cnpj=row.cnpj or "",
+            nome_fantasia=row.nome_fantasia or "(sem nome)",
+            curva_abc=row.curva_abc,
+            faturamento_mes=round(float(row.fat or 0.0), 2),
+            pedidos_mes=int(row.pedidos or 0),
+        )
+        for row in top5_rows
+    ]
+
+    return KPIsHeroResponse(
+        positivacao=positivacao,
+        ticket_medio=ticket_medio,
+        clientes_ativos=clientes_ativos,
+        conversao=conversao,
+        curva_abc=curva_abc,
+        top_5=top_5,
     )
