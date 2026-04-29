@@ -29,21 +29,21 @@ interface StageConfig {
 }
 
 const STAGE_CONFIGS: StageConfig[] = [
-  // PRE-VENDA (cinza neutro — esfriando para o frio)
-  { id: 'INÍCIO CONTATO',  label: 'Inicio Contato',   group: 'pre-venda',  borderColor: '#94a3b8', bgColor: '#f8fafc', textColor: '#475569', headerBg: '#f1f5f9' },
-  { id: 'TENTATIVA',       label: 'Tentativa',         group: 'pre-venda',  borderColor: '#94a3b8', bgColor: '#f8fafc', textColor: '#475569', headerBg: '#f1f5f9' },
-  { id: 'PROSPECÇÃO',      label: 'Prospeccao',        group: 'pre-venda',  borderColor: '#94a3b8', bgColor: '#f8fafc', textColor: '#475569', headerBg: '#f1f5f9' },
+  // PRE-VENDA — INICIO CONTATO: cinza, TENTATIVA: azul claro
+  { id: 'INÍCIO CONTATO',  label: 'Inicio Contato',   group: 'pre-venda',  borderColor: '#94a3b8', bgColor: '#f8fafc', textColor: '#374151', headerBg: '#f3f4f6' },
+  { id: 'TENTATIVA',       label: 'Tentativa',         group: 'pre-venda',  borderColor: '#60a5fa', bgColor: '#eff6ff', textColor: '#1d4ed8', headerBg: '#dbeafe' },
+  { id: 'PROSPECÇÃO',      label: 'Prospeccao',        group: 'pre-venda',  borderColor: '#94a3b8', bgColor: '#f8fafc', textColor: '#374151', headerBg: '#f3f4f6' },
 
-  // VENDA (azul — ativo / conversao)
-  { id: 'EM ATENDIMENTO',  label: 'Em Atendimento',    group: 'venda',      borderColor: '#3b82f6', bgColor: '#eff6ff', textColor: '#1e40af', headerBg: '#dbeafe' },
-  { id: 'CADASTRO',        label: 'Cadastro',           group: 'venda',      borderColor: '#3b82f6', bgColor: '#eff6ff', textColor: '#1e40af', headerBg: '#dbeafe' },
-  { id: 'ORÇAMENTO',       label: 'Orcamento',          group: 'venda',      borderColor: '#3b82f6', bgColor: '#eff6ff', textColor: '#1e40af', headerBg: '#dbeafe' },
-  { id: 'PEDIDO',          label: 'Pedido',             group: 'venda',      borderColor: '#1d4ed8', bgColor: '#eff6ff', textColor: '#1e40af', headerBg: '#dbeafe' },
+  // VENDA — EM ATENDIMENTO: azul medio, CADASTRO: neutro, ORCAMENTO: laranja, PEDIDO: verde marco
+  { id: 'EM ATENDIMENTO',  label: 'Em Atendimento',    group: 'venda',      borderColor: '#3b82f6', bgColor: '#eff6ff', textColor: '#1e3a8a', headerBg: '#dbeafe' },
+  { id: 'CADASTRO',        label: 'Cadastro',           group: 'venda',      borderColor: '#94a3b8', bgColor: '#f8fafc', textColor: '#374151', headerBg: '#f3f4f6' },
+  { id: 'ORÇAMENTO',       label: 'Orcamento',          group: 'venda',      borderColor: '#f97316', bgColor: '#fff7ed', textColor: '#9a3412', headerBg: '#ffedd5' },
+  { id: 'PEDIDO',          label: 'Pedido',             group: 'venda',      borderColor: '#00B050', bgColor: '#f0fdf4', textColor: '#ffffff', headerBg: '#00B050' },
 
-  // POS-VENDA (verde — fechamento ok / continuidade D+4 -> D+15 -> D+30)
-  { id: 'ACOMP POS-VENDA', label: 'Acomp Pos-Venda',   group: 'pos-venda',  borderColor: '#16a34a', bgColor: '#f0fdf4', textColor: '#166534', headerBg: '#dcfce7' },
-  { id: 'POS-VENDA',       label: 'Pos-Venda',          group: 'pos-venda',  borderColor: '#16a34a', bgColor: '#f0fdf4', textColor: '#166534', headerBg: '#dcfce7' },
-  { id: 'CS',              label: 'CS',                 group: 'pos-venda',  borderColor: '#16a34a', bgColor: '#f0fdf4', textColor: '#166534', headerBg: '#dcfce7' },
+  // POS-VENDA — roxo/ciano
+  { id: 'ACOMP POS-VENDA', label: 'Acomp Pos-Venda',   group: 'pos-venda',  borderColor: '#7c3aed', bgColor: '#faf5ff', textColor: '#6b21a8', headerBg: '#f3e8ff' },
+  { id: 'POS-VENDA',       label: 'Pos-Venda',          group: 'pos-venda',  borderColor: '#7c3aed', bgColor: '#faf5ff', textColor: '#6b21a8', headerBg: '#f3e8ff' },
+  { id: 'CS',              label: 'CS',                 group: 'pos-venda',  borderColor: '#06b6d4', bgColor: '#ecfeff', textColor: '#155e75', headerBg: '#cffafe' },
 
   // LOOP (laranja — atencao, recuperacao)
   { id: 'FOLLOW-UP',       label: 'Follow-Up',          group: 'loop',       borderColor: '#d97706', bgColor: '#fffbeb', textColor: '#92400e', headerBg: '#fef3c7' },
