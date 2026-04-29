@@ -4,7 +4,6 @@ import { Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import {
   fetchVendasPorStatus,
-  transicionarStatusVenda,
   VendaPedidoItem,
   VendasPorStatusResponse,
   formatBRL,
@@ -362,17 +361,6 @@ function PedidosInner() {
     setFiltroDataInicio('');
     setFiltroDataFim('');
     router.replace('/pedidos', { scroll: false });
-  }
-
-  async function handleTransicionar(id: number, novoStatus: string) {
-    try {
-      await transicionarStatusVenda(id, novoStatus);
-      await load();
-    } catch (e: unknown) {
-      const msg = e instanceof Error ? e.message : 'Erro ao atualizar status do pedido';
-      setApiError(`Erro ao mudar status: ${msg}`);
-      throw e; // re-throw so ModalPedido also shows its local error
-    }
   }
 
   const items = response?.items ?? [];
