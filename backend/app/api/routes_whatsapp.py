@@ -245,30 +245,59 @@ def debug_raw_connections(
         "token_len": len(deskrio_service.token) if deskrio_service.token else 0,
     }
 
+    # Tentativa 1: via _get padrao (com retry, sem cache)
     try:
-        # Bypass cache para garantir leitura fresca
         raw = deskrio_service._get("/v1/api/connections", use_cache=False)
-        info.update(
-            {
-                "ok": True,
-                "raw_type": type(raw).__name__,
-                "raw_value": raw,
-                "raw_keys": (
-                    list(raw.keys()) if isinstance(raw, dict) else None
-                ),
-                "raw_len": (
-                    len(raw) if isinstance(raw, (list, dict)) else None
-                ),
-            }
-        )
+        info["via_get"] = {
+            "ok": True,
+            "raw_type": type(raw).__name__,
+            "raw_value": raw,
+            "raw_keys": list(raw.keys()) if isinstance(raw, dict) else None,
+            "raw_len": len(raw) if isinstance(raw, (list, dict)) else None,
+        }
     except Exception as exc:  # noqa: BLE001
-        info.update(
-            {
-                "ok": False,
-                "error": str(exc),
-                "error_type": type(exc).__name__,
+        info["via_get"] = {
+            "ok": False,
+            "error": str(exc),
+            "error_type": type(exc).__name__,
+        }
+
+    # Tentativa 2: chamada httpx direta para capturar status_code e body raw
+    # (bypass do _get que swallow erros silenciosamente)
+    import httpx as _httpx
+
+    base = deskrio_service.base_url
+    headers = {
+        "Authorization": f"Bearer {deskrio_service.token}",
+        "Content-Type": "application/json",
+    }
+    info["direct"] = {}
+    try:
+        with _httpx.Client(timeout=20.0) as client:
+            resp = client.get(f"{base}/v1/api/connections", headers=headers)
+            body_text = resp.text
+            info["direct"] = {
+                "status_code": resp.status_code,
+                "headers": dict(resp.headers),
+                "body_preview": body_text[:2000],
+                "body_len": len(body_text),
+                "url_called": str(resp.url),
             }
-        )
+            try:
+                parsed = resp.json()
+                info["direct"]["json_type"] = type(parsed).__name__
+                info["direct"]["json_keys"] = (
+                    list(parsed.keys()) if isinstance(parsed, dict) else None
+                )
+                info["direct"]["json_len"] = (
+                    len(parsed) if isinstance(parsed, (list, dict)) else None
+                )
+                info["direct"]["json_value"] = parsed
+            except Exception as je:  # noqa: BLE001
+                info["direct"]["json_error"] = str(je)
+    except Exception as exc:  # noqa: BLE001
+        info["direct"]["error"] = str(exc)
+        info["direct"]["error_type"] = type(exc).__name__
 
     return info
 
