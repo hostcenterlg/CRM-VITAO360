@@ -1,5 +1,17 @@
 'use client';
 
+/**
+ * @deprecated Use componentes específicos de @/components/ui:
+ *   - variant="situacao"    -> <StatusPill status={value} />
+ *   - variant="temperatura" -> <StatusPill status={value} />
+ *   - variant="abc"         -> <CurvaPill curva={value} />
+ *   - variant="prioridade"  -> <PriorityPill prioridade={value} />
+ *   - variant="sinaleiro"   -> <Sinaleiro cor={value.toLowerCase()} />
+ *
+ * Migração tracked em .planning/UX_REDESIGN_COMPONENTS_SPEC.md secao 14.
+ * Este arquivo será removido em Wave 4 (após 100% dos consumers migrarem).
+ */
+
 // ---------------------------------------------------------------------------
 // StatusBadge — colored badge for situacao / sinaleiro / prioridade / ABC / temperatura
 // Colors follow R9 and CRM VITAO360 brand rules (LIGHT theme only)
@@ -107,6 +119,13 @@ export default function StatusBadge({
   small = false,
   large = false,
 }: BadgeProps) {
+  if (process.env.NODE_ENV === 'development') {
+    console.warn(
+      '[StatusBadge] Este componente está deprecado. ' +
+      'Use os componentes de @/components/ui: StatusPill, CurvaPill, PriorityPill ou Sinaleiro. ' +
+      'Ver .planning/UX_REDESIGN_COMPONENTS_SPEC.md seção 14.',
+    );
+  }
   if (!value) return <span className="text-gray-400">—</span>;
 
   const style = getStyle(value, variant);
