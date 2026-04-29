@@ -15,6 +15,23 @@ const nextConfig = {
       },
     ];
   },
+
+  // /clientes e alias permanente de /carteira (Briefing 29-Abr-2026)
+  // Mantemos /carteira intacto para nao quebrar links existentes.
+  async redirects() {
+    return [
+      {
+        source: '/clientes/:path*',
+        destination: '/carteira/:path*',
+        permanent: false,
+      },
+      {
+        source: '/clientes',
+        destination: '/carteira',
+        permanent: false,
+      },
+    ];
+  },
 };
 
 export default nextConfig;
