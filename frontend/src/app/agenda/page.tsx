@@ -583,7 +583,7 @@ function ResumoSemanalIA({ consultorAtivo }: { consultorAtivo: string }) {
             <path strokeLinecap="round" strokeLinejoin="round"
               d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
           </svg>
-          <span className="text-[11px] font-semibold text-gray-600 uppercase tracking-wider">
+          <span className="text-xs sm:text-sm font-semibold text-gray-600 uppercase tracking-wider">
             Resumo Semanal IA
           </span>
         </div>
@@ -622,7 +622,7 @@ function ResumoSemanalIA({ consultorAtivo }: { consultorAtivo: string }) {
             <path strokeLinecap="round" strokeLinejoin="round"
               d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
           </svg>
-          <span className="text-[11px] font-semibold text-gray-600 uppercase tracking-wider">
+          <span className="text-xs sm:text-sm font-semibold text-gray-600 uppercase tracking-wider">
             Resumo Semanal IA
           </span>
         </div>
@@ -977,18 +977,18 @@ export default function AgendaPage() {
 
   return (
     <>
-      <div className="space-y-3 sm:space-y-4 max-w-4xl px-0">
+      <div className="space-y-3 sm:space-y-4 w-full px-0">
         {/* Cabecalho da pagina */}
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <h1 className="text-lg sm:text-xl font-bold text-gray-900">Agenda Comercial</h1>
-            <p className="text-xs text-gray-500 mt-0.5 truncate">{hoje}</p>
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">Agenda Comercial</h1>
+            <p className="text-sm sm:text-base text-gray-500 mt-0.5 truncate">{hoje}</p>
           </div>
           <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
             {todosItems.length > 0 && (
               <div className="hidden sm:block text-right">
-                <p className="text-xs text-gray-500">Total na agenda</p>
-                <p className="text-xl font-bold text-gray-900">{todosItems.length}</p>
+                <p className="text-xs sm:text-sm text-gray-500">Total na agenda</p>
+                <p className="text-xl sm:text-2xl font-bold text-gray-900">{todosItems.length}</p>
               </div>
             )}
             <button
@@ -1024,15 +1024,15 @@ export default function AgendaPage() {
 
         {/* Barra de progresso do dia — visível com fundo cinza */}
         {todosItems.length > 0 && (
-          <div className="bg-gray-100 rounded-lg p-4">
+          <div className="bg-gray-100 rounded-lg p-4 sm:p-5 lg:p-6">
             <div className="flex justify-between items-center mb-2">
-              <span className="text-sm font-medium text-gray-700">Atendimentos hoje</span>
-              <span className="text-sm font-semibold text-gray-900">
+              <span className="text-sm sm:text-base font-medium text-gray-700">Atendimentos hoje</span>
+              <span className="text-sm sm:text-base font-semibold text-gray-900">
                 {totalConcluidos} de {todosItems.length}
               </span>
             </div>
             <ProgressBar current={totalConcluidos} total={todosItems.length} showPercent={false} />
-            <div className="text-right text-xs text-gray-500 mt-1">
+            <div className="text-right text-xs sm:text-sm text-gray-500 mt-1">
               {pctConcluido}% concluído
             </div>
           </div>
@@ -1195,7 +1195,7 @@ export default function AgendaPage() {
                       <div className="h-px flex-1 bg-red-200" />
                     </div>
 
-                    <div className="space-y-2">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
                       {prioritarios.map((item, i) => (
                         <AgendaCard
                           key={item.cnpj}
@@ -1223,7 +1223,7 @@ export default function AgendaPage() {
                       </div>
                     )}
 
-                    <div className="space-y-2">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
                       {regulares.map((item, i) => (
                         <AgendaCard
                           key={item.cnpj}
@@ -1252,7 +1252,7 @@ export default function AgendaPage() {
 
         {/* Legenda de prioridades */}
         <div className="bg-white rounded-xl border border-gray-200 p-4 shadow-sm">
-          <h2 className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-3">
+          <h2 className="text-xs sm:text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
             Legenda de Prioridade
           </h2>
           <div className="flex flex-wrap gap-3">
@@ -1267,12 +1267,12 @@ export default function AgendaPage() {
             ].map((p) => (
               <div key={p.code} className="flex items-center gap-1.5">
                 <span
-                  className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold"
+                  className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-bold"
                   style={{ backgroundColor: p.bg, color: p.text }}
                 >
                   {p.code}
                 </span>
-                <span className="text-[11px] text-gray-500">{p.label}</span>
+                <span className="text-xs sm:text-sm text-gray-500">{p.label}</span>
               </div>
             ))}
           </div>
