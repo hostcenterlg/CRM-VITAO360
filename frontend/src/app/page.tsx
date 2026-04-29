@@ -231,6 +231,12 @@ export default function DashboardPage() {
   const [loading, setLoading]          = useState(true);
   const [error, setError]              = useState<string | null>(null);
 
+  // Mounted gate — ensures Recharts only mounts after client hydration so that
+  // ResponsiveContainer never measures a zero-dimension SSR pre-render
+  // (eliminates "width(-1) height(-1)" console warnings).
+  const [mounted, setMounted]          = useState(false);
+  useEffect(() => { setMounted(true); }, []);
+
   // Filters — existentes
   const defaultRange = defaultDateRange();
   const [consultor, setConsultor]      = useState<Consultor>('TODOS');
@@ -597,7 +603,7 @@ export default function DashboardPage() {
             ))}
           </div>
         )}
-        {!loading && activeTab === 'resumo' && (
+        {mounted && !loading && activeTab === 'resumo' && (
           <TabResumo
             kpis={kpis}
             distribuicao={distribuicao}
@@ -612,7 +618,7 @@ export default function DashboardPage() {
             scoreMedio={scoreMedio}
           />
         )}
-        {!loading && activeTab === 'operacional' && (
+        {mounted && !loading && activeTab === 'operacional' && (
           <TabOperacional
             kpis={kpis}
             performance={filteredPerf}
@@ -623,7 +629,7 @@ export default function DashboardPage() {
             positivacaoError={positivacaoError}
           />
         )}
-        {!loading && activeTab === 'funil' && (
+        {mounted && !loading && activeTab === 'funil' && (
           <TabFunil
             kpis={kpis}
             distribuicao={distribuicao}
@@ -636,14 +642,14 @@ export default function DashboardPage() {
             atividadesError={atividadesError}
           />
         )}
-        {!loading && activeTab === 'performance' && (
+        {mounted && !loading && activeTab === 'performance' && (
           <TabPerformance
             performance={filteredPerf}
             projecao={projecao}
             loading={loading}
           />
         )}
-        {!loading && activeTab === 'saude' && (
+        {mounted && !loading && activeTab === 'saude' && (
           <TabSaude
             kpis={kpis}
             distribuicao={distribuicao}
@@ -653,27 +659,27 @@ export default function DashboardPage() {
             positivacaoError={positivacaoError}
           />
         )}
-        {!loading && activeTab === 'redes' && (
+        {mounted && !loading && activeTab === 'redes' && (
           <TabRedes
             sinaleiro={sinaleiro}
             distribuicao={distribuicao}
             loading={loading}
           />
         )}
-        {!loading && activeTab === 'motivos' && (
+        {mounted && !loading && activeTab === 'motivos' && (
           <TabMotivos
             rnc={rnc}
             loading={loading}
           />
         )}
-        {!loading && activeTab === 'produtividade' && (
+        {mounted && !loading && activeTab === 'produtividade' && (
           <TabProdutividade
             performance={filteredPerf}
             kpis={kpis}
             loading={loading}
           />
         )}
-        {!loadingIndicadores && activeTab === 'indicadores' && (
+        {mounted && !loadingIndicadores && activeTab === 'indicadores' && (
           <TabIndicadores
             evolucaoVendas={evolucaoVendas}
             positivacaoDiaria={positivacaoDiaria}
