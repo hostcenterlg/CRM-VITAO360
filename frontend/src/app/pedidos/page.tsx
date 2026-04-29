@@ -108,56 +108,18 @@ function StatusBadge({ status }: { status: StatusPedido }) {
 interface ModalPedidoProps {
   pedido: VendaPedidoItem;
   onClose: () => void;
-  onTransicionar: (id: number, novoStatus: string) => Promise<void>;
-  isAdmin: boolean;
 }
 
-function ModalPedido({ pedido, onClose, onTransicionar, isAdmin }: ModalPedidoProps) {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [formDirty, setFormDirty] = useState(false);
-  const [confirmDescarte, setConfirmDescarte] = useState(false);
-
-  function tentarFechar() {
-    if (formDirty) {
-      setConfirmDescarte(true);
-    } else {
-      onClose();
-    }
-  }
-
+// Read-only modal — CRM has no authority to approve or transition orders.
+// Status transitions are handled exclusively by SAP/financeiro.
+function ModalPedido({ pedido, onClose }: ModalPedidoProps) {
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
-      if (e.key === 'Escape') {
-        if (confirmDescarte) {
-          setConfirmDescarte(false);
-        } else {
-          tentarFechar();
-        }
-      }
+      if (e.key === 'Escape') onClose();
     }
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [formDirty, confirmDescarte]);
-
-  async function handleAcao(novoStatus: string) {
-    if (novoStatus === 'CANCELADO') {
-      if (!confirm('Tem certeza que deseja cancelar este pedido? Esta acao nao pode ser desfeita.')) return;
-    }
-    setFormDirty(true);
-    setLoading(true);
-    setError(null);
-    try {
-      await onTransicionar(pedido.id, novoStatus);
-      setFormDirty(false);
-      onClose();
-    } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Erro ao atualizar status');
-    } finally {
-      setLoading(false);
-    }
-  }
+  }, [onClose]);
 
   return (
     <div
@@ -167,33 +129,6 @@ function ModalPedido({ pedido, onClose, onTransicionar, isAdmin }: ModalPedidoPr
       aria-labelledby="modal-pedido-titulo"
     >
       <div className="relative bg-white rounded-xl shadow-xl w-full max-w-lg mx-4">
-        {/* Mini-confirmacao de descarte */}
-        {confirmDescarte && (
-          <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/30 rounded-lg">
-            <div className="bg-white rounded-lg shadow-xl mx-6 p-5 w-full max-w-xs text-center">
-              <p className="text-sm font-semibold text-gray-900 mb-1">Descartar alteracoes?</p>
-              <p className="text-xs text-gray-500 mb-4">As mudancas nao salvas serao perdidas.</p>
-              <div className="flex gap-3 justify-center">
-                <button
-                  type="button"
-                  onClick={() => setConfirmDescarte(false)}
-                  className="px-4 py-2 text-xs font-medium text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
-                >
-                  Continuar editando
-                </button>
-                <button
-                  type="button"
-                  onClick={onClose}
-                  className="px-4 py-2 text-xs font-semibold text-white rounded-lg transition-colors"
-                  style={{ backgroundColor: '#FF0000' }}
-                >
-                  Descartar
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
           <div>
@@ -204,7 +139,7 @@ function ModalPedido({ pedido, onClose, onTransicionar, isAdmin }: ModalPedidoPr
           </div>
           <button
             type="button"
-            onClick={tentarFechar}
+            onClick={onClose}
             className="text-gray-400 hover:text-gray-600 p-1 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
             aria-label="Fechar modal"
           >
@@ -216,12 +151,6 @@ function ModalPedido({ pedido, onClose, onTransicionar, isAdmin }: ModalPedidoPr
 
         {/* Body */}
         <div className="px-6 py-5 space-y-4">
-          {error && (
-            <div role="alert" className="px-3 py-2 bg-red-50 border border-red-200 rounded text-xs text-red-700">
-              {error}
-            </div>
-          )}
-
           {/* Info grid */}
           <div className="grid grid-cols-2 gap-3">
             <div>
@@ -245,6 +174,12 @@ function ModalPedido({ pedido, onClose, onTransicionar, isAdmin }: ModalPedidoPr
               <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">Status Atual</p>
               <StatusBadge status={pedido.status_pedido} />
             </div>
+            {pedido.fonte && (
+              <div>
+                <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">Fonte</p>
+                <p className="text-xs font-medium text-gray-900">{pedido.fonte}</p>
+              </div>
+            )}
             {pedido.observacao && (
               <div className="col-span-2">
                 <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">Observação</p>
@@ -253,64 +188,18 @@ function ModalPedido({ pedido, onClose, onTransicionar, isAdmin }: ModalPedidoPr
             )}
           </div>
 
-          {/* Botoes de transicao */}
-          <div className="pt-3 border-t border-gray-100 space-y-2">
-            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-2">Acoes</p>
-            <div className="flex flex-wrap gap-2">
-              {pedido.status_pedido === 'DIGITADO' && (
-                <button
-                  type="button"
-                  disabled={loading}
-                  onClick={() => void handleAcao('LIBERADO')}
-                  className="flex-1 sm:flex-none min-h-[44px] px-4 py-2 text-xs font-semibold text-white rounded-lg transition-colors disabled:opacity-60"
-                  style={{ backgroundColor: '#3B82F6' }}
-                >
-                  Liberar Pedido
-                </button>
-              )}
-              {pedido.status_pedido === 'LIBERADO' && (
-                <button
-                  type="button"
-                  disabled={loading}
-                  onClick={() => void handleAcao('FATURADO')}
-                  className="flex-1 sm:flex-none min-h-[44px] px-4 py-2 text-xs font-semibold text-white rounded-lg transition-colors disabled:opacity-60"
-                  style={{ backgroundColor: '#00B050' }}
-                >
-                  Faturar Pedido
-                </button>
-              )}
-              {pedido.status_pedido === 'FATURADO' && (
-                <button
-                  type="button"
-                  disabled={loading}
-                  onClick={() => void handleAcao('ENTREGUE')}
-                  className="flex-1 sm:flex-none min-h-[44px] px-4 py-2 text-xs font-semibold text-white rounded-lg transition-colors disabled:opacity-60"
-                  style={{ backgroundColor: '#166534' }}
-                >
-                  Marcar Entregue
-                </button>
-              )}
-              {pedido.status_pedido !== 'CANCELADO' && pedido.status_pedido !== 'ENTREGUE' && isAdmin && (
-                <button
-                  type="button"
-                  disabled={loading}
-                  onClick={() => void handleAcao('CANCELADO')}
-                  className="flex-1 sm:flex-none min-h-[44px] px-4 py-2 text-xs font-semibold text-white rounded-lg transition-colors disabled:opacity-60"
-                  style={{ backgroundColor: '#FF0000' }}
-                >
-                  Cancelar
-                </button>
-              )}
-              {(pedido.status_pedido === 'CANCELADO' || pedido.status_pedido === 'ENTREGUE') && (
-                <p className="text-xs text-gray-400 italic">Nenhuma acao disponivel para este status</p>
-              )}
-            </div>
-            {loading && (
-              <div className="flex items-center gap-2 text-xs text-gray-500">
-                <div className="w-3.5 h-3.5 border-2 border-gray-300 border-t-green-600 rounded-full animate-spin" />
-                Processando...
-              </div>
-            )}
+          {/* Aviso de governanca + botao fechar */}
+          <div className="pt-3 border-t border-gray-100">
+            <p className="text-[10px] text-gray-400 italic mb-3">
+              Aprovacoes e transicoes de status sao realizadas pelo SAP/financeiro.
+            </p>
+            <button
+              type="button"
+              onClick={onClose}
+              className="w-full min-h-[44px] px-4 py-2 text-xs font-semibold text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+            >
+              Fechar
+            </button>
           </div>
         </div>
       </div>
@@ -398,7 +287,7 @@ function ResumoStatus({ resumo }: { resumo: Record<string, number> }) {
 function PedidosInner() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const { isAdmin } = useAuth();
+  useAuth(); // mantido para session context; isAdmin removido — CRM nao tem alcada de aprovacao
 
   const [busca, setBusca] = useState(() => searchParams.get('busca') ?? '');
   const [buscaInput, setBuscaInput] = useState(() => searchParams.get('busca') ?? '');
@@ -808,13 +697,11 @@ function PedidosInner() {
         </div>
       )}
 
-      {/* Modal detalhe */}
+      {/* Modal detalhe — read-only, sem acoes de transicao */}
       {selectedPedido && (
         <ModalPedido
           pedido={selectedPedido}
           onClose={() => setSelectedPedido(null)}
-          onTransicionar={handleTransicionar}
-          isAdmin={isAdmin}
         />
       )}
     </div>
