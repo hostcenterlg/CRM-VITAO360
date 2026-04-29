@@ -4,21 +4,32 @@ CRM VITAO360 — Dependencies FastAPI para injecao em rotas.
 Centraliza a logica de autenticacao e autorizacao reutilizavel.
 Cada dependency pode ser usada como parametro em qualquer rota via Depends().
 
-Hierarquia de roles:
-  admin             — acesso total
-  gerente           — ve todos os consultores, sem configuracao (Daiane)
-  consultor         — acesso a propria carteira
-  consultor_externo — carteira propria, sem dados financeiros (Julio)
+Hierarquia de roles (de maior para menor permissao):
+  admin             — acesso total, configuracao, RBAC (Leandro)
+  gerente           — ve todos os consultores, dashboard, redistribuir (Daiane)
+  consultor         — acesso a propria carteira (Manu, Larissa)
+  consultor_externo — carteira propria, sem dados financeiros (Julio — RCA externo)
+
+Helpers de autorizacao disponiveis:
+  get_current_user()            — extrai usuario autenticado via JWT (base)
+  require_admin()               — exige role == admin
+  require_admin_or_gerente()    — exige role in {admin, gerente}
+  require_gerente_or_admin()    — alias semantico de require_admin_or_gerente
+  require_consultor_or_admin()  — exige qualquer role valido
+  require_consultor_or_above()  — exige nivel >= consultor (exclui nenhum dos 4)
+  require_role(min_role)        — factory generica: retorna Depends com nivel minimo
 """
 
 from __future__ import annotations
+
+from typing import Callable
 
 from fastapi import Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from backend.app.database import get_db
 from backend.app.models.usuario import Usuario
-from backend.app.security import decode_token, oauth2_scheme
+from backend.app.security import UserRole, decode_token, has_role, oauth2_scheme
 
 
 def get_current_user(
@@ -65,7 +76,7 @@ def require_admin(user: Usuario = Depends(get_current_user)) -> Usuario:
     Raises:
       HTTPException 403 — se role != 'admin'
     """
-    if user.role != "admin":
+    if not has_role(user.role, UserRole.ADMIN):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Acesso restrito a administradores",
@@ -85,7 +96,7 @@ def require_consultor_or_admin(
     Raises:
       HTTPException 403 — se role nao tiver permissao de escrita
     """
-    if user.role not in ("admin", "gerente", "consultor", "consultor_externo"):
+    if not has_role(user.role, UserRole.VENDEDOR):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Acesso restrito a consultores e administradores",
@@ -104,12 +115,80 @@ def require_admin_or_gerente(user: Usuario = Depends(get_current_user)) -> Usuar
     Raises:
       HTTPException 403 — se role nao for admin nem gerente
     """
-    if user.role not in ("admin", "gerente"):
+    if not has_role(user.role, UserRole.GERENTE):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Acesso restrito a administradores e gerentes",
         )
     return user
+
+
+def require_gerente_or_admin(user: Usuario = Depends(get_current_user)) -> Usuario:
+    """
+    Alias semantico de require_admin_or_gerente.
+
+    Disponibilizado com nome alternativo para legibilidade em novos endpoints.
+    Mesma logica: exige role gerente ou superior (admin).
+
+    Raises:
+      HTTPException 403 — se role nao atingir nivel gerente
+    """
+    if not has_role(user.role, UserRole.GERENTE):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Acesso restrito a gerentes e administradores",
+        )
+    return user
+
+
+def require_consultor_or_above(user: Usuario = Depends(get_current_user)) -> Usuario:
+    """
+    Exige nivel de role >= consultor.
+
+    Atualmente aceita todos os 4 roles validos (ADMIN/GERENTE/CONSULTOR/VENDEDOR).
+    Uso: endpoints que qualquer usuario autenticado pode acessar, exceto
+    eventuais roles sem permissao de leitura (ex.: visitante — nao implementado).
+
+    Raises:
+      HTTPException 403 — se role nao atingir nivel consultor
+    """
+    if not has_role(user.role, UserRole.CONSULTOR):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Acesso restrito a consultores e superiores",
+        )
+    return user
+
+
+def require_role(min_role: UserRole) -> Callable:
+    """
+    Factory generica de dependency de autorizacao.
+
+    Uso em endpoints novos:
+        @router.get("/rota", dependencies=[Depends(require_role(UserRole.GERENTE))])
+        # ou
+        @router.get("/rota")
+        def minha_rota(user: Usuario = Depends(require_role(UserRole.GERENTE))):
+            ...
+
+    Args:
+        min_role: nivel minimo exigido (UserRole.ADMIN, GERENTE, CONSULTOR ou VENDEDOR)
+
+    Returns:
+        FastAPI dependency (callable) que retorna o usuario autenticado ou
+        levanta HTTPException 403.
+    """
+    def _dep(user: Usuario = Depends(get_current_user)) -> Usuario:
+        if not has_role(user.role, min_role):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail=f"Acesso exige nivel minimo: {min_role.value}",
+            )
+        return user
+
+    # Nomeia a funcao para facilitar debugging e introspeccao do OpenAPI
+    _dep.__name__ = f"require_{min_role.value}"
+    return _dep
 
 
 # ---------------------------------------------------------------------------
@@ -140,7 +219,7 @@ def get_user_canal_ids(
         else:
             query = query.filter(Cliente.canal_id.in_(canal_ids))
     """
-    if user.role == "admin":
+    if has_role(user.role, UserRole.ADMIN):
         return None  # admin ve tudo
 
     # Carrega via association table (lazy on user.canais).
@@ -163,7 +242,7 @@ def get_user_canal_ids_strict(
     """
     from backend.app.models.canal import Canal
 
-    if user.role == "admin":
+    if has_role(user.role, UserRole.ADMIN):
         return [c[0] for c in db.query(Canal.id).all()]
 
     return [c.id for c in (getattr(user, "canais", None) or [])]
