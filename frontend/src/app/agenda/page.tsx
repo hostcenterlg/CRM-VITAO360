@@ -1098,8 +1098,8 @@ export default function AgendaPage() {
           />
         )}
 
-        {/* Seletor de Consultor — botoes grandes */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+        {/* Seletor de Consultor — pill tabs compactas */}
+        <div className="flex flex-wrap gap-2">
           {CONSULTORES.map((c) => {
             const count = agendaByConsultor[c]?.length;
             const pendentes = count !== undefined
@@ -1112,22 +1112,26 @@ export default function AgendaPage() {
                 key={c}
                 type="button"
                 onClick={() => handleTabChange(c)}
-                className="flex flex-col items-center justify-center gap-1 px-4 py-3 rounded-xl border-2 font-semibold text-sm transition-all focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1"
-                style={{
-                  backgroundColor: isActive ? '#00B050' : '#ffffff',
-                  borderColor: isActive ? '#00B050' : '#E5E7EB',
-                  color: isActive ? '#ffffff' : '#374151',
-                  boxShadow: isActive ? '0 2px 8px rgba(0,176,80,0.25)' : '0 1px 3px rgba(0,0,0,0.06)',
-                }}
+                aria-pressed={isActive}
+                className={[
+                  'inline-flex items-center gap-2 px-4 sm:px-6 py-2.5 rounded-lg border text-sm font-medium transition-all',
+                  'focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1',
+                  isActive
+                    ? 'bg-green-600 border-green-600 text-white font-semibold shadow-sm'
+                    : 'bg-white border-zinc-300 text-zinc-700 hover:bg-zinc-50 hover:border-zinc-400',
+                ].join(' ')}
               >
                 <span>{c}</span>
                 {pendentes !== undefined && (
                   <span
-                    className="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full text-[10px] font-bold"
-                    style={{
-                      backgroundColor: isActive ? 'rgba(255,255,255,0.25)' : (pendentes > 0 ? '#F3F4F6' : '#DCFCE7'),
-                      color: isActive ? '#fff' : (pendentes > 0 ? '#374151' : '#15803D'),
-                    }}
+                    className={[
+                      'inline-flex items-center justify-center min-w-[1.5rem] h-6 px-1.5 rounded-full text-xs font-bold',
+                      isActive
+                        ? 'bg-white text-green-700'
+                        : pendentes > 0
+                          ? 'bg-zinc-100 text-zinc-700'
+                          : 'bg-green-50 text-green-700',
+                    ].join(' ')}
                   >
                     {pendentes > 0 ? pendentes : '✓'}
                   </span>
