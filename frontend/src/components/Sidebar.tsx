@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { fetchJson } from '@/lib/api';
+import { MetaWidget } from '@/components/ui';
 
 // ---------------------------------------------------------------------------
 // Sidebar — navegacao CRM VITAO360, light theme only
@@ -191,16 +192,7 @@ const navGroups: NavGroup[] = [
           </svg>
         ),
       },
-      {
-        href: '/projecao',
-        label: 'Projecao',
-        icon: (
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-              d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-          </svg>
-        ),
-      },
+      // Projecao removida da sidebar — vira tab interna do Dashboard (Wave 3)
       {
         href: '/redes',
         label: 'Redes',
@@ -457,22 +449,16 @@ export default function Sidebar({ mobileOpen, onClose, collapsed = false, onTogg
                           href={item.href}
                           onClick={onClose}
                           className={`
-                            flex items-center gap-3 px-3 py-2 min-h-[44px] rounded text-sm font-medium transition-colors
+                            flex items-center gap-3 py-2.5 px-4 min-h-[44px] rounded text-sm font-medium transition-colors
                             ${active
-                              ? 'text-green-700'
-                              : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                              ? 'bg-green-50 border-l-4 border-vitao-green text-vitao-green font-semibold pl-3'
+                              : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
                             }
                           `}
-                          style={
-                            active
-                              ? { backgroundColor: '#00B05018', borderLeft: '3px solid #00B050', paddingLeft: '10px' }
-                              : undefined
-                          }
                           aria-current={active ? 'page' : undefined}
                         >
                           <span
-                            className={active ? '' : 'text-gray-400'}
-                            style={active ? { color: '#00B050' } : undefined}
+                            className={active ? 'text-vitao-green' : 'text-gray-400'}
                           >
                             {item.icon}
                           </span>
@@ -489,6 +475,17 @@ export default function Sidebar({ mobileOpen, onClose, collapsed = false, onTogg
             );
           })}
         </nav>
+
+        {/* MetaWidget — meta mensal fixada no bottom da sidebar */}
+        {/* TODO Wave 3: conectar com /api/metas/atual */}
+        <div className={`flex-shrink-0 ${collapsed ? 'px-1 py-2' : 'px-3 py-3'}`}>
+          <MetaWidget
+            meta={250000}
+            realizado={187000}
+            mes="Abril 2026"
+            collapsed={collapsed}
+          />
+        </div>
 
         {/* Collapse toggle (desktop only) + Footer */}
         <div className={`border-t border-gray-100 flex-shrink-0 ${collapsed ? 'px-1 py-2' : 'px-4 py-3'}`}>
