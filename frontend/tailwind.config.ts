@@ -15,14 +15,23 @@ const config: Config = {
         mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace'],
       },
       colors: {
-        // CRM VITAO360 brand colors (R9)
+        // CRM VITAO360 brand colors (R9) — paleta canônica
         vitao: {
+          // PT (legacy — em uso em vários componentes existentes)
           verde: '#00B050',      // ATIVO, sinaleiro VERDE, curva A
           amarelo: '#FFC000',    // INAT.REC, sinaleiro AMARELO, curva C
           vermelho: '#FF0000',   // INAT.ANT, sinaleiro VERMELHO
           roxo: '#800080',       // sinaleiro ROXO
           cinza: '#808080',      // PROSPECT
           abc_b: '#FFFF00',      // curva B
+          // EN (Vitão MVP demo paleta — para Dashboard hero KPIs e Inbox)
+          green: '#00A859',
+          darkgreen: '#008C4A',
+          lightgreen: '#E6F7EF',
+          blue: '#0066CC',
+          purple: '#7C3AED',
+          orange: '#F59E0B',
+          red: '#EF4444',
         },
       },
       borderWidth: {
