@@ -568,8 +568,37 @@ export default function DashboardPage() {
       </div>
 
       {/* ------------------------------------------------------------------ */}
+      {/* Tab navigation — sticky no topo, acima do hero                      */}
+      {/* ------------------------------------------------------------------ */}
+      <div className="sticky top-0 z-20 bg-white border-b border-gray-200 -mx-3 md:-mx-4 lg:-mx-6 px-3 md:px-4 lg:px-6 py-3 mb-4">
+        <div className="overflow-x-auto scrollbar-hide">
+          <div className="flex gap-2 min-w-max sm:flex-wrap sm:min-w-0">
+            {TABS.map((tab) => {
+              const isActive = activeTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  type="button"
+                  onClick={() => setActiveTab(tab.id)}
+                  className={[
+                    'px-4 py-2 text-xs sm:text-sm uppercase tracking-wider whitespace-nowrap rounded-md border-2 font-semibold transition-all duration-150',
+                    isActive
+                      ? 'bg-vitao-green text-white border-vitao-green shadow-sm'
+                      : 'bg-gray-100 text-gray-800 border-transparent hover:bg-gray-200',
+                  ].join(' ')}
+                >
+                  <span className="sm:hidden">{tab.labelMobile}</span>
+                  <span className="hidden sm:inline">{tab.label}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
+      {/* ------------------------------------------------------------------ */}
       {/* Hero section — KPIs Mercos + Curva ABC + Top 5 clientes              */}
-      {/* Fixa, nao muda com tab. Renderiza ACIMA da navegacao de tabs.        */}
+      {/* Fixa, nao muda com tab. Renderiza ABAIXO da navegacao de tabs.       */}
       {/* ------------------------------------------------------------------ */}
       <section className="space-y-4 mb-6">
         {/* 4 KPI cards */}
@@ -620,33 +649,6 @@ export default function DashboardPage() {
           </div>
         </div>
       </section>
-
-      {/* ------------------------------------------------------------------ */}
-      {/* Tab navigation                                                       */}
-      {/* ------------------------------------------------------------------ */}
-      <div className="overflow-x-auto scrollbar-hide mb-0 -mb-px">
-        <div className="flex min-w-max border-b border-gray-200">
-          {TABS.map((tab) => {
-            const isActive = activeTab === tab.id;
-            return (
-              <button
-                key={tab.id}
-                type="button"
-                onClick={() => setActiveTab(tab.id)}
-                className={[
-                  'px-3 sm:px-4 py-2.5 text-xs uppercase tracking-wider whitespace-nowrap transition-all duration-150',
-                  isActive
-                    ? 'text-gray-900 font-semibold border-b-2 border-green-600 bg-white'
-                    : 'text-gray-700 font-medium hover:text-gray-900 hover:bg-gray-50 border-b-2 border-transparent',
-                ].join(' ')}
-              >
-                <span className="sm:hidden">{tab.labelMobile}</span>
-                <span className="hidden sm:inline">{tab.label}</span>
-              </button>
-            );
-          })}
-        </div>
-      </div>
 
       {/* ------------------------------------------------------------------ */}
       {/* Tab content                                                          */}
