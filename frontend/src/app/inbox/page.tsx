@@ -17,6 +17,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { useAuth } from '@/contexts/AuthContext';
+import { Badge } from '@/components/ui/Badge';
 import {
   fetchInbox,
   fetchTicketMensagens,
@@ -419,23 +420,26 @@ function ColunaLista({
             </span>
           </div>
           <div className="flex items-center gap-2">
-            {waOnline && (
-              <span className="flex items-center gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-vitao-green animate-pulse" />
-                <span className="text-[9px] text-vitao-darkgreen font-medium">Online</span>
-              </span>
-            )}
+            {waOnline && (() => {
+              const ativas = waStatus!.conexoes.filter((c) => c.status === 'CONNECTED');
+              const tooltip = ativas.length > 0
+                ? `${ativas.length} de ${waStatus!.total_conexoes} conexões ativas: ${ativas.map((c) => c.nome).join(', ')}`
+                : 'WhatsApp conectado';
+              return (
+                <Badge variant="success" size="xs" dot title={tooltip}>
+                  WhatsApp conectado
+                </Badge>
+              );
+            })()}
             {waConnecting && (
-              <span className="flex items-center gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
-                <span className="text-[9px] text-amber-700 font-medium">Conectando</span>
-              </span>
+              <Badge variant="warning" size="xs" dot title="WhatsApp configurado mas sem conexões ativas. Reconecte no Deskrio.">
+                Sem conexão ativa
+              </Badge>
             )}
             {waOffline && (
-              <span className="flex items-center gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-gray-400" />
-                <span className="text-[9px] text-gray-500 font-medium">Offline</span>
-              </span>
+              <Badge variant="neutral" size="xs" dot title="WhatsApp não configurado no Deskrio">
+                Offline
+              </Badge>
             )}
             <button
               type="button"
@@ -520,7 +524,7 @@ function ColunaLista({
           </svg>
           <div className="flex-1 min-w-0">
             <p className="text-[11px] font-semibold text-amber-900">
-              {waConnecting ? 'WhatsApp Deskrio offline' : 'WhatsApp não configurado'}
+              {waConnecting ? 'Nenhuma conexão WhatsApp ativa. Verifique no Deskrio.' : 'WhatsApp não configurado'}
             </p>
             {waConnecting && (
               <a
@@ -562,7 +566,7 @@ function ColunaLista({
                 ? 'Tente outro termo de busca'
                 : filterTab !== 'todos'
                   ? 'Tente outro filtro'
-                  : 'Sem tickets nos últimos 7 dias'}
+                  : 'Nenhuma conversa nos últimos 6 dias.'}
             </p>
           </div>
         )}
@@ -1192,7 +1196,7 @@ export default function InboxPage() {
     if (!silent) setLoadingTickets(true);
     else setRefreshingTickets(true);
     try {
-      const data = await fetchInbox(7);
+      const data = await fetchInbox(6);
       const sorted = [...(data.tickets ?? [])].sort((a, b) => {
         const da = a.ultima_mensagem_data ?? a.ultima_msg_cliente_data ?? '';
         const db = b.ultima_mensagem_data ?? b.ultima_msg_cliente_data ?? '';
