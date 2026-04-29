@@ -9,15 +9,19 @@ import { MetaWidget } from '@/components/ui';
 
 // ---------------------------------------------------------------------------
 // Sidebar — navegacao CRM VITAO360, light theme only
-// Grupos: CRM (Inbox, Pipeline, Agenda, Tarefas, Carteira, Sinaleiro) | Gestao | Admin
-// Suporta: colapso em desktop (só ícones) + mobile drawer
+// Briefing 29-Abr-2026: 7 itens principais (Inbox, IA, Agenda, Pedidos,
+//   Clientes, Produtos, --- divider ---, Manual)
+// Suporta: colapso em desktop (so icones) + mobile drawer
+// Pipeline e RNC continuam existindo como rotas, mas saem da navegacao.
 // ---------------------------------------------------------------------------
 
 interface NavItem {
   href: string;
   label: string;
   icon: React.ReactNode;
-  showTarefasBadge?: boolean;
+  showInboxBadge?: boolean;
+  showAgendaBadge?: boolean;
+  isDividerBefore?: boolean;
 }
 
 interface NavGroup {
@@ -28,27 +32,29 @@ interface NavGroup {
 }
 
 // ---------------------------------------------------------------------------
-// TarefasBadge — fetches open RNC count as a proxy for pending tasks
+// InboxBadge — conta tickets nao lidos (status aguardando)
 // ---------------------------------------------------------------------------
 
-interface RNCCountResponse {
-  resumo?: { pendente?: number; em_andamento?: number };
+interface InboxCountResponse {
+  tickets?: Array<{ status?: string }>;
+  total?: number;
+  nao_lidas?: number;
 }
 
-function TarefasBadge({ active, collapsed }: { active: boolean; collapsed: boolean }) {
+function InboxBadge({ active, collapsed }: { active: boolean; collapsed: boolean }) {
   const [count, setCount] = useState<number | null>(null);
 
   useEffect(() => {
     let cancelled = false;
     async function load() {
       try {
-        const res = await fetchJson<RNCCountResponse>('/api/rnc?status=ABERTO');
-        if (!cancelled && res.resumo) {
-          const n = (res.resumo.pendente ?? 0) + (res.resumo.em_andamento ?? 0);
-          setCount(n);
+        const res = await fetchJson<InboxCountResponse>('/api/inbox?status=aguardando&limit=1');
+        if (!cancelled) {
+          const n = res.nao_lidas ?? res.total ?? 0;
+          if (n > 0) setCount(n);
         }
       } catch {
-        // Non-critical — badge is informational only
+        // Non-critical
       }
     }
     void load();
@@ -63,7 +69,7 @@ function TarefasBadge({ active, collapsed }: { active: boolean; collapsed: boole
         className="absolute -top-0.5 -right-0.5 flex items-center justify-center
                    min-w-[14px] h-3.5 px-0.5 rounded-full text-white text-[8px] font-bold leading-none"
         style={{ backgroundColor: '#ef4444' }}
-        aria-label={`${count} tarefas pendentes`}
+        aria-label={`${count} mensagens nao lidas`}
       >
         {count > 9 ? '9+' : count}
       </span>
@@ -75,7 +81,66 @@ function TarefasBadge({ active, collapsed }: { active: boolean; collapsed: boole
       className="inline-flex items-center justify-center min-w-[18px] h-[18px]
                  px-1 rounded-full text-white text-[9px] font-bold leading-none ml-auto"
       style={{ backgroundColor: active ? 'rgba(255,255,255,0.35)' : '#ef4444' }}
-      aria-label={`${count} tarefas pendentes`}
+      aria-label={`${count} mensagens nao lidas`}
+    >
+      {count > 99 ? '99+' : count}
+    </span>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// AgendaBadge — conta compromissos de hoje + tarefas pendentes de hoje
+// ---------------------------------------------------------------------------
+
+interface AgendaConsultorResponse {
+  itens?: Array<unknown>;
+}
+
+function AgendaBadge({ active, collapsed }: { active: boolean; collapsed: boolean }) {
+  const [count, setCount] = useState<number | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    async function load() {
+      try {
+        // Busca agenda do consultor LARISSA (mais representativo) como proxy
+        const res = await fetchJson<AgendaConsultorResponse>('/api/agenda/LARISSA');
+        if (!cancelled) {
+          const n = res.itens?.length ?? 0;
+          if (n > 0) setCount(n);
+        }
+      } catch {
+        // Non-critical
+      }
+    }
+    void load();
+    return () => { cancelled = true; };
+  }, []);
+
+  if (!count || count === 0) return null;
+
+  if (collapsed) {
+    return (
+      <span
+        className="absolute -top-0.5 -right-0.5 flex items-center justify-center
+                   min-w-[14px] h-3.5 px-0.5 rounded-full text-white text-[8px] font-bold leading-none"
+        style={{ backgroundColor: '#FFC000', color: '#1a1a1a' }}
+        aria-label={`${count} itens na agenda hoje`}
+      >
+        {count > 9 ? '9+' : count}
+      </span>
+    );
+  }
+
+  return (
+    <span
+      className="inline-flex items-center justify-center min-w-[18px] h-[18px]
+                 px-1 rounded-full text-[9px] font-bold leading-none ml-auto"
+      style={{
+        backgroundColor: active ? 'rgba(255,255,255,0.35)' : '#FFC000',
+        color: active ? '#fff' : '#1a1a1a',
+      }}
+      aria-label={`${count} itens na agenda hoje`}
     >
       {count > 99 ? '99+' : count}
     </span>
@@ -89,71 +154,11 @@ const navGroups: NavGroup[] = [
       {
         href: '/inbox',
         label: 'Inbox',
+        showInboxBadge: true,
         icon: (
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
               d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
-          </svg>
-        ),
-      },
-      {
-        href: '/pipeline',
-        label: 'Pipeline',
-        icon: (
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-              d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-          </svg>
-        ),
-      },
-      {
-        href: '/agenda',
-        label: 'Agenda',
-        icon: (
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-          </svg>
-        ),
-      },
-      {
-        href: '/tarefas',
-        label: 'Tarefas',
-        showTarefasBadge: true,
-        icon: (
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-              d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-          </svg>
-        ),
-      },
-      {
-        href: '/carteira',
-        label: 'Carteira',
-        icon: (
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-              d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
-          </svg>
-        ),
-      },
-      {
-        href: '/rnc',
-        label: 'RNC',
-        icon: (
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-              d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-          </svg>
-        ),
-      },
-      {
-        href: '/pedidos',
-        label: 'Pedidos',
-        icon: (
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-              d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
           </svg>
         ),
       },
@@ -168,8 +173,50 @@ const navGroups: NavGroup[] = [
         ),
       },
       {
+        href: '/agenda',
+        label: 'Agenda',
+        showAgendaBadge: true,
+        icon: (
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+              d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+          </svg>
+        ),
+      },
+      {
+        href: '/pedidos',
+        label: 'Pedidos',
+        icon: (
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+              d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+          </svg>
+        ),
+      },
+      {
+        href: '/clientes',
+        label: 'Clientes',
+        icon: (
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+              d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+        ),
+      },
+      {
+        href: '/produtos',
+        label: 'Produtos',
+        icon: (
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+              d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+          </svg>
+        ),
+      },
+      {
         href: '/manual',
         label: 'Manual',
+        isDividerBefore: true,
         icon: (
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
@@ -210,16 +257,6 @@ const navGroups: NavGroup[] = [
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
               d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-          </svg>
-        ),
-      },
-      {
-        href: '/produtos',
-        label: 'Produtos',
-        icon: (
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-              d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
           </svg>
         ),
       },
@@ -327,8 +364,11 @@ function NavItemCollapsed({ item, active, onClose }: NavItemCollapsedProps) {
         <span style={active ? { color: '#00B050' } : undefined}>
           {item.icon}
         </span>
-        {item.showTarefasBadge && (
-          <TarefasBadge active={active} collapsed />
+        {item.showInboxBadge && (
+          <InboxBadge active={active} collapsed />
+        )}
+        {item.showAgendaBadge && (
+          <AgendaBadge active={active} collapsed />
         )}
       </Link>
 
@@ -445,6 +485,10 @@ export default function Sidebar({ mobileOpen, onClose, collapsed = false, onTogg
 
                     return (
                       <li key={item.href}>
+                        {/* Divider antes do ultimo item (Manual) */}
+                        {item.isDividerBefore && (
+                          <div className="h-px bg-gray-100 my-1.5 mx-1" aria-hidden="true" />
+                        )}
                         <Link
                           href={item.href}
                           onClick={onClose}
@@ -463,8 +507,11 @@ export default function Sidebar({ mobileOpen, onClose, collapsed = false, onTogg
                             {item.icon}
                           </span>
                           <span className="flex-1 leading-tight">{item.label}</span>
-                          {item.showTarefasBadge && (
-                            <TarefasBadge active={active} collapsed={false} />
+                          {item.showInboxBadge && (
+                            <InboxBadge active={active} collapsed={false} />
+                          )}
+                          {item.showAgendaBadge && (
+                            <AgendaBadge active={active} collapsed={false} />
                           )}
                         </Link>
                       </li>
