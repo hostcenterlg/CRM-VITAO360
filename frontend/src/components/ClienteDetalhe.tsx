@@ -495,7 +495,8 @@ function TimelineEvent({ item }: TimelineEventProps) {
   const cor = TIMELINE_COLORS[tipo] ?? '#9CA3AF';
   const label = TIMELINE_LABELS[tipo] ?? 'Log';
   const maxLen = 70;
-  const needsExpand = item.descricao.length > maxLen;
+  const descricao = item.descricao ?? '';
+  const needsExpand = descricao.length > maxLen;
 
   return (
     <div className="flex gap-3 relative">
@@ -661,7 +662,8 @@ function TimelineItem({ item }: { item: AtendimentoHistoricoItem }) {
   const tipoColor = TIPO_CONTATO_COLORS[tipo] ?? '#9CA3AF';
   const tipoLabel = TIPO_LABELS[tipo] ?? 'Lig';
   const maxLen = 80;
-  const needsExpand = item.descricao.length > maxLen;
+  const descricao = item.descricao ?? '';
+  const needsExpand = descricao.length > maxLen;
 
   return (
     <div className="flex gap-3 py-2 border-b border-gray-50 last:border-0">
