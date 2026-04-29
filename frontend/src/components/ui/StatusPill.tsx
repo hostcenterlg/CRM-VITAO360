@@ -38,7 +38,7 @@ const STATUS_MAP: Record<string, StatusConfig> = {
   // Situacao comercial
   'ATIVO':    { variant: 'success', label: 'Ativo' },
   'INAT.REC': { variant: 'warning', label: 'Inat. Recente' },
-  'INAT.ANT': { variant: 'neutral', label: 'Inat. Antigo' },
+  'INAT.ANT': { variant: 'danger', label: 'Inat. Antigo' },
   'INATIVO':  { variant: 'neutral', label: 'Inativo' },
   'PROSPECT': { variant: 'info',    label: 'Prospect' },
   'EM_RISCO': { variant: 'danger',  label: 'Em Risco' },
