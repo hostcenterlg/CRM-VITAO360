@@ -657,6 +657,7 @@ class InboxTicketItem(BaseModel):
     status: str  # "open", "closed", "pending"
     contato_nome: str
     contato_numero: str
+    cnpj: str | None = None                  # CNPJ do cliente (lookup por telefone)
     atendente_nome: str | None = None        # user.name do Deskrio
     ultima_mensagem: str                     # lastMessage (preview)
     ultima_mensagem_data: str | None = None  # lastMessageDate ISO
@@ -743,22 +744,36 @@ def get_inbox(
         logger.exception("Erro ao listar tickets da inbox | dias=%d", dias)
         return InboxResponse(total=0, tickets=[], configurado=True)
 
-    # Multi-canal: pre-carrega telefones dos clientes em canais permitidos
-    # para filtrar tickets pos-fetch via numero do contato.
+    # Pre-carrega mapa telefone_normalizado (sufixo 11 digitos) -> (cnpj, canal_id)
+    # para enriquecer cada ticket com o CNPJ do cliente (necessario para chamar
+    # /api/whatsapp/enviar e /api/clientes/{cnpj} a partir do frontend).
+    # Para multi-canal: tambem usa esse map para filtrar tickets fora do escopo.
+    rows_clientes = db.execute(
+        select(Cliente.cnpj, Cliente.canal_id, Cliente.telefone).where(
+            Cliente.telefone.isnot(None),
+        )
+    ).all()
+    telefone_para_cliente: dict[str, tuple[str, int | None]] = {}
+    for row in rows_clientes:
+        cnpj_cliente, canal_id_cliente, tel_cliente = row
+        if not tel_cliente:
+            continue
+        tel_norm = re.sub(r"\D", "", str(tel_cliente))
+        if not tel_norm:
+            continue
+        sufixo_tel = tel_norm[-11:] if len(tel_norm) >= 11 else tel_norm
+        # Primeiro match ganha (caso de duplicatas raras de telefone)
+        if sufixo_tel not in telefone_para_cliente:
+            telefone_para_cliente[sufixo_tel] = (cnpj_cliente, canal_id_cliente)
+
+    # Multi-canal: define quais sufixos de telefone estao no escopo do usuario.
+    # Para admin (user_canal_ids=None): nao filtra (telefones_permitidos=None).
     telefones_permitidos: set[str] | None = None
     if user_canal_ids is not None:
-        rows_tel = db.execute(
-            select(Cliente.telefone).where(
-                Cliente.canal_id.in_(user_canal_ids),
-                Cliente.telefone.isnot(None),
-            )
-        ).all()
-        # Normaliza: apenas digitos para match com numero Deskrio
         telefones_permitidos = {
-            re.sub(r"\D", "", str(r[0])) for r in rows_tel if r[0]
+            sufixo for sufixo, (_cnpj, canal_id) in telefone_para_cliente.items()
+            if canal_id in user_canal_ids
         }
-        # Manter apenas sufixos de 11 digitos (sem DDI) para match flexivel
-        telefones_permitidos = {t for t in telefones_permitidos if t}
 
     items: list[InboxTicketItem] = []
 
@@ -780,23 +795,20 @@ def get_inbox(
             if isinstance(contato_raw, dict) else ""
         )
 
+        # --- Lookup CNPJ pelo numero de telefone (sufixo 11 digitos) ---
+        num_norm = re.sub(r"\D", "", str(contato_numero or ""))
+        sufixo = (
+            (num_norm[-11:] if len(num_norm) >= 11 else num_norm)
+            if num_norm else ""
+        )
+        cnpj_ticket: str | None = None
+        if sufixo and sufixo in telefone_para_cliente:
+            cnpj_ticket = telefone_para_cliente[sufixo][0]
+
         # Multi-canal: filtrar tickets cujo numero nao bate com clientes
-        # em canal permitido. Match por sufixo (ultimos 11 digitos sem DDI).
+        # em canal permitido (admin: nao filtra).
         if telefones_permitidos is not None:
-            num_norm = re.sub(r"\D", "", str(contato_numero or ""))
-            if not num_norm:
-                continue
-            sufixo = num_norm[-11:] if len(num_norm) >= 11 else num_norm
-            # Match exato ou sufixo
-            match = False
-            for tel in telefones_permitidos:
-                if not tel:
-                    continue
-                tel_suf = tel[-11:] if len(tel) >= 11 else tel
-                if tel == num_norm or tel_suf == sufixo:
-                    match = True
-                    break
-            if not match:
+            if not sufixo or sufixo not in telefones_permitidos:
                 continue
 
         # --- Dados do atendente ---
@@ -823,6 +835,7 @@ def get_inbox(
                 status=t_status or "unknown",
                 contato_nome=contato_nome,
                 contato_numero=contato_numero,
+                cnpj=cnpj_ticket,
                 atendente_nome=atendente_nome,
                 ultima_mensagem=t.get("lastMessage") or "",
                 ultima_mensagem_data=ultima_msg_data,
