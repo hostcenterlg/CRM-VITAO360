@@ -1559,11 +1559,25 @@ export interface MensagemWAResponse {
 export interface ResumoSemanalIAResponse {
   consultor: string;
   periodo: string;
-  clientes_contactados: number;
-  vendas_fechadas: number;
-  valor_vendas: number;
-  pipeline: Array<{ estagio: string; qtd: number }>;
-  top_clientes: Array<{ cnpj: string; nome: string; score: number; motivo: string }>;
+  resumo: string;
+  tokens_usados: number;
+  ia_configurada: boolean;
+  metricas: {
+    total_carteira: number;
+    clientes_contactados_semana: number;
+    vendas_semana_qtd: number;
+    vendas_semana_volume: number;
+    clientes_em_risco: number;
+    followups_vencidos: number;
+    pipeline: Record<string, number>;
+    top3_proxima_semana: Array<{
+      cnpj: string;
+      nome: string;
+      score: number;
+      situacao: string;
+      acao_futura: string;
+    }>;
+  };
 }
 
 export interface ChurnRiskResponse {
