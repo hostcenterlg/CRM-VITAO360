@@ -35,7 +35,6 @@ import {
   fetchWhatsAppStatus,
   fetchCliente,
   enviarWhatsApp,
-  formatBRL,
   formatDateBR,
   type InboxTicket,
   type DeskrioMensagem,
@@ -568,7 +567,6 @@ function ColunaChat({
   onVoltarMobile,
   onVerPainelMobile,
   showMobileBack,
-  isDemo,
   showTyping,
 }: ColunaChatProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
