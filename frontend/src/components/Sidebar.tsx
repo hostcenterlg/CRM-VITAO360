@@ -407,6 +407,8 @@ export default function Sidebar({ mobileOpen, onClose, collapsed = false, onTogg
 
   const isActive = (href: string) => {
     if (href === '/') return pathname === '/';
+    // /clientes redireciona para /carteira — ambos sao equivalentes na nav
+    if (href === '/clientes') return pathname.startsWith('/clientes') || pathname.startsWith('/carteira');
     return pathname.startsWith(href);
   };
 
