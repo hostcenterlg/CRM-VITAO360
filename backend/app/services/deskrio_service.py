@@ -461,14 +461,34 @@ class DeskrioService:
         """
         Lista conexoes WhatsApp disponiveis na conta Deskrio.
 
+        Defensiva: a API Deskrio pode retornar tanto um array direto quanto
+        um envelope {"data": [...]} ou {"connections": [...]}. Tratamos os
+        formatos conhecidos para evitar lista vazia silenciosa.
+
         Returns:
-            Lista de dicts com {id, name, status}. Lista vazia em erro.
+            Lista de dicts com {id, name, status, ...}. Lista vazia em erro.
         """
         logger.info("Deskrio listar_conexoes")
         data = self._get("/v1/api/connections")
 
         if isinstance(data, list):
+            logger.debug("Deskrio listar_conexoes raw=list count=%d", len(data))
             return data
+
+        if isinstance(data, dict):
+            for envelope_key in ("data", "connections", "items", "results"):
+                inner = data.get(envelope_key)
+                if isinstance(inner, list):
+                    logger.debug(
+                        "Deskrio listar_conexoes raw=dict.%s count=%d",
+                        envelope_key,
+                        len(inner),
+                    )
+                    return inner
+            logger.warning(
+                "Deskrio listar_conexoes envelope desconhecido keys=%s",
+                list(data.keys()),
+            )
 
         return []
 
@@ -731,20 +751,56 @@ class DeskrioService:
             }
 
         conexoes_raw = self.listar_conexoes()
+        logger.info(
+            "Deskrio status_conexoes raw count=%d sample_keys=%s",
+            len(conexoes_raw),
+            list(conexoes_raw[0].keys()) if conexoes_raw else [],
+        )
+
         conexoes: list[dict[str, Any]] = []
 
         for c in conexoes_raw:
-            status_raw = str(c.get("status", "DISCONNECTED")).upper()
+            # Deskrio API pode reportar status em diferentes campos/formatos.
+            # Buscamos defensivamente em todos os campos conhecidos antes de
+            # cair no default DISCONNECTED. Aceitamos tambem boolean explicito
+            # (connected: true) que algumas APIs WhatsApp retornam.
+            status_raw_value: Any = (
+                c.get("status")
+                or c.get("state")
+                or c.get("connectionStatus")
+                or c.get("connection_status")
+            )
+
+            if status_raw_value is None:
+                # Boolean fallback: se ha campo connected/isConnected, usa
+                connected_flag = c.get("connected", c.get("isConnected"))
+                if connected_flag is True:
+                    status_raw_value = "CONNECTED"
+                elif connected_flag is False:
+                    status_raw_value = "DISCONNECTED"
+
+            status_raw = str(status_raw_value or "DISCONNECTED").upper().strip()
+
             conexoes.append(
                 {
-                    "id": c.get("id"),
-                    "nome": c.get("name", "Sem nome"),
+                    "id": c.get("id") or c.get("_id"),
+                    "nome": c.get("name") or c.get("nome") or "Sem nome",
                     "status": status_raw,
                     "status_legivel": _STATUS_LEGIVEL.get(status_raw, status_raw.lower()),
                 }
             )
 
-        alguma_conectada = any(c["status"] == "CONNECTED" for c in conexoes)
+        # Comparacao defensiva case-insensitive contra valores normalizados
+        alguma_conectada = any(
+            str(c.get("status", "")).upper() == "CONNECTED" for c in conexoes
+        )
+
+        logger.info(
+            "Deskrio status_conexoes total=%d conectadas=%d alguma_conectada=%s",
+            len(conexoes),
+            sum(1 for c in conexoes if c["status"] == "CONNECTED"),
+            alguma_conectada,
+        )
 
         return {
             "configurado": True,
