@@ -4,7 +4,10 @@
 > **Criado:** 2026-04-29
 > **Autor:** @aios-master (orquestrador)
 > **Base:** BRIEFING MASTER do Cowork de 29/Abr/2026 + correções factuais identificadas pelo orquestrador
-> **Status:** AGUARDANDO 9 ARQUIVOS REFERENCIADOS + SALES_HUNTER_PASS para iniciar
+> **Status:** ✅ DESTRAVADO 29/Abr/2026 — Pré-Fase em execução
+> **Specs Cowork**: `docs/specs/cowork/` (12 arquivos, commit 36c9fec)
+> **SALES_HUNTER_PASS**: configurado 20:18 UTC
+> **Fonte CMV**: ZSD062 (SAP) via planilha exportada
 
 ---
 
