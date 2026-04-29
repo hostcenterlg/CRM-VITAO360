@@ -72,18 +72,20 @@ function penetracaoColor(pct: number): string {
   return '#00B050';
 }
 
-function ProgressBar({ pct }: { pct: number }) {
-  const color = penetracaoColor(pct);
+function ProgressBar({ pct }: { pct: number | null | undefined }) {
+  // Defensivo: backend pode retornar null em pct_ating (rede sem meta definida)
+  const safePct = pct == null || !Number.isFinite(pct) ? 0 : pct;
+  const color = penetracaoColor(safePct);
   return (
     <div className="flex items-center gap-2">
       <div className="flex-1 h-1.5 bg-gray-200 rounded-full overflow-hidden">
         <div
           className="h-full rounded-full transition-all"
-          style={{ width: `${Math.min(pct, 100)}%`, backgroundColor: color }}
+          style={{ width: `${Math.min(safePct, 100)}%`, backgroundColor: color }}
         />
       </div>
       <span className="text-[10px] font-semibold tabular-nums" style={{ color }}>
-        {pct.toFixed(1)}%
+        {safePct.toFixed(1)}%
       </span>
     </div>
   );

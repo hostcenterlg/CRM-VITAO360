@@ -489,7 +489,7 @@ function ProdutosInner() {
           <h1 className="text-lg sm:text-xl font-bold text-gray-900">Catalogo de Produtos</h1>
           <p className="text-xs text-gray-500 mt-0.5">
             {response
-              ? `${response.total.toLocaleString('pt-BR')} produto${response.total !== 1 ? 's' : ''} encontrado${response.total !== 1 ? 's' : ''}`
+              ? `${(response.total ?? 0).toLocaleString('pt-BR')} produto${response.total !== 1 ? 's' : ''} encontrado${response.total !== 1 ? 's' : ''}`
               : 'Carregando...'}
           </p>
         </div>
@@ -719,7 +719,7 @@ function ProdutosInner() {
         {response && response.total > PAGE_SIZE && (
           <div className="flex items-center justify-between px-4 py-2.5 border-t border-gray-100 bg-gray-50 gap-3">
             <p className="text-xs text-gray-500">
-              {offset + 1}–{Math.min(offset + PAGE_SIZE, response.total)} de {response.total.toLocaleString('pt-BR')} — Pag. {currentPage}/{totalPages}
+              {offset + 1}–{Math.min(offset + PAGE_SIZE, response.total ?? 0)} de {(response.total ?? 0).toLocaleString('pt-BR')} — Pag. {currentPage}/{totalPages}
             </p>
             <div className="flex gap-2">
               <button

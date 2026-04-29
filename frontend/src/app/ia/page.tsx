@@ -500,7 +500,7 @@ function CardChurn({ cnpj }: { cnpj: string | null }) {
               />
             </div>
             <span className="text-sm font-bold tabular-nums" style={{ color: nivelColor }}>
-              {data.risco_pct.toFixed(0)}%
+              {(data.risco_pct ?? 0).toFixed(0)}%
             </span>
           </div>
 
@@ -804,7 +804,7 @@ function CardSentimento({ cnpj }: { cnpj: string | null }) {
                   {data.sentimento}
                 </span>
                 <span className="text-sm font-bold tabular-nums" style={{ color: cor }}>
-                  {data.score.toFixed(0)}%
+                  {(data.score ?? 0).toFixed(0)}%
                 </span>
               </div>
               <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
@@ -883,7 +883,7 @@ function CardPrevisaoFechamento({ cnpj }: { cnpj: string | null }) {
   }, [cnpj]);
 
   const cor = data ? (FECHAMENTO_NIVEL_COLOR[data.nivel] ?? '#9CA3AF') : '#10B981';
-  const pct = data ? Math.min(100, Math.max(0, data.probabilidade_pct)) : 0;
+  const pct = data ? Math.min(100, Math.max(0, data.probabilidade_pct ?? 0)) : 0;
 
   // Circulo SVG simples
   const R = 28;
@@ -956,7 +956,7 @@ function CardPrevisaoFechamento({ cnpj }: { cnpj: string | null }) {
                     <div className="flex items-center justify-between text-xs mb-0.5">
                       <span className="text-gray-700 truncate pr-2">{f.nome}</span>
                       <span className="font-semibold text-gray-900 tabular-nums flex-shrink-0">
-                        {f.contribuicao.toFixed(0)}%
+                        {(f.contribuicao ?? 0).toFixed(0)}%
                       </span>
                     </div>
                     <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
@@ -1048,7 +1048,7 @@ function CardCoach() {
             <div className="text-center p-2 bg-amber-50 rounded-lg">
               <p className="text-[10px] text-gray-500 leading-tight">Conversao</p>
               <p className="text-base font-bold text-amber-700 tabular-nums">
-                {data.metricas.conversao_pct.toFixed(1)}%
+                {(data.metricas.conversao_pct ?? 0).toFixed(1)}%
               </p>
             </div>
             <div className="text-center p-2 bg-green-50 rounded-lg">
@@ -1060,13 +1060,13 @@ function CardCoach() {
             <div className="text-center p-2 bg-blue-50 rounded-lg">
               <p className="text-[10px] text-gray-500 leading-tight">Atend./Dia</p>
               <p className="text-base font-bold text-blue-700 tabular-nums">
-                {data.metricas.atendimentos_dia.toFixed(1)}
+                {(data.metricas.atendimentos_dia ?? 0).toFixed(1)}
               </p>
             </div>
             <div className="text-center p-2 bg-purple-50 rounded-lg">
               <p className="text-[10px] text-gray-500 leading-tight">Positivacao</p>
               <p className="text-base font-bold text-purple-700 tabular-nums">
-                {data.metricas.positivacao_pct.toFixed(1)}%
+                {(data.metricas.positivacao_pct ?? 0).toFixed(1)}%
               </p>
             </div>
           </div>

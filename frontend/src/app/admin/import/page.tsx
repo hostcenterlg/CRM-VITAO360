@@ -99,11 +99,11 @@ function ImportResultCard({
       {/* Stats grid */}
       <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
         {[
-          { label: 'Lidos', value: result.registros_lidos, color: '#2563eb' },
-          { label: 'Inseridos', value: result.inseridos, color: '#00B050' },
-          { label: 'Atualizados', value: result.atualizados, color: '#7c3aed' },
-          { label: 'Ignorados', value: result.ignorados, color: '#6b7280' },
-          { label: 'Erros', value: result.erros, color: result.erros > 0 ? '#DC2626' : '#6b7280' },
+          { label: 'Lidos', value: result.registros_lidos ?? 0, color: '#2563eb' },
+          { label: 'Inseridos', value: result.inseridos ?? 0, color: '#00B050' },
+          { label: 'Atualizados', value: result.atualizados ?? 0, color: '#7c3aed' },
+          { label: 'Ignorados', value: result.ignorados ?? 0, color: '#6b7280' },
+          { label: 'Erros', value: result.erros ?? 0, color: (result.erros ?? 0) > 0 ? '#DC2626' : '#6b7280' },
         ].map(({ label, value, color }) => (
           <div
             key={label}
@@ -362,19 +362,19 @@ function HistoryTable({ items, loading }: { items: ImportHistoryItem[]; loading:
                 {item.arquivo ?? '—'}
               </td>
               <td className="px-4 py-2.5 text-center text-gray-700 font-mono">
-                {item.registros_lidos.toLocaleString('pt-BR')}
+                {(item.registros_lidos ?? 0).toLocaleString('pt-BR')}
               </td>
               <td className="px-4 py-2.5 text-center font-mono font-semibold" style={{ color: '#00B050' }}>
-                {item.inseridos.toLocaleString('pt-BR')}
+                {(item.inseridos ?? 0).toLocaleString('pt-BR')}
               </td>
               <td className="px-4 py-2.5 text-center font-mono text-purple-700">
-                {item.atualizados.toLocaleString('pt-BR')}
+                {(item.atualizados ?? 0).toLocaleString('pt-BR')}
               </td>
               <td
                 className="px-4 py-2.5 text-center font-mono font-semibold"
-                style={{ color: item.erros > 0 ? '#DC2626' : '#6B7280' }}
+                style={{ color: (item.erros ?? 0) > 0 ? '#DC2626' : '#6B7280' }}
               >
-                {item.erros.toLocaleString('pt-BR')}
+                {(item.erros ?? 0).toLocaleString('pt-BR')}
               </td>
               <td className="px-4 py-2.5 whitespace-nowrap">
                 <StatusImportBadge status={item.status} />

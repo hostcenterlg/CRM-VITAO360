@@ -275,7 +275,7 @@ export default function SinaleiroPage() {
           <h1 className="text-lg sm:text-xl font-bold text-gray-900">Sinaleiro de Penetracao</h1>
           <p className="text-sm text-gray-500 mt-0.5">
             {data
-              ? `${data.total.toLocaleString('pt-BR')} clientes | Formula: Fat.Real / Potencial x 100`
+              ? `${(data.total ?? 0).toLocaleString('pt-BR')} clientes | Formula: Fat.Real / Potencial x 100`
               : 'Saude da carteira por faixa de penetracao'}
           </p>
         </div>
@@ -345,7 +345,7 @@ export default function SinaleiroPage() {
                         </span>
                       </div>
                       <p className="text-3xl font-bold text-gray-900 leading-tight">
-                        {item ? item.count.toLocaleString('pt-BR') : '—'}
+                        {item ? (item.count ?? 0).toLocaleString('pt-BR') : '—'}
                       </p>
                       <p className="text-xs text-gray-400 mt-0.5">
                         {item ? formatPercent(item.pct) : '0%'} da carteira
@@ -381,7 +381,7 @@ export default function SinaleiroPage() {
                     ],
                   }}
                 >
-                  {data?.total.toLocaleString('pt-BR')} clientes
+                  {(data?.total ?? 0).toLocaleString('pt-BR')} clientes
                 </div>
               </div>
 

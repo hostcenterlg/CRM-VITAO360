@@ -291,7 +291,7 @@ export default function ProjecaoPage() {
                         {formatBRL(row.meta)}
                       </td>
                       <td className="px-4 py-3 text-xs text-gray-600 text-center">
-                        {row.total_vendas.toLocaleString('pt-BR')}
+                        {(row.total_vendas ?? 0).toLocaleString('pt-BR')}
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-2">

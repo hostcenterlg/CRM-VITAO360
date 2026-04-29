@@ -333,7 +333,7 @@ export default function DashboardPage() {
   const naoAtende      = kpis?.clientes_alerta ?? 0;
   const totalInativos  = kpis?.total_inativos ?? 0;
   const pctConversao   = totalContatos > 0 ? (totalVendas / totalContatos) * 100 : 0;
-  const scoreMedio     = kpis ? Math.min(100, Math.max(0, kpis.media_score)) : 0;
+  const scoreMedio     = kpis ? Math.min(100, Math.max(0, kpis.media_score ?? 0)) : 0;
 
   const filteredPerf = consultor === 'TODOS'
     ? performance
@@ -1058,7 +1058,7 @@ function TabOperacional({ performance, atividades, positivacao, loading, ativida
               <div className="rounded-lg p-4 border-l-4 border-purple-400 bg-purple-50">
                 <p className="text-[10px] font-semibold uppercase tracking-wider text-purple-700">% Positivacao</p>
                 <p className="text-2xl font-bold text-gray-900 mt-1">
-                  {positivacao.pct_positivacao.toFixed(1)}%
+                  {(positivacao.pct_positivacao ?? 0).toFixed(1)}%
                 </p>
                 <p className="text-xs text-gray-500 mt-0.5">dos clientes compraram este mês</p>
               </div>
@@ -1210,7 +1210,7 @@ function TabFunil({
                 </div>
               </div>
               <span className="w-14 text-xs font-semibold text-right flex-shrink-0" style={{ color: stage.color }}>
-                {stage.pct.toFixed(0)}%
+                {(stage.pct ?? 0).toFixed(0)}%
               </span>
             </div>
           ))}
@@ -1305,7 +1305,7 @@ function TabPerformance({ performance, projecao, loading }: TabPerformanceProps)
                       <p className="text-[10px] text-gray-400">Meta 2026</p>
                     </div>
                     <div>
-                      <p className="text-lg font-bold" style={{ color: status }}>{p.pct_atingimento.toFixed(1)}%</p>
+                      <p className="text-lg font-bold" style={{ color: status }}>{(p.pct_atingimento ?? 0).toFixed(1)}%</p>
                       <p className="text-[10px] text-gray-400">Atingimento</p>
                     </div>
                     <div>
@@ -1503,7 +1503,7 @@ function TabSaude({ kpis, distribuicao, positivacao, loading, totalInativos, pos
                     style={{ width: `${Math.max(pct, 4)}%`, backgroundColor: row.color }}
                   >
                     {pct > 10 && (
-                      <span className="text-[10px] font-bold text-white">{pct.toFixed(0)}%</span>
+                      <span className="text-[10px] font-bold text-white">{(pct ?? 0).toFixed(0)}%</span>
                     )}
                   </div>
                 </div>
@@ -1702,7 +1702,7 @@ function TabRedes({ sinaleiro, loading }: TabRedesProps) {
                       </td>
                       <td className="px-4 py-2.5">
                         <span className="text-xs font-bold" style={{ color }}>
-                          {item.pct_atingimento.toFixed(0)}%
+                          {(item.pct_atingimento ?? 0).toFixed(0)}%
                         </span>
                       </td>
                     </tr>
@@ -2281,7 +2281,7 @@ function TabIndicadores({
               <div className="rounded-lg p-4 border-l-4 border-blue-400 bg-blue-50">
                 <p className="text-[10px] font-semibold uppercase tracking-wider text-blue-700">% do Total</p>
                 <p className="text-2xl font-bold text-gray-900 mt-1">
-                  {ecommerce.pct_do_total.toFixed(1)}%
+                  {(ecommerce.pct_do_total ?? 0).toFixed(1)}%
                 </p>
                 <p className="text-xs text-gray-500 mt-0.5">da carteira total</p>
               </div>
@@ -2532,7 +2532,7 @@ function PerformanceTable({
                 <td className="px-4 py-3 font-mono text-gray-600 whitespace-nowrap">{formatCompact(row.meta_2026)}</td>
                 <td className="px-4 py-3">
                   <span className="text-sm font-bold" style={{ color: statusColor }}>
-                    {row.pct_atingimento.toFixed(1)}%
+                    {(row.pct_atingimento ?? 0).toFixed(1)}%
                   </span>
                 </td>
                 <td className="px-4 py-3">

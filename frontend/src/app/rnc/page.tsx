@@ -369,20 +369,20 @@ export default function RNCPage() {
           <div className="bg-white rounded-xl border border-gray-200 p-4 shadow-sm"
             style={{ borderLeftColor: '#00B050', borderLeftWidth: '4px' }}>
             <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1">Resolvido</p>
-            <p className="text-2xl font-bold" style={{ color: '#00B050' }}>{resumo.resolvido}</p>
-            <p className="text-[10px] text-gray-400 mt-1">{resumo.resolvido_pct.toFixed(0)}% do total</p>
+            <p className="text-2xl font-bold" style={{ color: '#00B050' }}>{resumo.resolvido ?? 0}</p>
+            <p className="text-[10px] text-gray-400 mt-1">{(resumo.resolvido_pct ?? 0).toFixed(0)}% do total</p>
           </div>
           <div className="bg-white rounded-xl border border-gray-200 p-4 shadow-sm"
             style={{ borderLeftColor: '#FFC000', borderLeftWidth: '4px' }}>
             <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1">Em Andamento</p>
-            <p className="text-2xl font-bold" style={{ color: '#FFC000' }}>{resumo.em_andamento}</p>
-            <p className="text-[10px] text-gray-400 mt-1">{resumo.em_andamento_pct.toFixed(0)}% do total</p>
+            <p className="text-2xl font-bold" style={{ color: '#FFC000' }}>{resumo.em_andamento ?? 0}</p>
+            <p className="text-[10px] text-gray-400 mt-1">{(resumo.em_andamento_pct ?? 0).toFixed(0)}% do total</p>
           </div>
           <div className="bg-white rounded-xl border border-gray-200 p-4 shadow-sm"
             style={{ borderLeftColor: '#FF0000', borderLeftWidth: '4px' }}>
             <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1">Pendente</p>
-            <p className="text-2xl font-bold" style={{ color: '#FF0000' }}>{resumo.pendente}</p>
-            <p className="text-[10px] text-gray-400 mt-1">{resumo.pendente_pct.toFixed(0)}% do total</p>
+            <p className="text-2xl font-bold" style={{ color: '#FF0000' }}>{resumo.pendente ?? 0}</p>
+            <p className="text-[10px] text-gray-400 mt-1">{(resumo.pendente_pct ?? 0).toFixed(0)}% do total</p>
           </div>
         </div>
       )}

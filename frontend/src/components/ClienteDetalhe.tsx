@@ -171,7 +171,10 @@ const SCORE_FATOR_COLORS: Record<string, string> = {
 };
 
 function ScoreBarRow({ label, peso, valor, pontos }: ScoreBarProps) {
-  const pct = Math.min(100, Math.max(0, valor));
+  // Defensivo: campos do breakdown podem vir null do backend (sem dado)
+  const safeValor  = valor  == null || !Number.isFinite(valor)  ? 0 : valor;
+  const safePontos = pontos == null || !Number.isFinite(pontos) ? 0 : pontos;
+  const pct = Math.min(100, Math.max(0, safeValor));
   const colorKey = label.toLowerCase().replace(/ /g, '_').replace(/[()%]/g, '');
   const color = SCORE_FATOR_COLORS[colorKey] ?? '#9CA3AF';
 
@@ -187,10 +190,10 @@ function ScoreBarRow({ label, peso, valor, pontos }: ScoreBarProps) {
         />
       </div>
       <span className="text-[11px] font-semibold text-gray-700 w-8 text-right tabular-nums">
-        {valor.toFixed(0)}
+        {safeValor.toFixed(0)}
       </span>
       <span className="text-[11px] text-gray-400 w-10 text-right tabular-nums">
-        {pontos.toFixed(1)}pt
+        {safePontos.toFixed(1)}pt
       </span>
     </div>
   );
@@ -1214,7 +1217,7 @@ function BriefingLigacaoPainel({ cnpj }: { cnpj: string }) {
             className="text-[10px] font-bold px-2 py-0.5 rounded-full text-white"
             style={{ backgroundColor: churnColor }}
           >
-            Churn {churn.nivel} — {churn.risco_pct.toFixed(0)}%
+            Churn {churn.nivel} — {(churn.risco_pct ?? 0).toFixed(0)}%
           </span>
         )}
       </div>
