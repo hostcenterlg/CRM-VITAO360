@@ -20,6 +20,10 @@ import { ScoreBar } from '@/components/ui/ScoreBar';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Tabs } from '@/components/ui/Tabs';
 import { Sinaleiro } from '@/components/ui/Sinaleiro';
+import TarefasPanel from '@/components/TarefasPanel';
+
+// Tipo para a tab de nivel superior da pagina Agenda
+type AgendaPageTab = 'compromissos' | 'tarefas';
 
 // ---------------------------------------------------------------------------
 // Constantes de dominio
@@ -776,6 +780,12 @@ function ResumoSemanalIA({ consultorAtivo }: { consultorAtivo: string }) {
 // ---------------------------------------------------------------------------
 
 export default function AgendaPage() {
+  // Tab de nivel superior: Compromissos (agenda) ou Tarefas
+  // Abre na tab com mais itens pendentes para hoje — determinado apos carregamento inicial
+  const [pageTab, setPageTab] = useState<AgendaPageTab>('compromissos');
+  const [tarefasHojeCount, setTarefasHojeCount] = useState<number>(0);
+  const pageTabSetByUser = useRef(false);
+
   const [activeTab, setActiveTab] = useState<Consultor>('LARISSA');
   const [agendaByConsultor, setAgendaByConsultor] = useState<
     Partial<Record<Consultor, AgendaItem[]>>
@@ -833,6 +843,16 @@ export default function AgendaPage() {
       .catch(() => setWaStatus(null));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Selecionar automaticamente a tab com mais itens pendentes hoje
+  // (so na primeira renderizacao — nao sobrescreve escolha manual do usuario)
+  useEffect(() => {
+    if (pageTabSetByUser.current) return;
+    const compromissosLarissa = agendaByConsultor['LARISSA']?.length ?? 0;
+    if (tarefasHojeCount > compromissosLarissa && tarefasHojeCount > 0) {
+      setPageTab('tarefas');
+    }
+  }, [tarefasHojeCount, agendaByConsultor]);
 
   const handleTabChange = (consultor: string) => {
     const c = consultor as Consultor;
@@ -975,14 +995,26 @@ export default function AgendaPage() {
     ? Math.round((totalConcluidos / todosItems.length) * 100)
     : 0;
 
+  // Contagem de compromissos hoje (para badge na tab e logica de tab ativa)
+  const compromissosHoje = todosItems.length;
+
   return (
     <>
       <div className="space-y-3 sm:space-y-4 w-full px-0">
         {/* Cabecalho da pagina */}
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">Agenda Comercial</h1>
-            <p className="text-sm sm:text-base text-gray-500 mt-0.5 truncate">{hoje}</p>
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">Agenda</h1>
+            <p className="text-sm sm:text-base text-gray-500 mt-0.5 truncate">
+              {hoje}
+              {(compromissosHoje > 0 || tarefasHojeCount > 0) && (
+                <span className="ml-2 text-xs text-gray-400">
+                  {compromissosHoje > 0 && `${compromissosHoje} compromisso${compromissosHoje !== 1 ? 's' : ''}`}
+                  {compromissosHoje > 0 && tarefasHojeCount > 0 && ' · '}
+                  {tarefasHojeCount > 0 && `${tarefasHojeCount} task${tarefasHojeCount !== 1 ? 's' : ''}`}
+                </span>
+              )}
+            </p>
           </div>
           <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
             {todosItems.length > 0 && (
@@ -1018,6 +1050,69 @@ export default function AgendaPage() {
             </button>
           </div>
         </div>
+
+        {/* Tabs de nivel superior: Compromissos | Tarefas */}
+        <div className="flex gap-1 bg-white border border-gray-200 rounded-lg p-1 w-full sm:w-fit overflow-x-auto">
+          <button
+            type="button"
+            onClick={() => { pageTabSetByUser.current = true; setPageTab('compromissos'); }}
+            className={`
+              flex items-center gap-1.5 px-4 py-2.5 sm:py-2 min-h-[44px] sm:min-h-0 rounded-md text-sm font-medium transition-all whitespace-nowrap
+              ${pageTab === 'compromissos' ? 'text-white shadow-sm' : 'text-gray-500 hover:text-gray-800 hover:bg-gray-50'}
+            `}
+            style={pageTab === 'compromissos' ? { backgroundColor: '#00B050' } : {}}
+          >
+            <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            Compromissos
+            {compromissosHoje > 0 && (
+              <span
+                className="inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full text-[10px] font-bold"
+                style={pageTab === 'compromissos'
+                  ? { backgroundColor: 'rgba(255,255,255,0.3)', color: '#fff' }
+                  : { backgroundColor: '#00B05018', color: '#00B050' }}
+              >
+                {compromissosHoje}
+              </span>
+            )}
+          </button>
+          <button
+            type="button"
+            onClick={() => { pageTabSetByUser.current = true; setPageTab('tarefas'); }}
+            className={`
+              flex items-center gap-1.5 px-4 py-2.5 sm:py-2 min-h-[44px] sm:min-h-0 rounded-md text-sm font-medium transition-all whitespace-nowrap
+              ${pageTab === 'tarefas' ? 'text-white shadow-sm' : 'text-gray-500 hover:text-gray-800 hover:bg-gray-50'}
+            `}
+            style={pageTab === 'tarefas' ? { backgroundColor: '#00B050' } : {}}
+          >
+            <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+            </svg>
+            Tarefas
+            {tarefasHojeCount > 0 && (
+              <span
+                className="inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full text-[10px] font-bold"
+                style={pageTab === 'tarefas'
+                  ? { backgroundColor: 'rgba(255,255,255,0.3)', color: '#fff' }
+                  : { backgroundColor: '#FFC00020', color: '#b45309' }}
+              >
+                {tarefasHojeCount}
+              </span>
+            )}
+          </button>
+        </div>
+
+        {/* Conteudo da tab Tarefas — renderizado independente do tab ativo
+            para preservar estado ao trocar de tab */}
+        <div className={pageTab === 'tarefas' ? 'block' : 'hidden'}>
+          <TarefasPanel onCountReady={setTarefasHojeCount} />
+        </div>
+
+        {/* Conteudo da tab Compromissos */}
+        <div className={pageTab === 'compromissos' ? 'block' : 'hidden'}>
 
         {/* Resumo Semanal IA — esconder se vazio (sem dados reais) */}
         <ResumoSemanalIA consultorAtivo={activeTab} />
@@ -1277,6 +1372,7 @@ export default function AgendaPage() {
             ))}
           </div>
         </div>
+        </div>{/* fim da tab Compromissos */}
       </div>
 
       {/* Modal de atendimento (fora do flow normal para overlay correto) */}
