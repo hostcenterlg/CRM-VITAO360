@@ -1,6 +1,9 @@
 // frontend/src/components/ui/index.ts
-// Barrel export — all 11 global UI components
-// Usage: import { Badge, StatusPill, ScoreBar, ... } from '@/components/ui';
+// Barrel export — UI components + typography system
+// Usage: import { Badge, StatusPill, Heading, Text, Label, ... } from '@/components/ui';
+
+// Typography system (Wave 1 — design tokens)
+export * from './typography';
 
 // Display primitives
 export { Badge } from './Badge';
