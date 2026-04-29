@@ -1,104 +1,231 @@
-# Project State
+# Estado do Projeto — CRM VITAO360
 
-## Project Reference
+> **Atualizado:** 2026-04-29
+> **HEAD atual:** `d8485fb`
+> **Idioma:** Português Brasileiro
+> **Regra:** Nunca leia apenas este arquivo. Leia também `.planning/MASTER_PLAN.md` e as memórias de sessão.
 
-See: .planning/PROJECT.md (updated 2026-03-24)
+---
 
-**Core value:** Motor Python funcional que roda localmente com dados reais, gerando agenda inteligente diaria para cada consultor a partir das 92 regras, Score, Sinaleiro e Projecao extraidos do Excel.
+## POSIÇÃO ATUAL
 
-**Current focus:** ALL PHASES COMPLETE (11-15). Motor v2.0 com 8 stages operacional.
+**Milestone ativo:** v3.0 — Excelência (Master Plan)
+**Fase atual:** Entre Fase 0 e Fase 1 — verificar gates antes de avançar
+**Status geral:** Sistema SaaS funcional em PROD. Backend + Frontend deployados na Vercel. Banco Neon desbloqueado. Master Plan ativo com 8 fases (~28h restantes).
 
-## Current Position
+```
+Progresso Master Plan:
+FASE 0 [##########] PARCIAL (backfill Deskrio pendente, 2 GitHub Secrets faltando)
+FASE 1 [          ] PENDENTE (Sales Hunter SAP ingest)
+FASE 2 [          ] PENDENTE (Backfill Deskrio total)
+FASE 3 [          ] PENDENTE (CNPJ Bridge)
+FASE 4 [          ] PENDENTE (Pedidos + TXT SAP)
+FASE 5 [          ] PENDENTE (PostgreSQL formalizado)
+FASE 6 [          ] PENDENTE (Frontend dados reais)
+FASE 7 [          ] PENDENTE (Schedule + Deploy)
+FASE 8 [          ] PENDENTE (Validação E2E + Aceitação Leandro)
+```
 
-Phase: 15 of 15 — ALL COMPLETE
-Plan: Done
-Status: v2.0 Motor Operacional SaaS COMPLETE
-Last activity: 2026-03-24 — Phase 15 projecao_engine + pipeline 8 stages
+---
 
-Progress: [##############################] 100% (v2.0) | 100% (v1.0)
+## MASTER PLAN ATIVO — v3.0 Excelência
 
-## Previous Milestone (v1.0 — Excel Rebuild)
-- 10 fases completas, 31 planos, 43 requisitos, 154.302 formulas
-- V13->V43 iteracoes, planilha FINAL com 40 abas e 210K+ formulas
-- Velocidade media: 12 min/plano, 6.3h total
-- Entregue: 2026-02-17
+**Arquivo fonte:** `.planning/MASTER_PLAN.md` (versão 1.0, criado 25/Abr/2026)
+**Esforço total estimado:** ~28h
+**Decisões L3 aprovadas:** D1=b, D2=a, D3=a, D4=a, D5=b, D6=b (25/Abr/2026, Leandro)
 
-## Current Milestone (v2.0 — Motor Operacional SaaS)
+### Decisões L3 aprovadas (decorar)
 
-### Phase 11: Import Pipeline — COMPLETE
-- 11-01: config + helpers + import_pipeline (committed 864e28f, 55f43c3)
-- 11-02: classify + run_import + base_unificada.json (committed 539f3cf, 7b37658)
-- QA fixes: config import-time crash, CNPJ agenda, path fix, try/finally (committed 2219c8c)
+| # | Decisão | Resposta |
+|---|---|---|
+| D1 | Importar logs SQLite local → Postgres? | (b) Filtrar REAL+SINTÉTICO, descartar ALUCINACAO |
+| D2 | Schedule provider para daily_pipeline | (a) GitHub Actions cron |
+| D3 | Schema debitos_clientes | (a) Alembic migration |
+| D4 | Schema pedidos/pedido_itens | (a) Alembic |
+| D5 | Frontend Sales Hunter /sap/relatorios? | (b) Esperar Fase 6 |
+| D6 | Backfill 21 dias restantes | (b) --skip-contatos (~30min vs 5h) |
 
-### Phase 12: Motor de Regras — COMPLETE (code built)
-- motor_regras.py: 92 combinacoes, 9 dimensoes, 99.2% match
-- Committed: 2219c8c
+---
 
-### Phase 13: Score + Sinaleiro — COMPLETE (code built)
-- score_engine.py: 6 fatores ponderados, P0-P7, meta_balance
-- sinaleiro_engine.py: VERDE/AMARELO/VERMELHO/ROXO + ABC + tipo_cliente
-- Committed: 2219c8c
+## FASE 0 — PREPARAÇÃO (PARCIALMENTE COMPLETA)
 
-### Phase 14: Agenda Inteligente — COMPLETE (code built)
-- agenda_engine.py: 40-60 atendimentos/dia, priorizados por Score
-- excel_builder.py: xlsx final 8 abas, formatacao condicional
-- run_pipeline.py: orquestrador 7 stages
-- test_pipeline.py: 69 testes (0 FAIL)
-- Committed: 2219c8c
+| Item | Status |
+|---|---|
+| 0.1 Backfill 3 dias Deskrio | status desconhecido — verificar `import_jobs` antes de prosseguir |
+| 0.2 Snapshot estado pré-Fase1 | status desconhecido |
+| 0.3 Corrigir datetime.utcnow() | COMPLETO (commit `db29952`, 25/Abr) |
+| 0.4 Aplicar decisões L3 | COMPLETO (D1-D6 aprovadas 25/Abr) |
+| 0.5 Atualizar docs desatualizados | COMPLETO (PROJECT.md baseline + scope, 25/Abr) |
+| 0.6 Commitar specs Cowork | COMPLETO (commits `08572b0`, `3509b33`, `2607bd3`, 25/Abr) |
 
-### Phase 15: Projecao + Export — COMPLETE
-- projecao_engine.py: carregar_metas_sap, calcular_projecao, consolidar_projecao, gerar_dashboard_terminal
-- Pipeline upgraded: 7 → 8 stages (projecao entre score e agenda)
-- Dashboard terminal ASCII com KPIs, top 10, churn alerts
-- Committed: 4f2bae1
+**Gate Fase 0 pendente:**
+- [ ] `SELECT COUNT(*) FROM import_jobs WHERE tipo='DESKRIO'` — confirmar 3+ CONCLUIDO
+- [ ] verify.py --all PASS
 
-## Performance Metrics
+---
 
-**Velocity (v1.0 historico):**
-- Total plans completed: 31
-- Average duration: 12 min
-- Total execution time: 6.30 hours
+## FASE 1 — SALES HUNTER SAP INGEST (PENDENTE)
 
-**Velocity (v2.0):**
+**Goal:** 13 XLSX SAP populados em Postgres como fonte de verdade do faturamento.
+**Validação principal:** `SUM(faturamento_total) FROM clientes` ≈ R$ 2.091.000 ± 0.5%
+**Esforço estimado:** ~4h (subagent deep-executor opus)
+
+Status: **NÃO INICIADA**
+
+---
+
+## FASE 2 — BACKFILL DESKRIO COMPLETO (PENDENTE)
+
+**Goal:** 24 dias de Deskrio em Postgres, idempotente.
+**Bloqueador ativo:** Backfill de 5 dias (22, 24, 26, 27, 28/Abr) precisa rodar **manualmente por Leandro** no terminal local (~1h). Subagent não funciona para processos longos no Windows.
+
+Comando para Leandro:
+```bash
+cp .env.local .env.local.bak
+sed -i 's/anxji5ci-pooler/anxji5ci/' .env.local
+for D in 22 24 26 27 28; do python scripts/sync_deskrio_to_db.py --data-dir "data/deskrio/2026-04-$D"; done
+mv .env.local.bak .env.local
+```
+
+Status: **NÃO INICIADA**
+
+---
+
+## FASE 3 — CNPJ BRIDGE UNIFICADO (PENDENTE)
+
+Bloqueia: Fases 1 e 2 completas.
+Status: **NÃO INICIADA**
+
+---
+
+## FASE 4 — PEDIDOS + TXT SAP (PENDENTE)
+
+**Alta complexidade:** TXT byte-a-byte contra `19465816.txt`.
+**Esforço estimado:** ~8h
+Status: **NÃO INICIADA**
+
+---
+
+## FASES 5-8 (PENDENTES)
+
+| Fase | Goal | Esforço |
+|---|---|---|
+| 5 | PostgreSQL formalizado (SQLite descontinuado) | 2h |
+| 6 | Frontend dados reais (22 páginas) | 6h |
+| 7 | Schedule + Deploy PROD | 2h |
+| 8 | Validação E2E + Aceitação Leandro | 2h |
+
+---
+
+## BLOQUEADORES ATIVOS (2026-04-29)
+
+1. **Backfill 5 dias Deskrio** — manual, Leandro precisa rodar no terminal local
+2. **GitHub Secrets faltando (2/6):** `DESKRIO_API_TOKEN` e `SALES_HUNTER_PASS` não configurados
+3. **Inbox v2.0 UX** — 5 adendos do briefing NÃO implementados (Meta Widget, Search bar, IA Sugere placeholder, Paperclip, Typing indicator)
+4. **Reconectar WhatsApp Deskrio** — `/api/whatsapp/status` pode retornar `conexoes:[]` após expiração
+5. **Curva ABC NULL** — ~8164 clientes sem curva_abc (gap de dados, script derivação pendente)
+
+---
+
+## ESTADO DO BANCO PROD (Neon — aged-rain-76792018)
+
+Última verificação conhecida: 29/Abr/2026
+
+| Tabela | Contagem |
+|---|---|
+| clientes | 6.318 |
+| log_interacoes | ~741 (191 WHATSAPP + 75 KANBAN + 474 sem tipo) |
+| import_jobs | 3+ (DESKRIO) |
+| vendas (SAP) | status desconhecido — verificar antes de Fase 1 |
+
+---
+
+## REGRAS DE NEGÓCIO CRÍTICAS (DECORAR)
+
+- **Faturamento baseline:** R$ 2.091.000 (PAINEL CEO, corrigido 23/Mar/2026 — anterior R$ 2.156.179 SUPERSEDED)
+- **Projeção 2026:** R$ 3.377.120 (+69%)
+- **Q1 2026 real:** R$ 459.465
+- **Two-Base Architecture:** VENDA = tem valor R$, LOG = sempre R$ 0,00. Violação = inflação 742%.
+- **CNPJ:** string 14 dígitos, zero-padded, nunca float. `re.sub(r'\D', '', str(val)).zfill(14)`
+- **Fórmulas Excel:** inglês no openpyxl (IF, VLOOKUP, SUMIF), separador vírgula, nunca português.
+
+---
+
+## ARQUITETURA (CRÍTICO — não confundir)
+
+- **crm-vitao360.vercel.app** = backend FastAPI puro (rotas /api/*, /docs, /health)
+- **intelligent-crm360.vercel.app** = frontend Next.js (onde o usuário entra: /carteira, /agenda, /inbox, etc.)
+- **Login PROD:** leandro@vitao.com.br / vitao2026
+- **DB PROD:** Neon ep-purple-cloud-anxji5ci-pooler.c-6.us-east-1.aws.neon.tech/neondb
+
+---
+
+## COMO RETOMAR PRÓXIMA SESSÃO
+
+```bash
+# 1. Boot obrigatório
+python scripts/session_boot.py
+python scripts/compliance_gate.py
+
+# 2. Verificar Fase 0 gate fechado
+python scripts/verify.py --all
+# psql: SELECT tipo, status, COUNT(*) FROM import_jobs GROUP BY tipo, status
+
+# 3. Confirmar com Leandro:
+#    - Backfill 5 dias rodou?
+#    - 2 GitHub Secrets configurados?
+#    - WhatsApp reconectado?
+
+# 4. Próxima ação: Fase 1 (Sales Hunter ingest)
+#    Subagent: deep-executor opus
+#    Briefing: GAPS_EXCELENCIA_SPEC.md GAP 2C
+```
+
+---
+
+## MILESTONES CONCLUIDOS
+
+### v2.0 — Motor Operacional SaaS (concluído 2026-03-24)
+
+**Fases 11-15 completas — Motor Python com pipeline 8 stages operacional.**
+
+| Fase | Entrega | Commit |
+|---|---|---|
+| 11 | Import Pipeline (config + helpers + classify + run_import) | 864e28f, 55f43c3, 539f3cf, 7b37658, 2219c8c |
+| 12 | Motor de Regras (92 combinações, 9 dimensões, 99.2% match) | 2219c8c |
+| 13 | Score + Sinaleiro (6 fatores ponderados, P0-P7, VERDE/AMARELO/VERMELHO/ROXO) | 2219c8c |
+| 14 | Agenda Inteligente (40-60 atendimentos/dia, xlsx 8 abas, 69 testes) | 2219c8c |
+| 15 | Projeção + Export (8 stages, dashboard ASCII) | 4f2bae1 |
+
+**Métricas v2.0:**
 - Plans completed: 2 (11-01, 11-02)
-- Code built: phases 11-14 complete in single session (23/Mar)
-- QA audit + 12 atomic commits: 24/Mar session
+- QA audit 12 commits atômicos: 24/Mar
+- Pipeline stages: 7→8
 
-## Accumulated Context
+---
 
-### Decisions
+### v1.0 — Excel Rebuild (concluído 2026-02-17)
 
-- [v1.0]: Two-Base Architecture confirmada — R$ apenas em VENDA, nunca em LOG
-- [v1.0]: CNPJ string 14 digitos como chave primaria universal
-- [v1.0]: Planilha FINAL tem 40 abas, 210K+ formulas, 263 colunas na CARTEIRA
-- [v2.0]: Motor Python extrai inteligencia do Excel — nao substitui a planilha
-- [v2.0]: Regras configuraveis (JSON/YAML), nao hardcoded
-- [v2.0]: Pesos do Score configuraveis externamente
-- [v2.0]: Projecao 2026 = R$ 3.377.120 (PAINEL CEO — fonte auditada)
-- [v2.0]: Score pesos = 9 DIM (FASE 25%, SINALEIRO 20%, ABC 20%, TEMP 15%, TIPO 10%, TENT 10%) — configuraveis
-- [11-01]: Tab names usam nomes exatos da radiografia com acentos e espacos trailing
-- [11-01]: Header rows variam por aba (CARTEIRA=3, OPERACIONAL=2, SINALEIRO=4)
-- [11-01]: CNPJ normalizado com NaN->None explicito para prevenir float leakage
-- [11-01]: HELDER BRUNKOW (41 clientes) -> DESCONHECIDO (nao esta no DE-PARA)
-- [24/Mar]: config.py FileNotFoundError movido de import-time para runtime (validar_caminho_planilha)
-- [24/Mar]: agenda_engine CNPJ corrigido para usar normalizar_cnpj do helpers
-- [24/Mar]: .gitignore atualizado: .cache/, phase10 xlsx, backups excluidos
+**10 fases completas — planilha Excel final com 40 abas.**
 
-### Pending Todos
+- 31 planos, 43 requisitos, 154.302 fórmulas
+- V13→V43 iterações
+- Planilha FINAL: 40 abas, 210K+ fórmulas, 263 colunas na CARTEIRA
+- Velocidade média: 12 min/plano, 6.3h total
+- Two-Base Architecture confirmada
+- CNPJ string 14 dígitos como chave primária universal
 
-- Phase 15: Projecao + Export (unica fase restante)
-- Testar CRM_VITAO360_MOTOR_v1.xlsx no Excel real (LibreOffice nao recalcula XLOOKUP)
-- DRAFT 2 populado (6.772 registros) nao integrado na base ainda
-- Motor coverage: 238/1581 clientes com resultado preenchido (maioria PROSPECT/INAT)
+---
 
-### Blockers/Concerns
+## SESSÕES RECENTES
 
-- Planilha FINAL (40 abas) eh a fonte de dados — VALIDADA, acessivel
-- openpyxl data_only=True: DRAFT 2 e RNC retornam 0 rows (formulas nao cached)
-- DE-PARA vendedores: RESOLVIDO. HELDER BRUNKOW (41) = DESCONHECIDO.
+| Data | HEAD | Destaques |
+|---|---|---|
+| 29/Abr/2026 | d8485fb | Redesign UX Wave 1-4 (16 commits) + Neon upgrade + Inbox Deskrio fix |
+| 29/Abr/2026 | 5cb3787 | 28 commits totais no dia, PROD estável, Briefing Inbox v2.0 pendente |
+| 28/Abr/2026 | db820f3 | 23 commits, daily pipeline GitHub Actions, CanalSelector, LLM infra dormente |
+| 25/Abr/2026 | f7cb4ab | Master Plan criado, D1-D6 aprovadas, sync_deskrio expandido, 10 commits |
 
-## Session Continuity
+---
 
-Last session: 2026-03-24
-Stopped at: 12 commits atomicos completos, QA audit PASS, STATE atualizado
-Resume file: SESSAO_RETOMAR.md
+*Gerado por @pm em 2026-04-29. Próxima atualização: ao fechar Fase 1 (Sales Hunter ingest).*
