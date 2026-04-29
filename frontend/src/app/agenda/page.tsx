@@ -12,8 +12,14 @@ import {
   WhatsAppStatus,
   WhatsAppEnviarResponse,
 } from '@/lib/api';
-import StatusBadge from '@/components/StatusBadge';
 import AtendimentoModal from '@/components/AtendimentoModal';
+import { StatusPill } from '@/components/ui/StatusPill';
+import { CurvaPill } from '@/components/ui/CurvaPill';
+import { PriorityPill } from '@/components/ui/PriorityPill';
+import { ScoreBar } from '@/components/ui/ScoreBar';
+import { ProgressBar } from '@/components/ui/ProgressBar';
+import { Tabs } from '@/components/ui/Tabs';
+import { Sinaleiro } from '@/components/ui/Sinaleiro';
 
 // ---------------------------------------------------------------------------
 // Constantes de dominio
@@ -39,49 +45,22 @@ function formatDate(date: Date): string {
   return `${dias[date.getDay()]}, ${date.getDate()} de ${meses[date.getMonth()]} de ${date.getFullYear()}`;
 }
 
-// ---------------------------------------------------------------------------
-// Sub-componentes
-// ---------------------------------------------------------------------------
-
-function SinaleiroDot({ value, size = 10 }: { value?: string; size?: number }) {
-  const colorMap: Record<string, string> = {
-    VERDE: '#00B050',
-    AMARELO: '#FFC000',
-    VERMELHO: '#FF0000',
-    ROXO: '#7030A0',
-    LARANJA: '#FF8C00',
-  };
-  const color = colorMap[(value ?? '').toUpperCase()] ?? '#D1D5DB';
-  return (
-    <span
-      aria-label={`Sinaleiro: ${value ?? 'desconhecido'}`}
-      style={{
-        backgroundColor: color,
-        width: size,
-        height: size,
-        borderRadius: '50%',
-        display: 'inline-block',
-        flexShrink: 0,
-      }}
-    />
-  );
+/** Retorna descrição textual do sinaleiro para exibir ao lado do dot */
+function getSinaleiroDescricao(cor?: string): string {
+  const key = (cor ?? '').toLowerCase();
+  switch (key) {
+    case 'verde':    return 'Cliente saudável';
+    case 'amarelo':  return 'Atenção, frequência caindo';
+    case 'laranja':  return 'Risco, ciclo vencendo';
+    case 'vermelho': return 'Crítico, possível perda';
+    case 'roxo':     return 'Cliente especial';
+    default:         return 'Sem dados';
+  }
 }
 
-function ScoreBar({ score }: { score: number }) {
-  const clamped = Math.min(100, Math.max(0, score));
-  const color = clamped >= 70 ? '#00B050' : clamped >= 40 ? '#FFC000' : '#FF0000';
-  return (
-    <div className="flex items-center gap-1.5">
-      <div className="w-14 bg-gray-100 rounded-full h-1.5 overflow-hidden">
-        <div
-          className="h-full rounded-full transition-all duration-500"
-          style={{ width: `${clamped}%`, backgroundColor: color }}
-        />
-      </div>
-      <span className="text-xs font-bold" style={{ color }}>{score}</span>
-    </div>
-  );
-}
+// ---------------------------------------------------------------------------
+// Sub-componentes auxiliares
+// ---------------------------------------------------------------------------
 
 function FollowUpBadge({ followUp }: { followUp?: string }) {
   if (!followUp) return null;
@@ -301,7 +280,7 @@ function AgendaSkeleton() {
 }
 
 // ---------------------------------------------------------------------------
-// Card de item de agenda
+// Card de item de agenda — layout reformulado (ETAPA 4)
 // ---------------------------------------------------------------------------
 
 // Threshold em px para considerar um swipe esquerda valido
@@ -309,14 +288,15 @@ const SWIPE_THRESHOLD = 100;
 
 interface AgendaCardProps {
   item: AgendaItem;
+  idx: number;
   concluido: boolean;
   onRegistrar: (item: AgendaItem) => void;
   onWhatsApp?: (item: AgendaItem) => void;
 }
 
-function AgendaCard({ item, concluido, onRegistrar, onWhatsApp }: AgendaCardProps) {
+function AgendaCard({ item, idx, concluido, onRegistrar, onWhatsApp }: AgendaCardProps) {
   const prio = (item.prioridade ?? '').toUpperCase();
-  const sinal = (item.sinaleiro ?? '').toUpperCase();
+  const sinalCor = (item.sinaleiro ?? '').toLowerCase();
   const isUrgente = PRIORIDADES_URGENTES.has(prio);
 
   // ---------------------------------------------------------------------------
@@ -362,7 +342,6 @@ function AgendaCard({ item, concluido, onRegistrar, onWhatsApp }: AgendaCardProp
     isDragging.current = false;
 
     if (swipeRevealed) {
-      // If swiped right enough, close
       if (swipeOffset > -SWIPE_THRESHOLD / 2) {
         setSwipeOffset(0);
         setSwipeRevealed(false);
@@ -371,7 +350,6 @@ function AgendaCard({ item, concluido, onRegistrar, onWhatsApp }: AgendaCardProp
         setSwipeRevealed(true);
       }
     } else {
-      // If swiped left enough, reveal actions
       if (swipeOffset < -SWIPE_THRESHOLD / 2) {
         setSwipeOffset(-SWIPE_THRESHOLD);
         setSwipeRevealed(true);
@@ -386,29 +364,6 @@ function AgendaCard({ item, concluido, onRegistrar, onWhatsApp }: AgendaCardProp
     setSwipeOffset(0);
     setSwipeRevealed(false);
   }
-
-  // Cor da borda esquerda (por prioridade)
-  const borderColorMap: Record<string, string> = {
-    P0: '#FF0000',
-    P1: '#FF6600',
-    P2: '#FFC000',
-    P3: '#FFFF00',
-    P4: '#9CA3AF',
-    P5: '#D1D5DB',
-    P6: '#E5E7EB',
-    P7: '#F3F4F6',
-  };
-  const borderColor = borderColorMap[prio] ?? '#E5E7EB';
-
-  // Cor e background do bloco de acao (por sinaleiro)
-  const acaoStyle: Record<string, { bg: string; border: string }> = {
-    VERMELHO: { bg: '#FEF2F2', border: '#FF0000' },
-    AMARELO:  { bg: '#FFFBEB', border: '#FFC000' },
-    ROXO:     { bg: '#F5F3FF', border: '#7030A0' },
-    VERDE:    { bg: '#F0FDF4', border: '#00B050' },
-    LARANJA:  { bg: '#FFF7ED', border: '#FF8C00' },
-  };
-  const acao = acaoStyle[sinal] ?? { bg: '#F9FAFB', border: '#D1D5DB' };
 
   return (
     <div
@@ -456,80 +411,57 @@ function AgendaCard({ item, concluido, onRegistrar, onWhatsApp }: AgendaCardProp
 
       {/* Card deslizavel */}
       <article
-        aria-label={`Item ${item.posicao}: ${item.nome_fantasia}`}
-        className="relative rounded-lg border overflow-hidden"
+        aria-label={`Item ${idx + 1}: ${item.nome_fantasia}`}
+        className="bg-white rounded-lg border border-gray-200 p-5 hover:shadow-sm transition-shadow"
         style={{
           transform: `translateX(${swipeOffset}px)`,
           transition: isDragging.current ? 'none' : 'transform 0.2s ease-out',
-          borderColor: concluido ? '#E5E7EB' : (isUrgente ? borderColor : '#E5E7EB'),
-          borderWidth: isUrgente && !concluido ? '2px' : '1px',
-          borderLeftWidth: '4px',
-          borderLeftColor: borderColor,
-          backgroundColor: concluido ? '#F9FAFB' : '#FFFFFF',
           opacity: concluido ? 0.6 : 1,
-          boxShadow: concluido ? 'none' : '0 1px 3px rgba(0,0,0,0.06)',
         }}
       >
-      {/* Tag PRIORITARIO para P0/P1/P3 */}
-      {isUrgente && !concluido && (
-        <div
-          className="absolute top-0 right-0 px-2 py-0.5 text-[9px] font-bold text-white rounded-bl-md"
-          style={{ backgroundColor: borderColor }}
-        >
-          PRIORITARIO
-        </div>
-      )}
+        {/* Tag PRIORITARIO para P0/P1/P3 */}
+        {isUrgente && !concluido && (
+          <div
+            className="absolute top-0 right-0 px-2 py-0.5 text-[9px] font-bold text-white rounded-bl-md"
+            style={{ backgroundColor: prio === 'P0' ? '#FF0000' : prio === 'P1' ? '#FF6600' : prio === 'P2' ? '#FFC000' : '#FFFF00', color: prio === 'P3' ? '#1a1a1a' : '#fff' }}
+          >
+            PRIORITARIO
+          </div>
+        )}
 
-      <div className="p-3 pr-4">
-        {/* Linha 1: posicao + nome + sinaleiro */}
-        <div className="flex items-start justify-between gap-2 mb-1.5">
-          <div className="flex items-center gap-2 min-w-0">
-            {/* Numero da posicao */}
-            <span className="flex-shrink-0 inline-flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 text-gray-600 text-[11px] font-bold">
-              {item.posicao}
-            </span>
-
-            {/* Badge de prioridade */}
-            <StatusBadge value={item.prioridade} variant="prioridade" large />
-
-            {/* Nome do cliente */}
-            <h3 className="text-sm font-bold text-gray-900 truncate leading-tight">
+        {/* Linha 1: número + nome + prioridade */}
+        <div className="flex items-start justify-between mb-3">
+          <div className="min-w-0 pr-2">
+            <span className="text-xs font-medium text-gray-500">#{idx + 1}</span>
+            <h3 className="text-base font-semibold text-gray-900 mt-1 leading-snug">
               {item.nome_fantasia}
             </h3>
           </div>
-
-          {/* Sinaleiro (dot + label) */}
-          <div className="flex-shrink-0 flex items-center gap-1.5">
-            <SinaleiroDot value={item.sinaleiro} />
-            <span className="text-[11px] font-semibold" style={{ color: acaoStyle[sinal]?.border ?? '#6B7280' }}>
-              {item.sinaleiro ?? '—'}
-            </span>
-          </div>
+          <PriorityPill prioridade={item.prioridade ?? ''} />
         </div>
 
-        {/* Linha 2: metadados */}
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 mb-2 text-[11px] text-gray-500">
-          {item.uf && <span className="font-medium text-gray-700">{item.uf}</span>}
-          {item.situacao && <StatusBadge value={item.situacao} variant="situacao" small />}
-          {item.temperatura && <StatusBadge value={item.temperatura} variant="situacao" small />}
-          {item.dias_sem_compra !== undefined && (
-            <span>{item.dias_sem_compra}d sem compra</span>
-          )}
-          {item.ciclo_medio !== undefined && (
-            <span>Ciclo {item.ciclo_medio}d</span>
-          )}
-          {item.curva_abc && <StatusBadge value={item.curva_abc} variant="abc" small />}
+        {/* Linha 2: badges horizontais + score */}
+        <div className="flex items-center gap-2 mb-3 flex-wrap">
+          {item.situacao && <StatusPill status={item.situacao} />}
+          {item.temperatura && <StatusPill status={item.temperatura} />}
+          {item.curva_abc && <CurvaPill curva={item.curva_abc} />}
+          <span className="text-sm text-gray-600 ml-auto flex items-center gap-1">
+            Score:
+            <ScoreBar score={item.score ?? 0} showLabel={false} className="w-20" />
+            <span className="font-semibold text-gray-800">{(item.score ?? 0).toFixed(1)}</span>
+          </span>
         </div>
 
-        {/* Bloco de ACAO SUGERIDA (destaque principal — elemento mais visivel do card) */}
+        {/* Linha 3: sinaleiro com descrição */}
+        <div className="text-sm text-gray-600 mb-3 flex items-center gap-2">
+          <span className="text-gray-500">Sinaleiro:</span>
+          <Sinaleiro cor={sinalCor} size="md" />
+          <span className="text-gray-500 italic text-xs">{getSinaleiroDescricao(item.sinaleiro)}</span>
+        </div>
+
+        {/* Bloco de ACAO SUGERIDA */}
         {item.acao && (
-          <div
-            className="mb-2.5 px-3 py-2.5 rounded-r-md"
-            style={{
-              backgroundColor: concluido ? '#F9FAFB' : acao.bg,
-              borderLeft: `4px solid ${acao.border}`,
-            }}
-          >
+          <div className="mb-3 px-3 py-2.5 rounded-r-md bg-gray-50 border-l-4 border-gray-300">
             <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1 flex items-center gap-1">
               <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5}
@@ -541,111 +473,51 @@ function AgendaCard({ item, concluido, onRegistrar, onWhatsApp }: AgendaCardProp
           </div>
         )}
 
-        {/* Linha 3: tentativa + follow-up + score + botao */}
-        <div className="flex items-center justify-between gap-2 flex-wrap">
-          <div className="flex items-center gap-3 flex-wrap">
+        {/* Metadados adicionais: follow-up + tentativa */}
+        {(item.follow_up || item.tentativa) && (
+          <div className="flex flex-wrap items-center gap-3 mb-3 text-[11px] text-gray-500">
             {item.tentativa && (
-              <span className="text-[11px] text-gray-600">
-                <span className="font-semibold">Tentativa {item.tentativa}</span>
-              </span>
+              <span>Tentativa <span className="font-semibold text-gray-700">{item.tentativa}</span></span>
             )}
             {item.follow_up && (
-              <span className="flex items-center gap-1 text-[11px] text-gray-600">
-                <span>FU:</span>
-                <FollowUpBadge followUp={item.follow_up} />
+              <span className="flex items-center gap-1">
+                FU: <FollowUpBadge followUp={item.follow_up} />
               </span>
             )}
-            <ScoreBar score={item.score} />
           </div>
+        )}
 
-          {/* Botoes de acao ou checkmark de concluido */}
-          {concluido ? (
-            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-green-50 text-green-700 text-xs font-semibold border border-green-200">
-              <svg aria-hidden="true" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-              </svg>
-              Concluido
-            </span>
-          ) : (
-            <div className="flex items-center gap-1.5 flex-shrink-0">
-              {/* Botao WhatsApp rapido */}
-              {onWhatsApp && (
-                <button
-                  type="button"
-                  onClick={() => onWhatsApp(item)}
-                  aria-label={`Enviar WhatsApp para ${item.nome_fantasia}`}
-                  title="Enviar mensagem WhatsApp"
-                  className="min-h-11 sm:min-h-0 p-2 sm:py-1.5 rounded-md border border-gray-200 text-gray-500 hover:text-green-700 hover:border-green-300 hover:bg-green-50 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1"
-                >
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
-                    <path d="M12 0C5.373 0 0 5.373 0 12c0 2.139.558 4.144 1.535 5.879L.057 23.55a.5.5 0 00.608.608l5.693-1.479A11.952 11.952 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.96 0-3.799-.56-5.354-1.527l-.383-.231-3.979 1.034 1.054-3.867-.252-.4A9.956 9.956 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z" />
-                  </svg>
-                </button>
-              )}
+        {/* Linha 4: botões com ícones ou badge de concluído */}
+        {concluido ? (
+          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-green-50 text-green-700 text-xs font-semibold border border-green-200">
+            <svg aria-hidden="true" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+            Concluido
+          </span>
+        ) : (
+          <div className="flex gap-2">
+            {onWhatsApp && (
               <button
                 type="button"
-                onClick={() => onRegistrar(item)}
-                aria-label={`Registrar atendimento de ${item.nome_fantasia}`}
-                className="flex-shrink-0 min-h-11 sm:min-h-0 px-3 py-2 sm:py-1.5 bg-green-600 hover:bg-green-700 text-white text-xs font-semibold rounded-md transition-all duration-150 hover:shadow-md hover:-translate-y-px focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1"
+                onClick={() => onWhatsApp(item)}
+                aria-label={`Enviar WhatsApp para ${item.nome_fantasia}`}
+                className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium text-sm transition-colors"
               >
-                Registrar Atendimento
+                <span>📱</span> WhatsApp
               </button>
-            </div>
-          )}
-        </div>
-      </div>
+            )}
+            <button
+              type="button"
+              onClick={() => onRegistrar(item)}
+              aria-label={`Registrar atendimento de ${item.nome_fantasia}`}
+              className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 bg-vitao-green hover:bg-vitao-darkgreen text-white rounded-lg font-medium text-sm transition-colors"
+            >
+              <span>✅</span> Registrar Atendimento
+            </button>
+          </div>
+        )}
       </article>
-    </div>
-  );
-}
-
-// ---------------------------------------------------------------------------
-// Barra de progresso do dia
-// ---------------------------------------------------------------------------
-
-interface ProgressBarProps {
-  total: number;
-  concluidos: number;
-  consultor: string;
-}
-
-function ProgressBar({ total, concluidos, consultor }: ProgressBarProps) {
-  const pct = total > 0 ? Math.round((concluidos / total) * 100) : 0;
-  const progressColor =
-    pct >= 80 ? '#00B050' :
-    pct >= 50 ? '#FFC000' :
-    pct >= 20 ? '#FF8C00' : '#E5E7EB';
-
-  return (
-    <div className="bg-white rounded-xl border border-gray-200 px-4 py-3 shadow-sm">
-      <div className="flex items-center justify-between mb-2 gap-2">
-        {/* Mobile: so mostra pct e consultor | Desktop: texto completo */}
-        <p className="text-sm font-medium text-gray-700 min-w-0">
-          <span className="hidden sm:inline">
-            <span className="font-bold text-gray-900">{concluidos}</span> de{' '}
-            <span className="font-bold text-gray-900">{total}</span> atendimentos concluidos hoje
-          </span>
-          <span className="sm:hidden font-bold text-gray-900">
-            {concluidos}/{total}
-          </span>
-          <span className="ml-2 text-xs font-semibold" style={{ color: progressColor }}>
-            {pct}%
-          </span>
-        </p>
-        <p className="text-xs text-gray-500 flex-shrink-0">{consultor}</p>
-      </div>
-      <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
-        <div
-          className="h-full rounded-full transition-all duration-500 ease-out"
-          style={{ width: `${pct}%`, backgroundColor: progressColor }}
-          role="progressbar"
-          aria-valuenow={pct}
-          aria-valuemin={0}
-          aria-valuemax={100}
-          aria-label={`${pct}% da agenda concluida`}
-        />
-      </div>
     </div>
   );
 }
@@ -686,6 +558,47 @@ function ResumoSemanalIA({ consultorAtivo }: { consultorAtivo: string }) {
 
   const metricaColor = (val: number, limiteAlerta: number) =>
     val >= limiteAlerta ? '#FF0000' : '#374151';
+
+  // TODO Wave 5: implementar resumo IA quando endpoint pronto
+  // Enquanto endpoint não tiver dados reais, o componente é exibido somente quando
+  // o usuário clica em "Gerar Resumo" e recebe resposta com conteúdo.
+  // Se não houver dados (resumo null e sem loading), não renderizar o accordion.
+  if (!aberto && !resumo && !loading && !erro) {
+    return (
+      <button
+        type="button"
+        onClick={() => setAberto(true)}
+        className="w-full flex items-center justify-between px-4 py-3 bg-white rounded-xl border border-gray-200 shadow-sm hover:bg-gray-50 transition-colors text-left"
+      >
+        <div className="flex items-center gap-2">
+          <svg
+            aria-hidden="true"
+            className="w-4 h-4 flex-shrink-0"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            strokeWidth={2}
+            style={{ color: '#00B050' }}
+          >
+            <path strokeLinecap="round" strokeLinejoin="round"
+              d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+          </svg>
+          <span className="text-[11px] font-semibold text-gray-600 uppercase tracking-wider">
+            Resumo Semanal IA
+          </span>
+        </div>
+        <svg
+          className="w-4 h-4 text-gray-400 flex-shrink-0"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          aria-hidden="true"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+    );
+  }
 
   return (
     <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
@@ -921,9 +834,10 @@ export default function AgendaPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleTabChange = (consultor: Consultor) => {
-    setActiveTab(consultor);
-    loadConsultor(consultor);
+  const handleTabChange = (consultor: string) => {
+    const c = consultor as Consultor;
+    setActiveTab(c);
+    loadConsultor(c);
     // Limpa filtros ao trocar de aba
     setFiltroPrioridade('');
     setFiltroSinaleiro('');
@@ -986,6 +900,22 @@ export default function AgendaPage() {
     [itemsFiltrados, concluidosSet]
   );
 
+  // Tabs para o componente Tabs global
+  const tabsVendedores = useMemo(() =>
+    CONSULTORES.map((c) => {
+      const count = agendaByConsultor[c]?.length;
+      const pendentes = count !== undefined
+        ? count - ((concluidosByConsultor[c]?.size) ?? 0)
+        : undefined;
+      return {
+        id: c,
+        label: c.charAt(0) + c.slice(1).toLowerCase(),
+        count: pendentes,
+      };
+    }),
+    [agendaByConsultor, concluidosByConsultor]
+  );
+
   // ---------------------------------------------------------------------------
   // Handlers
   // ---------------------------------------------------------------------------
@@ -1041,6 +971,9 @@ export default function AgendaPage() {
   // ---------------------------------------------------------------------------
 
   const hoje = formatDate(new Date());
+  const pctConcluido = todosItems.length > 0
+    ? Math.round((totalConcluidos / todosItems.length) * 100)
+    : 0;
 
   return (
     <>
@@ -1086,60 +1019,32 @@ export default function AgendaPage() {
           </div>
         </div>
 
-        {/* Resumo Semanal IA */}
+        {/* Resumo Semanal IA — esconder se vazio (sem dados reais) */}
         <ResumoSemanalIA consultorAtivo={activeTab} />
 
-        {/* Barra de progresso */}
+        {/* Barra de progresso do dia — visível com fundo cinza */}
         {todosItems.length > 0 && (
-          <ProgressBar
-            total={todosItems.length}
-            concluidos={totalConcluidos}
-            consultor={activeTab}
-          />
+          <div className="bg-gray-100 rounded-lg p-4">
+            <div className="flex justify-between items-center mb-2">
+              <span className="text-sm font-medium text-gray-700">Atendimentos hoje</span>
+              <span className="text-sm font-semibold text-gray-900">
+                {totalConcluidos} de {todosItems.length}
+              </span>
+            </div>
+            <ProgressBar current={totalConcluidos} total={todosItems.length} showPercent={false} />
+            <div className="text-right text-xs text-gray-500 mt-1">
+              {pctConcluido}% concluído
+            </div>
+          </div>
         )}
 
-        {/* Seletor de Consultor — pill tabs compactas */}
-        <div className="flex flex-wrap gap-2">
-          {CONSULTORES.map((c) => {
-            const count = agendaByConsultor[c]?.length;
-            const pendentes = count !== undefined
-              ? count - ((concluidosByConsultor[c]?.size) ?? 0)
-              : undefined;
-            const isActive = activeTab === c;
-
-            return (
-              <button
-                key={c}
-                type="button"
-                onClick={() => handleTabChange(c)}
-                aria-pressed={isActive}
-                className={[
-                  'inline-flex items-center gap-2 px-4 sm:px-6 py-2.5 rounded-lg border text-sm font-medium transition-all',
-                  'focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1',
-                  isActive
-                    ? 'bg-green-600 border-green-600 text-white font-semibold shadow-sm'
-                    : 'bg-white border-zinc-300 text-zinc-700 hover:bg-zinc-50 hover:border-zinc-400',
-                ].join(' ')}
-              >
-                <span>{c}</span>
-                {pendentes !== undefined && (
-                  <span
-                    className={[
-                      'inline-flex items-center justify-center min-w-[1.5rem] h-6 px-1.5 rounded-full text-xs font-bold',
-                      isActive
-                        ? 'bg-white text-green-700'
-                        : pendentes > 0
-                          ? 'bg-zinc-100 text-zinc-700'
-                          : 'bg-green-50 text-green-700',
-                    ].join(' ')}
-                  >
-                    {pendentes > 0 ? pendentes : '✓'}
-                  </span>
-                )}
-              </button>
-            );
-          })}
-        </div>
+        {/* Seletor de Consultor — Tabs global (ativo verde, inativo cinza) */}
+        <Tabs
+          tabs={tabsVendedores}
+          activeId={activeTab}
+          onChange={handleTabChange}
+          ariaLabel="Selecionar consultor"
+        />
 
         {/* Agenda do consultor selecionado */}
         <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
@@ -1291,10 +1196,11 @@ export default function AgendaPage() {
                     </div>
 
                     <div className="space-y-2">
-                      {prioritarios.map((item) => (
+                      {prioritarios.map((item, i) => (
                         <AgendaCard
                           key={item.cnpj}
                           item={item}
+                          idx={i}
                           concluido={concluidosSet.has(item.cnpj)}
                           onRegistrar={handleRegistrar}
                           onWhatsApp={handleWhatsApp}
@@ -1318,10 +1224,11 @@ export default function AgendaPage() {
                     )}
 
                     <div className="space-y-2">
-                      {regulares.map((item) => (
+                      {regulares.map((item, i) => (
                         <AgendaCard
                           key={item.cnpj}
                           item={item}
+                          idx={prioritarios.length + i}
                           concluido={concluidosSet.has(item.cnpj)}
                           onRegistrar={handleRegistrar}
                           onWhatsApp={handleWhatsApp}
