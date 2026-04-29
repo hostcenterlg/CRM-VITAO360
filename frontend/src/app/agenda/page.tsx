@@ -954,8 +954,8 @@ export default function AgendaPage() {
       if (filtroSinaleiro && (item.sinaleiro ?? '').toUpperCase() !== filtroSinaleiro) return false;
       if (filtroBusca) {
         const q = filtroBusca.toLowerCase();
-        const cnpjNorm = item.cnpj.replace(/\D/g, '');
-        if (!item.nome_fantasia.toLowerCase().includes(q) && !cnpjNorm.includes(q)) return false;
+        const cnpjNorm = (item.cnpj ?? '').replace(/\D/g, '');
+        if (!(item.nome_fantasia ?? '').toLowerCase().includes(q) && !cnpjNorm.includes(q)) return false;
       }
       return true;
     });

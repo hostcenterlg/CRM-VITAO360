@@ -1450,7 +1450,7 @@ function ConversasWhatsAppBloco({ cnpj }: { cnpj: string }) {
             style={{ backgroundColor: '#00B050' }}
             aria-hidden="true"
           >
-            {conversa.contato.nome.charAt(0).toUpperCase()}
+            {(conversa.contato.nome ?? '?').charAt(0).toUpperCase()}
           </div>
           <div className="min-w-0">
             <p className="text-[11px] font-semibold text-gray-800 truncate">{conversa.contato.nome}</p>

@@ -149,8 +149,9 @@ function formatCnpj(cnpj: string): string {
 // formatDate: alias para formatDateBR centralizado em api.ts
 const formatDate = formatDateBR;
 
-function truncate(s: string, max: number): string {
-  return s.length <= max ? s : s.slice(0, max - 1) + '…';
+function truncate(s: string | null | undefined, max: number): string {
+  const str = s ?? '';
+  return str.length <= max ? str : str.slice(0, max - 1) + '…';
 }
 
 // ---------------------------------------------------------------------------
