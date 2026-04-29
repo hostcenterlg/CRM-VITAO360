@@ -57,8 +57,6 @@ import {
   EcommerceResponse,
   KPIsHeroResponse,
   KPICardVariacao,
-  CurvaABCBar,
-  Top5Cliente,
   formatBRL,
   formatPercent,
 } from '@/lib/api';
@@ -637,17 +635,6 @@ export default function DashboardPage() {
           />
         </div>
 
-        {/* Curva ABC + Top 5 lado a lado */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          <div className="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-100 p-5">
-            <h2 className="text-sm font-bold text-gray-900 mb-4">Curva ABC</h2>
-            <CurvaABCBars data={hero?.curva_abc} loading={heroLoading} />
-          </div>
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
-            <h2 className="text-sm font-bold text-gray-900 mb-4">Top 5 Clientes (Mes)</h2>
-            <Top5Table rows={hero?.top_5 ?? []} loading={heroLoading} />
-          </div>
-        </div>
       </section>
 
       {/* ------------------------------------------------------------------ */}
@@ -2645,7 +2632,8 @@ function RankBadge({ rank }: { rank: number }) {
 }
 
 // ---------------------------------------------------------------------------
-// Hero section helpers — KpiHeroCard, CurvaABCBars, Top5Table
+// Hero section helpers — KpiHeroCard
+// CurvaABCBars e Top5ClientesTable foram movidos para /carteira
 // ---------------------------------------------------------------------------
 
 type KpiUnit = 'pp' | 'brl' | 'int';
@@ -2701,107 +2689,3 @@ function KpiHeroCard({
   );
 }
 
-function CurvaABCBars({
-  data,
-  loading,
-}: {
-  data?: Record<string, CurvaABCBar>;
-  loading: boolean;
-}) {
-  if (loading) {
-    return (
-      <div className="space-y-3">
-        {[1, 2, 3].map((i) => (
-          <div key={i} className="h-16 bg-gray-50 animate-pulse rounded" />
-        ))}
-      </div>
-    );
-  }
-  if (!data) return <p className="text-sm text-gray-500">Sem dados</p>;
-
-  const rows: Array<{ key: string; label: string; pctClientes: string; barColor: string }> = [
-    { key: 'A', label: 'Curva A', pctClientes: '20%', barColor: 'bg-vitao-green' },
-    { key: 'B', label: 'Curva B', pctClientes: '30%', barColor: 'bg-vitao-blue' },
-    { key: 'C', label: 'Curva C', pctClientes: '50%', barColor: 'bg-gray-400' },
-  ];
-
-  return (
-    <div className="space-y-3">
-      {rows.map((r) => {
-        const item = data[r.key];
-        if (!item) return null;
-        const pct = item.pct_faturamento ?? 0;
-        return (
-          <div key={r.key}>
-            <div className="flex items-center justify-between text-xs mb-1">
-              <span className="font-semibold text-gray-700">
-                {r.label} ({r.pctClientes})
-              </span>
-              <span className="text-gray-500">
-                {(item.clientes ?? 0).toLocaleString('pt-BR')} clientes
-              </span>
-            </div>
-            <div className="w-full bg-gray-200 rounded-full h-4 relative overflow-hidden">
-              <div
-                className={`${r.barColor} h-full rounded-full flex items-center justify-end pr-2 transition-all`}
-                style={{ width: `${Math.max(pct, 4)}%` }}
-              >
-                <span className="text-white text-[10px] font-bold">{pct.toFixed(0)}%</span>
-              </div>
-            </div>
-            <div className="text-xs text-gray-500 mt-1">
-              {pct.toFixed(0)}% do faturamento • {formatBRL(item.valor ?? 0)}
-            </div>
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
-function Top5Table({ rows, loading }: { rows: Top5Cliente[]; loading: boolean }) {
-  if (loading) {
-    return (
-      <div className="space-y-2">
-        {[1, 2, 3, 4, 5].map((i) => (
-          <div key={i} className="h-8 bg-gray-50 animate-pulse rounded" />
-        ))}
-      </div>
-    );
-  }
-  if (rows.length === 0) {
-    return <p className="text-sm text-gray-500">Sem vendas no mes ainda</p>;
-  }
-
-  const curvaBg: Record<string, string> = {
-    A: 'bg-vitao-green text-white',
-    B: 'bg-vitao-blue text-white',
-    C: 'bg-gray-400 text-white',
-  };
-
-  return (
-    <ul className="divide-y divide-gray-100">
-      {rows.map((r, i) => (
-        <li key={r.cnpj} className="flex items-center gap-3 py-2 text-xs">
-          <span className="text-gray-400 font-bold w-4">{i + 1}</span>
-          <span className="flex-1 min-w-0 truncate font-medium text-gray-900">
-            {r.nome_fantasia}
-          </span>
-          {r.curva_abc && (
-            <span
-              className={`text-[9px] font-bold rounded-full px-2 py-0.5 ${
-                curvaBg[r.curva_abc] ?? 'bg-gray-200 text-gray-600'
-              }`}
-            >
-              {r.curva_abc}
-            </span>
-          )}
-          <span className="font-mono font-semibold text-gray-900">
-            {formatBRL(r.faturamento_mes)}
-          </span>
-          <span className="text-gray-500 w-16 text-right">{r.pedidos_mes ?? 0} ped.</span>
-        </li>
-      ))}
-    </ul>
-  );
-}

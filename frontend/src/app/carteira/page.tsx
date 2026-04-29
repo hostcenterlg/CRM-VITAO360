@@ -4,14 +4,18 @@ import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'rea
 import { useRouter, useSearchParams } from 'next/navigation';
 import {
   fetchClientes,
+  fetchDashboardHero,
   ClienteRegistro,
   ClientesResponse,
+  KPIsHeroResponse,
 } from '@/lib/api';
 import { exportToCSV } from '@/lib/export';
 import { useAuth } from '@/contexts/AuthContext';
 import ClienteTable, { SortState } from '@/components/ClienteTable';
 import ClienteDetalhe from '@/components/ClienteDetalhe';
 import { FilterGroup, FilterField, FilterState } from '@/components/ui';
+import CurvaABCBars from '@/components/dashboard/CurvaABCBars';
+import Top5ClientesTable from '@/components/dashboard/Top5ClientesTable';
 
 // ---------------------------------------------------------------------------
 // Carteira de Clientes — filtros cumulativos, URL params, ordenação, paginação
@@ -196,6 +200,18 @@ function CarteiraInner() {
   const [response, setResponse] = useState<ClientesResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Hero — Curva ABC + Top 5 clientes (graceful degrade)
+  const [hero, setHero] = useState<KPIsHeroResponse | null>(null);
+  const [heroLoading, setHeroLoading] = useState(true);
+
+  useEffect(() => {
+    setHeroLoading(true);
+    fetchDashboardHero()
+      .then(setHero)
+      .catch(() => setHero(null))
+      .finally(() => setHeroLoading(false));
+  }, []);
 
   // Detalhe cliente
   const [selectedCnpj, setSelectedCnpj] = useState<string | null>(null);
@@ -382,6 +398,18 @@ function CarteiraInner() {
 
   return (
     <div className="space-y-3">
+      {/* Curva ABC + Top 5 Clientes — bloco de inteligencia de clientes */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
+        <div className="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-100 p-5">
+          <h2 className="text-sm font-bold text-gray-900 mb-4">Curva ABC</h2>
+          <CurvaABCBars data={hero?.curva_abc} loading={heroLoading} />
+        </div>
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
+          <h2 className="text-sm font-bold text-gray-900 mb-4">Top 5 Clientes (Mes)</h2>
+          <Top5ClientesTable rows={hero?.top_5 ?? []} loading={heroLoading} />
+        </div>
+      </div>
+
       {/* Toast inline */}
       {toastMsg && (
         <div
