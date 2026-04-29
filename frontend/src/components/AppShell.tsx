@@ -231,7 +231,7 @@ const PAGE_TITLES: Record<string, string> = {
   '/admin/usuarios': 'Usuarios',
   '/admin/pipeline': 'Pipeline de Dados',
   '/atualizacoes':   'Atualizacoes & Pendencias',
-  '/docs':           'Manual do CRM VITAO360',
+  '/manual':         'Manual do CRM VITAO360',
 };
 
 // Map pathname -> breadcrumb segments [{ label, href? }]
@@ -252,7 +252,7 @@ const BREADCRUMBS: Record<string, Array<{ label: string; href?: string }>> = {
   '/atualizacoes':   [{ label: 'Admin', href: '/' }, { label: 'Atualizacoes' }],
   '/admin/usuarios': [{ label: 'Admin', href: '/' }, { label: 'Usuarios' }],
   '/admin/pipeline': [{ label: 'Admin', href: '/' }, { label: 'Pipeline' }],
-  '/docs':           [{ label: 'Dashboard', href: '/' }, { label: 'Manual' }],
+  '/manual':         [{ label: 'Dashboard', href: '/' }, { label: 'Manual' }],
 };
 
 interface AppShellProps {
