@@ -436,10 +436,9 @@ export default function AppShell({ children, pageTitle }: AppShellProps) {
           <CanalSelector />
 
           {/* Meta inline — TODO Wave 3: conectar com /api/metas/atual */}
-          <div className="hidden md:flex items-center gap-2 text-sm">
+          <div className="hidden md:flex items-center gap-2 text-sm" title="Meta em integração">
             <span className="text-gray-500">Meta:</span>
-            <span className="font-semibold text-vitao-green">R$ 187k / R$ 250k</span>
-            <span className="text-gray-400">(75%)</span>
+            <span className="font-semibold text-gray-400">—</span>
           </div>
 
           {/* Sino de notificacoes */}

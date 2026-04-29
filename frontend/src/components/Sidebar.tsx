@@ -576,7 +576,8 @@ export default function Sidebar({ mobileOpen, onClose, collapsed = false, onTogg
         </nav>
 
         {/* MetaWidget — meta mensal fixada no bottom da sidebar */}
-        {/* TODO Wave 3: conectar com /api/metas/atual */}
+        {/* TODO Wave 3: conectar com /api/metas/atual — hardcoded values removed (R8) */}
+        {false && (
         <div className={`flex-shrink-0 ${collapsed ? 'px-1 py-2' : 'px-3 py-3'}`}>
           <MetaWidget
             meta={250000}
@@ -585,6 +586,7 @@ export default function Sidebar({ mobileOpen, onClose, collapsed = false, onTogg
             collapsed={collapsed}
           />
         </div>
+        )}
 
         {/* Collapse toggle (desktop only) + Footer */}
         <div className={`border-t border-gray-100 flex-shrink-0 ${collapsed ? 'px-1 py-2' : 'px-4 py-3'}`}>
