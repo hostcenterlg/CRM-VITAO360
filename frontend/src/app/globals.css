@@ -1,79 +1,175 @@
+/* Inter via Google Fonts — carregado antes do Tailwind base */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* ============================================================
+   CSS Custom Properties — espelham tokens.ts
+   Fonte de verdade visual para o CRM VITAO360 (tema LIGHT, R9)
+   ============================================================ */
 :root {
+  /* Legacy (manter compatibilidade com código existente) */
   --background: #ffffff;
   --foreground: #171717;
+
+  /* Text — WCAG AA mínimo 4.5:1 sobre branco */
+  --text-primary:   #111827; /* gray-900  ~16.75:1 */
+  --text-secondary: #374151; /* gray-700  ~9.4:1   */
+  --text-tertiary:  #6B7280; /* gray-500  ~4.62:1  — só metadata small */
+  --text-inverse:   #ffffff;
+  --text-danger:    #DC2626;
+  --text-success:   #059669;
+
+  /* Surface */
+  --surface-base:    #ffffff;
+  --surface-raised:  #F9FAFB; /* gray-50  */
+  --surface-sunken:  #F3F4F6; /* gray-100 */
+  --surface-inverse: #111827; /* gray-900 */
+
+  /* Border */
+  --border-default: #E5E7EB; /* gray-200 */
+  --border-strong:  #D1D5DB; /* gray-300 */
+  --border-subtle:  #F3F4F6; /* gray-100 */
+
+  /* Vitao brand */
+  --vitao-green:      #00A859;
+  --vitao-darkgreen:  #008C4A;
+  --vitao-lightgreen: #E6F7EF;
+  --vitao-blue:       #0066CC;
+  --vitao-purple:     #7C3AED;
+  --vitao-orange:     #F59E0B;
+  --vitao-red:        #EF4444;
+
+  /* Status */
+  --status-ativo:           #00B050;
+  --status-inativo-recente: #FFC000;
+  --status-inativo-antigo:  #FF0000;
+
+  /* Typography scale */
+  --font-size-xs:   12px;
+  --font-size-sm:   13px;
+  --font-size-base: 14px;
+  --font-size-md:   15px;
+  --font-size-lg:   17px;
+  --font-size-xl:   20px;
+  --font-size-2xl:  24px;
+  --font-size-3xl:  30px;
+  --font-size-4xl:  36px;
+  --font-size-5xl:  48px;
+
+  /* Radius */
+  --radius-sm:  4px;
+  --radius-md:  8px;
+  --radius-lg:  12px;
+  --radius-xl:  16px;
+  --radius-2xl: 20px;
+  --radius-full: 9999px;
+
+  /* Shadow */
+  --shadow-sm:   0 1px 2px 0 rgba(0,0,0,0.05);
+  --shadow-base: 0 1px 3px 0 rgba(0,0,0,0.1), 0 1px 2px 0 rgba(0,0,0,0.06);
+  --shadow-md:   0 4px 6px -1px rgba(0,0,0,0.1);
+  --shadow-lg:   0 10px 15px -3px rgba(0,0,0,0.1);
 }
 
+/* ============================================================
+   Base styles
+   ============================================================ */
+body {
+  color: var(--text-primary);
+  background: var(--surface-base);
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: var(--font-size-base); /* 14px */
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Focus ring acessível — WCAG 2.1 AA */
+*:focus-visible {
+  outline: 2px solid #00A859;
+  outline-offset: 2px;
+}
+
+/* ============================================================
+   Animations (preservadas do original)
+   ============================================================ */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 @keyframes slideIn {
   from { transform: translateX(-100%); }
-  to { transform: translateX(0); }
+  to   { transform: translateX(0); }
 }
 @keyframes pulse-dot {
   0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
+  50%       { opacity: 0.4; }
 }
-.animate-fadeIn { animation: fadeIn 0.4s ease-out; }
-.animate-slideIn { animation: slideIn 0.3s ease-out; }
+
+.animate-fadeIn    { animation: fadeIn 0.4s ease-out; }
+.animate-slideIn   { animation: slideIn 0.3s ease-out; }
 .animate-pulse-dot { animation: pulse-dot 1.5s ease-in-out infinite; }
-.gradient-vitao { background: linear-gradient(135deg, #00B050 0%, #008C4A 100%); }
+
+/* ============================================================
+   Brand gradients
+   ============================================================ */
+.gradient-vitao  { background: linear-gradient(135deg, #00B050 0%, #008C4A 100%); }
 .gradient-purple { background: linear-gradient(135deg, #7C3AED 0%, #5B21B6 100%); }
 
-body {
-  color: #171717;
-  background: #ffffff;
-  font-family: var(--font-inter), system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  font-size: 14px;
-  line-height: 1.5;
-}
-
+/* ============================================================
+   Utilities
+   ============================================================ */
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
 
+  /* Scrollbar fino (preservado) */
   .scrollbar-thin {
     scrollbar-width: thin;
     scrollbar-color: #e5e7eb transparent;
   }
-
   .scrollbar-thin::-webkit-scrollbar {
     width: 6px;
     height: 6px;
   }
-
   .scrollbar-thin::-webkit-scrollbar-track {
     background: transparent;
   }
-
   .scrollbar-thin::-webkit-scrollbar-thumb {
     background-color: #e5e7eb;
     border-radius: 3px;
   }
+
+  /* Tabular numbers para dados monetários e métricas */
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
 }
 
-/* Table row hover */
+/* ============================================================
+   Table row hover (preservado)
+   ============================================================ */
 tr.hoverable:hover td {
-  background-color: #f9fafb;
+  background-color: var(--surface-raised);
 }
 
-/* Sidebar transition */
+/* ============================================================
+   Sidebar transition (preservado)
+   ============================================================ */
 .sidebar-transition {
   transition: width 200ms ease, transform 200ms ease, box-shadow 200ms ease;
 }
-
-/* Quando sidebar esta aberto em mobile, adiciona sombra de drawer */
 .sidebar-transition.translate-x-0 {
   box-shadow: 4px 0 16px rgba(0, 0, 0, 0.12);
 }
 
-/* Botao touch-target minimo em mobile via classe utilitaria */
+/* ============================================================
+   Touch targets mobile (preservado)
+   ============================================================ */
 @media (max-width: 767px) {
   .touch-target {
     min-height: 44px;
