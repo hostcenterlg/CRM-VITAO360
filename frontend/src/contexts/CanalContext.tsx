@@ -104,18 +104,20 @@ export function CanalProvider({ children }: { children: ReactNode }) {
     fetchMeusCanais()
       .then(canais => {
         if (!mounted) return;
-        setCanaisDisponiveis(canais);
+        // Defensivo: garante array mesmo se fetchMeusCanais retornar valor inesperado
+        const lista = Array.isArray(canais) ? canais : [];
+        setCanaisDisponiveis(lista);
 
         // Reconciliacao do canal selecionado:
         //  - se admin: aceita null (Todos) ou um id valido
         //  - se nao-admin com 1 canal: trava nesse canal
         //  - se canal salvo nao consta na lista: limpa
         const ehAdmin = user.role === 'admin';
-        const ids = canais.map(c => c.id);
+        const ids = lista.map(c => c.id);
         const salvo = lerCanalSalvo();
 
-        if (!ehAdmin && canais.length === 1) {
-          const unico = canais[0]!.id;
+        if (!ehAdmin && lista.length === 1) {
+          const unico = lista[0]!.id;
           setCanalIdState(unico);
           gravarCanalSalvo(unico);
         } else if (salvo !== null && !ids.includes(salvo)) {

@@ -105,7 +105,9 @@ function OpcaoCanal({ canal, selecionado, onClick }: OpcaoCanalProps) {
 
 export default function CanalSelector() {
   const { user } = useAuth();
-  const { canalId, setCanalId, canaisDisponiveis, carregando, erro } = useCanal();
+  const { canalId, setCanalId, canaisDisponiveis: canaisRaw, carregando, erro } = useCanal();
+  // Defensivo: garante array mesmo se o context devolver null/undefined em race conditions
+  const canaisDisponiveis = Array.isArray(canaisRaw) ? canaisRaw : [];
   const [aberto, setAberto] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 

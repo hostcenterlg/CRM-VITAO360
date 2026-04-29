@@ -64,7 +64,9 @@ export function formatBRL(value: number | null | undefined): string {
   return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
 }
 
-export function formatPercent(value: number, decimals = 1): string {
+export function formatPercent(value: number | null | undefined, decimals = 1): string {
+  // Defensive: backend pode retornar null/NaN em campos numericos opcionais
+  if (value == null || !Number.isFinite(value)) return `0${decimals > 0 ? '.' + '0'.repeat(decimals) : ''}%`;
   return `${value.toFixed(decimals)}%`;
 }
 
@@ -713,7 +715,9 @@ export interface UsuarioCanaisACL {
 
 /** Canais visiveis ao usuario logado (admin = todos, demais = via usuario_canal). */
 export async function fetchMeusCanais(): Promise<Canal[]> {
-  return fetchJson<Canal[]>('/api/canais/meus');
+  // Defensivo: backend pode retornar null em casos edge (sem ACL, erro soft)
+  const res = await fetchJson<Canal[] | null>('/api/canais/meus');
+  return Array.isArray(res) ? res : [];
 }
 
 /** Lista canais permitidos para um usuario especifico (admin only). */
