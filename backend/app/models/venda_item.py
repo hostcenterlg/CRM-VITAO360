@@ -23,6 +23,7 @@ from sqlalchemy import (
     ForeignKey,
     Index,
     Integer,
+    UniqueConstraint,
 )
 from sqlalchemy.orm import relationship
 
@@ -97,6 +98,9 @@ class VendaItem(Base):
         CheckConstraint("valor_total > 0", name="ck_venda_item_valor_positivo"),
         # Índice composto para consultas de itens por venda
         Index("ix_venda_itens_venda_produto", "venda_id", "produto_id"),
+        # Constraint de unicidade: um produto aparece no máximo 1x por venda
+        # Adicionado via migration 4ac6e4064fa0 (dedup + constraint 2026-04-29)
+        UniqueConstraint("venda_id", "produto_id", name="uq_venda_itens_venda_produto"),
     )
 
     def __repr__(self) -> str:
