@@ -84,6 +84,41 @@ interface NovaTarefaForm {
 
 const CONSULTORES = ['MANU', 'LARISSA', 'DAIANE', 'JULIO', 'OUTROS'] as const;
 
+// Grupos de data para agrupamento com headers coloridos
+type DateGroup = 'atrasadas' | 'hoje' | 'amanha' | 'esta_semana' | 'proxima_semana' | 'futuro' | 'sem_data';
+
+interface GroupConfig {
+  key: DateGroup;
+  label: string;
+  icon: string;
+  headerBg: string;
+  headerText: string;
+}
+
+const DATE_GROUPS: GroupConfig[] = [
+  { key: 'atrasadas',     label: 'Atrasadas',      icon: '⚠️', headerBg: 'bg-red-50',   headerText: 'text-red-900' },
+  { key: 'hoje',          label: 'Hoje',           icon: '📅', headerBg: 'bg-green-50', headerText: 'text-green-900' },
+  { key: 'amanha',        label: 'Amanha',         icon: '⏭️', headerBg: 'bg-blue-50',  headerText: 'text-blue-900' },
+  { key: 'esta_semana',   label: 'Esta Semana',    icon: '',   headerBg: 'bg-gray-50',  headerText: 'text-gray-700' },
+  { key: 'proxima_semana',label: 'Proxima Semana', icon: '',   headerBg: 'bg-gray-50',  headerText: 'text-gray-700' },
+  { key: 'futuro',        label: 'Futuro',         icon: '',   headerBg: 'bg-gray-50',  headerText: 'text-gray-700' },
+  { key: 'sem_data',      label: 'Sem Data',       icon: '',   headerBg: 'bg-gray-50',  headerText: 'text-gray-700' },
+];
+
+function getDateGroup(tarefa: Tarefa): DateGroup {
+  if (!tarefa.due_date) return 'sem_data';
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const d = new Date(tarefa.due_date.getFullYear(), tarefa.due_date.getMonth(), tarefa.due_date.getDate());
+  const diffDays = Math.round((d.getTime() - today.getTime()) / 86400000);
+  if (diffDays < 0) return 'atrasadas';
+  if (diffDays === 0) return 'hoje';
+  if (diffDays === 1) return 'amanha';
+  if (diffDays <= 7) return 'esta_semana';
+  if (diffDays <= 14) return 'proxima_semana';
+  return 'futuro';
+}
+
 const PRIORITY_MAP: Record<string, number> = {
   P0: 0, P1: 1, P2: 2, P3: 3, P4: 4, P5: 5, P6: 6, P7: 7,
 };
@@ -301,6 +336,71 @@ function Checkbox({ checked, onChange }: { checked: boolean; onChange: () => voi
         </svg>
       )}
     </button>
+  );
+}
+
+function TarefaRow({ tarefa, onToggle }: { tarefa: Tarefa; onToggle: (id: string) => void }) {
+  return (
+    <li
+      className="flex items-start gap-3 p-4 transition-colors hover:bg-gray-50/50"
+      style={getRowStyle(tarefa)}
+      aria-label={tarefa.descricao}
+    >
+      {/* Checkbox — padded wrapper ensures 44px touch target */}
+      <div className="mt-0.5 flex-shrink-0">
+        <Checkbox
+          checked={tarefa.status === 'done'}
+          onChange={() => onToggle(tarefa.id)}
+        />
+      </div>
+
+      {/* Content */}
+      <div className="flex-1 min-w-0">
+        <div className="flex items-start gap-2 flex-wrap">
+          <TipoTag tipo={tarefa.tipo} />
+          <span
+            className={`text-sm font-medium leading-snug ${
+              tarefa.status === 'done'
+                ? 'line-through text-gray-400'
+                : 'text-gray-900'
+            }`}
+          >
+            {tarefa.descricao}
+          </span>
+        </div>
+        <div className="flex items-center gap-2 mt-1 flex-wrap">
+          <span className="text-xs text-gray-500 truncate max-w-[180px]">
+            {tarefa.cliente_nome}
+          </span>
+          {tarefa.cliente_cnpj && (
+            <span className="text-[10px] text-gray-300 font-mono hidden sm:inline">
+              {tarefa.cliente_cnpj}
+            </span>
+          )}
+        </div>
+      </div>
+
+      {/* Right-side metadata */}
+      <div className="flex flex-col items-end gap-1.5 flex-shrink-0 ml-2">
+        {/* Due date */}
+        <span className={`text-[11px] ${getDueDateColor(tarefa.due_date, tarefa.status)}`}>
+          {tarefa.due_label}
+        </span>
+
+        <div className="flex items-center gap-1.5">
+          {/* Priority badge */}
+          <span
+            className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-bold rounded uppercase"
+            style={getPriorityBadgeStyle(tarefa.prioridade)}
+          >
+            {tarefa.prioridade}
+          </span>
+
+          {/* Consultor avatar */}
+          <ConsultorAvatar consultor={tarefa.consultor} />
+        </div>
+      </div>
+    </li>
   );
 }
 
@@ -840,74 +940,52 @@ export default function TarefasPage() {
             </div>
           )}
 
-          {/* Task rows */}
-          {!loading && !error && filtered.length > 0 && (
-            <ul className="divide-y divide-gray-100" role="list" aria-label="Lista de tarefas">
-              {filtered.map((tarefa) => (
-                <li
-                  key={tarefa.id}
-                  className="flex items-start gap-3 p-4 transition-colors hover:bg-gray-50/50"
-                  style={getRowStyle(tarefa)}
-                  aria-label={tarefa.descricao}
-                >
-                  {/* Checkbox — padded wrapper ensures 44px touch target */}
-                  <div className="mt-0.5 flex-shrink-0">
-                    <Checkbox
-                      checked={tarefa.status === 'done'}
-                      onChange={() => toggleStatus(tarefa.id)}
-                    />
-                  </div>
-
-                  {/* Content */}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-start gap-2 flex-wrap">
-                      <TipoTag tipo={tarefa.tipo} />
-                      <span
-                        className={`text-sm font-medium leading-snug ${
-                          tarefa.status === 'done'
-                            ? 'line-through text-gray-400'
-                            : 'text-gray-900'
-                        }`}
-                      >
-                        {tarefa.descricao}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2 mt-1 flex-wrap">
-                      <span className="text-xs text-gray-500 truncate max-w-[180px]">
-                        {tarefa.cliente_nome}
-                      </span>
-                      {tarefa.cliente_cnpj && (
-                        <span className="text-[10px] text-gray-300 font-mono hidden sm:inline">
-                          {tarefa.cliente_cnpj}
+          {/* Task rows — grouped by date with colored headers */}
+          {!loading && !error && filtered.length > 0 && (() => {
+            // Build groups map
+            const groupMap: Record<DateGroup, Tarefa[]> = {
+              atrasadas: [], hoje: [], amanha: [], esta_semana: [],
+              proxima_semana: [], futuro: [], sem_data: [],
+            };
+            // Concluidas view: skip date grouping, render flat
+            if (activeFilter === 'concluidas') {
+              return (
+                <ul className="divide-y divide-gray-100" role="list" aria-label="Lista de tarefas">
+                  {filtered.map((tarefa) => (
+                    <TarefaRow key={tarefa.id} tarefa={tarefa} onToggle={toggleStatus} />
+                  ))}
+                </ul>
+              );
+            }
+            filtered.forEach((t) => { groupMap[getDateGroup(t)].push(t); });
+            return (
+              <div role="list" aria-label="Lista de tarefas agrupada por data">
+                {DATE_GROUPS.map((grp) => {
+                  const items = groupMap[grp.key];
+                  if (items.length === 0) return null;
+                  return (
+                    <div key={grp.key}>
+                      {/* Group header */}
+                      <div className={`flex items-center gap-2 px-4 py-2 border-b border-t border-gray-100 ${grp.headerBg}`}>
+                        {grp.icon && <span className="text-sm leading-none">{grp.icon}</span>}
+                        <span className={`text-xs font-bold uppercase tracking-wide ${grp.headerText}`}>
+                          {grp.label}
                         </span>
-                      )}
+                        <span className={`ml-1 text-[10px] font-semibold ${grp.headerText} opacity-70`}>
+                          ({items.length})
+                        </span>
+                      </div>
+                      <ul className="divide-y divide-gray-100">
+                        {items.map((tarefa) => (
+                          <TarefaRow key={tarefa.id} tarefa={tarefa} onToggle={toggleStatus} />
+                        ))}
+                      </ul>
                     </div>
-                  </div>
-
-                  {/* Right-side metadata */}
-                  <div className="flex flex-col items-end gap-1.5 flex-shrink-0 ml-2">
-                    {/* Due date */}
-                    <span className={`text-[11px] ${getDueDateColor(tarefa.due_date, tarefa.status)}`}>
-                      {tarefa.due_label}
-                    </span>
-
-                    <div className="flex items-center gap-1.5">
-                      {/* Priority badge */}
-                      <span
-                        className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-bold rounded uppercase"
-                        style={getPriorityBadgeStyle(tarefa.prioridade)}
-                      >
-                        {tarefa.prioridade}
-                      </span>
-
-                      {/* Consultor avatar */}
-                      <ConsultorAvatar consultor={tarefa.consultor} />
-                    </div>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          )}
+                  );
+                })}
+              </div>
+            );
+          })()}
 
           {/* Footer count */}
           {!loading && !error && filtered.length > 0 && (
