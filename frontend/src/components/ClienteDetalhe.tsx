@@ -1750,7 +1750,26 @@ export default function ClienteDetalhe({ cnpj, onClose }: ClienteDetalheProps) {
           {/* Conteudo */}
           {cliente && !loading && (
             <>
-              {/* BLOCO 1: IDENTIDADE */}
+              {/* BLOCO 1: INTELIGÊNCIA ARTIFICIAL — DESTACADO (minimizado por padrão) */}
+              <div className="border-2 border-[#00B050] rounded-lg overflow-hidden bg-gradient-to-r from-green-50 to-white shadow-sm mb-1">
+                <Bloco
+                  title="🤖 Inteligencia Artificial — Insights"
+                  open={open.ia}
+                  onToggle={() => toggleBloco('ia')}
+                  badge={
+                    <span
+                      className="inline-flex items-center text-[10px] font-bold px-1.5 py-0.5 rounded"
+                      style={{ backgroundColor: '#00B05018', color: '#00B050' }}
+                    >
+                      IA
+                    </span>
+                  }
+                >
+                  <BlocoIA cnpj={cnpj} />
+                </Bloco>
+              </div>
+
+              {/* BLOCO 2: IDENTIDADE */}
               <Bloco
                 title="Identidade"
                 open={open.identidade}
@@ -1964,14 +1983,6 @@ export default function ClienteDetalhe({ cnpj, onClose }: ClienteDetalheProps) {
                 <ConversasWhatsAppBloco cnpj={cnpj} />
               </Bloco>
 
-              {/* BLOCO 7: INTELIGÊNCIA ARTIFICIAL */}
-              <Bloco
-                title="Inteligencia Artificial"
-                open={open.ia}
-                onToggle={() => toggleBloco('ia')}
-              >
-                <BlocoIA cnpj={cnpj} />
-              </Bloco>
             </>
           )}
         </div>
