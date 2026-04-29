@@ -5,9 +5,11 @@ import {
   fetchInbox,
   fetchTicketMensagens,
   fetchWhatsAppStatus,
+  fetchAtendimentosInbox,
   type InboxTicket,
   type DeskrioMensagem,
   type WhatsAppStatus,
+  type AtendimentoInboxItem,
 } from '@/lib/api';
 import { getToken } from '@/lib/auth';
 
@@ -81,6 +83,80 @@ function truncatePreview(text: string, max = 52): string {
   const clean = stripMarkdown(text);
   if (clean.length <= max) return clean;
   return clean.slice(0, max) + '...';
+}
+
+// ---------------------------------------------------------------------------
+// Fallback histórico — agrupa LOG do banco por CNPJ (uma entrada por cliente)
+// Usado quando Deskrio offline (waConnecting) e tickets ao vivo zerados.
+// ---------------------------------------------------------------------------
+
+interface HistoricoFallbackGrupo {
+  cnpj: string;
+  nome_fantasia: string;
+  count: number;
+  ultimaMensagem: string;
+  dataUltima: string;
+}
+
+/** Remove prefixo "[Ticket#XXX|...|...]" da descrição vinda do log_interacoes. */
+function limparDescricao(desc: string): string {
+  return desc.replace(/^\[Ticket#[^\]]+\]\s*/, '').trim();
+}
+
+/** Filtra apenas atendimentos provenientes do canal WhatsApp.
+ * Heurística (o backend não aceita filtro tipo_contato no GET /api/atendimentos):
+ *   - descricao com prefixo "[Ticket#...]" = log do Deskrio (WhatsApp)
+ *   - fase começando com "ATENDIMENTO_WA" também marca canal WhatsApp
+ */
+function filtrarWhatsApp(itens: AtendimentoInboxItem[]): AtendimentoInboxItem[] {
+  return itens.filter((it) => {
+    const desc = it.descricao ?? '';
+    const fase = it.fase ?? '';
+    return desc.startsWith('[Ticket#') || fase.toUpperCase().startsWith('ATENDIMENTO_WA');
+  });
+}
+
+/** Agrupa por CNPJ: 1 linha por cliente com a última interação + count. */
+function agruparPorCnpj(itens: AtendimentoInboxItem[]): HistoricoFallbackGrupo[] {
+  const map = new Map<string, HistoricoFallbackGrupo>();
+  for (const item of itens) {
+    const cnpj = item.cnpj;
+    const dataAtual = item.data_interacao;
+    const ex = map.get(cnpj);
+    if (!ex) {
+      map.set(cnpj, {
+        cnpj,
+        nome_fantasia: item.nome_fantasia ?? '(sem nome)',
+        count: 1,
+        ultimaMensagem: limparDescricao(item.descricao ?? ''),
+        dataUltima: dataAtual,
+      });
+    } else {
+      ex.count += 1;
+      // Atualiza última mensagem se este item for mais recente
+      if (new Date(dataAtual).getTime() > new Date(ex.dataUltima).getTime()) {
+        ex.dataUltima = dataAtual;
+        ex.ultimaMensagem = limparDescricao(item.descricao ?? '');
+      }
+    }
+  }
+  return Array.from(map.values()).sort(
+    (a, b) => new Date(b.dataUltima).getTime() - new Date(a.dataUltima).getTime()
+  );
+}
+
+/** Formata data ISO -> dd/mm HH:MM (curto, p/ lista compacta). */
+function formatDataCurta(dateStr: string): string {
+  try {
+    const d = new Date(dateStr);
+    const dia = String(d.getDate()).padStart(2, '0');
+    const mes = String(d.getMonth() + 1).padStart(2, '0');
+    const hora = String(d.getHours()).padStart(2, '0');
+    const min = String(d.getMinutes()).padStart(2, '0');
+    return `${dia}/${mes} ${hora}:${min}`;
+  } catch {
+    return '';
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -352,6 +428,7 @@ interface ConversationListProps {
   lastRefreshed: Date | null;
   refreshing: boolean;
   waStatus: WhatsAppStatus | null;
+  historicoFallback: AtendimentoInboxItem[] | null;
   onBuscaChange: (v: string) => void;
   onFilterTab: (t: FilterTab) => void;
   onSelect: (t: InboxTicket) => void;
@@ -368,6 +445,7 @@ function ConversationList({
   lastRefreshed,
   refreshing,
   waStatus,
+  historicoFallback,
   onBuscaChange,
   onFilterTab,
   onSelect,
@@ -399,6 +477,27 @@ function ConversationList({
   const waOnline = waStatus !== null && waStatus.configurado && waStatus.alguma_conectada;
   const waConnecting = waStatus !== null && waStatus.configurado && !waStatus.alguma_conectada;
   const waOffline = waStatus === null || !waStatus.configurado;
+
+  // Histórico fallback (banco) — usado quando Deskrio offline e tickets vazios.
+  // Agrupa por CNPJ; cada grupo é uma linha clicável read-only.
+  const fallbackGruposBase: HistoricoFallbackGrupo[] = (() => {
+    if (!waConnecting) return [];
+    if (historicoFallback === null || historicoFallback.length === 0) return [];
+    return agruparPorCnpj(filtrarWhatsApp(historicoFallback));
+  })();
+  const fallbackGrupos: HistoricoFallbackGrupo[] = busca.trim()
+    ? fallbackGruposBase.filter((g) => {
+        const termo = busca.toLowerCase();
+        return (
+          g.nome_fantasia.toLowerCase().includes(termo) ||
+          g.cnpj.includes(busca.replace(/\D/g, ''))
+        );
+      })
+    : fallbackGruposBase;
+  const showFallback =
+    waConnecting && tickets.length === 0 && historicoFallback !== null;
+  const fallbackLoading =
+    waConnecting && tickets.length === 0 && historicoFallback === null;
 
   return (
     <div className="w-full flex-shrink-0 border-r border-gray-200 bg-white flex flex-col h-full">
@@ -574,31 +673,96 @@ function ConversationList({
           </div>
         )}
 
-        {!loading && !error && filtered.length === 0 && (
+        {!loading && !error && filtered.length === 0 && !showFallback && (
           <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
             <svg className="w-12 h-12 text-gray-300 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
                 d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
             </svg>
-            {waConnecting ? (
-              <>
-                <p className="text-sm font-medium text-gray-700">Aguardando reconexão WhatsApp</p>
-                <p className="text-xs text-gray-500 mt-1 max-w-sm">
-                  Nenhuma conversa nos últimos 7 dias. Reconecte uma das conexões WhatsApp no painel Deskrio para receber mensagens novas.
-                </p>
-              </>
-            ) : (
-              <>
-                <p className="text-sm font-medium text-gray-500">Nenhuma conversa encontrada</p>
-                <p className="text-xs text-gray-400 mt-1">
-                  {busca
-                    ? 'Tente outro termo de busca'
-                    : filterTab !== 'todos'
-                      ? 'Tente outro filtro'
-                      : 'Nenhum ticket nos ultimos 7 dias'}
-                </p>
-              </>
-            )}
+            <p className="text-sm font-medium text-gray-500">Nenhuma conversa encontrada</p>
+            <p className="text-xs text-gray-400 mt-1">
+              {busca
+                ? 'Tente outro termo de busca'
+                : filterTab !== 'todos'
+                  ? 'Tente outro filtro'
+                  : 'Nenhum ticket nos ultimos 7 dias'}
+            </p>
+          </div>
+        )}
+
+        {/* Fallback do banco — Deskrio offline + zero tickets */}
+        {!loading && !error && fallbackLoading && (
+          <div>
+            <div className="px-3 py-2 bg-blue-50 border-b border-blue-100">
+              <p className="text-[11px] text-blue-800">Carregando historico do banco...</p>
+            </div>
+            {[...Array(6)].map((_, i) => <SkeletonRow key={`fb-skel-${i}`} />)}
+          </div>
+        )}
+
+        {!loading && !error && showFallback && historicoFallback !== null && fallbackGrupos.length === 0 && (
+          <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
+            <svg className="w-12 h-12 text-gray-300 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
+                d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+            </svg>
+            <p className="text-sm font-medium text-gray-700">Aguardando reconexão WhatsApp</p>
+            <p className="text-xs text-gray-500 mt-1 max-w-sm">
+              {busca
+                ? 'Nenhum historico bate com a busca. Reconecte uma das conexões WhatsApp no painel Deskrio para receber mensagens novas.'
+                : 'Sem historico WhatsApp no banco. Reconecte uma das conexões WhatsApp no painel Deskrio para receber mensagens novas.'}
+            </p>
+          </div>
+        )}
+
+        {!loading && !error && showFallback && fallbackGrupos.length > 0 && (
+          <div>
+            <div className="px-3 py-2 bg-blue-50 border-b border-blue-100 flex items-center gap-2">
+              <svg className="w-3.5 h-3.5 text-blue-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <p className="text-[11px] text-blue-800">
+                Histórico do banco — {fallbackGrupos.length} {fallbackGrupos.length === 1 ? 'cliente' : 'clientes'}.
+                Reconecte para receber mensagens novas.
+              </p>
+            </div>
+            {fallbackGrupos.map((g) => (
+              <div
+                key={g.cnpj}
+                className="w-full flex items-start gap-3 px-3 py-3 border-b border-gray-50 border-l-2 border-l-transparent"
+                title="Histórico do banco — read-only enquanto WhatsApp esta offline"
+              >
+                <div className="relative flex-shrink-0 mt-0.5">
+                  <Avatar nome={g.nome_fantasia} size="md" />
+                  <span className="absolute -bottom-0.5 -right-0.5" title="Histórico (read-only)">
+                    <span className="w-2 h-2 rounded-full bg-gray-400 inline-block ring-2 ring-white" />
+                  </span>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-start justify-between gap-1 mb-0.5">
+                    <p className="text-xs font-semibold text-gray-900 truncate leading-tight">
+                      {g.nome_fantasia}
+                    </p>
+                    <div className="flex items-center gap-1 flex-shrink-0">
+                      <span className="text-[9px] font-semibold text-gray-500 bg-gray-100 px-1.5 py-0.5 rounded">
+                        histórico
+                      </span>
+                      <span className="text-[10px] text-gray-400 tabular-nums">
+                        {formatDataCurta(g.dataUltima)}
+                      </span>
+                    </div>
+                  </div>
+                  <p className="text-[11px] text-gray-500 truncate leading-tight mb-1">
+                    {g.ultimaMensagem ? truncatePreview(g.ultimaMensagem) : ' '}
+                  </p>
+                  {g.count > 1 && (
+                    <span className="text-[9px] text-gray-400">
+                      {g.count} interações
+                    </span>
+                  )}
+                </div>
+              </div>
+            ))}
           </div>
         )}
 
@@ -1002,6 +1166,9 @@ export default function InboxPage() {
   // WhatsApp connection status
   const [waStatus, setWaStatus] = useState<WhatsAppStatus | null>(null);
 
+  // Histórico do banco — fallback quando Deskrio offline (waConnecting)
+  const [historicoFallback, setHistoricoFallback] = useState<AtendimentoInboxItem[] | null>(null);
+
   // Stable refs to avoid stale closures in intervals
   const selectedTicketRef = useRef<InboxTicket | null>(null);
   selectedTicketRef.current = selectedTicket;
@@ -1045,6 +1212,37 @@ export default function InboxPage() {
       .then(setWaStatus)
       .catch(() => setWaStatus(null));
   }, []);
+
+  // Derive WA connection state once (used by fallback effect)
+  const waConnectingDerived =
+    waStatus !== null && waStatus.configurado && !waStatus.alguma_conectada;
+  const waOnlineDerived =
+    waStatus !== null && waStatus.configurado && waStatus.alguma_conectada;
+
+  // Fallback histórico — carrega quando Deskrio offline (zero conexões WhatsApp).
+  // Online: limpa fallback (live data manda).
+  // waStatus ainda nao chegou (null): nao faz nada.
+  useEffect(() => {
+    if (waOnlineDerived) {
+      setHistoricoFallback(null);
+      return;
+    }
+    if (!waConnectingDerived) {
+      // Status nao carregou ou backend offline: nao popula fallback.
+      return;
+    }
+    let cancelled = false;
+    fetchAtendimentosInbox({ page_size: 100 })
+      .then((res) => {
+        if (!cancelled) setHistoricoFallback(res.itens);
+      })
+      .catch(() => {
+        if (!cancelled) setHistoricoFallback([]);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [waConnectingDerived, waOnlineDerived]);
 
   // ---------------------------------------------------------------------------
   // Load messages for selected ticket
@@ -1187,6 +1385,7 @@ export default function InboxPage() {
           lastRefreshed={lastRefreshedList}
           refreshing={refreshingList}
           waStatus={waStatus}
+          historicoFallback={historicoFallback}
           onBuscaChange={setBusca}
           onFilterTab={setFilterTab}
           onSelect={handleSelectTicket}

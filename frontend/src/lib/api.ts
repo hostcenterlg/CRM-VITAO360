@@ -460,6 +460,63 @@ export async function fetchAtendimentosHistorico(
   return { ...res, itens: res.itens ?? [], total: res.total ?? 0 };
 }
 
+// ---------------------------------------------------------------------------
+// Atendimentos — schema atual do backend (AtendimentoListItem)
+// Usado pela Inbox como fallback quando WhatsApp Deskrio esta offline.
+// Mantido separado de AtendimentoHistoricoItem (legado, schema diferente).
+// ---------------------------------------------------------------------------
+
+export interface AtendimentoInboxItem {
+  id: number;
+  cnpj: string;
+  nome_fantasia: string | null;
+  consultor: string;
+  resultado: string;
+  descricao: string | null;
+  data_interacao: string;
+  estagio_funil: string | null;
+  fase: string | null;
+  temperatura: string | null;
+  tentativa: string | null;
+}
+
+export interface AtendimentosInboxResponse {
+  total: number;
+  page: number;
+  page_size: number;
+  itens: AtendimentoInboxItem[];
+}
+
+/**
+ * Lista atendimentos (LOG — Two-Base, sem valor R$) do banco.
+ *
+ * NOTA: o endpoint /api/atendimentos NAO aceita filtro tipo_contato.
+ * Filtros aceitos pelo backend: consultor, cnpj, resultado, page, page_size.
+ * O caller deve filtrar por canal (WHATSAPP) no front-end usando os campos
+ * disponiveis no item (ex.: descricao com prefixo "[Ticket#...|...|...]"
+ * indica origem WhatsApp/Deskrio, ou fase "ATENDIMENTO_WA").
+ */
+export async function fetchAtendimentosInbox(params: {
+  page_size?: number;
+  consultor?: string;
+  cnpj?: string;
+  resultado?: string;
+} = {}): Promise<AtendimentosInboxResponse> {
+  const qs = new URLSearchParams();
+  qs.set('page', '1');
+  qs.set('page_size', String(params.page_size ?? 50));
+  if (params.consultor) qs.set('consultor', params.consultor);
+  if (params.cnpj) qs.set('cnpj', params.cnpj);
+  if (params.resultado) qs.set('resultado', params.resultado);
+  const res = await fetchJson<AtendimentosInboxResponse>(`/api/atendimentos?${qs.toString()}`);
+  return {
+    total: res.total ?? 0,
+    page: res.page ?? 1,
+    page_size: res.page_size ?? 0,
+    itens: res.itens ?? [],
+  };
+}
+
 export async function fetchCliente(cnpj: string): Promise<ClienteRegistro> {
   return fetchJson<ClienteRegistro>(`/api/clientes/${cnpj}`);
 }
