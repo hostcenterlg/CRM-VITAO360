@@ -654,33 +654,40 @@ function CardResumoSemanal() {
         <div className="space-y-3">
           <p className="text-[11px] text-gray-500">Periodo: {data.periodo}</p>
 
+          {/* Resumo IA (texto) */}
+          {data.ia_configurada ? (
+            <p className="text-xs text-gray-700 leading-snug whitespace-pre-line">{data.resumo}</p>
+          ) : (
+            <p className="text-[11px] text-gray-400 italic">(IA descritiva nao configurada)</p>
+          )}
+
           {/* KPIs */}
           <div className="grid grid-cols-3 gap-2">
             <div className="text-center p-2 bg-purple-50 rounded-lg">
               <p className="text-[10px] text-gray-500 leading-tight">Contactados</p>
-              <p className="text-lg font-bold text-purple-700 tabular-nums">{data.clientes_contactados}</p>
+              <p className="text-lg font-bold text-purple-700 tabular-nums">{data.metricas.clientes_contactados_semana}</p>
             </div>
             <div className="text-center p-2 bg-green-50 rounded-lg">
               <p className="text-[10px] text-gray-500 leading-tight">Vendas</p>
-              <p className="text-lg font-bold text-green-700 tabular-nums">{data.vendas_fechadas}</p>
+              <p className="text-lg font-bold text-green-700 tabular-nums">{data.metricas.vendas_semana_qtd}</p>
             </div>
             <div className="text-center p-2 bg-blue-50 rounded-lg">
               <p className="text-[10px] text-gray-500 leading-tight">Volume R$</p>
-              <p className="text-sm font-bold text-blue-700 tabular-nums">{formatBRL(data.valor_vendas)}</p>
+              <p className="text-sm font-bold text-blue-700 tabular-nums">{formatBRL(data.metricas.vendas_semana_volume)}</p>
             </div>
           </div>
 
           {/* Pipeline */}
-          {(data.pipeline?.length ?? 0) > 0 && (
+          {Object.keys(data.metricas.pipeline).length > 0 && (
             <div>
               <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1">
                 Pipeline
               </p>
               <div className="flex flex-wrap gap-1.5">
-                {(data.pipeline ?? []).map((p) => (
-                  <span key={p.estagio}
+                {Object.entries(data.metricas.pipeline).map(([estagio, qtd]) => (
+                  <span key={estagio}
                     className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-purple-100 text-purple-800">
-                    {p.estagio}: {p.qtd}
+                    {estagio}: {qtd}
                   </span>
                 ))}
               </div>
@@ -688,17 +695,17 @@ function CardResumoSemanal() {
           )}
 
           {/* Top clientes */}
-          {(data.top_clientes?.length ?? 0) > 0 && (
+          {data.metricas.top3_proxima_semana.length > 0 && (
             <div>
               <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1">
                 Top clientes da semana
               </p>
               <ul className="space-y-1">
-                {(data.top_clientes ?? []).map((c) => (
+                {data.metricas.top3_proxima_semana.map((c) => (
                   <li key={c.cnpj} className="flex items-start justify-between gap-2 text-xs">
                     <div className="min-w-0">
                       <p className="font-medium text-gray-900 truncate leading-tight">{c.nome}</p>
-                      <p className="text-[11px] text-gray-500 leading-tight">{c.motivo}</p>
+                      <p className="text-[11px] text-gray-500 leading-tight">{c.acao_futura}</p>
                     </div>
                     <span className="font-bold tabular-nums flex-shrink-0" style={{ color: '#8B5CF6' }}>
                       {c.score}
