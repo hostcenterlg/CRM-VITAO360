@@ -27,7 +27,6 @@ from __future__ import annotations
 import logging
 import re
 from datetime import date, timedelta
-from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from pydantic import BaseModel, Field
@@ -36,7 +35,6 @@ from sqlalchemy.orm import Session
 
 from backend.app.api.deps import (
     get_user_canal_ids,
-    require_admin,
     require_consultor_or_admin,
 )
 from backend.app.database import get_db
@@ -214,92 +212,6 @@ def get_status(
         alguma_conectada=status_data["alguma_conectada"],
         total_conexoes=status_data["total_conexoes"],
     )
-
-
-@router.get(
-    "/_debug_connections",
-    include_in_schema=False,
-    summary="[TEMPORARY] Raw debug do endpoint Deskrio /v1/api/connections",
-)
-def debug_raw_connections(
-    user: Usuario = Depends(require_admin),
-) -> dict[str, Any]:
-    """
-    [TEMPORARIO — incident 29/Apr/2026]
-
-    Retorna o raw response da Deskrio API SEM normalizacao para diagnosticar
-    porque listar_conexoes() retorna []. Admin-only. NAO expoe o token.
-
-    Remover apos resolucao do incidente.
-    """
-    logger.info(
-        "GET /api/whatsapp/_debug_connections | usuario=%s",
-        getattr(user, "email", user.id),
-    )
-
-    info: dict[str, Any] = {
-        "configured": deskrio_service.configurado,
-        "base_url": deskrio_service.base_url or None,
-        "company_id": deskrio_service.company_id,
-        "token_present": bool(deskrio_service.token),
-        "token_len": len(deskrio_service.token) if deskrio_service.token else 0,
-    }
-
-    # Tentativa 1: via _get padrao (com retry, sem cache)
-    try:
-        raw = deskrio_service._get("/v1/api/connections", use_cache=False)
-        info["via_get"] = {
-            "ok": True,
-            "raw_type": type(raw).__name__,
-            "raw_value": raw,
-            "raw_keys": list(raw.keys()) if isinstance(raw, dict) else None,
-            "raw_len": len(raw) if isinstance(raw, (list, dict)) else None,
-        }
-    except Exception as exc:  # noqa: BLE001
-        info["via_get"] = {
-            "ok": False,
-            "error": str(exc),
-            "error_type": type(exc).__name__,
-        }
-
-    # Tentativa 2: chamada httpx direta para capturar status_code e body raw
-    # (bypass do _get que swallow erros silenciosamente)
-    import httpx as _httpx
-
-    base = deskrio_service.base_url
-    headers = {
-        "Authorization": f"Bearer {deskrio_service.token}",
-        "Content-Type": "application/json",
-    }
-    info["direct"] = {}
-    try:
-        with _httpx.Client(timeout=20.0) as client:
-            resp = client.get(f"{base}/v1/api/connections", headers=headers)
-            body_text = resp.text
-            info["direct"] = {
-                "status_code": resp.status_code,
-                "headers": dict(resp.headers),
-                "body_preview": body_text[:2000],
-                "body_len": len(body_text),
-                "url_called": str(resp.url),
-            }
-            try:
-                parsed = resp.json()
-                info["direct"]["json_type"] = type(parsed).__name__
-                info["direct"]["json_keys"] = (
-                    list(parsed.keys()) if isinstance(parsed, dict) else None
-                )
-                info["direct"]["json_len"] = (
-                    len(parsed) if isinstance(parsed, (list, dict)) else None
-                )
-                info["direct"]["json_value"] = parsed
-            except Exception as je:  # noqa: BLE001
-                info["direct"]["json_error"] = str(je)
-    except Exception as exc:  # noqa: BLE001
-        info["direct"]["error"] = str(exc)
-        info["direct"]["error_type"] = type(exc).__name__
-
-    return info
 
 
 @router.get(
