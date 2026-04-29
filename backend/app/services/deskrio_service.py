@@ -55,11 +55,14 @@ _RETRYABLE_STATUS_CODES: frozenset[int] = frozenset({502, 503, 504})
 # In-memory cache configuration (TTL-based, no external dependencies)
 _CACHE_TTL_SECONDS: float = 300.0  # 5 minutes
 
-# Mapeamento de status de conexao do Deskrio para texto legivel
+# Mapeamento de status de conexao do Deskrio para texto legivel.
+# Inclui INATIVE (variante real observada na API — conexao sem numero ativo).
 _STATUS_LEGIVEL: dict[str, str] = {
     "CONNECTED": "conectado",
     "DISCONNECTED": "desconectado",
     "CONNECTING": "conectando",
+    "INATIVE": "inativo",
+    "INACTIVE": "inativo",
 }
 
 
@@ -461,9 +464,10 @@ class DeskrioService:
         """
         Lista conexoes WhatsApp disponiveis na conta Deskrio.
 
-        Defensiva: a API Deskrio pode retornar tanto um array direto quanto
-        um envelope {"data": [...]} ou {"connections": [...]}. Tratamos os
-        formatos conhecidos para evitar lista vazia silenciosa.
+        Defensiva: a API Deskrio retorna um envelope com multiplas chaves:
+          {"whatsappConnections": [...], "whatsappApiConnections": [...], "metaConnections": [...]}
+        Concatenamos whatsappConnections (principal) e tratamos outros formatos
+        conhecidos para garantir robustez.
 
         Returns:
             Lista de dicts com {id, name, status, ...}. Lista vazia em erro.
@@ -476,10 +480,18 @@ class DeskrioService:
             return data
 
         if isinstance(data, dict):
-            for envelope_key in ("data", "connections", "items", "results"):
+            # Envelope primario Deskrio: chave whatsappConnections
+            # (confirmado via smoke test 2026-04-29)
+            for envelope_key in (
+                "whatsappConnections",
+                "data",
+                "connections",
+                "items",
+                "results",
+            ):
                 inner = data.get(envelope_key)
                 if isinstance(inner, list):
-                    logger.debug(
+                    logger.info(
                         "Deskrio listar_conexoes raw=dict.%s count=%d",
                         envelope_key,
                         len(inner),
@@ -501,6 +513,10 @@ class DeskrioService:
         """
         Lista tickets de atendimento no periodo informado.
 
+        LIMITE DESKRIO: a API rejeita ranges >= 7 dias com HTTP 400
+        ERR_DATE_LIMIT_OFF_1_WEEK. O caller deve garantir que
+        (data_fim - data_inicio) <= 6 dias.
+
         Args:
             data_inicio: Data no formato 'YYYY-MM-DD'.
             data_fim:    Data no formato 'YYYY-MM-DD'.
@@ -509,6 +525,35 @@ class DeskrioService:
         Returns:
             Lista de dicts de tickets. Lista vazia em erro.
         """
+        # Guard: calcular diferenca de dias e truncar inicio se necessario
+        # para nunca exceder o limite estrito de 6 dias da API Deskrio
+        # (HTTP 400 ERR_DATE_LIMIT_OFF_1_WEEK se range >= 7 dias).
+        try:
+            from datetime import date as _dt_date, timedelta as _timedelta
+            d_inicio = _dt_date.fromisoformat(data_inicio)
+            d_fim = _dt_date.fromisoformat(data_fim)
+            diff_dias = (d_fim - d_inicio).days
+            if diff_dias > 6:
+                # Truncar para os 6 dias mais recentes (mais relevantes para Inbox)
+                d_inicio_truncado = d_fim - _timedelta(days=6)
+                logger.info(
+                    "Deskrio listar_tickets range truncado | "
+                    "original_inicio=%s novo_inicio=%s fim=%s diff_dias=%d",
+                    data_inicio,
+                    d_inicio_truncado.isoformat(),
+                    data_fim,
+                    diff_dias,
+                )
+                data_inicio = d_inicio_truncado.isoformat()
+        except (ValueError, TypeError) as exc:
+            logger.warning(
+                "Deskrio listar_tickets parse de datas falhou | "
+                "inicio=%s fim=%s exc=%s — usando valores originais",
+                data_inicio,
+                data_fim,
+                exc,
+            )
+
         params: dict[str, str] = {
             "startDate": data_inicio,
             "endDate": data_fim,
@@ -525,7 +570,29 @@ class DeskrioService:
         data = self._get("/v1/api/tickets", params=params)
 
         if isinstance(data, list):
+            logger.info(
+                "Deskrio listar_tickets OK | count=%d inicio=%s fim=%s",
+                len(data),
+                data_inicio,
+                data_fim,
+            )
             return data
+
+        if data is None:
+            logger.warning(
+                "Deskrio listar_tickets retornou None | "
+                "provavel HTTP 400/5xx — inicio=%s fim=%s",
+                data_inicio,
+                data_fim,
+            )
+        elif isinstance(data, dict):
+            logger.warning(
+                "Deskrio listar_tickets retornou dict inesperado | "
+                "keys=%s | inicio=%s fim=%s",
+                list(data.keys()),
+                data_inicio,
+                data_fim,
+            )
 
         return []
 
