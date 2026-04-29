@@ -175,24 +175,32 @@ interface AgentCardProps {
   icon: React.ReactNode;
   children: React.ReactNode;
   disabled?: boolean;
+  highlighted?: boolean;
 }
 
-function AgentCard({ title, subtitle, accentColor, icon, children, disabled }: AgentCardProps) {
+function AgentCard({ title, subtitle, accentColor, icon, children, disabled, highlighted }: AgentCardProps) {
   return (
     <div
-      className={`bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow overflow-hidden ${disabled ? 'opacity-60' : ''}`}
+      className={`bg-transparent rounded-xl overflow-hidden ${highlighted ? '' : 'border border-gray-200 bg-white shadow-sm hover:shadow-md transition-shadow'} ${disabled ? 'opacity-60' : ''}`}
     >
       <div
-        className="flex items-center gap-3 px-4 py-3 border-b border-gray-100"
-        style={{ borderLeftWidth: 3, borderLeftColor: accentColor, borderLeftStyle: 'solid' }}
+        className={`flex items-center gap-3 px-4 border-b ${highlighted ? 'py-4 border-green-200 bg-green-50' : 'py-3 border-gray-100'}`}
+        style={{ borderLeftWidth: highlighted ? 4 : 3, borderLeftColor: highlighted ? '#00B050' : accentColor, borderLeftStyle: 'solid' }}
       >
-        <span style={{ color: accentColor }}>{icon}</span>
-        <div className="min-w-0">
-          <p className="text-sm font-semibold text-gray-900 leading-tight">{title}</p>
-          {subtitle && <p className="text-[11px] text-gray-500 leading-tight">{subtitle}</p>}
+        <span style={{ color: highlighted ? '#00B050' : accentColor }}>{icon}</span>
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-2 flex-wrap">
+            <p className={`font-semibold text-gray-900 leading-tight ${highlighted ? 'text-lg sm:text-xl' : 'text-sm'}`}>{title}</p>
+            {highlighted && (
+              <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-green-100 text-green-800 border border-green-300 flex-shrink-0">
+                Mais importante
+              </span>
+            )}
+          </div>
+          {subtitle && <p className="text-[11px] text-gray-500 leading-tight mt-0.5">{subtitle}</p>}
         </div>
       </div>
-      <div className="px-4 py-3">{children}</div>
+      <div className={`px-4 ${highlighted ? 'py-5' : 'py-3'}`}>{children}</div>
     </div>
   );
 }
@@ -1149,7 +1157,7 @@ function CardCoach() {
 // Card 9: Alerta de Oportunidade
 // ---------------------------------------------------------------------------
 
-function CardAlertaOportunidade() {
+function CardAlertaOportunidade({ highlighted }: { highlighted?: boolean }) {
   const router = useRouter();
   const [data, setData] = useState<AlertaOportunidadeResponse | null>(null);
   const [loading, setLoading] = useState(true);
@@ -1167,6 +1175,7 @@ function CardAlertaOportunidade() {
       title="Alertas de Oportunidade"
       subtitle="Top oportunidades identificadas pela IA"
       accentColor="#EF4444"
+      highlighted={highlighted}
       icon={
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
@@ -1290,8 +1299,15 @@ export default function CentralIAPage() {
         </div>
       </div>
 
+      {/* Alertas de Oportunidade — PRIMEIRA secao (mais importante) */}
+      <div className="px-3 sm:px-6 pt-6 pb-2">
+        <div className="rounded-2xl border-2 border-green-500 bg-gradient-to-r from-green-50 to-white shadow-sm overflow-hidden">
+          <CardAlertaOportunidade highlighted />
+        </div>
+      </div>
+
       {/* Grid de cards — 3x3 com 9 agentes */}
-      <div className="px-3 sm:px-6 py-6">
+      <div className="px-3 sm:px-6 py-4">
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
           {/* Row 1 */}
           <CardBriefing cnpj={cnpj} />
@@ -1308,11 +1324,6 @@ export default function CentralIAPage() {
           <CardSentimento cnpj={cnpj} />
           <CardPrevisaoFechamento cnpj={cnpj} />
           <CardCoach />
-
-          {/* Row 4 — Alerta de Oportunidade ocupa faixa completa em telas medias */}
-          <div className="md:col-span-2 xl:col-span-3">
-            <CardAlertaOportunidade />
-          </div>
         </div>
       </div>
     </div>
