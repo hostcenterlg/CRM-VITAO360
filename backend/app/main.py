@@ -297,16 +297,7 @@ _ORIGINS = [o.strip() for o in _ORIGINS_ENV.split(",") if o.strip()]
 async def global_exception_handler(request: Request, exc: Exception):
     """Catch-all — loga traceback mas nunca expoe ao cliente."""
     logger.error("Unhandled: %s", traceback.format_exc())
-    # TEMP DEBUG (29/Apr incident): expose exception type+message to diagnose
-    # 500s without Vercel log access. REMOVE after incident resolved.
-    return JSONResponse(
-        status_code=500,
-        content={
-            "error": "Erro interno do servidor.",
-            "_debug_type": type(exc).__name__,
-            "_debug_message": str(exc)[:500],
-        },
-    )
+    return JSONResponse(status_code=500, content={"error": "Erro interno do servidor."})
 
 
 app.add_middleware(
