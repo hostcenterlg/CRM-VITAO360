@@ -78,7 +78,7 @@ Data/hora: 28/Abr/2026, verificação ao vivo via Chrome
 │  3º  NOVA FEATURE: ANÁLISE CRÍTICA DO CLIENTE                   │
 │      → Spec completa em SPEC_FEATURE_ANALISE_CRITICA_CRM.md    │
 │      → MVP Sprint 1: schema + parsers + engine DRE + UI        │
-│      → Golden master: Coelho Diniz                              │
+│      → Golden master: Cliente Referência (GMR-001)                              │
 │      → 5 ondas de implementação                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -100,7 +100,7 @@ Spec completa salva em: `SPEC_FEATURE_ANALISE_CRITICA_CRM_VITAO360.md`
 **Implementar em 5 ondas:**
 1. Schema PostgreSQL + migrations
 2. Parsers + testes unitários
-3. Engine DRE + testes (Coelho Diniz golden master)
+3. Engine DRE + testes (Cliente Referência (GMR-001) golden master)
 4. API REST (`GET /clientes/:id/analise-critica`)
 5. UI React (1 página)
 

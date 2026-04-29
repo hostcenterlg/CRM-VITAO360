@@ -185,7 +185,7 @@ Isto é, o terceiro arquivo (`SPEC_FEATURE_ANALISE_CRITICA_CRM_VITAO360.md`) **s
 
 | # | Dependência | Bloqueia | Status |
 |---|--------------|----------|--------|
-| D1 | 6 arquivos Excel reais do CFO (golden master Coelho Diniz Forense) | Sprint 1 | **Aguarda Leandro** |
+| D1 | 6 arquivos Excel reais do CFO (golden master Cliente Referência (GMR-001) Forense) | Sprint 1 | **Aguarda Leandro** |
 | D2 | Schema PostgreSQL aprovado (9 tabelas L3) | Sprint 1 | **Aguarda L3** |
 | D3 | Parser ZSDFAT estável (24 checks playbook v3.0) | Sprint 1 | Não iniciado |
 | D4 | LLMClient ativo (`backend/app/services/llm_client.py`) | **Sprint 2+** | **DORMENTE — Tipo A** |
@@ -208,7 +208,7 @@ Isto é, o terceiro arquivo (`SPEC_FEATURE_ANALISE_CRITICA_CRM_VITAO360.md`) **s
 4. **L3 — Crawler de mercado:** Claude in Chrome vs. Playwright headless?
 5. **L3 — Hosting ETL cron:** Render/Vercel/AWS?
 6. **L3 — Feature flag por cliente:** `ANALISE_CRITICA_HABILITADA` (rollout gradual)?
-7. **L3 — Golden master Coelho Diniz:** ter Excel forense disponível como referência de aceite.
+7. **L3 — Golden master Cliente Referência (GMR-001):** ter Excel forense disponível como referência de aceite.
 8. **L3 — Versionamento snapshot mensal:** salvar cada análise como histórico (Sprint 5)?
 
 **Risco:** **ALTO**. Por que:
@@ -245,7 +245,7 @@ Isto é, o terceiro arquivo (`SPEC_FEATURE_ANALISE_CRITICA_CRM_VITAO360.md`) **s
 **Bloqueador:** Leandro precisa responder as decisões L3 listadas na seção 4 antes de começar.
 
 **Particularmente:**
-- D1 (golden master Coelho Diniz Forense): ter acesso ao Excel de referência.
+- D1 (golden master Cliente Referência (GMR-001) Forense): ter acesso ao Excel de referência.
 - D2 (9 tabelas v3): aprovação explícita.
 - D3 (estratégia LLM): decidir se ativa LLMClient ou posterga.
 
@@ -293,7 +293,7 @@ Isto é, o terceiro arquivo (`SPEC_FEATURE_ANALISE_CRITICA_CRM_VITAO360.md`) **s
 
 ### Fase 3 — Sprint 1 v3 (FEATURE Análise Crítica MVP)
 
-**Justificativa:** Agora sim, com Fase 1+2 entregues, o Sprint 1 do v3 fica viável. Precisa do golden master Coelho Diniz para aceite.
+**Justificativa:** Agora sim, com Fase 1+2 entregues, o Sprint 1 do v3 fica viável. Precisa do golden master Cliente Referência (GMR-001) para aceite.
 
 **Ações (do próprio spec v3):**
 1. 6 tabelas PostgreSQL + migrations (cliente_contrato, cliente_verbas_anual, cliente_frete_mensal, cliente_promotor_mensal, cliente_sku_praticado, cliente_dre_periodo).
@@ -302,7 +302,7 @@ Isto é, o terceiro arquivo (`SPEC_FEATURE_ANALISE_CRITICA_CRM_VITAO360.md`) **s
 4. UI: 1 página com DRE 4 anos + KPI strip + lista anomalias (regras hardcoded).
 5. Botão "Exportar Excel" (replica formato Sidecar v2 atual).
 
-**Critério de aceite:** Coelho Diniz aberto no CRM bate 100% com Excel manual (Análise Crítica — Coelho Diniz — Forense.xlsx).
+**Critério de aceite:** Cliente Referência (GMR-001) aberto no CRM bate 100% com Excel manual (Análise Crítica — Cliente Referência (GMR-001) — Forense.xlsx).
 
 **Esforço:** **L-XL (20-30h).**
 
@@ -418,7 +418,7 @@ Isto é, o terceiro arquivo (`SPEC_FEATURE_ANALISE_CRITICA_CRM_VITAO360.md`) **s
 | # | Decisão | Origem | Impacto |
 |---|---------|--------|---------|
 | L3-E1 | **Feature flag `ANALISE_CRITICA_HABILITADA` por cliente** — rollout gradual? | v3 | Risco controlado |
-| L3-E2 | **Golden master Coelho Diniz Forense:** acessar Excel de referência para aceite Sprint 1. | v3 | Bloqueia aceite |
+| L3-E2 | **Golden master Cliente Referência (GMR-001) Forense:** acessar Excel de referência para aceite Sprint 1. | v3 | Bloqueia aceite |
 | L3-E3 | **Aba "Análise Crítica" na ficha cliente** ou em rota separada `/analise-critica/{cnpj}`? | v3 | UX e navegação |
 | L3-E4 | **Comparativo cross-cliente:** quantos clientes lado a lado? (8? variável?) | v3 Sprint 3 | UI |
 | L3-E5 | **PDF Resumo CEO** — usar wkhtmltopdf, reportlab, browser-side, ou serviço externo? | v3 Sprint 5 | Stack |
@@ -429,7 +429,7 @@ Isto é, o terceiro arquivo (`SPEC_FEATURE_ANALISE_CRITICA_CRM_VITAO360.md`) **s
 
 1. **L3-A3** — Aprovar as 6+2+1 = 9 novas tabelas do v3? (sim/não/parcial)
 2. **L3-C1** — Ativar LLMClient agora ou postergar? (afeta 3 sprints inteiros)
-3. **L3-E2** — Acesso ao Excel Coelho Diniz Forense? (sem ele, Sprint 1 não tem aceite)
+3. **L3-E2** — Acesso ao Excel Cliente Referência (GMR-001) Forense? (sem ele, Sprint 1 não tem aceite)
 4. **L3-D2** — Alíquotas SINTÉTICAS aceitas (com flag SINTÉTICO) ou só dados REAL? (afeta R8)
 5. **L3-D3** — Implementar Fase A v1/v2 antes do v3 (vitória rápida) ou ir direto v3 Sprint 1?
 
@@ -455,7 +455,7 @@ Isto é, o terceiro arquivo (`SPEC_FEATURE_ANALISE_CRITICA_CRM_VITAO360.md`) **s
 
 ### 5.2 Sequenciamento crítico (NÃO PARALELIZAR)
 
-- **Sprint 1 v3** depende de **golden master Coelho Diniz** (L3-E2) — sem ele, sem aceite.
+- **Sprint 1 v3** depende de **golden master Cliente Referência (GMR-001)** (L3-E2) — sem ele, sem aceite.
 - **Sprint 2 v3 (LLM)** depende de **L3-C1 (ativar LLMClient)** — bloqueio absoluto.
 - **Parser ZSDFAT** depende de **schema PostgreSQL aprovado** (L3-A3).
 - **Crawler de mercado** depende de **decisão Claude-in-Chrome vs. Playwright** (L3-B4).
@@ -548,7 +548,7 @@ Solo dev (Leandro + Claude apenas): manter sequencial. Total: ~150h.
 ### Top 3 bloqueadores imediatos
 
 1. **L3-A3** (aprovar 9 novas tabelas)
-2. **L3-E2** (acesso ao Excel Coelho Diniz Forense)
+2. **L3-E2** (acesso ao Excel Cliente Referência (GMR-001) Forense)
 3. **L3-C1** (ativar LLMClient — afeta 3 sprints)
 
 ---

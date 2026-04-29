@@ -450,7 +450,7 @@ Formato: markdown limpo, sem emojis.
 │ COMPARATIVO 8 CLIENTES                                         │
 │                                                                │
 │ Cliente      | Fat 2025 | Margem | Verba% | Promotor% | Sinal │
-│ Coelho Diniz | R$ 5,2M  | -14,9% | 11,5%  | 8,9%      | 🔴   │
+│ Cliente Referência (GMR-001) | R$ 5,2M  | -14,9% | 11,5%  | 8,9%      | 🔴   │
 │ Giassi       | R$ 8,1M  | ...    | ...    | ...       | 🟡   │
 │ Angeloni     | R$ 6,4M  | ...    | ...    | ...       | 🟢   │
 │ Koch         | R$ 8,2M  | -14,9% | 0,2%*  | 1,9%      | 🔴   │
@@ -480,7 +480,7 @@ Objetivo: substituir o trabalho manual atual para 1 cliente.
 - [ ] UI: 1 página com DRE + KPI strip + lista anomalias (regras hardcoded)
 - [ ] Botão "Exportar Excel" (replica formato Sidecar v2 atual)
 
-**Critério de aceite:** Coelho Diniz aberto no CRM bate 100% com Excel manual atual.
+**Critério de aceite:** Cliente Referência (GMR-001) aberto no CRM bate 100% com Excel manual atual.
 
 ### Sprint 2 — Cruzamento Mercado (2 semanas)
 
@@ -546,8 +546,8 @@ Próxima tarefa: MVP Sprint 1.
 - Engine DRE: calcular linhas 30-35 efetivadas
 - UI: 1 página por cliente com DRE 4 anos + KPI strip + lista anomalias
 
-Critério de aceite: abrir Coelho Diniz no CRM e bater 100% com o Sidecar
-manual Análise Crítica - Coelho Diniz - Forense.xlsx.
+Critério de aceite: abrir Cliente Referência (GMR-001) no CRM e bater 100% com o Sidecar
+manual Análise Crítica - Cliente Referência (GMR-001) - Forense.xlsx.
 
 Restrições:
 - Zero invenção numérica. Se dado não existe, marcar PENDENTE.
@@ -558,7 +558,7 @@ Restrições:
 Faça em ondas:
 Onda 1: schema PostgreSQL + migrations
 Onda 2: parsers + testes unitários
-Onda 3: engine DRE + testes (Coelho Diniz como golden master)
+Onda 3: engine DRE + testes (Cliente Referência (GMR-001) como golden master)
 Onda 4: API REST (GET /clientes/:id/analise-critica)
 Onda 5: UI React (1 página)
 ```
@@ -569,7 +569,7 @@ Onda 5: UI React (1 página)
 
 - [ ] Esse spec está num lugar permanente (`/CRM 360/`)
 - [ ] Anexar 1 Excel de exemplo de cada fonte na pasta `examples/`
-- [ ] Ter o Coelho Diniz Forense como "golden master"
+- [ ] Ter o Cliente Referência (GMR-001) Forense como "golden master"
 - [ ] Schema PostgreSQL revisado (índices em cliente_id, ano, mes)
 - [ ] Decidir: ETL programado roda no Render/Vercel/AWS?
 - [ ] Decidir: pricing crawler vai usar Claude in Chrome ou Playwright headless?

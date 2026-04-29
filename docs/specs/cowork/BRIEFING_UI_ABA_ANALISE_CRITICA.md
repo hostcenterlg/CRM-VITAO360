@@ -14,7 +14,7 @@ A nova aba **ANÁLISE** mostra a cascata P&L daquele cliente em tempo real.
 
 ```
 ┌────────────────────────────────────────────────────────────────────┐
-│  COELHO DINIZ LTDA · CNPJ 12.345.678/0001-90                      │
+│  CLIENTE REFERÊNCIA (GMR-001) LTDA · CNPJ 12.345.678/0001-90                      │
 │  [DADOS]  [VENDAS]  [CONTATO]  [HISTÓRICO]  [✦ ANÁLISE]           │
 │  ─────────────────────────────────────────── ════════════           │
 └────────────────────────────────────────────────────────────────────┘
@@ -268,5 +268,5 @@ Usar as cores do CRM, não inventar novas:
 - [ ] Dropdown ano funciona
 - [ ] Botão recalcular funciona
 - [ ] Responsivo: desktop + tablet + mobile
-- [ ] **TESTAR:** Coelho Diniz renderiza cascata completa
+- [ ] **TESTAR:** Cliente Referência (GMR-001) renderiza cascata completa
 - [ ] **TESTAR:** Cliente sem dados mostra "SEM_DADOS" e não crash

@@ -1,7 +1,7 @@
 # GOLDEN MASTER — Mapeamento DRE Manual → dde_engine.py
 
-> **Cliente:** SUPERMERCADO COELHO DINIZ EIRELI (MG)
-> **Fonte:** `ZSDFAT - Faturamento Coelho Diniz (01.2023 a 20.03.26) - OK.xlsx`
+> **Cliente:** SUPERMERCADO CLIENTE REFERÊNCIA (GMR-001) EIRELI (MG)
+> **Fonte:** `ZSDFAT - Faturamento Cliente Referência (GMR-001) (01.2023 a 20.03.26) - OK.xlsx`
 > **Abas analisadas:** 32 abas — DRE Cliente, Analise Critica, LOG|EFETIVADO, Frete, Verbas, Contrato, Dados Fiscais
 > **Data análise:** 29/Abr/2026
 > **Objetivo:** Cada linha do dde_engine.py deve bater com a DRE manual dentro de 0.5% de tolerância
@@ -15,13 +15,13 @@
 | **DRE Cliente** | Cascata P&L completa 2023-2026 — 47 linhas × 5 períodos | GOLDEN MASTER — referência absoluta |
 | **Analise Critica** | Resumo CEO (7 KPIs), Evolução 3 anos, Saúde Mix (80 SKUs), 3 Riscos, 6 Recomendações | Output esperado da aba ANÁLISE no CRM |
 | **LOG \| EFETIVADO** | Promotores (R$45.408), Verbas por ano, Frete mensal 2025 por CT-e | L16, L17, L14 |
-| **Frete Coelho Diniz** | 12 meses 2025, 229 CT-es, R$185.834 total | L14 |
-| **Contrato Coelho Diniz** | BP 2000004166, Ranking TOP 200, Grupo 06, Vigente | L29 (desc contrato) |
-| **Coelho Diniz - Verbas** | Verbas 2023-2026 por ano vs faturamento | L16 |
-| **Dados fiscais Coelho Diniz** | ~185 SKUs com ICMS, PIS, COFINS, IPI, ST por produto | L9, L10a, L10b, L10c, L8 |
+| **Frete Cliente Referência (GMR-001)** | 12 meses 2025, 229 CT-es, R$185.834 total | L14 |
+| **Contrato Cliente Referência (GMR-001)** | BP 2000004166, Ranking TOP 200, Grupo 06, Vigente | L29 (desc contrato) |
+| **Cliente Referência (GMR-001) - Verbas** | Verbas 2023-2026 por ano vs faturamento | L16 |
+| **Dados fiscais Cliente Referência (GMR-001)** | ~185 SKUs com ICMS, PIS, COFINS, IPI, ST por produto | L9, L10a, L10b, L10c, L8 |
 | **Fat. 2023/2024/2025/2026** | Faturamento detalhado por NF/produto | L1 fonte |
 | **Extração ZSDFAT** | Raw data SAP | Fonte L1-L8 |
-| **Últ.Prat COELHO DINIZ** | Último preço praticado por SKU | Sinaleiro SKU |
+| **Últ.Prat CLIENTE REFERÊNCIA (GMR-001)** | Último preço praticado por SKU | Sinaleiro SKU |
 | **MIX 2025 / Mix Completo** | 185 SKUs ativos + inativos | Saúde portfolio |
 | **Simulador** | Simulação de cenários com parâmetros SAP | Referência, não fonte |
 
@@ -95,7 +95,7 @@
 ### NOTA 5: L15 — Comissão = 4.6%, não 3%
 **Manual Row 31:** Representante = 4.6% fixo sobre Fat.Líquido = R$ 38.746,76
 **Engine:** Default `comissao_pct = 0.03` (3%)
-**Ação:** Coelho Diniz usa 4.6%. Esse valor deveria vir do cadastro do cliente ou do contrato. **Ajustar engine para buscar comissao_pct do cliente, não hardcode.**
+**Ação:** Cliente Referência (GMR-001) usa 4.6%. Esse valor deveria vir do cadastro do cliente ou do contrato. **Ajustar engine para buscar comissao_pct do cliente, não hardcode.**
 
 ### NOTA 6: Row 37 — "Resultante Comercial" (ANTES do CMV)
 **Manual:** R$ 394.191,57 = Sub-total da venda (R$ 686.804,47) - Despesas (R$ 292.612,90)
@@ -113,10 +113,10 @@
 
 ## 4. VALORES DE CALIBRAÇÃO (2025)
 
-Esses são os valores que `calcula_dre_efetivado(db, cnpj_coelho_diniz, 2025)` DEVE retornar:
+Esses são os valores que `calcula_dre_efetivado(db, cnpj_cliente_referencia, 2025)` DEVE retornar:
 
 ```python
-# GOLDEN MASTER — Coelho Diniz 2025
+# GOLDEN MASTER — Cliente Referência (GMR-001) 2025
 GOLDEN = {
     "L1":  1076343.19,   # Fat. bruto (valor produtos NF)
     "L4":   180250.51,   # Devoluções totais (NF cliente + própria)
@@ -163,7 +163,7 @@ Diferença de 1.45% está dentro da tolerância (0.5% é ideal, 1.5% aceitável)
 3. Engine calcula L12 = SUM(qtd_vendida × custo_unitario) por CNPJ/ano
 4. L13 (Margem Bruta) = L11 - L12 → REAL, não mais PENDENTE
 5. Indicador I1 (Margem Bruta %) vira disponível
-6. **Análise Crítica do Coelho Diniz funciona end-to-end na Fase A**
+6. **Análise Crítica do Cliente Referência (GMR-001) funciona end-to-end na Fase A**
 
 ### Coluna "Preço Custo Proj." da ZSDFAT (coluna 55) — NÃO USAR
 A ZSDFAT tem "Preço Custo Proj." por linha, mas NÃO é o custo correto para DRE. É custo projetado por caixa que quando somado dá valores inconsistentes (2023: 18%, 2024: 29%, 2025: 52%). **Usar ZSD062 "Custo Comercial" como referência.**
@@ -183,7 +183,7 @@ A aba "Analise Critica" é EXATAMENTE o que a aba ANÁLISE do CRM deve mostrar. 
 | 5. RECOMENDAÇÕES | Output LLM (Camada 5 — Sprint 4+) | Placeholder agora |
 | 6. CONCLUSÃO / VEREDITO | Seção 1: badge veredito | `veredito_cliente()` |
 
-**Veredito esperado para Coelho Diniz 2025:** `SUBSTITUIR` — MC negativa (-14.95%)
+**Veredito esperado para Cliente Referência (GMR-001) 2025:** `SUBSTITUIR` — MC negativa (-14.95%)
 **Score esperado:** <40 (múltiplas anomalias CRÍTICAS: devolução 21.7%, MC negativa, frete 18.2%)
 
 ---

@@ -54,13 +54,13 @@ COMMENT ON COLUMN vendas.codigo_produto IS
 
 -- ============================================================
 -- ALTER TABLE clientes — adicionar comissao_pct per-client
--- Golden Master: Coelho Diniz = 4.6%, não usar hardcoded 3%
+-- Golden Master: Cliente Referência (GMR-001) = 4.6%, não usar hardcoded 3%
 -- ============================================================
 ALTER TABLE clientes
     ADD COLUMN IF NOT EXISTS comissao_pct NUMERIC(5,2);
 
 COMMENT ON COLUMN clientes.comissao_pct IS
-    'Comissão % do cliente (ex: 4.6 para Coelho Diniz). Fonte: contrato. '
+    'Comissão % do cliente (ex: 4.6 para Cliente Referência (GMR-001)). Fonte: contrato. '
     'Engine usa /100 como decimal. Fallback = 3% se NULL.';
 
 COMMIT;

@@ -141,21 +141,21 @@ AND table_name IN ('cliente_frete_mensal', 'cliente_rebate', 'cliente_impostos_e
 - Testar: `GET /api/dde/cliente/{cnpj}?ano=2025`
 
 **Passo 4 — Calibrar com Golden Master:**
-- Coelho Diniz CNPJ: verificar que engine retorna valores dentro de 0.5% do GOLDEN_MASTER
+- Cliente Referência (GMR-001) CNPJ: verificar que engine retorna valores dentro de 0.5% do GOLDEN_MASTER
 - L1 (Receita Bruta), L5 (Receita Líquida), L21 (Margem de Contribuição)
 
 **Arquivos de referência:**
 - `SPEC_DDE_CASCATA_REAL.md` — cascata P&L completa (7 blocos, 25 linhas)
 - `dde_engine.py` — engine Python com _get_comissao_pct(), _get_cmv(), _get_devolucoes()
 - `routes_dde.py` — 5 endpoints FastAPI
-- `GOLDEN_MASTER_MAPEAMENTO_COELHO_DINIZ.md` — valores de referência
+- `GOLDEN_MASTER_MAPEAMENTO_CLIENTE_REFERENCIA.md` — valores de referência
 
 ### Checklist de entrega Fase 3a:
 - [ ] 9 tabelas criadas no Neon
 - [ ] `dde_engine.py` integrado no backend
 - [ ] `routes_dde.py` registrado e respondendo
 - [ ] `GET /api/dde/cliente/{cnpj}?ano=2025` retorna JSON com cascata
-- [ ] Golden Master Coelho Diniz valida (±0.5%)
+- [ ] Golden Master Cliente Referência (GMR-001) valida (±0.5%)
 - [ ] `comissao_pct` per-client funcional (fallback 3%)
 - [ ] CMV calcula quando produto_custo_comercial tem dados, degrada graceful quando não
 

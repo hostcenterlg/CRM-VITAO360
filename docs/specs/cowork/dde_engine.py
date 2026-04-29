@@ -144,7 +144,7 @@ async def _get_faturamento(db: AsyncSession, cnpj: str, ano: int, mes: Optional[
 async def _get_devolucoes(db: AsyncSession, cnpj: str, ano: int, mes: Optional[int] = None) -> Decimal:
     """
     L4 — Devoluções TOTAIS (NF negativas + log devoluções separadas).
-    Golden Master Coelho Diniz 2025: R$180.250,51 (inclui troca NF + NF cliente/própria).
+    Golden Master Cliente Referência (GMR-001) 2025: R$180.250,51 (inclui troca NF + NF cliente/própria).
     NOTA: Usar TOTAL, nunca apenas um tipo.
     """
     filtro_mes = "AND EXTRACT(MONTH FROM data_venda) = :mes" if mes else ""
@@ -253,7 +253,7 @@ async def _get_inadimplencia(db: AsyncSession, cnpj: str) -> dict:
 async def _get_comissao_pct(db: AsyncSession, cnpj: str) -> Decimal:
     """
     Busca comissão % do cadastro do cliente.
-    Golden Master: Coelho Diniz = 4.6%, não usar default 3% genérico.
+    Golden Master: Cliente Referência (GMR-001) = 4.6%, não usar default 3% genérico.
     Fallback: 3% se não houver cadastro.
     """
     sql = text("""
@@ -269,7 +269,7 @@ async def _get_cmv(db: AsyncSession, cnpj: str, ano: int, mes: Optional[int] = N
     """
     L12 — CMV via tabela produto_custo_comercial (fonte: ZSD062).
     Cálculo: SUM(custo_comercial_unitario × quantidade vendida) por SKU.
-    Golden Master Coelho Diniz 2025: ~R$527.720 (vs manual R$520.153 = 1.45% diff).
+    Golden Master Cliente Referência (GMR-001) 2025: ~R$527.720 (vs manual R$520.153 = 1.45% diff).
     Retorna: (valor_cmv, classificacao)
     """
     filtro_mes = "AND EXTRACT(MONTH FROM v.data_venda) = :mes" if mes else ""
@@ -310,7 +310,7 @@ async def calcula_dre_efetivado(
     Calcula DDE Fase A (Comercial) para um cliente.
     Retorna cascata completa com classificação 3-tier por linha.
     Correções Golden Master v2:
-      - Comissão: busca per-client (Coelho Diniz=4.6%), fallback 3%
+      - Comissão: busca per-client (Cliente Referência (GMR-001)=4.6%), fallback 3%
       - Devoluções: TOTAL (NF neg + devolucoes), não apenas troca NF
       - CMV: ZSD062 custo_comercial × qty (desbloqueia L12/L13/I1)
     """

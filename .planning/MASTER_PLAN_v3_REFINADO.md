@@ -169,7 +169,7 @@ Isso evita "demo-vazio" e usa dados Mercos que **já existem**.
 - Gate 2 passa
 - 2 arquivos `dde_engine.py` + `routes_dde.py` fornecidos pelo Cowork
 - Spec `SPEC_DDE_CASCATA_REAL.md` em `docs/specs/cowork/`
-- Golden Master Coelho Diniz disponível
+- Golden Master cliente de referência (GMR-001) disponível
 
 ### Tasks
 1. **Migration Alembic 1** (substitui `DDE_MIGRATION_001.sql`):
@@ -186,14 +186,14 @@ Isso evita "demo-vazio" e usa dados Mercos que **já existem**.
    - Registrar router em `backend/app/main.py`
 4. **Pytest com Golden Master**:
    - `backend/tests/test_dde_golden_master.py`
-   - Asserts L1 (Receita Bruta), L5 (Receita Líquida), L21 (Margem Contribuição) ±0.5% vs valores Coelho Diniz documentados
+   - Asserts L1 (Receita Bruta), L5 (Receita Líquida), L21 (Margem Contribuição) ±0.5% vs valores cliente de referência (GMR-001) documentados
 5. **Validação manual em PROD**:
    - `curl /api/dde/cliente/<cnpj_coelho>?ano=2025` retorna JSON cascata 25 linhas
 
 ### Gate Fase 3a
 - [ ] Alembic upgrade head + downgrade -1 + upgrade head sem erro
 - [ ] Endpoint `/api/dde/cliente/{cnpj}` retorna 200 com JSON válido
-- [ ] Golden Master Coelho Diniz dentro de ±0.5% (3 linhas-chave)
+- [ ] Golden Master cliente de referência (GMR-001) dentro de ±0.5% (3 linhas-chave)
 - [ ] Comissão `clientes.comissao_pct` com fallback 3% funcional
 - [ ] pytest 100% PASS
 - [ ] verify.py 10/10 + novo check `[11] DDE engine integrity`

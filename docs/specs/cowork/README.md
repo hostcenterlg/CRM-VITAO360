@@ -23,7 +23,7 @@ Comece por `BRIEFING_MASTER_VSCODE.md` — sequência completa de fases.
 - `routes_dde.py` — 5 endpoints FastAPI (consumido em `backend/app/api/`)
 - `DDE_MIGRATION_001.sql` — schema base 8 tabelas (converter para Alembic)
 - `DDE_MIGRATION_002_CMV.sql` — `produto_custo_comercial` + ALTER (converter para Alembic)
-- `GOLDEN_MASTER_MAPEAMENTO_COELHO_DINIZ.md` — valores de validação ±0.5%
+- `GOLDEN_MASTER_REFERENCIA.md` — valores de validação ±0.5% (cliente referência GMR-001)
 
 ### Fase 3b — Análise Crítica UI
 - `SPEC_FEATURE_ANALISE_CRITICA_CRM_VITAO360.md` — spec da feature
@@ -34,3 +34,4 @@ Comece por `BRIEFING_MASTER_VSCODE.md` — sequência completa de fases.
 - Conforme `MASTER_PLAN_v3_REFINADO.md`, os 2 `.sql` serão **convertidos em migrations Alembic** antes de aplicar. Não rode `\i ARQUIVO.sql` direto no Neon.
 - O `BRIEFING_MASTER_VSCODE.md` original tinha inconsistências factuais (secrets e arquivos referenciados) — o plano refinado endereçou.
 - **Fonte de dados de `produto_custo_comercial`**: Leandro confirmou — vem do **ZSD062 (SAP)**, importação via planilha exportada.
+- **Branding/governança**: nome de cliente real **NUNCA** aparece como nome de método/inteligência/calibração. Aplicado 29/Abr/2026 — referências antigas a "Coelho Diniz" (cliente da carteira) foram substituídas por "Cliente Referência (GMR-001)" em todos os specs e código. Ver `memory/project_nomes_clientes_nao_metodos.md`.

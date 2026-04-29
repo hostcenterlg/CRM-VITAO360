@@ -300,16 +300,16 @@ GET /api/dde/score/{cnpj}
 
 ## 8. VALIDAÇÃO — GOLDEN MASTER
 
-**Critério único de aceite:** rodar `calcula_dre_comercial('CNPJ_COELHO_DINIZ', 2025)` e cada linha bater **exatamente** com a coluna correspondente do `Análise Crítica - Coelho Diniz - Forense.xlsx` que vocês geram manualmente hoje.
+**Critério único de aceite:** rodar `calcula_dre_comercial('CNPJ_CLIENTE_REFERENCIA', 2025)` e cada linha bater **exatamente** com a coluna correspondente do `Análise Crítica - Cliente Referência (GMR-001) - Forense.xlsx` que vocês geram manualmente hoje.
 
 Tolerância: 0,5% (R7) por linha. Acima disso, parar e investigar.
 
 **Antes de iniciar Fase A**, tem que existir na pasta do repo:
-- `examples/coelho_diniz/Análise Crítica - Coelho Diniz - Forense.xlsx`
-- `examples/coelho_diniz/Verbas 2025.xlsx`
-- `examples/coelho_diniz/Frete 2025.xlsx`
-- `examples/coelho_diniz/Despesas 2025.xlsx`
-- `examples/coelho_diniz/Contrato vigente.xlsx`
+- `examples/cliente_referencia/Análise Crítica - Cliente Referência (GMR-001) - Forense.xlsx`
+- `examples/cliente_referencia/Verbas 2025.xlsx`
+- `examples/cliente_referencia/Frete 2025.xlsx`
+- `examples/cliente_referencia/Despesas 2025.xlsx`
+- `examples/cliente_referencia/Contrato vigente.xlsx`
 
 Sem golden master, executor inventa estrutura. Bloqueante.
 
@@ -348,7 +348,7 @@ Esta spec é a camada 4 (Engine de Regras) da SPEC_FEATURE_ANALISE_CRITICA. Mape
 
 1. Inbox SSR + ingest Deskrio (Bloco 3 do PLANO_12H) — **bloqueante de tudo**
 2. Onda Schema DDE (esta spec, seção 5) — pode rodar paralelo
-3. Parser ZSDFAT (SPEC_FEATURE_ANALISE_CRITICA) — **só com golden master Coelho Diniz na pasta**
+3. Parser ZSDFAT (SPEC_FEATURE_ANALISE_CRITICA) — **só com golden master Cliente Referência (GMR-001) na pasta**
 4. Engine DDE Fase A (esta spec, seção 7) — depende de 2
 5. UI cascata no cliente — depende de 4
 6. LLM Resumo CEO — depende de 5
@@ -367,11 +367,11 @@ Esta spec é a camada 4 (Engine de Regras) da SPEC_FEATURE_ANALISE_CRITICA. Mape
 
 ## 12. RESUMO 3 LINHAS
 
-DDE real = cascata P&L de 7 blocos, 25 linhas, cada uma com fonte, status 3-tier e fase. Fase A entrega 70% da cascata hoje com Sales Hunter + uploads CFO; Fase B completa quando SAP libera fiscal/custos; Fase C agrega BI sell-out. Golden master = bater o Sidecar Coelho Diniz exatamente. Implementar antes de UI ou LLM — engine determinística primeiro.
+DDE real = cascata P&L de 7 blocos, 25 linhas, cada uma com fonte, status 3-tier e fase. Fase A entrega 70% da cascata hoje com Sales Hunter + uploads CFO; Fase B completa quando SAP libera fiscal/custos; Fase C agrega BI sell-out. Golden master = bater o Sidecar Cliente Referência (GMR-001) exatamente. Implementar antes de UI ou LLM — engine determinística primeiro.
 
 ---
 
 **Versão:** 1.0 — 28/04/2026
 **Substitui:** SPEC_DDE_CLIENTE.md (v0)
-**Próxima revisão:** após Sprint 1 com Coelho Diniz validado
+**Próxima revisão:** após Sprint 1 com Cliente Referência (GMR-001) validado
 **Autor:** Cowork (revisor) + briefing Leandro

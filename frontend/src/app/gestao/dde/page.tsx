@@ -97,7 +97,7 @@ const CASCATA: CascataBloco[] = [
       { codigo: 'L20', descricao: 'Créditos de Campanha', valor: 2500, percentual: 0.2, recuo: true },
       { codigo: 'L21', descricao: 'Margem de Contribuição Final', valor: 188188, percentual: 15.1, destaque: true },
       { codigo: 'L22', descricao: 'Margem sobre Receita Bruta', valor: 0, percentual: 15.1, recuo: true },
-      { codigo: 'L23', descricao: 'Validação ±0,5% (Coelho Diniz)', valor: 0, percentual: 0.0, recuo: true },
+      { codigo: 'L23', descricao: 'Validação ±0,5% (cliente de referência)', valor: 0, percentual: 0.0, recuo: true },
     ],
   },
 ];
@@ -129,7 +129,7 @@ interface StatusItem {
 const STATUS_ITEMS: StatusItem[] = [
   { feito: true, texto: 'Engine Python — cascata 25 linhas' },
   { feito: true, texto: 'Schema banco aprovado (venda_itens)' },
-  { feito: true, texto: 'Algoritmo validado manualmente (Coelho Diniz)' },
+  { feito: true, texto: 'Algoritmo validado manualmente em cliente de referência' },
   { feito: false, texto: 'Integração FastAPI — service layer' },
   { feito: false, texto: 'Endpoint /api/dde/cliente/{cnpj}' },
   { feito: false, texto: 'Pytest Golden Master ±0,5%' },
@@ -167,7 +167,7 @@ export default function DDEPage() {
           </div>
           <p className="text-sm text-gray-500 mt-1 leading-snug max-w-xl">
             Diagnostico Demonstrativo do Cliente — cascata de margem P&amp;L cliente-a-cliente,
-            25 linhas, 7 blocos, validacao automatica ±0,5% (metodo Coelho Diniz).
+            25 linhas, 7 blocos, validacao automatica ±0,5% (calibrado em cliente de referência).
           </p>
         </div>
         <div
@@ -226,7 +226,7 @@ export default function DDEPage() {
             </div>
             <div>
               <dt className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide">Validacao</dt>
-              <dd className="text-sm text-gray-700 mt-0.5">Coelho Diniz ±0,5% por linha</dd>
+              <dd className="text-sm text-gray-700 mt-0.5">Cliente referência ±0,5% por linha</dd>
             </div>
             <div>
               <dt className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide">Desbloqueio</dt>
