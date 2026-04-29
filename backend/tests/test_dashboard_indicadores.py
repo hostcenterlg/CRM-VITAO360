@@ -1067,3 +1067,81 @@ class TestTwoBaseAcrossEndpoints:
                     f"Campo monetario '{campo}' encontrado em atendimentos-diarios "
                     f"— violacao Two-Base (R4)"
                 )
+
+
+# ===========================================================================
+# 7. Testes: GET /api/dashboard/hero — Curva ABC % e dedup Top 5
+# ===========================================================================
+
+class TestHeroCurvaAbcETop5:
+    """
+    GET /api/dashboard/hero — valida correcoes de:
+      - Curva ABC: pct_faturamento A+B+C deve somar ~100% (denominador = fat A+B+C)
+      - Top 5: sem CNPJ raiz duplicado (dedup por primeiros 8 digitos)
+    """
+
+    def test_retorna_200(self, client_admin):
+        """Retorna HTTP 200."""
+        resp = client_admin.get("/api/dashboard/hero")
+        assert resp.status_code == 200
+
+    def test_curva_abc_pct_soma_100(self, client_admin):
+        """
+        A soma dos pct_faturamento de A+B+C deve ser ~100% (tolerancia 1%).
+        Seed: MANU=curva_A (fat=3500+1200=4700 ano), LARISSA=curva_B (fat=2800+4000? mes errado).
+        Seed tem vendas em 2026 (abril e marco). A+B deve cobrir 100% dos classificados.
+        """
+        resp = client_admin.get("/api/dashboard/hero")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert "curva_abc" in data, f"Campo 'curva_abc' ausente: {list(data.keys())}"
+        curva = data["curva_abc"]
+        total_pct = sum(
+            curva[letra]["pct_faturamento"]
+            for letra in ("A", "B", "C")
+            if letra in curva
+        )
+        # Se nao ha clientes classificados, total_pct = 0 (aceitar 0 ou ~100)
+        assert total_pct == pytest.approx(100.0, abs=1.0) or total_pct == pytest.approx(0.0, abs=0.1), (
+            f"Soma pct_faturamento A+B+C deve ser ~100% ou 0% (sem dados), obtido {total_pct}%"
+        )
+
+    def test_top5_sem_cnpj_raiz_duplicado(self, client_admin):
+        """
+        Top 5 nao pode conter dois registros com mesmo CNPJ raiz (8 primeiros digitos).
+        Seed nao tem matriz/filial, mas o mecanismo deve funcionar.
+        """
+        resp = client_admin.get("/api/dashboard/hero")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert "top_5" in data, f"Campo 'top_5' ausente: {list(data.keys())}"
+        top5 = data["top_5"]
+        raizes = [entry["cnpj"][:8] for entry in top5 if entry.get("cnpj")]
+        assert len(raizes) == len(set(raizes)), (
+            f"Top 5 contem CNPJ raiz duplicado: {raizes}"
+        )
+
+    def test_top5_campos_obrigatorios(self, client_admin):
+        """Cada item do top_5 deve conter cnpj, nome_fantasia, faturamento_mes e pedidos_mes."""
+        resp = client_admin.get("/api/dashboard/hero")
+        data = resp.json()
+        for item in data.get("top_5", []):
+            assert "cnpj" in item, f"Campo 'cnpj' ausente em top_5: {item}"
+            assert "nome_fantasia" in item, f"Campo 'nome_fantasia' ausente em top_5: {item}"
+            assert "faturamento_mes" in item, f"Campo 'faturamento_mes' ausente em top_5: {item}"
+            assert "pedidos_mes" in item, f"Campo 'pedidos_mes' ausente em top_5: {item}"
+
+    def test_curva_abc_valores_nao_negativos(self, client_admin):
+        """Valores de curva ABC (clientes, pct, valor) devem ser nao-negativos."""
+        resp = client_admin.get("/api/dashboard/hero")
+        data = resp.json()
+        for letra in ("A", "B", "C"):
+            bar = data.get("curva_abc", {}).get(letra, {})
+            assert bar.get("clientes", 0) >= 0, f"Curva {letra}: clientes negativo"
+            assert bar.get("pct_faturamento", 0) >= 0.0, f"Curva {letra}: pct negativo"
+            assert bar.get("valor", 0) >= 0.0, f"Curva {letra}: valor negativo"
+
+    def test_sem_jwt_retorna_401(self, client_unauthenticated):
+        """Sem JWT deve retornar 401."""
+        resp = client_unauthenticated.get("/api/dashboard/hero")
+        assert resp.status_code == 401

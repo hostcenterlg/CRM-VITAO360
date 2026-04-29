@@ -2321,19 +2321,12 @@ def hero(
     ano_ini = date(hoje.year, 1, 1)
     ano_fim = date(hoje.year, 12, 31)
 
-    fat_ano_total = db.scalar(
-        _scope_cnpj(
-            select(func.coalesce(func.sum(Venda.valor_pedido), 0.0))
-            .where(
-                base_vendas_filter,
-                Venda.data_pedido >= ano_ini,
-                Venda.data_pedido <= ano_fim,
-            ),
-            Venda.cnpj,
-        )
-    ) or 0.0
-
-    curva_abc: dict[str, CurvaABCBar] = {}
+    # Calcular faturamento por curva primeiro, depois derivar o denominador.
+    # Denominador = soma do faturamento APENAS das curvas A+B+C classificadas.
+    # Usar o total geral incluiria clientes sem classificacao (curva_abc=None),
+    # o que resulta em percentuais muito baixos (ex: 7%+2%+1%=10%).
+    fat_por_curva: dict[str, float] = {}
+    clientes_por_curva: dict[str, int] = {}
     for letra in ("A", "B", "C"):
         clientes_curva = db.scalar(
             _scope_cliente(
@@ -2345,9 +2338,16 @@ def hero(
                 )
             )
         ) or 0
+        clientes_por_curva[letra] = int(clientes_curva)
 
         # Faturamento do ano corrente para clientes desta curva. JOIN via cnpj.
-        cnpjs_curva_sub = select(Cliente.cnpj).where(Cliente.curva_abc == letra)
+        cnpjs_curva_sub = (
+            select(Cliente.cnpj)
+            .where(
+                Cliente.curva_abc == letra,
+                Cliente.classificacao_3tier != "ALUCINACAO",
+            )
+        )
         if cliente_clause is not None:
             cnpjs_curva_sub = cnpjs_curva_sub.where(cliente_clause)
         if consultor_key:
@@ -2362,16 +2362,27 @@ def hero(
                 Venda.cnpj.in_(cnpjs_curva_sub),
             )
         ) or 0.0
+        fat_por_curva[letra] = float(fat_curva)
 
-        pct_fat = (float(fat_curva) / float(fat_ano_total) * 100.0) if fat_ano_total > 0 else 0.0
+    # Denominador correto: soma do faturamento apenas das curvas A+B+C.
+    fat_abc_total = sum(fat_por_curva.values())
+
+    curva_abc: dict[str, CurvaABCBar] = {}
+    for letra in ("A", "B", "C"):
+        fat_curva = fat_por_curva[letra]
+        pct_fat = (fat_curva / fat_abc_total * 100.0) if fat_abc_total > 0 else 0.0
         curva_abc[letra] = CurvaABCBar(
-            clientes=int(clientes_curva),
+            clientes=clientes_por_curva[letra],
             pct_faturamento=round(pct_fat, 1),
-            valor=round(float(fat_curva), 2),
+            valor=round(fat_curva, 2),
         )
 
     # ---------------- 6) Top 5 clientes (mes atual) ------------------------
-    top5_stmt = (
+    # Dedup por CNPJ raiz (primeiros 8 digitos) para evitar duplicatas de
+    # matriz/filial da mesma empresa (ex: MEGAMIX com 2 CNPJs distintos).
+    # Estrategia: buscar top 20 por CNPJ individual, depois agregar por raiz
+    # e pegar os 5 maiores grupos.
+    top5_base_stmt = (
         select(
             Cliente.cnpj,
             Cliente.nome_fantasia,
@@ -2387,23 +2398,43 @@ def hero(
         )
         .group_by(Cliente.cnpj, Cliente.nome_fantasia, Cliente.curva_abc)
         .order_by(func.sum(Venda.valor_pedido).desc())
-        .limit(5)
+        .limit(20)
     )
     if cliente_clause is not None:
-        top5_stmt = top5_stmt.where(cliente_clause)
+        top5_base_stmt = top5_base_stmt.where(cliente_clause)
     if consultor_key:
-        top5_stmt = top5_stmt.where(Cliente.consultor == consultor_key)
+        top5_base_stmt = top5_base_stmt.where(Cliente.consultor == consultor_key)
 
-    top5_rows = db.execute(top5_stmt).all()
+    top5_base_rows = db.execute(top5_base_stmt).all()
+
+    # Agregar por CNPJ raiz (8 primeiros digitos — R2: CNPJ e string, nunca int)
+    raiz_map: dict[str, dict] = {}
+    for row in top5_base_rows:
+        cnpj_str = (row.cnpj or "").strip()
+        raiz = cnpj_str[:8]
+        if raiz not in raiz_map:
+            raiz_map[raiz] = {
+                "cnpj": cnpj_str,
+                "nome_fantasia": row.nome_fantasia or "(sem nome)",
+                "curva_abc": row.curva_abc,
+                "fat": float(row.fat or 0.0),
+                "pedidos": int(row.pedidos or 0),
+            }
+        else:
+            # Acumula faturamento e pedidos das filiais; mantém o nome do maior
+            raiz_map[raiz]["fat"] += float(row.fat or 0.0)
+            raiz_map[raiz]["pedidos"] += int(row.pedidos or 0)
+
+    top5_sorted = sorted(raiz_map.values(), key=lambda x: x["fat"], reverse=True)[:5]
     top_5: list[Top5Cliente] = [
         Top5Cliente(
-            cnpj=row.cnpj or "",
-            nome_fantasia=row.nome_fantasia or "(sem nome)",
-            curva_abc=row.curva_abc,
-            faturamento_mes=round(float(row.fat or 0.0), 2),
-            pedidos_mes=int(row.pedidos or 0),
+            cnpj=entry["cnpj"],
+            nome_fantasia=entry["nome_fantasia"],
+            curva_abc=entry["curva_abc"],
+            faturamento_mes=round(entry["fat"], 2),
+            pedidos_mes=entry["pedidos"],
         )
-        for row in top5_rows
+        for entry in top5_sorted
     ]
 
     return KPIsHeroResponse(
