@@ -7,14 +7,16 @@ import { useAuth } from '@/contexts/AuthContext';
 // ---------------------------------------------------------------------------
 // Pipeline Kanban — CRM VITAO360
 // Horizontal scrollable board with 14 funnel stages, HTML5 drag-and-drop,
-// swimlane grouping (PRE-VENDA / VENDA / POS-VENDA) and mobile fallback.
+// swimlane grouping (PRE-VENDA / VENDA / POS-VENDA / LOOP / AUXILIARES) and
+// mobile fallback. Stage IDs, order and groups MUST match the canonical spec
+// in INTELIGENCIA_NEGOCIO_CRM360.md (Motor de Regras output).
 // ---------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------
-// Stage definitions — 14 estagios do Motor de Regras
+// Stage definitions — 14 estagios do Motor de Regras (5 grupos canonicos)
 // ---------------------------------------------------------------------------
 
-type StageGroup = 'pre-venda' | 'venda' | 'pos-venda';
+type StageGroup = 'pre-venda' | 'venda' | 'pos-venda' | 'loop' | 'auxiliares';
 
 interface StageConfig {
   id: string;
@@ -27,23 +29,29 @@ interface StageConfig {
 }
 
 const STAGE_CONFIGS: StageConfig[] = [
-  // Pre-venda
-  { id: 'INÍCIO CONTATO',  label: 'Inicio Contato',  group: 'pre-venda', borderColor: '#64748b', bgColor: '#f8fafc', textColor: '#475569', headerBg: '#f1f5f9' },
-  { id: 'TENTATIVA',       label: 'Tentativa',        group: 'pre-venda', borderColor: '#94a3b8', bgColor: '#f8fafc', textColor: '#475569', headerBg: '#f1f5f9' },
-  { id: 'PROSPECÇÃO',      label: 'Prospeccao',       group: 'pre-venda', borderColor: '#64748b', bgColor: '#f8fafc', textColor: '#475569', headerBg: '#f1f5f9' },
-  // Venda
-  { id: 'EM ATENDIMENTO',  label: 'Em Atendimento',   group: 'venda',     borderColor: '#2563eb', bgColor: '#eff6ff', textColor: '#1d4ed8', headerBg: '#dbeafe' },
-  { id: 'CADASTRO',        label: 'Cadastro',          group: 'venda',     borderColor: '#3b82f6', bgColor: '#eff6ff', textColor: '#1d4ed8', headerBg: '#dbeafe' },
-  { id: 'ORÇAMENTO',       label: 'Orcamento',         group: 'venda',     borderColor: '#2563eb', bgColor: '#eff6ff', textColor: '#1d4ed8', headerBg: '#dbeafe' },
-  { id: 'PEDIDO',          label: 'Pedido',            group: 'venda',     borderColor: '#1d4ed8', bgColor: '#eff6ff', textColor: '#1d4ed8', headerBg: '#dbeafe' },
-  // Pos-venda
-  { id: 'ACOMP POS-VENDA', label: 'Acomp Pos-Venda',  group: 'pos-venda', borderColor: '#00B050', bgColor: '#f0fdf4', textColor: '#166534', headerBg: '#dcfce7' },
-  { id: 'POS-VENDA',       label: 'Pos-Venda',         group: 'pos-venda', borderColor: '#16a34a', bgColor: '#f0fdf4', textColor: '#166534', headerBg: '#dcfce7' },
-  { id: 'CS',              label: 'CS',                group: 'pos-venda', borderColor: '#00B050', bgColor: '#f0fdf4', textColor: '#166534', headerBg: '#dcfce7' },
-  { id: 'FOLLOW-UP',       label: 'Follow-Up',         group: 'pos-venda', borderColor: '#d97706', bgColor: '#fffbeb', textColor: '#92400e', headerBg: '#fef3c7' },
-  { id: 'SUPORTE',         label: 'Suporte',            group: 'pos-venda', borderColor: '#dc2626', bgColor: '#fff1f2', textColor: '#9f1239', headerBg: '#ffe4e6' },
-  { id: 'RELACIONAMENTO',  label: 'Relacionamento',     group: 'pos-venda', borderColor: '#e11d48', bgColor: '#fff1f2', textColor: '#9f1239', headerBg: '#ffe4e6' },
-  { id: 'NUTRIÇÃO',        label: 'Nutricao',           group: 'pos-venda', borderColor: '#f43f5e', bgColor: '#fff1f2', textColor: '#9f1239', headerBg: '#ffe4e6' },
+  // PRE-VENDA (cinza neutro — esfriando para o frio)
+  { id: 'INÍCIO CONTATO',  label: 'Inicio Contato',   group: 'pre-venda',  borderColor: '#94a3b8', bgColor: '#f8fafc', textColor: '#475569', headerBg: '#f1f5f9' },
+  { id: 'TENTATIVA',       label: 'Tentativa',         group: 'pre-venda',  borderColor: '#94a3b8', bgColor: '#f8fafc', textColor: '#475569', headerBg: '#f1f5f9' },
+  { id: 'PROSPECÇÃO',      label: 'Prospeccao',        group: 'pre-venda',  borderColor: '#94a3b8', bgColor: '#f8fafc', textColor: '#475569', headerBg: '#f1f5f9' },
+
+  // VENDA (azul — ativo / conversao)
+  { id: 'EM ATENDIMENTO',  label: 'Em Atendimento',    group: 'venda',      borderColor: '#3b82f6', bgColor: '#eff6ff', textColor: '#1e40af', headerBg: '#dbeafe' },
+  { id: 'CADASTRO',        label: 'Cadastro',           group: 'venda',      borderColor: '#3b82f6', bgColor: '#eff6ff', textColor: '#1e40af', headerBg: '#dbeafe' },
+  { id: 'ORÇAMENTO',       label: 'Orcamento',          group: 'venda',      borderColor: '#3b82f6', bgColor: '#eff6ff', textColor: '#1e40af', headerBg: '#dbeafe' },
+  { id: 'PEDIDO',          label: 'Pedido',             group: 'venda',      borderColor: '#1d4ed8', bgColor: '#eff6ff', textColor: '#1e40af', headerBg: '#dbeafe' },
+
+  // POS-VENDA (verde — fechamento ok / continuidade D+4 -> D+15 -> D+30)
+  { id: 'ACOMP POS-VENDA', label: 'Acomp Pos-Venda',   group: 'pos-venda',  borderColor: '#16a34a', bgColor: '#f0fdf4', textColor: '#166534', headerBg: '#dcfce7' },
+  { id: 'POS-VENDA',       label: 'Pos-Venda',          group: 'pos-venda',  borderColor: '#16a34a', bgColor: '#f0fdf4', textColor: '#166534', headerBg: '#dcfce7' },
+  { id: 'CS',              label: 'CS',                 group: 'pos-venda',  borderColor: '#16a34a', bgColor: '#f0fdf4', textColor: '#166534', headerBg: '#dcfce7' },
+
+  // LOOP (laranja — atencao, recuperacao)
+  { id: 'FOLLOW-UP',       label: 'Follow-Up',          group: 'loop',       borderColor: '#d97706', bgColor: '#fffbeb', textColor: '#92400e', headerBg: '#fef3c7' },
+
+  // AUXILIARES (vermelho/roxo — excecao)
+  { id: 'SUPORTE',         label: 'Suporte',            group: 'auxiliares', borderColor: '#dc2626', bgColor: '#fef2f2', textColor: '#991b1b', headerBg: '#fee2e2' },
+  { id: 'RELACIONAMENTO',  label: 'Relacionamento',     group: 'auxiliares', borderColor: '#7c3aed', bgColor: '#faf5ff', textColor: '#6b21a8', headerBg: '#f3e8ff' },
+  { id: 'NUTRIÇÃO',        label: 'Nutricao',           group: 'auxiliares', borderColor: '#7c3aed', bgColor: '#faf5ff', textColor: '#6b21a8', headerBg: '#f3e8ff' },
 ];
 
 // Swimlane configuration
@@ -56,28 +64,40 @@ interface SwimlaneConfig {
 }
 
 const SWIMLANES: SwimlaneConfig[] = [
-  { id: 'pre-venda', label: 'PRE-VENDA',  bg: '#DBEAFE', border: '#93c5fd', text: '#1d4ed8' },
-  { id: 'venda',     label: 'VENDA',      bg: '#DCFCE7', border: '#86efac', text: '#166534' },
-  { id: 'pos-venda', label: 'POS-VENDA',  bg: '#FEF3C7', border: '#fcd34d', text: '#92400e' },
+  { id: 'pre-venda',  label: 'PRE-VENDA',   bg: '#f1f5f9', border: '#cbd5e1', text: '#475569' },
+  { id: 'venda',      label: 'VENDA',       bg: '#dbeafe', border: '#93c5fd', text: '#1e40af' },
+  { id: 'pos-venda',  label: 'POS-VENDA',   bg: '#dcfce7', border: '#86efac', text: '#166534' },
+  { id: 'loop',       label: 'LOOP',        bg: '#fef3c7', border: '#fcd34d', text: '#92400e' },
+  { id: 'auxiliares', label: 'AUXILIARES',  bg: '#f3e8ff', border: '#d8b4fe', text: '#6b21a8' },
 ];
 
-// Normalise variant spellings from the backend to canonical stage IDs
+// Normalise variant spellings from the backend to canonical stage IDs.
+// CRITICO: 'CS / RECOMPRA' (104 clientes hoje no banco PROD) precisa mapear
+// para 'CS' senao fica invisivel na Kanban.
 const STAGE_ALIASES: Record<string, string> = {
+  // Variantes acento / sem acento
   'INICIO CONTATO':     'INÍCIO CONTATO',
   'INÍCIO CONTATO':     'INÍCIO CONTATO',
-  'ACOMP PÓS-VENDA':   'ACOMP POS-VENDA',
-  'ACOMP POS-VENDA':   'ACOMP POS-VENDA',
-  'PÓS-VENDA':         'POS-VENDA',
-  'POS-VENDA':         'POS-VENDA',
-  'PROSPEÇÃO':         'PROSPECÇÃO',
-  'PROSPECÇÃO':        'PROSPECÇÃO',
-  'PROSPECCAO':        'PROSPECÇÃO',
-  'ORÇAMENTO':         'ORÇAMENTO',
-  'ORCAMENTO':         'ORÇAMENTO',
-  'FOLLOW-UP':         'FOLLOW-UP',
-  'FOLLOWUP':          'FOLLOW-UP',
-  'NUTRIÇÃO':          'NUTRIÇÃO',
-  'NUTRICAO':          'NUTRIÇÃO',
+  'PROSPECCAO':         'PROSPECÇÃO',
+  'PROSPECÇÃO':         'PROSPECÇÃO',
+  'PROSPEÇÃO':          'PROSPECÇÃO',
+  'ORCAMENTO':          'ORÇAMENTO',
+  'ORÇAMENTO':          'ORÇAMENTO',
+  'ACOMP POS-VENDA':    'ACOMP POS-VENDA',
+  'ACOMP PÓS-VENDA':    'ACOMP POS-VENDA',
+  'POS-VENDA':          'POS-VENDA',
+  'PÓS-VENDA':          'POS-VENDA',
+  'NUTRICAO':           'NUTRIÇÃO',
+  'NUTRIÇÃO':           'NUTRIÇÃO',
+  'FOLLOW-UP':          'FOLLOW-UP',
+  'FOLLOWUP':           'FOLLOW-UP',
+  'FOLLOW UP':          'FOLLOW-UP',
+
+  // Variantes legacy do banco que precisam mapear
+  'CS / RECOMPRA':      'CS',          // CRITICO: 104 clientes em PROD
+  'CS/RECOMPRA':        'CS',
+  'RECOMPRA':           'CS',
+  'CS':                 'CS',
 };
 
 function normalizeStage(raw: string | undefined | null): string {
@@ -979,10 +999,9 @@ export default function PipelinePage() {
     }
   });
 
-  // Only show stages that have cards OR are "core" stages we always want visible
-  const ALWAYS_SHOW_STAGES = new Set([
-    'EM ATENDIMENTO', 'PEDIDO', 'POS-VENDA', 'FOLLOW-UP',
-  ]);
+  // Sempre mostrar todas as 14 colunas (mesmo com count=0).
+  // Leandro precisa ver o pipeline canonico inteiro — Motor de Regras
+  // populara estagios vazios conforme atendimentos rolam.
 
   // ---------------------------------------------------------------------------
   // Summary stats
@@ -1085,13 +1104,9 @@ export default function PipelinePage() {
   // ---------------------------------------------------------------------------
 
   const swimlaneData = SWIMLANES.map((swimlane) => {
-    const stages = STAGE_CONFIGS.filter(
-      (s) =>
-        s.group === swimlane.id &&
-        (columns[s.id].length > 0 || ALWAYS_SHOW_STAGES.has(s.id))
-    );
+    const stages = STAGE_CONFIGS.filter((s) => s.group === swimlane.id);
     return { swimlane, stages };
-  }).filter((entry) => entry.stages.length > 0);
+  });
 
   // ---------------------------------------------------------------------------
   // Mobile list view — single flat list grouped by stage
@@ -1292,30 +1307,33 @@ export default function PipelinePage() {
       {/* Loading skeleton */}
       {loading && !error && (
         <div className="flex gap-6 overflow-x-auto pb-3 scrollbar-thin">
-          {SWIMLANES.map((sw) => (
-            <div key={sw.id} className="flex-shrink-0 flex flex-col gap-2">
-              <div
-                className="h-8 rounded-lg w-48 animate-pulse"
-                style={{ backgroundColor: sw.bg }}
-              />
-              <div className="flex gap-3">
-                {[...Array(sw.id === 'pos-venda' ? 4 : sw.id === 'venda' ? 4 : 3)].map((_, i) => (
-                  <div
-                    key={i}
-                    className="flex-shrink-0 rounded-lg border border-gray-200 bg-white animate-pulse"
-                    style={{ width: 220, height: 360 }}
-                  >
-                    <div className="h-14 bg-gray-100 rounded-t-lg" />
-                    <div className="p-2 space-y-2">
-                      {[...Array(4)].map((_, j) => (
-                        <div key={j} className="h-16 bg-gray-50 rounded-lg border border-gray-100" />
-                      ))}
+          {SWIMLANES.map((sw) => {
+            const stageCount = STAGE_CONFIGS.filter((s) => s.group === sw.id).length;
+            return (
+              <div key={sw.id} className="flex-shrink-0 flex flex-col gap-2">
+                <div
+                  className="h-8 rounded-lg w-48 animate-pulse"
+                  style={{ backgroundColor: sw.bg }}
+                />
+                <div className="flex gap-3">
+                  {[...Array(stageCount)].map((_, i) => (
+                    <div
+                      key={i}
+                      className="flex-shrink-0 rounded-lg border border-gray-200 bg-white animate-pulse"
+                      style={{ width: 220, height: 360 }}
+                    >
+                      <div className="h-14 bg-gray-100 rounded-t-lg" />
+                      <div className="p-2 space-y-2">
+                        {[...Array(4)].map((_, j) => (
+                          <div key={j} className="h-16 bg-gray-50 rounded-lg border border-gray-100" />
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
 
