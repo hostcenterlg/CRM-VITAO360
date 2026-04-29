@@ -11,6 +11,7 @@ import {
 } from '@/lib/api';
 import { exportToCSV } from '@/lib/export';
 import { useAuth } from '@/contexts/AuthContext';
+import { useCanal } from '@/contexts/CanalContext';
 import ClienteTable, { SortState } from '@/components/ClienteTable';
 import ClienteDetalhe from '@/components/ClienteDetalhe';
 import { FilterGroup, FilterField, FilterState } from '@/components/ui';
@@ -184,6 +185,7 @@ function CarteiraInner() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { user } = useAuth();
+  const { canalId } = useCanal();
   const isExternoJulio = user?.role === 'consultor_externo';
 
   const [filterState, setFilterState] = useState<FilterState>(
@@ -275,11 +277,12 @@ function CarteiraInner() {
       sort_dir:   sort.dir,
       limit:      PAGE_SIZE,
       offset,
+      canal_id:   canalId,
     })
       .then(setResponse)
       .catch((e: Error) => setError(e.message))
       .finally(() => setLoading(false));
-  }, [filterState, sort, offset]);
+  }, [filterState, sort, offset, canalId]);
 
   useEffect(() => {
     load();
@@ -311,6 +314,7 @@ function CarteiraInner() {
         sort_dir:   sort.dir,
         limit:      10000,
         offset:     0,
+        canal_id:   canalId,
       });
 
       const todosRegistros = aplicarFiltrosCliente(data.registros ?? [], filterState);

@@ -438,6 +438,8 @@ export interface ClientesParams {
   sort_dir?: 'asc' | 'desc';
   limit?: number;
   offset?: number;
+  /** Filtrar por canal (id numerico de canais.id). null = todos. */
+  canal_id?: number | null;
 }
 
 export async function fetchClientes(
@@ -454,6 +456,7 @@ export async function fetchClientes(
   if (params.busca) qs.set('busca', params.busca);
   if (params.sort_by) qs.set('sort_by', params.sort_by);
   if (params.sort_dir) qs.set('sort_dir', params.sort_dir);
+  if (params.canal_id != null) qs.set('canal_id', String(params.canal_id));
   qs.set('limit', String(params.limit ?? 50));
   qs.set('offset', String(params.offset ?? 0));
 
