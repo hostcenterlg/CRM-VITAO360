@@ -403,7 +403,7 @@ function ConversationList({
   return (
     <div className="w-full flex-shrink-0 border-r border-gray-200 bg-white flex flex-col h-full">
       {/* Offline banner */}
-      {(waConnecting || waOffline) && (
+      {waOffline && (
         <div className="flex items-center gap-2 px-3 py-2 bg-amber-50 border-b border-amber-200 flex-shrink-0">
           <svg className="w-3.5 h-3.5 text-amber-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
@@ -412,6 +412,44 @@ function ConversationList({
           <p className="text-[10px] text-amber-700 font-medium">
             WhatsApp desconectado — mostrando ultimos dados disponiveis
           </p>
+        </div>
+      )}
+      {waConnecting && (
+        <div className="bg-amber-50 border-l-4 border-amber-500 rounded-lg p-4 flex items-start gap-3 shadow-sm mx-3 mt-3 flex-shrink-0">
+          <svg
+            className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+            />
+          </svg>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-semibold text-amber-900">
+              Conexões WhatsApp do Deskrio offline
+            </p>
+            <p className="text-xs text-amber-800 mt-0.5">
+              Novas mensagens não chegam até reconectar uma das conexões WhatsApp no painel Deskrio.
+              O histórico abaixo (se houver) é dos últimos dados sincronizados.
+            </p>
+            <a
+              href="https://web.deskrio.com.br"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 mt-2 px-3 py-1.5 text-xs font-semibold text-white bg-amber-600 hover:bg-amber-700 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-1"
+            >
+              <span>Abrir painel Deskrio</span>
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              </svg>
+            </a>
+          </div>
         </div>
       )}
 
@@ -542,14 +580,25 @@ function ConversationList({
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
                 d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
             </svg>
-            <p className="text-sm font-medium text-gray-500">Nenhuma conversa encontrada</p>
-            <p className="text-xs text-gray-400 mt-1">
-              {busca
-                ? 'Tente outro termo de busca'
-                : filterTab !== 'todos'
-                  ? 'Tente outro filtro'
-                  : 'Nenhum ticket nos ultimos 7 dias'}
-            </p>
+            {waConnecting ? (
+              <>
+                <p className="text-sm font-medium text-gray-700">Aguardando reconexão WhatsApp</p>
+                <p className="text-xs text-gray-500 mt-1 max-w-sm">
+                  Nenhuma conversa nos últimos 7 dias. Reconecte uma das conexões WhatsApp no painel Deskrio para receber mensagens novas.
+                </p>
+              </>
+            ) : (
+              <>
+                <p className="text-sm font-medium text-gray-500">Nenhuma conversa encontrada</p>
+                <p className="text-xs text-gray-400 mt-1">
+                  {busca
+                    ? 'Tente outro termo de busca'
+                    : filterTab !== 'todos'
+                      ? 'Tente outro filtro'
+                      : 'Nenhum ticket nos ultimos 7 dias'}
+                </p>
+              </>
+            )}
           </div>
         )}
 
