@@ -11,11 +11,11 @@ import { exportToCSV } from '@/lib/export';
 import { useAuth } from '@/contexts/AuthContext';
 import ClienteTable, { SortState } from '@/components/ClienteTable';
 import ClienteDetalhe from '@/components/ClienteDetalhe';
+import { FilterGroup, FilterField, FilterState } from '@/components/ui';
 
 // ---------------------------------------------------------------------------
 // Carteira de Clientes — filtros cumulativos, URL params, ordenação, paginação
-// Multi-select chips para situacao, abc, temperatura (client-side)
-// Export CSV via helper exportToCSV
+// Wave 2B: FilterGroup 3 níveis, sem label BUSCA, CLIENTE primeira coluna
 // ---------------------------------------------------------------------------
 
 const CONSULTORES = ['MANU', 'LARISSA', 'DAIANE', 'JULIO', 'OUTROS'];
@@ -30,112 +30,144 @@ const UFS = [
 ];
 
 // ---------------------------------------------------------------------------
-// Cores dos chips (alinhado ao Blueprint v2 do projeto)
+// FilterGroup field schema — 3 níveis hierárquicos
+// Nível 1 (sempre visível): busca + consultor
+// Nível 2 (pills): situação
+// Nível 3 (colapsável): curva ABC, temperatura, sinaleiro, prioridade, UF
 // ---------------------------------------------------------------------------
 
-const SITUACAO_CHIP_COLORS: Record<string, { bg: string; text: string; border: string }> = {
-  'ATIVO':    { bg: '#f0fdf4', text: '#15803d', border: '#00B050' },
-  'INAT.REC': { bg: '#fffbeb', text: '#92400e', border: '#FFC000' },
-  'INAT.ANT': { bg: '#fef2f2', text: '#991b1b', border: '#FF0000' },
-  'PROSPECT': { bg: '#faf5ff', text: '#6b21a8', border: '#7030A0' },
-  'EM RISCO': { bg: '#fff7ed', text: '#c2410c', border: '#FF8C00' },
-  'LEAD':     { bg: '#eff6ff', text: '#1d4ed8', border: '#2563eb' },
-  'NOVO':     { bg: '#f0fdfa', text: '#0f766e', border: '#0891b2' },
-};
+const FILTER_FIELDS: FilterField[] = [
+  // Nível 1
+  {
+    id: 'busca',
+    label: 'Nome ou CNPJ',
+    level: 1,
+    type: 'search',
+    placeholder: 'Nome ou CNPJ...',
+    className: 'flex-1 min-w-[200px]',
+  },
+  {
+    id: 'consultor',
+    label: 'Consultor',
+    level: 1,
+    type: 'select',
+    placeholder: 'Todos consultores',
+    options: CONSULTORES.map((c) => ({ value: c, label: c })),
+  },
 
-const ABC_CHIP_COLORS: Record<string, { bg: string; text: string; border: string }> = {
-  'A': { bg: '#f0fdf4', text: '#15803d', border: '#00B050' },
-  'B': { bg: '#fffbeb', text: '#92400e', border: '#FFC000' },
-  'C': { bg: '#fff7ed', text: '#c2410c', border: '#FF8C00' },
-};
+  // Nível 2 — pills situação
+  {
+    id: 'situacoes',
+    label: 'Situação',
+    level: 2,
+    type: 'pill-toggle',
+    multi: true,
+    options: SITUACOES.map((s) => ({ value: s, label: s })),
+  },
 
-const TEMPERATURA_CHIP_COLORS: Record<string, { bg: string; text: string; border: string }> = {
-  'QUENTE':  { bg: '#fef2f2', text: '#991b1b', border: '#FF0000' },
-  'MORNO':   { bg: '#fffbeb', text: '#92400e', border: '#FFC000' },
-  'FRIO':    { bg: '#eff6ff', text: '#1d4ed8', border: '#2563eb' },
-  'CRITICO': { bg: '#fdf4ff', text: '#7e22ce', border: '#7030A0' },
-};
+  // Nível 3 — colapsável
+  {
+    id: 'abcs',
+    label: 'Curva ABC',
+    level: 3,
+    type: 'pill-toggle',
+    multi: true,
+    options: ABCS.map((a) => ({ value: a, label: `Curva ${a}` })),
+  },
+  {
+    id: 'temperaturas',
+    label: 'Temperatura',
+    level: 3,
+    type: 'pill-toggle',
+    multi: true,
+    options: TEMPERATURAS.map((t) => ({ value: t, label: t })),
+  },
+  {
+    id: 'sinaleiro',
+    label: 'Sinaleiro',
+    level: 3,
+    type: 'select',
+    placeholder: 'Todos',
+    options: SINALEIROS.map((s) => ({ value: s, label: s })),
+  },
+  {
+    id: 'prioridade',
+    label: 'Prioridade',
+    level: 3,
+    type: 'select',
+    placeholder: 'Todas',
+    options: PRIORIDADES.map((p) => ({ value: p, label: p })),
+  },
+  {
+    id: 'uf',
+    label: 'UF',
+    level: 3,
+    type: 'select',
+    placeholder: 'Todas',
+    options: UFS.map((u) => ({ value: u, label: u })),
+  },
+];
 
 const PAGE_SIZE = 50;
 const DEFAULT_SORT: SortState = { by: 'score', dir: 'desc' };
-const DEBOUNCE_MS = 300;
 
 // ---------------------------------------------------------------------------
-// Interfaces de filtros
-// Filtros servidor: consultor, sinaleiro, prioridade, uf, busca
-// Filtros client-side multi-select: situacoes[], abcs[], temperaturas[]
+// FilterState helpers
 // ---------------------------------------------------------------------------
 
-interface FiltrosServidor {
-  consultor: string;
-  sinaleiro: string;
-  prioridade: string;
-  uf: string;
-  busca: string;
-}
-
-interface FiltrosCliente {
-  situacoes: string[];   // multi-select
-  abcs: string[];        // multi-select
-  temperaturas: string[]; // multi-select
-}
-
-const FILTROS_SERVIDOR_INICIAIS: FiltrosServidor = {
-  consultor: '',
-  sinaleiro: '',
-  prioridade: '',
-  uf: '',
+const FILTER_STATE_INICIAL: FilterState = {
   busca: '',
-};
-
-const FILTROS_CLIENTE_INICIAIS: FiltrosCliente = {
+  consultor: '',
   situacoes: [],
   abcs: [],
   temperaturas: [],
+  sinaleiro: '',
+  prioridade: '',
+  uf: '',
 };
 
-function filtrosServidorFromParams(params: URLSearchParams): FiltrosServidor {
+function filterStateFromParams(params: URLSearchParams): FilterState {
   return {
-    consultor:  params.get('consultor')  ?? '',
-    sinaleiro:  params.get('sinaleiro')  ?? '',
-    prioridade: params.get('prioridade') ?? '',
-    uf:         params.get('uf')         ?? '',
-    busca:      params.get('busca')      ?? '',
-  };
-}
-
-function filtrosClienteFromParams(params: URLSearchParams): FiltrosCliente {
-  return {
-    situacoes:   params.get('situacoes')?.split(',').filter(Boolean)   ?? [],
-    abcs:        params.get('abcs')?.split(',').filter(Boolean)        ?? [],
+    busca:       params.get('busca')       ?? '',
+    consultor:   params.get('consultor')   ?? '',
+    situacoes:   params.get('situacoes')?.split(',').filter(Boolean)    ?? [],
+    abcs:        params.get('abcs')?.split(',').filter(Boolean)         ?? [],
     temperaturas: params.get('temperaturas')?.split(',').filter(Boolean) ?? [],
+    sinaleiro:   params.get('sinaleiro')   ?? '',
+    prioridade:  params.get('prioridade')  ?? '',
+    uf:          params.get('uf')          ?? '',
   };
 }
 
-function temFiltroServidor(f: FiltrosServidor): boolean {
-  return Object.values(f).some((v) => v !== '');
-}
-
-function temFiltroCliente(f: FiltrosCliente): boolean {
-  return (f?.situacoes?.length ?? 0) > 0 || (f?.abcs?.length ?? 0) > 0 || (f?.temperaturas?.length ?? 0) > 0;
-}
-
-function temFiltroAtivo(fs: FiltrosServidor, fc: FiltrosCliente): boolean {
-  return temFiltroServidor(fs) || temFiltroCliente(fc);
+function temFiltroAtivo(s: FilterState): boolean {
+  return (
+    !!s.busca ||
+    !!s.consultor ||
+    (s.situacoes as string[]).length > 0 ||
+    (s.abcs as string[]).length > 0 ||
+    (s.temperaturas as string[]).length > 0 ||
+    !!s.sinaleiro ||
+    !!s.prioridade ||
+    !!s.uf
+  );
 }
 
 // ---------------------------------------------------------------------------
-// Filtro client-side — aplica multi-selects sobre registros ja carregados
+// Filtro client-side para multi-selects situacao/abc/temperatura
 // ---------------------------------------------------------------------------
 
 function aplicarFiltrosCliente(
   registros: ClienteRegistro[],
-  fc: FiltrosCliente
+  fs: FilterState
 ): ClienteRegistro[] {
+  const situacoes = fs.situacoes as string[];
+  const abcs      = fs.abcs      as string[];
+  const temps     = fs.temperaturas as string[];
+
   return (registros ?? []).filter((r) => {
-    if ((fc?.situacoes?.length ?? 0) > 0 && !(fc.situacoes ?? []).includes(r.situacao ?? '')) return false;
-    if ((fc?.abcs?.length ?? 0) > 0 && !(fc.abcs ?? []).includes(r.curva_abc ?? '')) return false;
-    if ((fc?.temperaturas?.length ?? 0) > 0 && !(fc.temperaturas ?? []).includes(r.temperatura ?? '')) return false;
+    if (situacoes.length > 0 && !situacoes.includes(r.situacao ?? '')) return false;
+    if (abcs.length      > 0 && !abcs.includes(r.curva_abc ?? ''))     return false;
+    if (temps.length     > 0 && !temps.includes(r.temperatura ?? ''))  return false;
     return true;
   });
 }
@@ -150,22 +182,14 @@ function CarteiraInner() {
   const { user } = useAuth();
   const isExternoJulio = user?.role === 'consultor_externo';
 
-  // Filtros servidor (sincrono com URL)
-  const [filtrosS, setFiltrosS] = useState<FiltrosServidor>(
-    () => filtrosServidorFromParams(searchParams)
+  const [filterState, setFilterState] = useState<FilterState>(
+    () => filterStateFromParams(searchParams)
   );
-  // Filtros client-side multi-select (sincrono com URL via params separados)
-  const [filtrosC, setFiltrosC] = useState<FiltrosCliente>(
-    () => filtrosClienteFromParams(searchParams)
-  );
-
-  // Busca tem debounce separado
-  const [buscaInput, setBuscaInput] = useState(() => searchParams.get('busca') ?? '');
 
   // Ordenação
   const [sort, setSort] = useState<SortState>(DEFAULT_SORT);
 
-  // Paginação (server-side, aplicado antes do filtro client)
+  // Paginação (server-side)
   const [offset, setOffset] = useState(0);
 
   // Dados brutos do servidor
@@ -189,26 +213,27 @@ function CarteiraInner() {
     toastTimerRef.current = setTimeout(() => setToastMsg(null), 5000);
   }
 
-  // Filtros colapsados em mobile
-  const [filtrosExpanded, setFiltrosExpanded] = useState(false);
-
-  // Debounce da busca
-  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
   // ---------------------------------------------------------------------------
   // Sincronizar filtros -> URL
   // ---------------------------------------------------------------------------
 
   const pushUrl = useCallback(
-    (fs: FiltrosServidor, fc: FiltrosCliente, novoOffset: number, novoSort: SortState) => {
+    (fs: FilterState, novoOffset: number, novoSort: SortState) => {
       const params = new URLSearchParams();
-      Object.entries(fs).forEach(([k, v]) => { if (v) params.set(k, v); });
-      if ((fc?.situacoes?.length ?? 0) > 0) params.set('situacoes', (fc.situacoes ?? []).join(','));
-      if ((fc?.abcs?.length ?? 0) > 0) params.set('abcs', (fc.abcs ?? []).join(','));
-      if ((fc?.temperaturas?.length ?? 0) > 0) params.set('temperaturas', (fc.temperaturas ?? []).join(','));
+      if (fs.busca)      params.set('busca',       fs.busca as string);
+      if (fs.consultor)  params.set('consultor',   fs.consultor as string);
+      if (fs.sinaleiro)  params.set('sinaleiro',   fs.sinaleiro as string);
+      if (fs.prioridade) params.set('prioridade',  fs.prioridade as string);
+      if (fs.uf)         params.set('uf',          fs.uf as string);
+      const sits = fs.situacoes as string[];
+      const abcs = fs.abcs as string[];
+      const temps = fs.temperaturas as string[];
+      if (sits.length  > 0) params.set('situacoes',    sits.join(','));
+      if (abcs.length  > 0) params.set('abcs',         abcs.join(','));
+      if (temps.length > 0) params.set('temperaturas', temps.join(','));
       if (novoOffset > 0) params.set('offset', String(novoOffset));
       if (novoSort.by !== DEFAULT_SORT.by || novoSort.dir !== DEFAULT_SORT.dir) {
-        params.set('sort_by', novoSort.by);
+        params.set('sort_by',  novoSort.by);
         params.set('sort_dir', novoSort.dir);
       }
       const query = params.toString();
@@ -218,22 +243,27 @@ function CarteiraInner() {
   );
 
   // ---------------------------------------------------------------------------
-  // Carregar dados do servidor (sem filtros client-side — esses aplicam localmente)
+  // Carregar dados do servidor — filtros que vão ao backend:
+  //   busca, consultor, sinaleiro, prioridade, uf (os restantes = client-side)
   // ---------------------------------------------------------------------------
 
   const load = useCallback(() => {
     setLoading(true);
     fetchClientes({
-      ...filtrosS,
-      sort_by: sort.by,
-      sort_dir: sort.dir,
-      limit: PAGE_SIZE,
+      busca:      filterState.busca as string,
+      consultor:  filterState.consultor as string,
+      sinaleiro:  filterState.sinaleiro as string,
+      prioridade: filterState.prioridade as string,
+      uf:         filterState.uf as string,
+      sort_by:    sort.by,
+      sort_dir:   sort.dir,
+      limit:      PAGE_SIZE,
       offset,
     })
       .then(setResponse)
       .catch((e: Error) => setError(e.message))
       .finally(() => setLoading(false));
-  }, [filtrosS, sort, offset]);
+  }, [filterState, sort, offset]);
 
   useEffect(() => {
     load();
@@ -244,26 +274,30 @@ function CarteiraInner() {
   // ---------------------------------------------------------------------------
 
   const registrosFiltrados = useMemo(
-    () => aplicarFiltrosCliente(response?.registros ?? [], filtrosC),
-    [response, filtrosC]
+    () => aplicarFiltrosCliente(response?.registros ?? [], filterState),
+    [response, filterState]
   );
 
   // ---------------------------------------------------------------------------
-  // Export CSV — gera com filtros ativos (server + client)
+  // Export CSV
   // ---------------------------------------------------------------------------
 
   async function handleExportCsv() {
     setExporting(true);
     try {
       const data = await fetchClientes({
-        ...filtrosS,
-        sort_by: sort.by,
-        sort_dir: sort.dir,
-        limit: 10000,
-        offset: 0,
+        busca:      filterState.busca as string,
+        consultor:  filterState.consultor as string,
+        sinaleiro:  filterState.sinaleiro as string,
+        prioridade: filterState.prioridade as string,
+        uf:         filterState.uf as string,
+        sort_by:    sort.by,
+        sort_dir:   sort.dir,
+        limit:      10000,
+        offset:     0,
       });
 
-      const todosRegistros = aplicarFiltrosCliente(data.registros ?? [], filtrosC);
+      const todosRegistros = aplicarFiltrosCliente(data.registros ?? [], filterState);
       const hoje = new Date().toISOString().slice(0, 10);
 
       exportToCSV(
@@ -294,59 +328,24 @@ function CarteiraInner() {
   }
 
   // ---------------------------------------------------------------------------
-  // Handlers — filtros servidor
+  // Handler unificado para FilterGroup
   // ---------------------------------------------------------------------------
 
-  function handleServidorChange(campo: keyof FiltrosServidor, valor: string) {
-    const novos = { ...filtrosS, [campo]: valor };
-    setFiltrosS(novos);
+  function handleFilterChange(next: FilterState) {
+    setFilterState(next);
     setOffset(0);
-    pushUrl(novos, filtrosC, 0, sort);
+    pushUrl(next, 0, sort);
   }
 
-  function handleBuscaChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const valor = e.target.value;
-    setBuscaInput(valor);
-    if (debounceRef.current) clearTimeout(debounceRef.current);
-    debounceRef.current = setTimeout(() => {
-      const novos = { ...filtrosS, busca: valor };
-      setFiltrosS(novos);
-      setOffset(0);
-      pushUrl(novos, filtrosC, 0, sort);
-    }, DEBOUNCE_MS);
-  }
-
-  function handleBuscaClear() {
-    setBuscaInput('');
-    const novos = { ...filtrosS, busca: '' };
-    setFiltrosS(novos);
+  function handleLimpar() {
+    setFilterState(FILTER_STATE_INICIAL);
     setOffset(0);
-    pushUrl(novos, filtrosC, 0, sort);
+    setSort(DEFAULT_SORT);
+    pushUrl(FILTER_STATE_INICIAL, 0, DEFAULT_SORT);
   }
 
   // ---------------------------------------------------------------------------
-  // Handlers — filtros client-side multi-select
-  // ---------------------------------------------------------------------------
-
-  function toggleChip<K extends keyof FiltrosCliente>(
-    campo: K,
-    valor: string
-  ) {
-    const lista = filtrosC[campo] as string[];
-    const novaLista = lista.includes(valor)
-      ? lista.filter((v) => v !== valor)
-      : [...lista, valor];
-    const novos: FiltrosCliente = { ...filtrosC, [campo]: novaLista };
-    setFiltrosC(novos);
-    pushUrl(filtrosS, novos, offset, sort);
-  }
-
-  function removerChipAtivo(campo: keyof FiltrosCliente, valor: string) {
-    toggleChip(campo, valor);
-  }
-
-  // ---------------------------------------------------------------------------
-  // Handlers — sort, limpar, paginação
+  // Handlers — sort, paginação
   // ---------------------------------------------------------------------------
 
   function handleSort(col: string) {
@@ -356,16 +355,7 @@ function CarteiraInner() {
         : { by: col, dir: 'desc' };
     setSort(novoSort);
     setOffset(0);
-    pushUrl(filtrosS, filtrosC, 0, novoSort);
-  }
-
-  function handleLimpar() {
-    setFiltrosS(FILTROS_SERVIDOR_INICIAIS);
-    setFiltrosC(FILTROS_CLIENTE_INICIAIS);
-    setBuscaInput('');
-    setOffset(0);
-    setSort(DEFAULT_SORT);
-    pushUrl(FILTROS_SERVIDOR_INICIAIS, FILTROS_CLIENTE_INICIAIS, 0, DEFAULT_SORT);
+    pushUrl(filterState, 0, novoSort);
   }
 
   function handleRowClick(c: ClienteRegistro) {
@@ -373,23 +363,22 @@ function CarteiraInner() {
   }
 
   // ---------------------------------------------------------------------------
-  // Paginação — aplica sobre total servidor (filtros client-side afetam exibicao)
+  // Paginação
   // ---------------------------------------------------------------------------
 
   const totalServidor = response?.total ?? 0;
-  const totalFiltrado = temFiltroCliente(filtrosC) ? (registrosFiltrados?.length ?? 0) : totalServidor;
+  const situacoes = filterState.situacoes as string[];
+  const abcs      = filterState.abcs      as string[];
+  const temps     = filterState.temperaturas as string[];
+  const hasClientFilters = situacoes.length > 0 || abcs.length > 0 || temps.length > 0;
+  const totalFiltrado = hasClientFilters ? (registrosFiltrados?.length ?? 0) : totalServidor;
   const totalPages = Math.ceil(totalServidor / PAGE_SIZE);
   const currentPage = Math.floor(offset / PAGE_SIZE) + 1;
   const mostrando = response
     ? `${offset + 1}–${Math.min(offset + PAGE_SIZE, totalServidor)}`
     : '—';
 
-  const ativo = temFiltroAtivo(filtrosS, filtrosC);
-  const countFiltrosAtivos =
-    Object.values(filtrosS).filter(Boolean).length +
-    (filtrosC?.situacoes?.length ?? 0) +
-    (filtrosC?.abcs?.length ?? 0) +
-    (filtrosC?.temperaturas?.length ?? 0);
+  const ativo = temFiltroAtivo(filterState);
 
   return (
     <div className="space-y-3">
@@ -422,7 +411,7 @@ function CarteiraInner() {
           <h1 className="text-lg sm:text-xl font-bold text-gray-900">Carteira de Clientes</h1>
           <p className="text-xs text-gray-500 mt-0.5">
             {response
-              ? temFiltroCliente(filtrosC)
+              ? hasClientFilters
                 ? `Mostrando ${totalFiltrado.toLocaleString('pt-BR')} de ${totalServidor.toLocaleString('pt-BR')} clientes (filtro local aplicado)`
                 : `Mostrando ${mostrando} de ${totalServidor.toLocaleString('pt-BR')} clientes`
               : 'Carregando...'}
@@ -477,198 +466,14 @@ function CarteiraInner() {
         </div>
       )}
 
-      {/* ------------------------------------------------------------------ */}
-      {/* Barra de filtros                                                     */}
-      {/* ------------------------------------------------------------------ */}
-      <div className="bg-white rounded-xl border border-gray-200 p-3 shadow-sm space-y-3">
-
-        {/* Linha 1: Busca + toggle mobile */}
-        <div className="flex items-center gap-2">
-          <div className="flex flex-col gap-1 flex-1 min-w-0">
-            <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide hidden sm:block">
-              Busca
-            </label>
-            <div className="relative">
-              <svg
-                className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none"
-                fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-              <input
-                type="text"
-                value={buscaInput}
-                onChange={handleBuscaChange}
-                placeholder="Nome ou CNPJ..."
-                aria-label="Buscar por nome ou CNPJ"
-                className={`w-full pl-8 pr-7 py-2 sm:py-1.5 text-sm border rounded focus:outline-none focus:ring-2 focus:ring-green-200 focus:border-green-400 ${
-                  filtrosS.busca ? 'border-green-400 bg-green-50' : 'border-gray-200 bg-white'
-                }`}
-              />
-              {buscaInput && (
-                <button
-                  type="button"
-                  onClick={handleBuscaClear}
-                  aria-label="Limpar busca"
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                >
-                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              )}
-            </div>
-          </div>
-
-          {/* Botao "Filtros" visivel apenas em mobile */}
-          <button
-            type="button"
-            onClick={() => setFiltrosExpanded((v) => !v)}
-            aria-expanded={filtrosExpanded}
-            className={`sm:hidden flex items-center gap-1.5 min-h-11 px-3 py-2 text-sm font-medium rounded-md border transition-colors flex-shrink-0 ${
-              ativo
-                ? 'border-green-400 bg-green-50 text-green-800'
-                : 'border-gray-200 bg-white text-gray-600'
-            }`}
-          >
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round"
-                d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L13 13.414V19a1 1 0 01-.553.894l-4 2A1 1 0 017 21v-7.586L3.293 6.707A1 1 0 013 6V4z" />
-            </svg>
-            Filtros
-            {ativo && (
-              <span className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-green-600 text-white text-[9px] font-bold">
-                {countFiltrosAtivos}
-              </span>
-            )}
-          </button>
-        </div>
-
-        {/* Linha 2: Dropdowns servidor (colapsavel em mobile) */}
-        <div className={`${filtrosExpanded ? 'flex' : 'hidden'} sm:flex flex-wrap gap-2 items-end`}>
-          <FilterSelect
-            label="Consultor"
-            value={filtrosS.consultor}
-            onChange={(v) => handleServidorChange('consultor', v)}
-            options={CONSULTORES}
-          />
-          <FilterSelect
-            label="Sinaleiro"
-            value={filtrosS.sinaleiro}
-            onChange={(v) => handleServidorChange('sinaleiro', v)}
-            options={SINALEIROS}
-          />
-          <FilterSelect
-            label="Prioridade"
-            value={filtrosS.prioridade}
-            onChange={(v) => handleServidorChange('prioridade', v)}
-            options={PRIORIDADES}
-          />
-          <FilterSelect
-            label="UF"
-            value={filtrosS.uf}
-            onChange={(v) => handleServidorChange('uf', v)}
-            options={UFS}
-          />
-          {ativo && (
-            <button
-              type="button"
-              onClick={handleLimpar}
-              className="self-end text-xs text-gray-500 hover:text-gray-800 underline hover:no-underline pb-0.5"
-            >
-              Limpar todos
-            </button>
-          )}
-        </div>
-
-        {/* Linha 3: Chips multi-select Situacao (sempre visivel em desktop) */}
-        <div className={`${filtrosExpanded ? 'block' : 'hidden'} sm:block`}>
-          <ChipGroup
-            label="Situacao"
-            opcoes={SITUACOES}
-            selecionados={filtrosC.situacoes}
-            cores={SITUACAO_CHIP_COLORS}
-            onToggle={(v) => toggleChip('situacoes', v)}
-          />
-        </div>
-
-        {/* Linha 4: Chips ABC + Temperatura lado a lado */}
-        <div className={`${filtrosExpanded ? 'flex' : 'hidden'} sm:flex flex-wrap gap-4`}>
-          <ChipGroup
-            label="Curva ABC"
-            opcoes={ABCS}
-            selecionados={filtrosC.abcs}
-            cores={ABC_CHIP_COLORS}
-            onToggle={(v) => toggleChip('abcs', v)}
-          />
-          <ChipGroup
-            label="Temperatura"
-            opcoes={TEMPERATURAS}
-            selecionados={filtrosC.temperaturas}
-            cores={TEMPERATURA_CHIP_COLORS}
-            onToggle={(v) => toggleChip('temperaturas', v)}
-          />
-        </div>
-
-        {/* Barra de filtros ativos */}
-        {ativo && (
-          <div className="flex flex-wrap gap-1.5 pt-2 border-t border-gray-100">
-            {/* Filtros servidor */}
-            {Object.entries(filtrosS).map(([key, val]) => {
-              if (!val) return null;
-              const rotulo = key === 'busca' ? 'Busca' : key.charAt(0).toUpperCase() + key.slice(1);
-              return (
-                <ChipAtivo
-                  key={`s-${key}`}
-                  rotulo={rotulo}
-                  valor={val}
-                  onRemover={() => {
-                    if (key === 'busca') { setBuscaInput(''); }
-                    handleServidorChange(key as keyof FiltrosServidor, '');
-                  }}
-                />
-              );
-            })}
-            {/* Multi-selects cliente */}
-            {(filtrosC.situacoes ?? []).map((s) => (
-              <ChipAtivo
-                key={`sit-${s}`}
-                rotulo="Situacao"
-                valor={s}
-                onRemover={() => removerChipAtivo('situacoes', s)}
-                cor={SITUACAO_CHIP_COLORS[s]}
-              />
-            ))}
-            {(filtrosC.abcs ?? []).map((a) => (
-              <ChipAtivo
-                key={`abc-${a}`}
-                rotulo="ABC"
-                valor={a}
-                onRemover={() => removerChipAtivo('abcs', a)}
-                cor={ABC_CHIP_COLORS[a]}
-              />
-            ))}
-            {(filtrosC.temperaturas ?? []).map((t) => (
-              <ChipAtivo
-                key={`tmp-${t}`}
-                rotulo="Temp."
-                valor={t}
-                onRemover={() => removerChipAtivo('temperaturas', t)}
-                cor={TEMPERATURA_CHIP_COLORS[t]}
-              />
-            ))}
-            {/* Limpar todos */}
-            <button
-              type="button"
-              onClick={handleLimpar}
-              className="text-[11px] text-red-500 hover:text-red-700 font-medium border border-red-200 rounded px-2 py-0.5 hover:bg-red-50 transition-colors"
-            >
-              Limpar todos
-            </button>
-          </div>
-        )}
-      </div>
+      {/* FilterGroup — 3 níveis */}
+      <FilterGroup
+        fields={FILTER_FIELDS}
+        state={filterState}
+        onChange={handleFilterChange}
+        onReset={ativo ? handleLimpar : undefined}
+        resultsCount={response ? totalFiltrado : undefined}
+      />
 
       {/* Tabela */}
       <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
@@ -692,7 +497,7 @@ function CarteiraInner() {
               </span>
               <span className="sm:hidden">{mostrando} de {totalServidor.toLocaleString('pt-BR')} — </span>
               Pag. {currentPage}/{totalPages}
-              {temFiltroCliente(filtrosC) && (
+              {hasClientFilters && (
                 <span className="text-orange-600 font-medium"> | {totalFiltrado.toLocaleString('pt-BR')} apos filtro local</span>
               )}
             </p>
@@ -703,7 +508,7 @@ function CarteiraInner() {
                 onClick={() => {
                   const novo = Math.max(0, offset - PAGE_SIZE);
                   setOffset(novo);
-                  pushUrl(filtrosS, filtrosC, novo, sort);
+                  pushUrl(filterState, novo, sort);
                 }}
               />
               <PaginationButton
@@ -712,7 +517,7 @@ function CarteiraInner() {
                 onClick={() => {
                   const novo = offset + PAGE_SIZE;
                   setOffset(novo);
-                  pushUrl(filtrosS, filtrosC, novo, sort);
+                  pushUrl(filterState, novo, sort);
                 }}
               />
             </div>
@@ -732,122 +537,6 @@ function CarteiraInner() {
 // ---------------------------------------------------------------------------
 // Sub-componentes
 // ---------------------------------------------------------------------------
-
-interface ChipGroupProps {
-  label: string;
-  opcoes: string[];
-  selecionados: string[];
-  cores: Record<string, { bg: string; text: string; border: string }>;
-  onToggle: (valor: string) => void;
-}
-
-function ChipGroup({ label, opcoes, selecionados, cores, onToggle }: ChipGroupProps) {
-  return (
-    <div className="flex flex-wrap items-center gap-1.5">
-      <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mr-1 flex-shrink-0">
-        {label}
-      </span>
-      {opcoes.map((opcao) => {
-        const ativo = selecionados.includes(opcao);
-        const cor = cores[opcao] ?? { bg: '#f9fafb', text: '#374151', border: '#d1d5db' };
-        return (
-          <button
-            key={opcao}
-            type="button"
-            onClick={() => onToggle(opcao)}
-            aria-pressed={ativo}
-            className="inline-flex items-center px-2.5 py-1 text-[11px] font-semibold rounded-full border cursor-pointer transition-all select-none hover:opacity-100"
-            style={
-              ativo
-                ? { backgroundColor: cor.border, color: '#ffffff', borderColor: cor.border, boxShadow: `0 1px 2px ${cor.border}66` }
-                : { backgroundColor: cor.bg, color: cor.text, borderColor: cor.border, opacity: 0.85 }
-            }
-          >
-            {opcao}
-            {ativo && (
-              <svg className="w-3 h-3 ml-1 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-              </svg>
-            )}
-          </button>
-        );
-      })}
-    </div>
-  );
-}
-
-interface ChipAtivoProps {
-  rotulo: string;
-  valor: string;
-  onRemover: () => void;
-  cor?: { bg: string; text: string; border: string };
-}
-
-function ChipAtivo({ rotulo, valor, onRemover, cor }: ChipAtivoProps) {
-  return (
-    <span
-      className="inline-flex items-center gap-1 text-[11px] rounded px-2 py-0.5 border font-medium"
-      style={
-        cor
-          ? { backgroundColor: cor.bg, color: cor.text, borderColor: cor.border }
-          : { backgroundColor: '#f0fdf4', color: '#15803d', borderColor: '#bbf7d0' }
-      }
-    >
-      <span className="opacity-70 text-[10px]">{rotulo}:</span>
-      <span>{valor}</span>
-      <button
-        type="button"
-        onClick={onRemover}
-        aria-label={`Remover filtro ${rotulo} ${valor}`}
-        className="ml-0.5 opacity-60 hover:opacity-100 transition-opacity"
-      >
-        <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-        </svg>
-      </button>
-    </span>
-  );
-}
-
-interface FilterSelectProps {
-  label: string;
-  value: string;
-  onChange: (v: string) => void;
-  options: string[];
-}
-
-function FilterSelect({ label, value, onChange, options }: FilterSelectProps) {
-  const id = `filter-${label.toLowerCase().replace(/\s/g, '-')}`;
-  const isActive = value !== '';
-  return (
-    <div className="flex flex-col gap-1 min-w-[110px]">
-      <label
-        htmlFor={id}
-        className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide"
-      >
-        {label}
-      </label>
-      <select
-        id={id}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        aria-label={`Filtrar por ${label}`}
-        className={`border rounded px-2 py-1.5 text-xs text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-green-200 focus:border-green-400 transition-colors ${
-          isActive
-            ? 'border-green-400 bg-green-50 text-green-800 font-medium'
-            : 'border-gray-200'
-        }`}
-      >
-        <option value="">Todos</option>
-        {options.map((opt) => (
-          <option key={opt} value={opt}>
-            {opt}
-          </option>
-        ))}
-      </select>
-    </div>
-  );
-}
 
 interface PaginationButtonProps {
   label: string;

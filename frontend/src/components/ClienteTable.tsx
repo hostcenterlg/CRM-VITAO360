@@ -2,10 +2,12 @@
 
 import { useRef, useState } from 'react';
 import { ClienteRegistro, formatBRL } from '@/lib/api';
-import StatusBadge from './StatusBadge';
+import { StatusPill, CurvaPill, ScoreBar, Sinaleiro, Badge } from '@/components/ui';
 
 // ---------------------------------------------------------------------------
 // ClienteTable — tabela de clientes com ordenacao por coluna
+// Wave 2B: colunas reordenadas (CLIENTE primeiro), CNPJ como tooltip,
+//          StatusPill, CurvaPill, ScoreBar, Sinaleiro do @/components/ui
 // ---------------------------------------------------------------------------
 
 export type SortDir = 'asc' | 'desc';
@@ -26,68 +28,45 @@ interface ClienteTableProps {
   hasActiveFilters?: boolean;
 }
 
-// Mapa: chave da coluna -> campo no ClienteRegistro
+// Mapa de colunas — CLIENTE primeiro, sem CNPJ como coluna separada
 // mobileHidden: true = oculto em mobile, visivel apenas a partir de md
 const COLS: { key: string; label: string; sortable: boolean; align?: 'right'; mobileHidden?: boolean }[] = [
-  { key: 'cnpj',            label: 'CNPJ',         sortable: false,  mobileHidden: true },
-  { key: 'nome_fantasia',   label: 'Cliente',       sortable: true },
-  { key: 'uf',              label: 'UF',            sortable: true,   mobileHidden: true },
-  { key: 'consultor',       label: 'Consultor',     sortable: true },
-  { key: 'situacao',        label: 'Situacao',      sortable: true },
-  { key: 'temperatura',     label: 'Temp.',         sortable: true,   mobileHidden: true },
-  { key: 'score',           label: 'Score',         sortable: true,   align: 'right' },
-  { key: 'curva_abc',       label: 'ABC',           sortable: true,   mobileHidden: true },
-  { key: 'sinaleiro',       label: 'Sinal.',        sortable: true,   mobileHidden: true },
-  { key: 'faturamento_total', label: 'Faturamento', sortable: true,   align: 'right', mobileHidden: true },
+  { key: 'nome_fantasia',   label: 'Cliente',      sortable: true },
+  { key: 'consultor',       label: 'Consultor',    sortable: true },
+  { key: 'situacao',        label: 'Situação',     sortable: true },
+  { key: 'temperatura',     label: 'Temp.',        sortable: true,  mobileHidden: true },
+  { key: 'curva_abc',       label: 'Curva',        sortable: true,  mobileHidden: true },
+  { key: 'score',           label: 'Score',        sortable: true,  align: 'right' },
+  { key: 'faturamento_total', label: 'Faturamento', sortable: true, align: 'right', mobileHidden: true },
+  { key: 'sinaleiro',       label: 'Sinal.',       sortable: true,  mobileHidden: true },
 ];
 
 const SKELETON_ROWS = 8;
 
-// Cores sinaleiro (R9)
-const SINALEIRO_COLORS: Record<string, string> = {
-  VERDE:    '#00B050',
-  AMARELO:  '#FFC000',
-  LARANJA:  '#FF8C00',
-  VERMELHO: '#FF0000',
-  ROXO:     '#7030A0',
+// Temperatura: badge com variant semântico
+const TEMP_VARIANT: Record<string, 'danger' | 'warning' | 'info' | 'neutral'> = {
+  QUENTE:  'danger',
+  MORNO:   'warning',
+  FRIO:    'info',
+  CRITICO: 'danger',
 };
 
-function SinaleiroDot({ value }: { value?: string }) {
-  if (!value) return <span className="text-gray-300">—</span>;
-  const upper = value.toUpperCase();
-  const color = SINALEIRO_COLORS[upper] ?? '#9CA3AF';
-  return (
-    <span
-      className="inline-flex items-center justify-center"
-      title={value}
-      aria-label={`Sinaleiro: ${value}`}
-    >
-      <span
-        className="inline-block rounded-full flex-shrink-0 shadow-sm"
-        style={{ width: 12, height: 12, background: color }}
-        role="img"
-      />
-    </span>
-  );
-}
+const TEMP_ICON: Record<string, string> = {
+  QUENTE:  '🔥',
+  MORNO:   '⚠️',
+  FRIO:    '❄️',
+  CRITICO: '🚨',
+};
 
-function ScoreCell({ value }: { value?: number }) {
-  if (value == null) return <span className="text-gray-300">—</span>;
-  const pct = Math.min(100, Math.max(0, value));
-  const color = pct >= 70 ? '#00B050' : pct >= 40 ? '#FFC000' : '#FF0000';
+function TemperatureCell({ value }: { value?: string }) {
+  if (!value) return <span className="text-gray-300">—</span>;
+  const key = value.toUpperCase();
+  const variant = TEMP_VARIANT[key] ?? 'neutral';
+  const icon = TEMP_ICON[key];
   return (
-    <span className="inline-flex items-center gap-1.5">
-      <span
-        className="inline-block rounded-sm overflow-hidden flex-shrink-0"
-        style={{ width: 60, height: 5, background: '#E5E7EB' }}
-      >
-        <span
-          className="block h-full rounded-sm"
-          style={{ width: `${pct}%`, background: color, transition: 'width 400ms ease-out' }}
-        />
-      </span>
-      <span className="text-xs font-semibold text-gray-700 tabular-nums">{value.toFixed(0)}</span>
-    </span>
+    <Badge variant={variant} size="sm" icon={icon}>
+      {key.charAt(0) + key.slice(1).toLowerCase()}
+    </Badge>
   );
 }
 
@@ -120,8 +99,6 @@ function rowBorderStyle(sinaleiro?: string): string {
 
 // ---------------------------------------------------------------------------
 // Long-press context menu — mobile only
-// Shows actions: Ligar, WhatsApp, Ver detalhe
-// Triggers after 500ms press without significant movement
 // ---------------------------------------------------------------------------
 
 const LONGPRESS_DURATION = 500;
@@ -135,32 +112,27 @@ interface ContextMenuProps {
 }
 
 function LongPressContextMenu({ cliente, anchorY, onClose, onVerDetalhe }: ContextMenuProps) {
-  const tel = cliente.cnpj; // Use CNPJ as identifier for calls when no phone available
+  const tel = cliente.cnpj;
 
   return (
     <>
-      {/* Overlay */}
       <div
         className="fixed inset-0 z-40"
         onClick={onClose}
         aria-hidden="true"
       />
-      {/* Menu */}
       <div
         className="fixed left-4 right-4 z-50 bg-white border border-gray-200 rounded-xl shadow-xl overflow-hidden"
         style={{ top: Math.min(anchorY, window.innerHeight - 200) }}
         role="menu"
         aria-label={`Acoes para ${cliente.nome_fantasia}`}
       >
-        {/* Header */}
         <div className="px-4 py-3 border-b border-gray-100 bg-gray-50">
           <p className="text-sm font-bold text-gray-900 truncate">{cliente.nome_fantasia ?? 'Cliente'}</p>
           <p className="text-[11px] text-gray-400 font-mono mt-0.5">{formatCnpj(cliente.cnpj)}</p>
         </div>
 
-        {/* Actions */}
         <div className="py-1">
-          {/* Ligar */}
           <a
             href={`tel:${tel}`}
             role="menuitem"
@@ -176,7 +148,6 @@ function LongPressContextMenu({ cliente, anchorY, onClose, onVerDetalhe }: Conte
             <span className="text-sm font-medium text-gray-800">Ligar</span>
           </a>
 
-          {/* WhatsApp */}
           <a
             href={`https://wa.me/55${tel.replace(/\D/g, '')}`}
             target="_blank"
@@ -194,7 +165,6 @@ function LongPressContextMenu({ cliente, anchorY, onClose, onVerDetalhe }: Conte
             <span className="text-sm font-medium text-gray-800">WhatsApp</span>
           </a>
 
-          {/* Ver detalhe */}
           <button
             type="button"
             role="menuitem"
@@ -266,10 +236,12 @@ function ClienteRow({ cliente: c, idx, onRowClick, showFaturamento }: ClienteRow
   function handleClick() {
     if (longPressTriggered.current) {
       longPressTriggered.current = false;
-      return; // Long press already handled by context menu
+      return;
     }
     onRowClick?.(c);
   }
+
+  const cnpjFormatado = formatCnpj(c.cnpj);
 
   return (
     <>
@@ -278,7 +250,7 @@ function ClienteRow({ cliente: c, idx, onRowClick, showFaturamento }: ClienteRow
           idx % 2 === 1 ? 'bg-gray-50/50' : 'bg-white'
         } ${
           onRowClick
-            ? 'cursor-pointer hover:bg-green-50/60 active:bg-green-50'
+            ? 'cursor-pointer hover:bg-gray-50 active:bg-green-50'
             : 'hover:bg-gray-50'
         } ${rowBorderStyle(c.sinaleiro)}`}
         onClick={handleClick}
@@ -286,62 +258,74 @@ function ClienteRow({ cliente: c, idx, onRowClick, showFaturamento }: ClienteRow
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
-        {/* CNPJ — hidden on mobile */}
-        <td className="hidden md:table-cell px-3 py-2.5 font-mono text-xs text-gray-500 whitespace-nowrap">
-          {formatCnpj(c.cnpj)}
-        </td>
-        {/* Cliente */}
-        <td className="px-3 py-2.5 max-w-[160px] md:max-w-[200px]">
-          <p className="font-medium text-gray-900 truncate">{c.nome_fantasia ?? '—'}</p>
+        {/* CLIENTE — min-w largo, CNPJ como tooltip no nome */}
+        <td className="px-3 py-2.5 min-w-[200px]">
+          <p
+            className="font-medium text-gray-900 break-words"
+            title={cnpjFormatado}
+          >
+            {c.nome_fantasia ?? '—'}
+          </p>
           {c.razao_social && c.razao_social !== c.nome_fantasia && (
             <p className="text-[11px] text-gray-400 truncate hidden md:block">{c.razao_social}</p>
           )}
+          <p className="text-[10px] text-gray-400 font-mono hidden md:block">{cnpjFormatado}</p>
         </td>
-        {/* UF — hidden on mobile */}
-        <td className="hidden md:table-cell px-3 py-2.5 text-gray-600 whitespace-nowrap text-xs">
-          {c.uf ?? '—'}
-        </td>
+
         {/* Consultor */}
         <td className="px-3 py-2.5 text-gray-700 whitespace-nowrap text-xs">
           {c.consultor ?? '—'}
         </td>
+
         {/* Situacao */}
         <td className="px-3 py-2.5 whitespace-nowrap">
-          <StatusBadge value={c.situacao} variant="situacao" small />
+          {c.situacao ? (
+            <StatusPill status={c.situacao} size="sm" />
+          ) : (
+            <span className="text-gray-300">—</span>
+          )}
         </td>
+
         {/* Temperatura — hidden on mobile */}
         <td className="hidden md:table-cell px-3 py-2.5 whitespace-nowrap">
-          {c.temperatura ? (
-            <StatusBadge value={c.temperatura} variant="temperatura" small />
-          ) : (
-            <span className="text-gray-300">—</span>
-          )}
+          <TemperatureCell value={c.temperatura} />
         </td>
-        {/* Score */}
-        <td className="px-3 py-2.5 whitespace-nowrap">
-          <ScoreCell value={c.score} />
-        </td>
-        {/* ABC — hidden on mobile */}
+
+        {/* Curva ABC — hidden on mobile */}
         <td className="hidden md:table-cell px-3 py-2.5 whitespace-nowrap">
           {c.curva_abc ? (
-            <StatusBadge value={c.curva_abc} variant="abc" small />
+            <CurvaPill curva={c.curva_abc} size="sm" showLabel={false} />
           ) : (
             <span className="text-gray-300">—</span>
           )}
         </td>
-        {/* Sinaleiro — hidden on mobile */}
-        <td className="hidden md:table-cell px-3 py-2.5 whitespace-nowrap">
-          <SinaleiroDot value={c.sinaleiro} />
+
+        {/* Score */}
+        <td className="px-3 py-2.5 whitespace-nowrap">
+          {c.score != null ? (
+            <ScoreBar score={c.score} showLabel height="sm" className="min-w-[80px]" />
+          ) : (
+            <span className="text-gray-300">—</span>
+          )}
         </td>
+
         {/* Faturamento — hidden on mobile */}
         {showFaturamento && (
           <td className="hidden md:table-cell px-3 py-2.5 text-right whitespace-nowrap font-mono text-xs text-gray-800">
             {c.faturamento_total != null ? formatBRL(c.faturamento_total) : '—'}
           </td>
         )}
+
+        {/* Sinaleiro — hidden on mobile */}
+        <td className="hidden md:table-cell px-3 py-2.5 whitespace-nowrap">
+          {c.sinaleiro ? (
+            <Sinaleiro cor={c.sinaleiro.toLowerCase()} size="md" />
+          ) : (
+            <span className="text-gray-300">—</span>
+          )}
+        </td>
       </tr>
 
-      {/* Context menu portal (rendered as sibling in tbody — positioned fixed) */}
       {contextMenu && (
         <tr className="sr-only" aria-hidden="true">
           <td>
@@ -469,7 +453,7 @@ function TableHead({
         <th
           key={col.key}
           scope="col"
-          className={`px-3 py-2 text-[11px] font-semibold text-gray-500 uppercase tracking-wide whitespace-nowrap select-none ${
+          className={`px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap select-none ${
             col.align === 'right' ? 'text-right' : ''
           } ${col.sortable && onSort ? 'cursor-pointer hover:text-gray-700' : ''} ${
             col.mobileHidden ? 'hidden md:table-cell' : ''
