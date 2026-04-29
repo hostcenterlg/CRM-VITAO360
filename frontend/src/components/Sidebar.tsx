@@ -22,6 +22,7 @@ interface NavItem {
   showInboxBadge?: boolean;
   showAgendaBadge?: boolean;
   isDividerBefore?: boolean;
+  previewBadge?: 'em_construcao' | 'bloqueado';
 }
 
 interface NavGroup {
@@ -270,6 +271,28 @@ const navGroups: NavGroup[] = [
           </svg>
         ),
       },
+      {
+        href: '/gestao/dde',
+        label: 'DDE',
+        previewBadge: 'em_construcao',
+        icon: (
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+              d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+          </svg>
+        ),
+      },
+      {
+        href: '/gestao/analise-critica',
+        label: 'Analise Critica',
+        previewBadge: 'bloqueado',
+        icon: (
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+              d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+          </svg>
+        ),
+      },
     ],
     gerenteOuAdmin: true,
   },
@@ -369,6 +392,19 @@ function NavItemCollapsed({ item, active, onClose }: NavItemCollapsedProps) {
         )}
         {item.showAgendaBadge && (
           <AgendaBadge active={active} collapsed />
+        )}
+        {item.previewBadge === 'em_construcao' && (
+          <span
+            className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-white"
+            style={{ backgroundColor: '#F97316' }}
+            aria-label="Em construcao"
+          />
+        )}
+        {item.previewBadge === 'bloqueado' && (
+          <span
+            className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-white bg-gray-400"
+            aria-label="Bloqueado"
+          />
         )}
       </Link>
 
@@ -514,6 +550,20 @@ export default function Sidebar({ mobileOpen, onClose, collapsed = false, onTogg
                           )}
                           {item.showAgendaBadge && (
                             <AgendaBadge active={active} collapsed={false} />
+                          )}
+                          {item.previewBadge === 'em_construcao' && (
+                            <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-semibold uppercase tracking-wide bg-orange-100 text-orange-700 border border-orange-200 animate-pulse ml-auto flex-shrink-0">
+                              EM CONST.
+                            </span>
+                          )}
+                          {item.previewBadge === 'bloqueado' && (
+                            <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[9px] font-semibold uppercase tracking-wide bg-gray-200 text-gray-600 border border-gray-300 ml-auto flex-shrink-0">
+                              <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5}
+                                  d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                              </svg>
+                              BLOQUEADO
+                            </span>
                           )}
                         </Link>
                       </li>
