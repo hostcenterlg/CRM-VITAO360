@@ -980,6 +980,7 @@ export interface InboxTicket {
   status: string;
   contato_nome: string;
   contato_numero: string;
+  cnpj: string | null;
   atendente_nome: string | null;
   ultima_mensagem: string;
   ultima_mensagem_data: string | null;
