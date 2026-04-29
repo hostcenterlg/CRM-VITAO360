@@ -8,6 +8,15 @@ import {
   type ReactNode,
 } from 'react';
 import { getToken, setTokens, clearTokens } from '@/lib/auth';
+import {
+  type UserRole,
+  type UserRoleRaw,
+  normalizeRole,
+  hasRole,
+  isAdmin as checkIsAdmin,
+  isGerenteOrAbove,
+  isConsultorOrAbove,
+} from '@/lib/permissions';
 
 // ---------------------------------------------------------------------------
 // Tipos
@@ -17,7 +26,8 @@ export interface User {
   id: number;
   email: string;
   nome: string;
-  role: string;
+  /** Role raw como retornado pelo backend (ex.: "admin", "consultor_externo") */
+  role: UserRoleRaw;
   consultor_nome: string | null;
 }
 
@@ -26,8 +36,16 @@ interface AuthContextType {
   loading: boolean;
   login: (email: string, senha: string) => Promise<void>;
   logout: () => void;
+  /** Role canonizado do usuario (ADMIN | GERENTE | CONSULTOR | VENDEDOR | null) */
+  role: UserRole | null;
+  /** true se role === ADMIN */
   isAdmin: boolean;
+  /** true se role >= GERENTE */
   isGerente: boolean;
+  /** true se role >= CONSULTOR */
+  isConsultor: boolean;
+  /** Verifica se o usuario tem nivel de acesso suficiente para minRole */
+  hasRole: (minRole: UserRole) => boolean;
 }
 
 // ---------------------------------------------------------------------------
@@ -90,6 +108,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
   }
 
+  const canonicalRole = normalizeRole(user?.role ?? null);
+
   return (
     <AuthContext.Provider
       value={{
@@ -97,8 +117,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         loading,
         login,
         logout,
-        isAdmin: user?.role === 'admin',
-        isGerente: user?.role === 'gerente' || user?.role === 'admin',
+        role: canonicalRole,
+        isAdmin: checkIsAdmin(user?.role),
+        isGerente: isGerenteOrAbove(user?.role),
+        isConsultor: isConsultorOrAbove(user?.role),
+        hasRole: (minRole: UserRole) => hasRole(user?.role, minRole),
       }}
     >
       {children}
