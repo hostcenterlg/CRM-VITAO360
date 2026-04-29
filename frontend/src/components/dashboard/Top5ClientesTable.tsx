@@ -36,13 +36,13 @@ export default function Top5ClientesTable({ rows, loading }: Top5ClientesTablePr
     <ul className="divide-y divide-gray-100">
       {rows.map((r, i) => (
         <li key={r.cnpj} className="flex items-center gap-3 py-2 text-xs">
-          <span className="text-gray-400 font-bold w-4">{i + 1}</span>
+          <span className="text-gray-500 font-bold w-4">{i + 1}</span>
           <span className="flex-1 min-w-0 truncate font-medium text-gray-900">
             {r.nome_fantasia}
           </span>
           {r.curva_abc && (
             <span
-              className={`text-[9px] font-bold rounded-full px-2 py-0.5 ${
+              className={`text-xs font-bold rounded-full px-2 py-0.5 ${
                 curvaBg[r.curva_abc] ?? 'bg-gray-200 text-gray-600'
               }`}
             >

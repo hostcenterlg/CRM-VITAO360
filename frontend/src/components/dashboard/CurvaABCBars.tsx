@@ -52,7 +52,7 @@ export default function CurvaABCBars({ data, loading }: CurvaABCBarsProps) {
                 className={`${r.barColor} h-full rounded-full flex items-center justify-end pr-2 transition-all`}
                 style={{ width: `${Math.max(pct, 4)}%` }}
               >
-                <span className="text-white text-[10px] font-bold">{pct.toFixed(0)}%</span>
+                <span className="text-white text-xs font-bold">{pct.toFixed(0)}%</span>
               </div>
             </div>
             <div className="text-xs text-gray-500 mt-1">

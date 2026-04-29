@@ -383,7 +383,7 @@ export default function DashboardPage() {
                 </svg>
               </div>
               <div className="min-w-0">
-                <p className="text-[10px] font-bold text-white/70 uppercase tracking-wider mb-0.5">
+                <p className="text-xs font-bold text-white/70 uppercase tracking-wider mb-0.5">
                   Insight do Dia
                 </p>
                 <p className="text-sm font-medium text-white leading-snug line-clamp-2">
@@ -394,28 +394,28 @@ export default function DashboardPage() {
 
             {/* Mini badges */}
             <div className="flex flex-wrap gap-2 flex-shrink-0">
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/15 text-[11px] font-semibold text-white">
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/15 text-xs font-semibold text-white">
                 <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
                     d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
                 {iaDashboard.briefings_disponiveis} briefings
               </span>
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/15 text-[11px] font-semibold text-white">
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/15 text-xs font-semibold text-white">
                 <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
                     d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                 </svg>
                 {iaDashboard.alertas_ativos} alertas
               </span>
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/15 text-[11px] font-semibold text-white">
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/15 text-xs font-semibold text-white">
                 <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
                     d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
                 {iaDashboard.oportunidades} oportunidades
               </span>
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/15 text-[11px] font-semibold text-white">
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/15 text-xs font-semibold text-white">
                 <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
                     d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
@@ -879,9 +879,9 @@ function TabResumo({
                     className="rounded-lg p-3 border-l-4"
                     style={{ borderColor: color, backgroundColor: color + '10' }}
                   >
-                    <p className="text-[10px] font-semibold uppercase tracking-wider" style={{ color }}>{item.label}</p>
+                    <p className="text-xs font-semibold uppercase tracking-wider" style={{ color }}>{item.label}</p>
                     <p className="text-xl font-bold text-gray-900">{(item.count ?? 0).toLocaleString('pt-BR')}</p>
-                    <p className="text-[10px] text-gray-500">{formatPercent(item.pct)}</p>
+                    <p className="text-xs text-gray-500">{formatPercent(item.pct)}</p>
                   </div>
                 );
               })
@@ -1007,16 +1007,16 @@ function TabOperacional({ performance, atividades, positivacao, loading, ativida
             </div>
           ) : !atividadesDisponivel ? (
             <div className="py-8 text-center">
-              <p className="text-sm text-gray-400">Dados indisponíveis</p>
-              <p className="text-xs text-gray-300 mt-1">Registre atividades para ver os dados aqui</p>
+              <p className="text-sm text-gray-500">Dados indisponíveis</p>
+              <p className="text-xs text-gray-500 mt-1">Registre atividades para ver os dados aqui</p>
             </div>
           ) : (
             <table className="w-full text-sm">
               <thead>
                 <tr className="bg-gray-50">
-                  <th className="px-4 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase">Tipo</th>
-                  <th className="px-4 py-2 text-right text-[10px] font-semibold text-gray-500 uppercase">Qtd</th>
-                  <th className="px-4 py-2 text-right text-[10px] font-semibold text-gray-500 uppercase">% Total</th>
+                  <th className="px-4 py-2 text-left text-xs font-semibold text-gray-500 uppercase">Tipo</th>
+                  <th className="px-4 py-2 text-right text-xs font-semibold text-gray-500 uppercase">Qtd</th>
+                  <th className="px-4 py-2 text-right text-xs font-semibold text-gray-500 uppercase">% Total</th>
                 </tr>
               </thead>
               <tbody>
@@ -1049,7 +1049,7 @@ function TabOperacional({ performance, atividades, positivacao, loading, ativida
             <ChartSkeleton />
           ) : !atividadesDisponivel ? (
             <div className="mt-4 py-10 text-center">
-              <p className="text-sm text-gray-400">Dados indisponíveis</p>
+              <p className="text-sm text-gray-500">Dados indisponíveis</p>
             </div>
           ) : (
             <div className="mt-4 h-56">
@@ -1072,7 +1072,7 @@ function TabOperacional({ performance, atividades, positivacao, loading, ativida
             <ChartSkeleton />
           ) : !atividadesDisponivel ? (
             <div className="mt-4 py-10 text-center">
-              <p className="text-sm text-gray-400">Dados indisponíveis</p>
+              <p className="text-sm text-gray-500">Dados indisponíveis</p>
             </div>
           ) : (
             <div className="mt-4 h-56">
@@ -1097,7 +1097,7 @@ function TabOperacional({ performance, atividades, positivacao, loading, ativida
 
       {/* Positivacao section */}
       {positivacaoError && !loading && (
-        <p className="text-[11px] text-amber-600 italic">Dados temporariamente indisponiveis</p>
+        <p className="text-xs text-amber-600 italic">Dados temporariamente indisponiveis</p>
       )}
       {positivacao !== null && (
         <div className="space-y-4">
@@ -1106,21 +1106,21 @@ function TabOperacional({ performance, atividades, positivacao, loading, ativida
             <SectionHeader label="Positivacao de Clientes" accentColor={VERDE} />
             <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div className="rounded-lg p-4 border-l-4 border-green-500 bg-green-50">
-                <p className="text-[10px] font-semibold uppercase tracking-wider text-green-700">Positivados</p>
+                <p className="text-xs font-semibold uppercase tracking-wider text-green-700">Positivados</p>
                 <p className="text-2xl font-bold text-gray-900 mt-1">
                   {(positivacao.total_positivados ?? 0).toLocaleString('pt-BR')}
                 </p>
                 <p className="text-xs text-gray-500 mt-0.5">clientes com compra no período</p>
               </div>
               <div className="rounded-lg p-4 border-l-4 border-blue-400 bg-blue-50">
-                <p className="text-[10px] font-semibold uppercase tracking-wider text-blue-700">Total Carteira</p>
+                <p className="text-xs font-semibold uppercase tracking-wider text-blue-700">Total Carteira</p>
                 <p className="text-2xl font-bold text-gray-900 mt-1">
                   {(positivacao.total_carteira ?? 0).toLocaleString('pt-BR')}
                 </p>
                 <p className="text-xs text-gray-500 mt-0.5">clientes na base ativa</p>
               </div>
               <div className="rounded-lg p-4 border-l-4 border-purple-400 bg-purple-50">
-                <p className="text-[10px] font-semibold uppercase tracking-wider text-purple-700">% Positivacao</p>
+                <p className="text-xs font-semibold uppercase tracking-wider text-purple-700">% Positivacao</p>
                 <p className="text-2xl font-bold text-gray-900 mt-1">
                   {(positivacao.pct_positivacao ?? 0).toFixed(1)}%
                 </p>
@@ -1231,7 +1231,7 @@ function TabFunil({
               key={ch.canal}
               className="bg-white rounded-xl border border-gray-100 shadow-sm p-4"
             >
-              <p className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: ch.color }}>
+              <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: ch.color }}>
                 {ch.canal}
               </p>
               {loading ? (
@@ -1248,7 +1248,7 @@ function TabFunil({
       <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
         <SectionHeader label="Funil de Conversao" accentColor={VERDE} />
         {!atividadesDisponivel && !loading && (
-          <p className="text-[10px] text-amber-600 mt-1 italic">
+          <p className="text-xs text-amber-600 mt-1 italic">
             {atividadesError
               ? 'Dados temporariamente indisponiveis'
               : 'Etapa "Abordados" omitida — dados de atividades indisponiveis'}
@@ -1294,8 +1294,8 @@ function TabFunil({
           <ChartSkeleton />
         ) : !atividadesDisponivel ? (
           <div className="mt-4 py-10 text-center">
-            <p className="text-sm text-gray-400">Dados indisponíveis</p>
-            <p className="text-xs text-gray-300 mt-1">Registre atividades para ver os dados aqui</p>
+            <p className="text-sm text-gray-500">Dados indisponíveis</p>
+            <p className="text-xs text-gray-500 mt-1">Registre atividades para ver os dados aqui</p>
           </div>
         ) : (
           <div className="mt-4 h-56">
@@ -1357,24 +1357,24 @@ function TabPerformance({ performance, projecao, loading }: TabPerformanceProps)
                   <div className="flex items-center gap-2 mb-3">
                     <span className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: color }} />
                     <span className="font-bold text-gray-900">{p.consultor}</span>
-                    <span className="ml-auto text-[10px] text-gray-400">{p.territorio}</span>
+                    <span className="ml-auto text-xs text-gray-500">{p.territorio}</span>
                   </div>
                   <div className="grid grid-cols-2 gap-2 text-center">
                     <div>
                       <p className="text-lg font-bold text-gray-900">{formatCompact(p.faturamento_real)}</p>
-                      <p className="text-[10px] text-gray-400">Realizado</p>
+                      <p className="text-xs text-gray-500">Realizado</p>
                     </div>
                     <div>
                       <p className="text-lg font-bold text-gray-900">{formatCompact(p.meta_2026)}</p>
-                      <p className="text-[10px] text-gray-400">Meta 2026</p>
+                      <p className="text-xs text-gray-500">Meta 2026</p>
                     </div>
                     <div>
                       <p className="text-lg font-bold" style={{ color: status }}>{(p.pct_atingimento ?? 0).toFixed(1)}%</p>
-                      <p className="text-[10px] text-gray-400">Atingimento</p>
+                      <p className="text-xs text-gray-500">Atingimento</p>
                     </div>
                     <div>
                       <p className="text-lg font-bold text-gray-900">{(p.total_clientes ?? 0).toLocaleString('pt-BR')}</p>
-                      <p className="text-[10px] text-gray-400">Clientes</p>
+                      <p className="text-xs text-gray-500">Clientes</p>
                     </div>
                   </div>
                 </div>
@@ -1466,7 +1466,7 @@ function TabSaude({ kpis, distribuicao, positivacao, loading, totalInativos, pos
             className="bg-white rounded-xl border border-gray-100 shadow-sm p-4 border-l-4"
             style={{ borderLeftColor: item.color }}
           >
-            <p className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: item.color }}>
+            <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: item.color }}>
               {item.label}
             </p>
             {loading ? (
@@ -1517,14 +1517,14 @@ function TabSaude({ kpis, distribuicao, positivacao, loading, totalInativos, pos
         <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
           <SectionHeader label="Positivacao por Consultor" accentColor="#0891b2" />
           {positivacaoError && !loading && (
-            <p className="text-[11px] text-amber-600 italic mt-1">Dados temporariamente indisponiveis</p>
+            <p className="text-xs text-amber-600 italic mt-1">Dados temporariamente indisponiveis</p>
           )}
           {loading ? (
             <ChartSkeleton />
           ) : positivacaoConsultorData.length === 0 ? (
             <div className="mt-4 py-10 text-center">
-              <p className="text-sm text-gray-400">Dados indisponiveis</p>
-              <p className="text-xs text-gray-300 mt-1">Registre vendas para ver positivacao aqui</p>
+              <p className="text-sm text-gray-500">Dados indisponiveis</p>
+              <p className="text-xs text-gray-500 mt-1">Registre vendas para ver positivacao aqui</p>
             </div>
           ) : (
             <div className="mt-4 h-56">
@@ -1546,7 +1546,7 @@ function TabSaude({ kpis, distribuicao, positivacao, loading, totalInativos, pos
       <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
         <SectionHeader label="Pipeline de Inatividade" accentColor={LARANJA} />
         {!inativoDataDisponivel && !loading && (
-          <p className="text-[10px] text-amber-600 mt-1 italic">
+          <p className="text-xs text-amber-600 mt-1 italic">
             Distribuicao INAT.REC / INAT.ANT derivada do total — dado granular disponível via distribuicao
           </p>
         )}
@@ -1567,7 +1567,7 @@ function TabSaude({ kpis, distribuicao, positivacao, loading, totalInativos, pos
                     style={{ width: `${Math.max(pct, 4)}%`, backgroundColor: row.color }}
                   >
                     {pct > 10 && (
-                      <span className="text-[10px] font-bold text-white">{(pct ?? 0).toFixed(0)}%</span>
+                      <span className="text-xs font-bold text-white">{(pct ?? 0).toFixed(0)}%</span>
                     )}
                   </div>
                 </div>
@@ -1649,12 +1649,12 @@ function TabRedes({ sinaleiro, loading }: TabRedesProps) {
                   className="bg-white rounded-xl border border-gray-100 shadow-sm p-4 border-l-4"
                   style={{ borderLeftColor: color }}
                 >
-                  <p className="text-[10px] font-semibold uppercase tracking-wider" style={{ color }}>
+                  <p className="text-xs font-semibold uppercase tracking-wider" style={{ color }}>
                     {cor}
                   </p>
                   <p className="text-2xl font-bold text-gray-900 mt-1">{(item.count ?? 0).toLocaleString('pt-BR')}</p>
-                  <p className="text-[11px] text-gray-500 mt-0.5">{sublabel[cor] ?? cor}</p>
-                  <p className="text-[11px] font-semibold mt-0.5" style={{ color }}>
+                  <p className="text-xs text-gray-500 mt-0.5">{sublabel[cor] ?? cor}</p>
+                  <p className="text-xs font-semibold mt-0.5" style={{ color }}>
                     {formatPercent(item.pct)}
                   </p>
                 </div>
@@ -1721,7 +1721,7 @@ function TabRedes({ sinaleiro, loading }: TabRedesProps) {
             </div>
           )}
           {maturidadeData.length === 0 && !loading && (
-            <p className="text-[10px] text-gray-400 text-center mt-2 italic">
+            <p className="text-xs text-gray-500 text-center mt-2 italic">
               Campo maturidade nao populado nos itens do sinaleiro
             </p>
           )}
@@ -1739,7 +1739,7 @@ function TabRedes({ sinaleiro, loading }: TabRedesProps) {
               <thead>
                 <tr className="bg-gray-50">
                   {['Cliente', 'UF', 'Consultor', 'Cor', 'Realizado', 'Meta', '%'].map((h) => (
-                    <th key={h} className="px-4 py-3 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide whitespace-nowrap">
+                    <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide whitespace-nowrap">
                       {h}
                     </th>
                   ))}
@@ -1814,8 +1814,8 @@ function TabMotivos({ rnc, loading }: TabMotivosProps) {
           <ChartSkeleton />
         ) : motivosChartData.length === 0 ? (
           <div className="mt-4 py-8 text-center">
-            <p className="text-gray-400 text-sm">Sem registros de RNC</p>
-            <span className="inline-block mt-2 px-2 py-0.5 bg-gray-100 text-gray-500 text-[10px] rounded font-semibold">Em breve</span>
+            <p className="text-gray-500 text-sm">Sem registros de RNC</p>
+            <span className="inline-block mt-2 px-2 py-0.5 bg-gray-100 text-gray-500 text-xs rounded font-semibold">Em breve</span>
           </div>
         ) : (
           <div className="mt-4 h-64">
@@ -1845,8 +1845,8 @@ function TabMotivos({ rnc, loading }: TabMotivosProps) {
           </div>
         ) : rncItens.length === 0 ? (
           <div className="p-8 text-center">
-            <p className="text-gray-400 text-sm">Nenhum RNC registrado</p>
-            <span className="inline-block mt-2 px-2 py-0.5 bg-gray-100 text-gray-500 text-[10px] rounded font-semibold">Em breve</span>
+            <p className="text-gray-500 text-sm">Nenhum RNC registrado</p>
+            <span className="inline-block mt-2 px-2 py-0.5 bg-gray-100 text-gray-500 text-xs rounded font-semibold">Em breve</span>
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -1854,7 +1854,7 @@ function TabMotivos({ rnc, loading }: TabMotivosProps) {
               <thead>
                 <tr className="bg-gray-50">
                   {['Data', 'Cliente', 'Tipo', 'Consultor', 'Severidade', 'Status'].map((h) => (
-                    <th key={h} className="px-4 py-3 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide whitespace-nowrap">
+                    <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide whitespace-nowrap">
                       {h}
                     </th>
                   ))}
@@ -1876,7 +1876,7 @@ function TabMotivos({ rnc, loading }: TabMotivosProps) {
                       </td>
                       <td className="px-4 py-2.5">
                         <span
-                          className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold text-white"
+                          className="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold text-white"
                           style={{ backgroundColor: sc }}
                         >
                           {sev}
@@ -1964,8 +1964,8 @@ function TabProdutividade({ performance, kpis, loading }: TabProdutividadeProps)
         <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
           <SectionHeader label="Decomposicao de Esforco" accentColor={AMARELO} />
           <div className="mt-4 py-12 text-center">
-            <p className="text-sm text-gray-400">Dados indisponíveis</p>
-            <p className="text-xs text-gray-300 mt-1">Requer integração Asana para dados reais de esforco</p>
+            <p className="text-sm text-gray-500">Dados indisponíveis</p>
+            <p className="text-xs text-gray-500 mt-1">Requer integração Asana para dados reais de esforco</p>
           </div>
         </div>
       </div>
@@ -2065,16 +2065,16 @@ function TabIndicadores({
         {/* 3.1 Evolucao de Vendas */}
         <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
           <SectionHeader label="Evolucao de Vendas" accentColor={VERDE} />
-          <p className="text-[10px] text-gray-400 mt-1">Acumulado diario — mes atual vs anterior vs ano anterior</p>
+          <p className="text-xs text-gray-500 mt-1">Acumulado diario — mes atual vs anterior vs ano anterior</p>
           {evolucaoVendasError && !loading && (
-            <p className="text-[11px] text-amber-600 italic mt-1">Dados temporariamente indisponiveis</p>
+            <p className="text-xs text-amber-600 italic mt-1">Dados temporariamente indisponiveis</p>
           )}
           {loading ? (
             <ChartSkeleton />
           ) : evolucaoSerie.length === 0 ? (
             <div className="mt-4 py-10 text-center">
-              <p className="text-sm text-gray-400">Dados indisponiveis</p>
-              <p className="text-xs text-gray-300 mt-1">Endpoint /api/dashboard/evolucao-vendas nao disponivel</p>
+              <p className="text-sm text-gray-500">Dados indisponiveis</p>
+              <p className="text-xs text-gray-500 mt-1">Endpoint /api/dashboard/evolucao-vendas nao disponivel</p>
             </div>
           ) : (
             <div className="mt-4 h-64">
@@ -2120,16 +2120,16 @@ function TabIndicadores({
         {/* 3.2 Positivacao Diaria */}
         <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
           <SectionHeader label="Positivacao Diaria" accentColor="#0891b2" />
-          <p className="text-[10px] text-gray-400 mt-1">Clientes positivados por dia vs objetivo</p>
+          <p className="text-xs text-gray-500 mt-1">Clientes positivados por dia vs objetivo</p>
           {positivacaoDiariaError && !loading && (
-            <p className="text-[11px] text-amber-600 italic mt-1">Dados temporariamente indisponiveis</p>
+            <p className="text-xs text-amber-600 italic mt-1">Dados temporariamente indisponiveis</p>
           )}
           {loading ? (
             <ChartSkeleton />
           ) : positivacaoDiariaItens.length === 0 ? (
             <div className="mt-4 py-10 text-center">
-              <p className="text-sm text-gray-400">Dados indisponiveis</p>
-              <p className="text-xs text-gray-300 mt-1">Endpoint /api/dashboard/positivacao-diaria nao disponivel</p>
+              <p className="text-sm text-gray-500">Dados indisponiveis</p>
+              <p className="text-xs text-gray-500 mt-1">Endpoint /api/dashboard/positivacao-diaria nao disponivel</p>
             </div>
           ) : (
             <div className="mt-4 h-64">
@@ -2159,16 +2159,16 @@ function TabIndicadores({
         {/* 3.3 Positivacao por Vendedor */}
         <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
           <SectionHeader label="Positivacao por Vendedor" accentColor={ROXO} />
-          <p className="text-[10px] text-gray-400 mt-1">Positivados vs objetivo por consultor</p>
+          <p className="text-xs text-gray-500 mt-1">Positivados vs objetivo por consultor</p>
           {positivacaoVendedorError && !loading && (
-            <p className="text-[11px] text-amber-600 italic mt-1">Dados temporariamente indisponiveis</p>
+            <p className="text-xs text-amber-600 italic mt-1">Dados temporariamente indisponiveis</p>
           )}
           {loading ? (
             <ChartSkeleton />
           ) : positivacaoVendedorItens.length === 0 ? (
             <div className="mt-4 py-10 text-center">
-              <p className="text-sm text-gray-400">Dados indisponiveis</p>
-              <p className="text-xs text-gray-300 mt-1">Endpoint /api/dashboard/positivacao-vendedor nao disponivel</p>
+              <p className="text-sm text-gray-500">Dados indisponiveis</p>
+              <p className="text-xs text-gray-500 mt-1">Endpoint /api/dashboard/positivacao-vendedor nao disponivel</p>
             </div>
           ) : (
             <div className="mt-4 h-64">
@@ -2197,16 +2197,16 @@ function TabIndicadores({
         {/* 3.4 Volume de Atendimentos Diario */}
         <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
           <SectionHeader label="Volume de Atendimentos" accentColor={AMARELO} />
-          <p className="text-[10px] text-gray-400 mt-1">Atendimentos diarios — mes atual vs anterior</p>
+          <p className="text-xs text-gray-500 mt-1">Atendimentos diarios — mes atual vs anterior</p>
           {atendimentosDiariosError && !loading && (
-            <p className="text-[11px] text-amber-600 italic mt-1">Dados temporariamente indisponiveis</p>
+            <p className="text-xs text-amber-600 italic mt-1">Dados temporariamente indisponiveis</p>
           )}
           {loading ? (
             <ChartSkeleton />
           ) : atendimentosDiariosItens.length === 0 ? (
             <div className="mt-4 py-10 text-center">
-              <p className="text-sm text-gray-400">Dados indisponiveis</p>
-              <p className="text-xs text-gray-300 mt-1">Endpoint /api/dashboard/atendimentos-diarios nao disponivel</p>
+              <p className="text-sm text-gray-500">Dados indisponiveis</p>
+              <p className="text-xs text-gray-500 mt-1">Endpoint /api/dashboard/atendimentos-diarios nao disponivel</p>
             </div>
           ) : (
             <div className="mt-4 h-64">
@@ -2246,16 +2246,16 @@ function TabIndicadores({
         {/* 3.5 Curva ABC Detalhe */}
         <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
           <SectionHeader label="Curva ABC Detalhada" accentColor={VERDE} />
-          <p className="text-[10px] text-gray-400 mt-1">Distribuicao de clientes e faturamento por curva</p>
+          <p className="text-xs text-gray-500 mt-1">Distribuicao de clientes e faturamento por curva</p>
           {curvaABCDetalheError && !loading && (
-            <p className="text-[11px] text-amber-600 italic mt-1">Dados temporariamente indisponiveis</p>
+            <p className="text-xs text-amber-600 italic mt-1">Dados temporariamente indisponiveis</p>
           )}
           {loading ? (
             <ChartSkeleton />
           ) : abcPieData.length === 0 ? (
             <div className="mt-4 py-10 text-center">
-              <p className="text-sm text-gray-400">Dados indisponiveis</p>
-              <p className="text-xs text-gray-300 mt-1">Endpoint /api/dashboard/curva-abc-detalhe nao disponivel</p>
+              <p className="text-sm text-gray-500">Dados indisponiveis</p>
+              <p className="text-xs text-gray-500 mt-1">Endpoint /api/dashboard/curva-abc-detalhe nao disponivel</p>
             </div>
           ) : (
             <div className="mt-4 h-64 flex flex-col items-center">
@@ -2300,7 +2300,7 @@ function TabIndicadores({
                   <a
                     key={item.name}
                     href={`/carteira?curva_abc=${item.name}`}
-                    className="px-2 py-1 text-[10px] font-semibold rounded border transition-colors hover:opacity-80"
+                    className="px-2 py-1 text-xs font-semibold rounded border transition-colors hover:opacity-80"
                     style={{
                       borderColor: ABC_COLORS[item.name.toUpperCase()] ?? '#9ca3af',
                       color: ABC_COLORS[item.name.toUpperCase()] ?? '#9ca3af',
@@ -2318,9 +2318,9 @@ function TabIndicadores({
         {/* 3.6 E-commerce B2B */}
         <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
           <SectionHeader label="E-commerce B2B" accentColor="#7c3aed" />
-          <p className="text-[10px] text-gray-400 mt-1">Indicadores do canal e-commerce no periodo</p>
+          <p className="text-xs text-gray-500 mt-1">Indicadores do canal e-commerce no periodo</p>
           {ecommerceError && !loading && (
-            <p className="text-[11px] text-amber-600 italic mt-1">Dados temporariamente indisponiveis</p>
+            <p className="text-xs text-amber-600 italic mt-1">Dados temporariamente indisponiveis</p>
           )}
           {loading ? (
             <div className="mt-4 grid grid-cols-2 gap-3">
@@ -2330,34 +2330,34 @@ function TabIndicadores({
             </div>
           ) : !ecommerce ? (
             <div className="mt-4 py-10 text-center">
-              <p className="text-sm text-gray-400">Dados indisponiveis</p>
-              <p className="text-xs text-gray-300 mt-1">Endpoint /api/dashboard/ecommerce nao disponivel</p>
+              <p className="text-sm text-gray-500">Dados indisponiveis</p>
+              <p className="text-xs text-gray-500 mt-1">Endpoint /api/dashboard/ecommerce nao disponivel</p>
             </div>
           ) : (
             <div className="mt-4 grid grid-cols-2 gap-3">
               <div className="rounded-lg p-4 border-l-4 border-purple-500 bg-purple-50">
-                <p className="text-[10px] font-semibold uppercase tracking-wider text-purple-700">Clientes E-comm</p>
+                <p className="text-xs font-semibold uppercase tracking-wider text-purple-700">Clientes E-comm</p>
                 <p className="text-2xl font-bold text-gray-900 mt-1">
                   {(ecommerce.total_clientes_ecommerce ?? 0).toLocaleString('pt-BR')}
                 </p>
                 <p className="text-xs text-gray-500 mt-0.5">clientes ativos no canal</p>
               </div>
               <div className="rounded-lg p-4 border-l-4 border-blue-400 bg-blue-50">
-                <p className="text-[10px] font-semibold uppercase tracking-wider text-blue-700">% do Total</p>
+                <p className="text-xs font-semibold uppercase tracking-wider text-blue-700">% do Total</p>
                 <p className="text-2xl font-bold text-gray-900 mt-1">
                   {(ecommerce.pct_do_total ?? 0).toFixed(1)}%
                 </p>
                 <p className="text-xs text-gray-500 mt-0.5">da carteira total</p>
               </div>
               <div className="rounded-lg p-4 border-l-4 border-green-500 bg-green-50">
-                <p className="text-[10px] font-semibold uppercase tracking-wider text-green-700">Pedidos</p>
+                <p className="text-xs font-semibold uppercase tracking-wider text-green-700">Pedidos</p>
                 <p className="text-2xl font-bold text-gray-900 mt-1">
                   {(ecommerce.total_pedidos ?? 0).toLocaleString('pt-BR')}
                 </p>
                 <p className="text-xs text-gray-500 mt-0.5">pedidos no periodo</p>
               </div>
               <div className="rounded-lg p-4 border-l-4 border-amber-500 bg-amber-50">
-                <p className="text-[10px] font-semibold uppercase tracking-wider text-amber-700">Valor Total</p>
+                <p className="text-xs font-semibold uppercase tracking-wider text-amber-700">Valor Total</p>
                 <p className="text-2xl font-bold text-gray-900 mt-1">
                   {formatCompact(ecommerce.valor_total)}
                 </p>
@@ -2401,7 +2401,7 @@ function KpiCard({
   return (
     <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4">
       <span
-        className="inline-block px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider mb-2"
+        className="inline-block px-2 py-0.5 rounded text-xs font-semibold uppercase tracking-wider mb-2"
         style={{ backgroundColor: color + '18', color }}
       >
         {title}
@@ -2411,7 +2411,7 @@ function KpiCard({
       ) : (
         <p className="text-2xl font-bold text-gray-900">{value}</p>
       )}
-      <p className="text-[11px] text-gray-400 mt-0.5">{subtitle}</p>
+      <p className="text-xs text-gray-500 mt-0.5">{subtitle}</p>
     </div>
   );
 }
@@ -2434,7 +2434,7 @@ function AlertCard({
     >
       <div className="flex items-center gap-2 mb-1">
         <span
-          className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold text-white flex-shrink-0"
+          className="w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0"
           style={{ backgroundColor: color }}
         >
           {icon}
@@ -2501,7 +2501,7 @@ function BenchmarkCard({
       ) : (
         <p className="text-2xl font-bold mt-1" style={{ color }}>{value}</p>
       )}
-      <p className="text-[10px] text-gray-400 mt-1">{meta}</p>
+      <p className="text-xs text-gray-500 mt-1">{meta}</p>
     </div>
   );
 }
@@ -2518,7 +2518,7 @@ function ConsultorDot({ consultor }: { consultor: string }) {
 
 function EmptyState({ message }: { message: string }) {
   return (
-    <div className="py-10 text-center text-gray-400 text-sm">{message}</div>
+    <div className="py-10 text-center text-gray-500 text-sm">{message}</div>
   );
 }
 
@@ -2563,9 +2563,9 @@ function PerformanceTable({
       <table className="w-full text-sm">
         <thead>
           <tr className="bg-gray-50">
-            {showRank && <th className="px-4 py-3 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">#</th>}
+            {showRank && <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">#</th>}
             {['Consultor', 'Territorio', 'Clientes', 'Faturamento', 'Meta 2026', '% Meta', 'Status'].map((h) => (
-              <th key={h} className="px-4 py-3 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide whitespace-nowrap">
+              <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide whitespace-nowrap">
                 {h}
               </th>
             ))}
@@ -2628,7 +2628,7 @@ function RankBadge({ rank }: { rank: number }) {
     return (
       <span className="inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold text-white" style={{ backgroundColor: '#CD7F32' }}>3</span>
     );
-  return <span className="text-gray-400 font-mono text-xs">{rank}</span>;
+  return <span className="text-gray-500 font-mono text-xs">{rank}</span>;
 }
 
 // ---------------------------------------------------------------------------

@@ -52,7 +52,7 @@ function StatusBadgeRNC({ status }: { status: StatusRNC }) {
   const cfg = STATUS_CONFIG[status] ?? STATUS_CONFIG.ABERTO;
   return (
     <span
-      className="inline-flex items-center px-2 py-0.5 text-[10px] font-semibold rounded uppercase"
+      className="inline-flex items-center px-2 py-0.5 text-xs font-semibold rounded uppercase"
       style={{ backgroundColor: cfg.bg, color: cfg.text }}
     >
       {cfg.label}
@@ -65,7 +65,7 @@ function SlaBadge({ sla, dias }: { sla: 'DENTRO' | 'ATENCAO' | 'VIOLADO'; dias: 
   const pulse = sla === 'VIOLADO' && dias > 10;
   return (
     <span
-      className={`inline-flex items-center px-2 py-0.5 text-[10px] font-semibold rounded uppercase ${pulse ? 'animate-pulse' : ''}`}
+      className={`inline-flex items-center px-2 py-0.5 text-xs font-semibold rounded uppercase ${pulse ? 'animate-pulse' : ''}`}
       style={{ backgroundColor: cfg.bg, color: cfg.text }}
     >
       {cfg.label}
@@ -149,7 +149,7 @@ function ModalNovaRNC({ onClose, onSalvar }: ModalNovaRNCProps) {
           <button
             type="button"
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 p-1 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="text-gray-500 hover:text-gray-600 p-1 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
             aria-label="Fechar modal"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -179,7 +179,7 @@ function ModalNovaRNC({ onClose, onSalvar }: ModalNovaRNCProps) {
               className={`w-full h-9 px-3 text-xs border rounded focus:outline-none focus:ring-2 focus:ring-green-500 font-mono ${errors.cliente_cnpj ? 'border-red-500' : 'border-gray-300'}`}
             />
             {errors.cliente_cnpj && (
-              <p className="mt-1 text-[10px] text-red-600">{errors.cliente_cnpj}</p>
+              <p className="mt-1 text-xs text-red-600">{errors.cliente_cnpj}</p>
             )}
           </div>
 
@@ -213,10 +213,10 @@ function ModalNovaRNC({ onClose, onSalvar }: ModalNovaRNCProps) {
               ))}
             </select>
             {errors.tipo_problema && (
-              <p className="mt-1 text-[10px] text-red-600">{errors.tipo_problema}</p>
+              <p className="mt-1 text-xs text-red-600">{errors.tipo_problema}</p>
             )}
             {areaAuto && (
-              <p className="mt-1 text-[10px] text-gray-500">
+              <p className="mt-1 text-xs text-gray-500">
                 Area responsavel: <strong>{areaAuto}</strong> (preenchido automaticamente)
               </p>
             )}
@@ -235,7 +235,7 @@ function ModalNovaRNC({ onClose, onSalvar }: ModalNovaRNCProps) {
               className={`w-full px-3 py-2 text-xs border rounded resize-none focus:outline-none focus:ring-2 focus:ring-green-500 ${errors.descricao ? 'border-red-500' : 'border-gray-300'}`}
             />
             {errors.descricao && (
-              <p className="mt-1 text-[10px] text-red-600">{errors.descricao}</p>
+              <p className="mt-1 text-xs text-red-600">{errors.descricao}</p>
             )}
           </div>
 
@@ -368,21 +368,21 @@ export default function RNCPage() {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="bg-white rounded-xl border border-gray-200 p-4 shadow-sm"
             style={{ borderLeftColor: '#00B050', borderLeftWidth: '4px' }}>
-            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1">Resolvido</p>
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Resolvido</p>
             <p className="text-2xl font-bold" style={{ color: '#00B050' }}>{resumo.resolvido ?? 0}</p>
-            <p className="text-[10px] text-gray-400 mt-1">{(resumo.resolvido_pct ?? 0).toFixed(0)}% do total</p>
+            <p className="text-xs text-gray-500 mt-1">{(resumo.resolvido_pct ?? 0).toFixed(0)}% do total</p>
           </div>
           <div className="bg-white rounded-xl border border-gray-200 p-4 shadow-sm"
             style={{ borderLeftColor: '#FFC000', borderLeftWidth: '4px' }}>
-            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1">Em Andamento</p>
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Em Andamento</p>
             <p className="text-2xl font-bold" style={{ color: '#FFC000' }}>{resumo.em_andamento ?? 0}</p>
-            <p className="text-[10px] text-gray-400 mt-1">{(resumo.em_andamento_pct ?? 0).toFixed(0)}% do total</p>
+            <p className="text-xs text-gray-500 mt-1">{(resumo.em_andamento_pct ?? 0).toFixed(0)}% do total</p>
           </div>
           <div className="bg-white rounded-xl border border-gray-200 p-4 shadow-sm"
             style={{ borderLeftColor: '#FF0000', borderLeftWidth: '4px' }}>
-            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1">Pendente</p>
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Pendente</p>
             <p className="text-2xl font-bold" style={{ color: '#FF0000' }}>{resumo.pendente ?? 0}</p>
-            <p className="text-[10px] text-gray-400 mt-1">{(resumo.pendente_pct ?? 0).toFixed(0)}% do total</p>
+            <p className="text-xs text-gray-500 mt-1">{(resumo.pendente_pct ?? 0).toFixed(0)}% do total</p>
           </div>
         </div>
       )}
@@ -451,21 +451,21 @@ export default function RNCPage() {
             <table className="w-full min-w-[700px]" role="table">
               <thead>
                 <tr className="border-b border-gray-200 bg-gray-50">
-                  <th scope="col" className="px-4 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-10">#</th>
-                  <th scope="col" className="px-4 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Data Abertura</th>
-                  <th scope="col" className="px-4 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Cliente</th>
-                  <th scope="col" className="px-4 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Tipo Problema</th>
-                  <th scope="col" className="px-4 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Area</th>
-                  <th scope="col" className="px-4 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Status</th>
-                  <th scope="col" className="px-4 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Dias</th>
-                  <th scope="col" className="px-4 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">SLA</th>
-                  <th scope="col" className="px-4 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Acoes</th>
+                  <th scope="col" className="px-4 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide w-10">#</th>
+                  <th scope="col" className="px-4 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Data Abertura</th>
+                  <th scope="col" className="px-4 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Cliente</th>
+                  <th scope="col" className="px-4 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Tipo Problema</th>
+                  <th scope="col" className="px-4 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Area</th>
+                  <th scope="col" className="px-4 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Status</th>
+                  <th scope="col" className="px-4 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Dias</th>
+                  <th scope="col" className="px-4 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">SLA</th>
+                  <th scope="col" className="px-4 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Acoes</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {itens.length === 0 ? (
                   <tr>
-                    <td colSpan={9} className="px-4 py-10 text-center text-xs text-gray-400">
+                    <td colSpan={9} className="px-4 py-10 text-center text-xs text-gray-500">
                       {apiError
                         ? 'Erro ao carregar dados. Tente novamente.'
                         : 'Nenhuma RNC encontrada com os filtros aplicados.'}
@@ -490,7 +490,7 @@ export default function RNCPage() {
                         <td className="px-4 py-2.5">
                           <span className="text-xs font-medium text-gray-900">{item.cliente_nome}</span>
                           <br />
-                          <span className="text-[10px] text-gray-400 font-mono">{item.cliente_cnpj}</span>
+                          <span className="text-xs text-gray-500 font-mono">{item.cliente_cnpj}</span>
                         </td>
                         <td className="px-4 py-2.5 text-xs text-gray-700">{labelTipo(item.tipo_problema)}</td>
                         <td className="px-4 py-2.5 text-xs text-gray-600">{item.area_responsavel}</td>
@@ -506,7 +506,7 @@ export default function RNCPage() {
                             <button
                               type="button"
                               onClick={() => void handleMudarStatus(item.id, 'EM_ANDAMENTO')}
-                              className="px-3 py-2 min-h-[44px] text-[10px] font-semibold text-white rounded transition-colors"
+                              className="px-3 py-2 min-h-[44px] text-xs font-semibold text-white rounded transition-colors"
                               style={{ backgroundColor: '#FFC000', color: '#1a1a1a' }}
                             >
                               Iniciar
@@ -516,7 +516,7 @@ export default function RNCPage() {
                             <button
                               type="button"
                               onClick={() => void handleMudarStatus(item.id, 'RESOLVIDO')}
-                              className="px-3 py-2 min-h-[44px] text-[10px] font-semibold text-white rounded transition-colors"
+                              className="px-3 py-2 min-h-[44px] text-xs font-semibold text-white rounded transition-colors"
                               style={{ backgroundColor: '#00B050' }}
                             >
                               Resolver
@@ -526,7 +526,7 @@ export default function RNCPage() {
                             <button
                               type="button"
                               onClick={() => void handleMudarStatus(item.id, 'ENCERRADO')}
-                              className="px-3 py-2 min-h-[44px] text-[10px] font-semibold text-white rounded transition-colors"
+                              className="px-3 py-2 min-h-[44px] text-xs font-semibold text-white rounded transition-colors"
                               style={{ backgroundColor: '#6B7280' }}
                             >
                               Encerrar
@@ -548,7 +548,7 @@ export default function RNCPage() {
       </div>
 
       {/* Nota SLA */}
-      <p className="text-[10px] text-gray-400">
+      <p className="text-xs text-gray-500">
         SLA: Pendentes acima de 5 dias aparecem com fundo vermelho. Acima de 10 dias o badge pulsa.
       </p>
 

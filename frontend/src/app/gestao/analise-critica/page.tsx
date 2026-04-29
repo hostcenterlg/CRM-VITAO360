@@ -95,10 +95,10 @@ function KPICard({ kpi }: { kpi: KPIItem }) {
       className="rounded-lg p-3 border"
       style={{ backgroundColor: cores.bg, borderColor: cores.border }}
     >
-      <p className="text-[9px] font-semibold uppercase tracking-wide text-gray-500">{kpi.label}</p>
+      <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">{kpi.label}</p>
       <p className="text-base font-bold mt-0.5" style={{ color: cores.text }}>{kpi.valor}</p>
       {kpi.detalhe && (
-        <p className="text-[9px] text-gray-400 mt-0.5 leading-tight">{kpi.detalhe}</p>
+        <p className="text-xs text-gray-500 mt-0.5 leading-tight">{kpi.detalhe}</p>
       )}
     </div>
   );
@@ -184,7 +184,7 @@ export default function AnaliseCriticaPage() {
           className="flex-shrink-0 w-9 h-9 rounded-xl flex items-center justify-center"
           style={{ backgroundColor: '#F3F4F6' }}
         >
-          <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
               d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
           </svg>
@@ -218,7 +218,7 @@ export default function AnaliseCriticaPage() {
             </span>
             <div>
               <p className="text-xs font-semibold text-gray-700">Spec aprovada</p>
-              <p className="text-[10px] text-gray-400">Algoritmo definido</p>
+              <p className="text-xs text-gray-500">Algoritmo definido</p>
             </div>
           </div>
           <div className="flex items-start gap-2">
@@ -229,19 +229,19 @@ export default function AnaliseCriticaPage() {
             </span>
             <div>
               <p className="text-xs font-semibold text-gray-700">Mockup visual</p>
-              <p className="text-[10px] text-gray-400">Layout aprovado</p>
+              <p className="text-xs text-gray-500">Layout aprovado</p>
             </div>
           </div>
           <div className="flex items-start gap-2">
             <span className="mt-0.5 flex-shrink-0 w-4 h-4 rounded-full flex items-center justify-center bg-gray-100 border border-gray-200">
-              <svg className="w-2.5 h-2.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-2.5 h-2.5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5}
                   d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
               </svg>
             </span>
             <div>
-              <p className="text-xs font-semibold text-gray-400">Implementacao</p>
-              <p className="text-[10px] text-gray-400">Aguarda DDE</p>
+              <p className="text-xs font-semibold text-gray-500">Implementacao</p>
+              <p className="text-xs text-gray-500">Aguarda DDE</p>
             </div>
           </div>
           <div className="flex items-start gap-2">
@@ -253,7 +253,7 @@ export default function AnaliseCriticaPage() {
             </span>
             <div>
               <p className="text-xs font-semibold text-gray-500">Previsao</p>
-              <p className="text-[10px] text-amber-700 font-semibold">Maio / 2026</p>
+              <p className="text-xs text-amber-700 font-semibold">Maio / 2026</p>
             </div>
           </div>
         </div>
@@ -263,7 +263,7 @@ export default function AnaliseCriticaPage() {
       <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xs font-bold text-gray-500 uppercase tracking-wider">Preview — o que vai aparecer</h2>
-          <span className="inline-flex items-center px-2 py-0.5 rounded text-[9px] font-semibold uppercase text-amber-700 bg-amber-50 border border-amber-200">
+          <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold uppercase text-amber-700 bg-amber-50 border border-amber-200">
             Mockup ilustrativo — feature em desenvolvimento
           </span>
         </div>
@@ -275,7 +275,7 @@ export default function AnaliseCriticaPage() {
             style={{ backgroundColor: '#00B05008', border: '1px solid #00B05030' }}
           >
             <ScoreGauge score={SCORE_MOCK} cor={SCORE_COR} />
-            <p className="text-[10px] font-bold uppercase tracking-widest mt-1" style={{ color: SCORE_COR }}>
+            <p className="text-xs font-bold uppercase tracking-widest mt-1" style={{ color: SCORE_COR }}>
               {VEREDITO}
             </p>
           </div>
@@ -283,14 +283,14 @@ export default function AnaliseCriticaPage() {
             className="rounded-xl p-4"
             style={{ backgroundColor: '#00B05008', border: '1px solid #00B05030' }}
           >
-            <p className="text-[9px] font-bold text-gray-400 uppercase tracking-wide mb-2">Veredito Automatico</p>
+            <p className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Veredito Automatico</p>
             <p className="text-xs text-gray-700 leading-relaxed">{VEREDITO_DESC}</p>
           </div>
         </div>
 
         {/* Anomalias */}
         <div className="mb-5">
-          <p className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">Anomalias Detectadas</p>
+          <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Anomalias Detectadas</p>
           <ul className="space-y-2">
             {ANOMALIAS.map((a, i) => (
               <li key={i} className="flex items-start gap-2 text-xs">
@@ -299,7 +299,7 @@ export default function AnaliseCriticaPage() {
                     d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                 </svg>
                 <span className="text-gray-700 flex-1">{a.texto}</span>
-                <span className="text-[9px] font-semibold uppercase text-orange-600 bg-orange-50 border border-orange-200 px-1.5 py-0.5 rounded flex-shrink-0">
+                <span className="text-xs font-semibold uppercase text-orange-600 bg-orange-50 border border-orange-200 px-1.5 py-0.5 rounded flex-shrink-0">
                   {a.acao}
                 </span>
               </li>
@@ -309,19 +309,19 @@ export default function AnaliseCriticaPage() {
 
         {/* Top 5 Acoes */}
         <div className="mb-5">
-          <p className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">Top 5 Acoes Priorizadas</p>
+          <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Top 5 Acoes Priorizadas</p>
           <ol className="space-y-2">
             {ACOES.map((a) => (
               <li key={a.posicao} className="flex items-center gap-2.5 text-xs">
                 <span
-                  className="flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-white font-bold text-[10px]"
+                  className="flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-white font-bold text-xs"
                   style={{ backgroundColor: '#00B050' }}
                 >
                   {a.posicao}
                 </span>
                 <span className="flex-1 text-gray-700">{a.descricao}</span>
                 <span
-                  className="text-[9px] font-semibold px-1.5 py-0.5 rounded flex-shrink-0"
+                  className="text-xs font-semibold px-1.5 py-0.5 rounded flex-shrink-0"
                   style={{ backgroundColor: '#00B05015', color: '#00B050' }}
                 >
                   {a.impacto}
@@ -333,7 +333,7 @@ export default function AnaliseCriticaPage() {
 
         {/* 9 KPIs */}
         <div>
-          <p className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">9 KPIs do Cliente</p>
+          <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">9 KPIs do Cliente</p>
           <div className="grid grid-cols-3 gap-2">
             {KPIS.map((kpi, i) => (
               <KPICard key={i} kpi={kpi} />
@@ -343,7 +343,7 @@ export default function AnaliseCriticaPage() {
       </div>
 
       {/* Nota de rodape */}
-      <p className="text-[10px] text-gray-400">
+      <p className="text-xs text-gray-500">
         Analise Critica v1.0 — Spec aprovada. Implementacao aguarda conclusao do DDE (Fase 3a).
         Esta pagina e uma preview de roadmap para apresentacao interna.
       </p>

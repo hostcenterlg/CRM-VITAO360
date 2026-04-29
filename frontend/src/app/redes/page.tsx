@@ -57,7 +57,7 @@ const COR_COLORS: Record<string, { bg: string; text: string; sigla: string }> = 
 function CorBadge({ cor }: { cor: string }) {
   const cfg = COR_COLORS[cor] ?? { bg: '#e5e7eb', text: '#374151', sigla: '?' };
   return (
-    <span className="inline-flex items-center px-2 py-0.5 text-[10px] font-semibold rounded uppercase"
+    <span className="inline-flex items-center px-2 py-0.5 text-xs font-semibold rounded uppercase"
       style={{ backgroundColor: cfg.bg, color: cfg.text }}>
       {cor}
     </span>
@@ -84,7 +84,7 @@ function ProgressBar({ pct }: { pct: number | null | undefined }) {
           style={{ width: `${Math.min(safePct, 100)}%`, backgroundColor: color }}
         />
       </div>
-      <span className="text-[10px] font-semibold tabular-nums" style={{ color }}>
+      <span className="text-xs font-semibold tabular-nums" style={{ color }}>
         {safePct.toFixed(1)}%
       </span>
     </div>
@@ -101,7 +101,7 @@ function DistribuicaoMini({ dist }: { dist: RedeItem['distribuicao'] }) {
         return (
           <span key={cor} className="flex items-center gap-0.5">
             <span className="inline-block w-2 h-2 rounded-full" style={{ backgroundColor: cfg.bg }} />
-            <span className="text-[10px] text-gray-600">{qtd}{cfg.sigla}</span>
+            <span className="text-xs text-gray-600">{qtd}{cfg.sigla}</span>
           </span>
         );
       })}
@@ -162,23 +162,23 @@ export default function RedesPage() {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <div className="bg-white rounded-xl border border-gray-200 p-4 shadow-sm flex flex-col gap-1"
           style={{ borderLeftColor: '#00B050', borderLeftWidth: '4px' }}>
-          <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Total Redes</p>
+          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Total Redes</p>
           <p className="text-2xl font-bold text-gray-900">{loading ? '—' : (data?.total_redes ?? 0)}</p>
-          <p className="text-[10px] text-gray-400">redes cadastradas</p>
+          <p className="text-xs text-gray-500">redes cadastradas</p>
         </div>
         <div className="bg-white rounded-xl border border-gray-200 p-4 shadow-sm flex flex-col gap-1"
           style={{ borderLeftColor: '#2563eb', borderLeftWidth: '4px' }}>
-          <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Total Lojas</p>
+          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Total Lojas</p>
           <p className="text-2xl font-bold text-gray-900">{loading ? '—' : (data?.total_lojas ?? 0)}</p>
-          <p className="text-[10px] text-gray-400">unidades monitoradas</p>
+          <p className="text-xs text-gray-500">unidades monitoradas</p>
         </div>
         <div className="bg-white rounded-xl border border-gray-200 p-4 shadow-sm flex flex-col gap-1"
           style={{ borderLeftColor: penetracaoColor(mediaPenetracao), borderLeftWidth: '4px' }}>
-          <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Penetracao Media</p>
+          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Penetracao Media</p>
           <p className="text-2xl font-bold" style={{ color: penetracaoColor(mediaPenetracao) }}>
             {loading ? '—' : `${mediaPenetracao.toFixed(1)}%`}
           </p>
-          <p className="text-[10px] text-gray-400">media das redes</p>
+          <p className="text-xs text-gray-500">media das redes</p>
         </div>
       </div>
 
@@ -214,13 +214,13 @@ export default function RedesPage() {
           </div>
         ) : redes.length === 0 ? (
           <div className="flex items-center justify-center py-16">
-            <p className="text-xs text-gray-400">Nenhuma rede cadastrada.</p>
+            <p className="text-xs text-gray-500">Nenhuma rede cadastrada.</p>
           </div>
         ) : (
           <div className="overflow-x-auto -mx-0">
             <div style={{ minWidth: 640 }}>
             {/* Header tabela */}
-            <div className="border-b border-gray-200 bg-gray-50 px-4 py-2.5 grid grid-cols-9 gap-3 text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+            <div className="border-b border-gray-200 bg-gray-50 px-4 py-2.5 grid grid-cols-9 gap-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">
               <span className="col-span-2">Rede</span>
               <span>Consultor</span>
               <span className="text-right">Lojas</span>
@@ -248,7 +248,7 @@ export default function RedesPage() {
                     {/* Nome + chevron */}
                     <div className="col-span-2 flex items-center gap-2">
                       <svg
-                        className="w-3.5 h-3.5 text-gray-400 flex-shrink-0 transition-transform"
+                        className="w-3.5 h-3.5 text-gray-500 flex-shrink-0 transition-transform"
                         style={{ transform: isExpanded ? 'rotate(90deg)' : 'rotate(0deg)' }}
                         fill="none" stroke="currentColor" viewBox="0 0 24 24"
                       >
@@ -257,7 +257,7 @@ export default function RedesPage() {
                       <div>
                         <span className="text-xs font-semibold text-gray-900">{rede.nome}</span>
                         {isCritica && (
-                          <span className="ml-1.5 text-[10px] font-bold text-red-600">CRITICA</span>
+                          <span className="ml-1.5 text-xs font-bold text-red-600">CRITICA</span>
                         )}
                       </div>
                     </div>
@@ -283,7 +283,7 @@ export default function RedesPage() {
 
                   {/* Distribuicao por cor (mini-barras) */}
                   <div className="px-4 pb-2 flex items-center gap-2">
-                    <span className="text-[10px] text-gray-400">Distribuicao:</span>
+                    <span className="text-xs text-gray-500">Distribuicao:</span>
                     <DistribuicaoMini dist={rede.distribuicao} />
                     <div className="ml-auto">
                       <CorBadge cor={rede.cor} />
@@ -297,7 +297,7 @@ export default function RedesPage() {
                       className="border-t border-gray-100 bg-gray-50"
                     >
                       {/* Header lojas */}
-                      <div className="px-10 py-2 grid grid-cols-8 gap-3 text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
+                      <div className="px-10 py-2 grid grid-cols-8 gap-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">
                         <span className="col-span-2">CNPJ</span>
                         <span className="col-span-2">Nome Loja</span>
                         <span>Cidade</span>
@@ -313,14 +313,14 @@ export default function RedesPage() {
                           onClick={() => router.push(`/carteira?busca=${loja.cnpj}`)}
                           className="w-full px-10 py-2 grid grid-cols-8 gap-3 items-center hover:bg-white transition-colors text-left focus:outline-none focus:ring-1 focus:ring-green-500 focus:ring-inset cursor-pointer min-h-[44px]"
                         >
-                          <span className="col-span-2 text-[10px] font-mono text-gray-500">{loja.cnpj}</span>
+                          <span className="col-span-2 text-xs font-mono text-gray-500">{loja.cnpj}</span>
                           <span className="col-span-2 text-xs text-gray-800">{loja.nome}</span>
                           <span className="text-xs text-gray-600">{loja.cidade}/{loja.uf}</span>
                           <span className="text-xs text-gray-900 text-right tabular-nums">{formatBRL(loja.fat_real)}</span>
                           <span className="text-xs text-gray-500 text-right tabular-nums">{formatBRL(loja.meta)}</span>
                           <div className="flex items-center gap-2">
                             <span
-                              className="text-[10px] font-semibold tabular-nums"
+                              className="text-xs font-semibold tabular-nums"
                               style={{ color: penetracaoColor(loja.pct_ating) }}
                             >
                               {loja.pct_ating}%
@@ -332,8 +332,8 @@ export default function RedesPage() {
 
                       {/* Rodape distribuicao */}
                       <div className="px-10 py-2 border-t border-gray-100 flex items-center gap-2">
-                        <span className="text-[10px] text-gray-400">Total lojas: {rede.total_lojas}</span>
-                        <span className="text-[10px] text-gray-300">|</span>
+                        <span className="text-xs text-gray-500">Total lojas: {rede.total_lojas}</span>
+                        <span className="text-xs text-gray-500">|</span>
                         <DistribuicaoMini dist={rede.distribuicao} />
                       </div>
                     </div>
@@ -348,7 +348,7 @@ export default function RedesPage() {
         )}
       </div>
 
-      <p className="text-[10px] text-gray-400">
+      <p className="text-xs text-gray-500">
         Click numa rede para expandir a lista de lojas. Click numa loja para abrir a ficha do cliente.
         Redes com % atingimento abaixo de 40% sao destacadas como CRITICAS.
       </p>

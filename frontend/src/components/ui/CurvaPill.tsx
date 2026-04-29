@@ -16,7 +16,7 @@ export interface CurvaPillProps {
 const BASE = 'inline-flex items-center font-semibold rounded-full';
 
 const SIZE_CLASSES: Record<BadgeSize, string> = {
-  xs: 'text-[10px] px-1.5 py-0 leading-4',
+  xs: 'text-xs px-1.5 py-0 leading-4',
   sm: 'text-xs px-2 py-0.5 leading-5',
   md: 'text-sm px-2.5 py-1 leading-5',
 };

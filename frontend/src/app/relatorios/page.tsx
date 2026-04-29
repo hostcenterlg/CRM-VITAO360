@@ -171,7 +171,7 @@ interface SelectFiltroProps {
 function SelectFiltro({ id, label, value, onChange, options, placeholder = 'Todos' }: SelectFiltroProps) {
   return (
     <div className="flex flex-col gap-1 w-full sm:w-auto">
-      <label htmlFor={id} className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+      <label htmlFor={id} className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
         {label}
       </label>
       <select
@@ -201,7 +201,7 @@ interface DateFiltroProps {
 function DateFiltro({ id, label, value, onChange }: DateFiltroProps) {
   return (
     <div className="flex flex-col gap-1 w-full sm:w-auto">
-      <label htmlFor={id} className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+      <label htmlFor={id} className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
         {label}
       </label>
       <input
@@ -282,7 +282,7 @@ function CardRelatorio({ icon, titulo, descricao, children, loading, error, onDo
         </div>
         <div className="min-w-0">
           <h3 className="text-sm font-bold text-gray-900">{titulo}</h3>
-          <p className="text-[11px] text-gray-500 mt-0.5 leading-snug">{descricao}</p>
+          <p className="text-xs text-gray-500 mt-0.5 leading-snug">{descricao}</p>
         </div>
       </div>
 
@@ -293,7 +293,7 @@ function CardRelatorio({ icon, titulo, descricao, children, loading, error, onDo
 
       {/* Erro */}
       {error && (
-        <p role="alert" className="mt-2 text-[10px] text-red-600 bg-red-50 border border-red-200 rounded px-2 py-1">
+        <p role="alert" className="mt-2 text-xs text-red-600 bg-red-50 border border-red-200 rounded px-2 py-1">
           {error}
         </p>
       )}
@@ -575,7 +575,7 @@ export default function RelatoriosPage() {
       </div>
 
       {/* Nota de rodape */}
-      <p className="text-[10px] text-gray-400">
+      <p className="text-xs text-gray-500">
         Os arquivos sao gerados em tempo real com os dados mais recentes do sistema. Formato: .xlsx compativel com Microsoft Excel.
       </p>
 

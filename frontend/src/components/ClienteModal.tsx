@@ -75,7 +75,7 @@ export default function ClienteModal({ cnpj, onClose }: ClienteModalProps) {
             <p className="font-semibold text-gray-900 text-base">
               {loading ? 'Carregando...' : (cliente?.nome_fantasia ?? cnpj)}
             </p>
-            <p className="text-xs text-gray-400 font-mono">{formatCnpj(cnpj)}</p>
+            <p className="text-xs text-gray-500 font-mono">{formatCnpj(cnpj)}</p>
           </div>
           <button
             type="button"
@@ -117,7 +117,7 @@ export default function ClienteModal({ cnpj, onClose }: ClienteModalProps) {
 
               {/* Identification */}
               <section>
-                <h3 className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-2">
+                <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
                   Identificacao
                 </h3>
                 <FieldRow label="Razao Social" value={cliente.razao_social} />
@@ -129,7 +129,7 @@ export default function ClienteModal({ cnpj, onClose }: ClienteModalProps) {
 
               {/* Commercial */}
               <section>
-                <h3 className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-2">
+                <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
                   Comercial
                 </h3>
                 <FieldRow label="Consultor" value={cliente.consultor} />
@@ -154,7 +154,7 @@ export default function ClienteModal({ cnpj, onClose }: ClienteModalProps) {
                 .filter(([, v]) => v != null && v !== '' && typeof v !== 'object')
                 .length > 0 && (
                   <section>
-                    <h3 className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-2">
+                    <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
                       Dados Adicionais
                     </h3>
                     {Object.entries(cliente)

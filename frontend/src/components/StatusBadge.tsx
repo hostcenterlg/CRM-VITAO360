@@ -126,7 +126,7 @@ export default function StatusBadge({
       'Ver .planning/UX_REDESIGN_COMPONENTS_SPEC.md seção 14.',
     );
   }
-  if (!value) return <span className="text-gray-400">—</span>;
+  if (!value) return <span className="text-gray-500">—</span>;
 
   const style = getStyle(value, variant);
   const key = value?.toUpperCase?.() ?? '';
@@ -140,7 +140,7 @@ export default function StatusBadge({
   const sizeClass = large
     ? 'px-2.5 py-1 text-xs'
     : small
-    ? 'px-1.5 py-0 text-[10px]'
+    ? 'px-1.5 py-0 text-xs'
     : 'px-2 py-0.5 text-xs';
 
   return (

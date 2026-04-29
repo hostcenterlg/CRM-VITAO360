@@ -34,7 +34,7 @@ function SitBadge({ value }: { value: string }) {
   const cfg = SITUACAO_COLORS[value] ?? { bg: '#e5e7eb', text: '#374151' };
   return (
     <span
-      className="inline-flex items-center px-2 py-0.5 text-[10px] font-semibold rounded uppercase"
+      className="inline-flex items-center px-2 py-0.5 text-xs font-semibold rounded uppercase"
       style={{ backgroundColor: cfg.bg, color: cfg.text }}
     >
       {value}
@@ -46,7 +46,7 @@ function TempCell({ value }: { value: string }) {
   const cfg = TEMP_COLORS[value] ?? { bg: '#e5e7eb', text: '#374151' };
   return (
     <span
-      className="inline-flex items-center px-2 py-0.5 text-[10px] font-semibold rounded uppercase"
+      className="inline-flex items-center px-2 py-0.5 text-xs font-semibold rounded uppercase"
       style={{ backgroundColor: cfg.bg, color: cfg.text }}
     >
       {value}
@@ -89,7 +89,7 @@ export default function AdminMotorPage() {
             {regras.length} combinacoes — visualizacao somente leitura
           </p>
         </div>
-        <span className="px-3 py-1.5 text-[10px] font-bold text-gray-600 bg-gray-100 border border-gray-200 rounded uppercase tracking-wide">
+        <span className="px-3 py-1.5 text-xs font-bold text-gray-600 bg-gray-100 border border-gray-200 rounded uppercase tracking-wide">
           READ ONLY
         </span>
       </div>
@@ -139,7 +139,7 @@ export default function AdminMotorPage() {
               Limpar
             </button>
           )}
-          <span className="text-xs text-gray-400 sm:ml-auto">
+          <span className="text-xs text-gray-500 sm:ml-auto">
             {regrasFiltradas.length} regras exibidas
           </span>
         </div>
@@ -159,29 +159,29 @@ export default function AdminMotorPage() {
               </caption>
               <thead>
                 <tr className="border-b border-gray-200 bg-gray-50">
-                  <th scope="col" className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-8">#</th>
-                  <th scope="col" className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Situacao</th>
-                  <th scope="col" className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Resultado</th>
-                  <th scope="col" className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Estagio Funil</th>
-                  <th scope="col" className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Fase</th>
-                  <th scope="col" className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Tipo Contato</th>
-                  <th scope="col" className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide min-w-[200px]">Acao Futura</th>
-                  <th scope="col" className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Temp.</th>
-                  <th scope="col" className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">FU (dias)</th>
-                  <th scope="col" className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Tipo Acao</th>
+                  <th scope="col" className="px-3 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide w-8">#</th>
+                  <th scope="col" className="px-3 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Situacao</th>
+                  <th scope="col" className="px-3 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Resultado</th>
+                  <th scope="col" className="px-3 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Estagio Funil</th>
+                  <th scope="col" className="px-3 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Fase</th>
+                  <th scope="col" className="px-3 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Tipo Contato</th>
+                  <th scope="col" className="px-3 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide min-w-[200px]">Acao Futura</th>
+                  <th scope="col" className="px-3 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Temp.</th>
+                  <th scope="col" className="px-3 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">FU (dias)</th>
+                  <th scope="col" className="px-3 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Tipo Acao</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {regrasFiltradas.length === 0 ? (
                   <tr>
-                    <td colSpan={10} className="px-4 py-10 text-center text-xs text-gray-400">
+                    <td colSpan={10} className="px-4 py-10 text-center text-xs text-gray-500">
                       {error ? 'Erro ao carregar regras.' : 'Nenhuma regra encontrada.'}
                     </td>
                   </tr>
                 ) : (
                   regrasFiltradas.map(regra => (
                     <tr key={regra.id} className="hover:bg-green-50/40 transition-colors">
-                      <td className="px-3 py-2 text-[10px] text-gray-400 tabular-nums">{regra.id}</td>
+                      <td className="px-3 py-2 text-xs text-gray-500 tabular-nums">{regra.id}</td>
                       <td className="px-3 py-2">
                         <SitBadge value={regra.situacao} />
                       </td>

@@ -27,7 +27,7 @@ export default function KpiCard({
       style={{ borderLeftColor: accentColor, borderLeftWidth: '4px' }}
     >
       <div className="flex items-center justify-between gap-2">
-        <p className="text-[10px] sm:text-[11px] font-semibold text-gray-500 uppercase tracking-wider leading-tight">
+        <p className="text-xs sm:text-xs font-semibold text-gray-500 uppercase tracking-wider leading-tight">
           {title}
         </p>
         {icon && (
@@ -46,7 +46,7 @@ export default function KpiCard({
         <p className="text-xl sm:text-2xl font-bold text-gray-900 leading-tight">{value}</p>
       )}
       {subtitle && (
-        <p className="text-[11px] sm:text-xs text-gray-400 mt-0.5">{subtitle}</p>
+        <p className="text-xs sm:text-xs text-gray-500 mt-0.5">{subtitle}</p>
       )}
     </div>
   );

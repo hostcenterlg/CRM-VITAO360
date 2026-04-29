@@ -35,7 +35,7 @@ function detectShortcut(): string {
 function SearchIcon() {
   return (
     <svg
-      className="w-4 h-4 text-gray-400 shrink-0"
+      className="w-4 h-4 text-gray-500 shrink-0"
       fill="none"
       stroke="currentColor"
       viewBox="0 0 24 24"
@@ -89,9 +89,9 @@ export function SearchInput({
         className={cn(wrapperBase, 'cursor-pointer hover:border-gray-300 text-left')}
       >
         <SearchIcon />
-        <span className="flex-1 text-gray-400">{placeholder}</span>
+        <span className="flex-1 text-gray-500">{placeholder}</span>
         {(showShortcut ?? true) && (
-          <kbd className="hidden sm:inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold text-gray-500 bg-gray-100 border border-gray-200">
+          <kbd className="hidden sm:inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-semibold text-gray-500 bg-gray-100 border border-gray-200">
             {localShortcut}
           </kbd>
         )}
@@ -116,7 +116,7 @@ export function SearchInput({
         className="flex-1 bg-transparent border-0 outline-none text-gray-900 placeholder:text-gray-400"
       />
       {showShortcut && (
-        <kbd className="hidden sm:inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold text-gray-500 bg-gray-100 border border-gray-200">
+        <kbd className="hidden sm:inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-semibold text-gray-500 bg-gray-100 border border-gray-200">
           {localShortcut}
         </kbd>
       )}

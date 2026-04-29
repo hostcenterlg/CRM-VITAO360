@@ -95,7 +95,7 @@ export function ProjecaoView() {
             style={{ borderLeftColor: '#6B7280', borderLeftWidth: '4px' }}
           >
             <div className="flex items-center justify-between gap-2">
-              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
                 Baseline 2025
               </p>
               <span
@@ -112,7 +112,7 @@ export function ProjecaoView() {
             <p className="text-2xl font-bold text-gray-900 leading-tight tabular-nums">
               {loading ? '—' : formatBRL(baseline2025)}
             </p>
-            <p className="text-[10px] text-gray-400 mt-0.5">
+            <p className="text-xs text-gray-500 mt-0.5">
               Auditoria forense — PAINEL CEO
             </p>
           </div>
@@ -122,13 +122,13 @@ export function ProjecaoView() {
             className="bg-white rounded-xl border border-gray-200 p-4 flex flex-col gap-1 shadow-sm"
             style={{ borderLeftColor: '#00B050', borderLeftWidth: '4px' }}
           >
-            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
               Meta 2026
             </p>
             <p className="text-2xl font-bold text-gray-900 leading-tight tabular-nums">
               {formatBRL(meta2026)}
             </p>
-            <p className="text-[10px] text-gray-400 mt-0.5">
+            <p className="text-xs text-gray-500 mt-0.5">
               +{loading ? '—' : formatPercent(baseline2025 > 0 ? ((meta2026 - baseline2025) / baseline2025) * 100 : 0, 0)} vs Baseline
             </p>
           </div>
@@ -138,13 +138,13 @@ export function ProjecaoView() {
             className="bg-white rounded-xl border border-gray-200 p-4 flex flex-col gap-1 shadow-sm"
             style={{ borderLeftColor: pctQ1Color, borderLeftWidth: '4px' }}
           >
-            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
               Realizado 2026 YTD
             </p>
             <p className="text-2xl font-bold text-gray-900 leading-tight tabular-nums">
               {loading ? '—' : formatBRL(realizadoYTD)}
             </p>
-            <p className="text-[10px] mt-0.5" style={{ color: pctQ1Color }}>
+            <p className="text-xs mt-0.5" style={{ color: pctQ1Color }}>
               {loading ? '—' : formatPercent(pctQ1)} da meta anual
             </p>
           </div>
@@ -154,13 +154,13 @@ export function ProjecaoView() {
             className="bg-white rounded-xl border border-gray-200 p-4 flex flex-col gap-1 shadow-sm"
             style={{ borderLeftColor: '#7c3aed', borderLeftWidth: '4px' }}
           >
-            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
               Projecao 2026
             </p>
             <p className="text-2xl font-bold text-gray-900 leading-tight tabular-nums">
               {loading ? '—' : formatBRL(projecao2026)}
             </p>
-            <p className="text-[10px] text-gray-400 mt-0.5">
+            <p className="text-xs text-gray-500 mt-0.5">
               {loading ? '—' : `+${formatPercent(baseline2025 > 0 ? ((projecao2026 - baseline2025) / baseline2025) * 100 : 0, 0)} vs Baseline`}
             </p>
           </div>
@@ -207,7 +207,7 @@ export function ProjecaoView() {
         ) : detalhe?.mensal?.length ? (
           <div className="h-80 w-full"><GroupedBarChart data={detalhe.mensal} /></div>
         ) : (
-          <div className="h-64 min-h-[200px] flex items-center justify-center text-sm text-gray-400">
+          <div className="h-64 min-h-[200px] flex items-center justify-center text-sm text-gray-500">
             <div className="text-center">
               <svg className="w-10 h-10 mx-auto mb-3 text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
@@ -251,7 +251,7 @@ export function ProjecaoView() {
             ))}
           </div>
         ) : porConsultor.length === 0 ? (
-          <div className="py-10 text-center text-gray-400 text-sm">
+          <div className="py-10 text-center text-gray-500 text-sm">
             Sem dados por consultor disponíveis
           </div>
         ) : (
@@ -262,7 +262,7 @@ export function ProjecaoView() {
                   {['Consultor', 'Faturamento', 'Meta', 'Pedidos', '% Alcancado', 'Status'].map((h) => (
                     <th
                       key={h}
-                      className="px-4 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide whitespace-nowrap"
+                      className="px-4 py-2.5 text-xs font-semibold text-gray-500 uppercase tracking-wide whitespace-nowrap"
                     >
                       {h}
                     </th>

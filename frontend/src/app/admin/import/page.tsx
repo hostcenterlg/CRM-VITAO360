@@ -47,7 +47,7 @@ function StatusImportBadge({ status }: { status: ImportHistoryItem['status'] }) 
   const { bg, text, label } = cfg[status] ?? cfg.FALHA;
   return (
     <span
-      className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase"
+      className="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold uppercase"
       style={{ backgroundColor: bg, color: text }}
     >
       {label}
@@ -110,7 +110,7 @@ function ImportResultCard({
             className="bg-gray-50 rounded-lg p-3 text-center border border-gray-100"
           >
             <p className="text-2xl font-bold" style={{ color }}>{value.toLocaleString('pt-BR')}</p>
-            <p className="text-[11px] text-gray-500 mt-0.5 font-medium uppercase tracking-wide">{label}</p>
+            <p className="text-xs text-gray-500 mt-0.5 font-medium uppercase tracking-wide">{label}</p>
           </div>
         ))}
       </div>
@@ -248,7 +248,7 @@ function DropZone({ onFile, disabled }: DropZoneProps) {
                 clique para selecionar
               </span>
             </p>
-            <p className="text-xs text-gray-400 mt-2">Apenas arquivos .xlsx (Mercos ou SAP)</p>
+            <p className="text-xs text-gray-500 mt-2">Apenas arquivos .xlsx (Mercos ou SAP)</p>
           </div>
         </div>
       </div>
@@ -328,7 +328,7 @@ function HistoryTable({ items, loading }: { items: ImportHistoryItem[]; loading:
 
   if (items.length === 0) {
     return (
-      <div className="py-10 text-center text-gray-400 text-sm">
+      <div className="py-10 text-center text-gray-500 text-sm">
         Nenhum import realizado ainda.
       </div>
     );
@@ -342,7 +342,7 @@ function HistoryTable({ items, loading }: { items: ImportHistoryItem[]; loading:
             {['Data', 'Arquivo', 'Lidos', 'Inseridos', 'Atualizados', 'Erros', 'Status'].map((h) => (
               <th
                 key={h}
-                className="px-4 py-2.5 text-left text-[11px] font-semibold text-gray-500 uppercase tracking-wide whitespace-nowrap"
+                className="px-4 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide whitespace-nowrap"
               >
                 {h}
               </th>
@@ -448,7 +448,7 @@ export default function ImportPage() {
         <div className="flex items-center gap-2 mb-1">
           <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Importacao de Dados</h1>
           <span
-            className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase"
+            className="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold uppercase"
             style={{ backgroundColor: '#DBEAFE', color: '#1D4ED8' }}
           >
             Apenas Admin
@@ -501,7 +501,7 @@ export default function ImportPage() {
           <button
             type="button"
             onClick={loadHistory}
-            className="p-1.5 rounded hover:bg-gray-100 transition-colors text-gray-400 hover:text-gray-600"
+            className="p-1.5 rounded hover:bg-gray-100 transition-colors text-gray-500 hover:text-gray-600"
             aria-label="Recarregar historico"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -59,7 +59,7 @@ const TEMP_ICON: Record<string, string> = {
 };
 
 function TemperatureCell({ value }: { value?: string }) {
-  if (!value) return <span className="text-gray-300">—</span>;
+  if (!value) return <span className="text-gray-500">—</span>;
   const key = value.toUpperCase();
   const variant = TEMP_VARIANT[key] ?? 'neutral';
   const icon = TEMP_ICON[key];
@@ -73,7 +73,7 @@ function TemperatureCell({ value }: { value?: string }) {
 function SortIcon({ col, sort }: { col: string; sort?: SortState }) {
   if (!sort || sort.by !== col) {
     return (
-      <svg className="w-3 h-3 text-gray-300 inline ml-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <svg className="w-3 h-3 text-gray-500 inline ml-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4M17 8v12m0 0l4-4m-4 4l-4-4" />
       </svg>
     );
@@ -129,7 +129,7 @@ function LongPressContextMenu({ cliente, anchorY, onClose, onVerDetalhe }: Conte
       >
         <div className="px-4 py-3 border-b border-gray-100 bg-gray-50">
           <p className="text-sm font-bold text-gray-900 truncate">{cliente.nome_fantasia ?? 'Cliente'}</p>
-          <p className="text-[11px] text-gray-400 font-mono mt-0.5">{formatCnpj(cliente.cnpj)}</p>
+          <p className="text-xs text-gray-500 font-mono mt-0.5">{formatCnpj(cliente.cnpj)}</p>
         </div>
 
         <div className="py-1">
@@ -267,9 +267,9 @@ function ClienteRow({ cliente: c, idx, onRowClick, showFaturamento }: ClienteRow
             {c.nome_fantasia ?? '—'}
           </p>
           {c.razao_social && c.razao_social !== c.nome_fantasia && (
-            <p className="text-[11px] text-gray-400 truncate hidden md:block">{c.razao_social}</p>
+            <p className="text-xs text-gray-500 truncate hidden md:block">{c.razao_social}</p>
           )}
-          <p className="text-[10px] text-gray-400 font-mono hidden md:block">{cnpjFormatado}</p>
+          <p className="text-xs text-gray-500 font-mono hidden md:block">{cnpjFormatado}</p>
         </td>
 
         {/* Consultor */}
@@ -282,7 +282,7 @@ function ClienteRow({ cliente: c, idx, onRowClick, showFaturamento }: ClienteRow
           {c.situacao ? (
             <StatusPill status={c.situacao} size="sm" />
           ) : (
-            <span className="text-gray-300">—</span>
+            <span className="text-gray-500">—</span>
           )}
         </td>
 
@@ -296,7 +296,7 @@ function ClienteRow({ cliente: c, idx, onRowClick, showFaturamento }: ClienteRow
           {c.curva_abc ? (
             <CurvaPill curva={c.curva_abc} size="sm" showLabel={false} />
           ) : (
-            <span className="text-gray-300">—</span>
+            <span className="text-gray-500">—</span>
           )}
         </td>
 
@@ -305,7 +305,7 @@ function ClienteRow({ cliente: c, idx, onRowClick, showFaturamento }: ClienteRow
           {c.score != null ? (
             <ScoreBar score={c.score} showLabel height="sm" className="min-w-[80px]" />
           ) : (
-            <span className="text-gray-300">—</span>
+            <span className="text-gray-500">—</span>
           )}
         </td>
 
@@ -321,7 +321,7 @@ function ClienteRow({ cliente: c, idx, onRowClick, showFaturamento }: ClienteRow
           {c.sinaleiro ? (
             <Sinaleiro cor={c.sinaleiro.toLowerCase()} size="md" />
           ) : (
-            <span className="text-gray-300">—</span>
+            <span className="text-gray-500">—</span>
           )}
         </td>
       </tr>
@@ -384,7 +384,7 @@ export default function ClienteTable({
 
   if (!registros || registros.length === 0) {
     return (
-      <div className="py-16 text-center text-gray-400">
+      <div className="py-16 text-center text-gray-500">
         <svg className="w-10 h-10 mx-auto mb-3 text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
             d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -392,7 +392,7 @@ export default function ClienteTable({
         <p className="text-sm font-medium text-gray-500">Nenhum cliente encontrado</p>
         {hasActiveFilters ? (
           <>
-            <p className="text-xs text-gray-400 mt-1">Nenhum cliente corresponde aos filtros selecionados.</p>
+            <p className="text-xs text-gray-500 mt-1">Nenhum cliente corresponde aos filtros selecionados.</p>
             {onResetFilters && (
               <button
                 type="button"
@@ -404,7 +404,7 @@ export default function ClienteTable({
             )}
           </>
         ) : (
-          <p className="text-xs text-gray-400 mt-1">Tente ajustar os filtros ou limpar a busca.</p>
+          <p className="text-xs text-gray-500 mt-1">Tente ajustar os filtros ou limpar a busca.</p>
         )}
       </div>
     );

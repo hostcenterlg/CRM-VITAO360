@@ -171,7 +171,7 @@ export default function BottomNav() {
             >
               {item.icon(active)}
               <span
-                className="text-[10px] font-semibold leading-none truncate"
+                className="text-xs font-semibold leading-none truncate"
                 style={{ color: active ? '#00B050' : '#9CA3AF' }}
               >
                 {item.label}

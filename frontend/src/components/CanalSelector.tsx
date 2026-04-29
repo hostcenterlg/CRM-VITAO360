@@ -41,7 +41,7 @@ function StatusBadge({ status }: { status: string }) {
   const cfg = STATUS_COLORS[status] ?? STATUS_COLORS.ATIVO!;
   return (
     <span
-      className="text-[9px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wide"
+      className="text-xs font-bold px-1.5 py-0.5 rounded uppercase tracking-wide"
       style={{ backgroundColor: cfg.bg, color: cfg.fg }}
     >
       {cfg.label}
@@ -141,7 +141,7 @@ export default function CanalSelector() {
   // Loading discreto
   if (carregando) {
     return (
-      <div className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs text-gray-400">
+      <div className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs text-gray-500">
         <div className="w-3 h-3 border-2 border-gray-300 border-t-green-500 rounded-full animate-spin" />
         <span className="hidden md:inline">Canais</span>
       </div>
@@ -197,7 +197,7 @@ export default function CanalSelector() {
         )}
         <span className="truncate">{labelBotao}</span>
         <svg
-          className={`w-3 h-3 text-gray-400 transition-transform flex-shrink-0 ${aberto ? 'rotate-180' : ''}`}
+          className={`w-3 h-3 text-gray-500 transition-transform flex-shrink-0 ${aberto ? 'rotate-180' : ''}`}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -214,7 +214,7 @@ export default function CanalSelector() {
                      rounded-lg shadow-lg z-50 overflow-hidden"
         >
           <div className="px-3 py-1.5 border-b border-gray-100 bg-gray-50">
-            <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+            <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
               {ehAdmin ? 'Filtrar por canal' : 'Seus canais'}
             </span>
           </div>

@@ -92,7 +92,7 @@ function StatusBadge({ status }: { status: StatusPedido }) {
   const cfg = STATUS_CONFIG[status] ?? STATUS_CONFIG.DIGITADO;
   return (
     <span
-      className="inline-flex items-center px-2 py-0.5 text-[10px] font-semibold rounded uppercase"
+      className="inline-flex items-center px-2 py-0.5 text-xs font-semibold rounded uppercase"
       style={{ backgroundColor: cfg.bg, color: cfg.text }}
     >
       {cfg.label}
@@ -134,12 +134,12 @@ function ModalPedido({ pedido, onClose }: ModalPedidoProps) {
             <h2 id="modal-pedido-titulo" className="text-sm font-bold text-gray-900">
               Pedido #{pedido.numero_pedido}
             </h2>
-            <p className="text-[11px] text-gray-500 mt-0.5">{formatarData(pedido.data_pedido)}</p>
+            <p className="text-xs text-gray-500 mt-0.5">{formatarData(pedido.data_pedido)}</p>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 p-1 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="text-gray-500 hover:text-gray-600 p-1 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
             aria-label="Fechar modal"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -153,35 +153,35 @@ function ModalPedido({ pedido, onClose }: ModalPedidoProps) {
           {/* Info grid */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">Cliente</p>
+              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Cliente</p>
               <p className="text-xs font-medium text-gray-900">{pedido.nome_fantasia ?? '—'}</p>
-              <p className="text-[10px] text-gray-400 font-mono mt-0.5">{pedido.cnpj}</p>
+              <p className="text-xs text-gray-500 font-mono mt-0.5">{pedido.cnpj}</p>
             </div>
             <div>
-              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">Consultor</p>
+              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Consultor</p>
               <p className="text-xs font-medium text-gray-900">{pedido.consultor ?? '—'}</p>
             </div>
             <div>
-              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">Valor Total</p>
+              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Valor Total</p>
               <p className="text-sm font-bold text-gray-900 tabular-nums">{formatBRL(pedido.valor_pedido)}</p>
             </div>
             <div>
-              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">Cond. Pagamento</p>
+              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Cond. Pagamento</p>
               <p className="text-xs font-medium text-gray-900">{pedido.condicao_pagamento ?? '—'}</p>
             </div>
             <div>
-              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">Status Atual</p>
+              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Status Atual</p>
               <StatusBadge status={pedido.status_pedido} />
             </div>
             {pedido.fonte && (
               <div>
-                <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">Fonte</p>
+                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Fonte</p>
                 <p className="text-xs font-medium text-gray-900">{pedido.fonte}</p>
               </div>
             )}
             {pedido.observacao && (
               <div className="col-span-2">
-                <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">Observação</p>
+                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Observação</p>
                 <p className="text-xs text-gray-700">{pedido.observacao}</p>
               </div>
             )}
@@ -189,7 +189,7 @@ function ModalPedido({ pedido, onClose }: ModalPedidoProps) {
 
           {/* Aviso de governanca + botao fechar */}
           <div className="pt-3 border-t border-gray-100">
-            <p className="text-[10px] text-gray-400 italic mb-3">
+            <p className="text-xs text-gray-500 italic mb-3">
               Aprovacoes e transicoes de status sao realizadas pelo SAP/financeiro.
             </p>
             <button
@@ -226,11 +226,11 @@ function CardPedido({ pedido, onClick }: CardPedidoProps) {
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-[11px] font-mono text-gray-400">#{pedido.numero_pedido ?? pedido.id}</span>
-            <span className="text-[11px] font-semibold text-gray-600">{pedido.consultor ?? '—'}</span>
+            <span className="text-xs font-mono text-gray-500">#{pedido.numero_pedido ?? pedido.id}</span>
+            <span className="text-xs font-semibold text-gray-600">{pedido.consultor ?? '—'}</span>
           </div>
           <p className="text-sm font-semibold text-gray-900 mt-0.5 truncate">{pedido.nome_fantasia ?? '—'}</p>
-          <p className="text-[10px] text-gray-400 font-mono mt-0.5">{pedido.cnpj}</p>
+          <p className="text-xs text-gray-500 font-mono mt-0.5">{pedido.cnpj}</p>
         </div>
         <div className="flex-shrink-0 flex flex-col items-end gap-1.5">
           <StatusBadge status={pedido.status_pedido} />
@@ -240,9 +240,9 @@ function CardPedido({ pedido, onClick }: CardPedidoProps) {
         </div>
       </div>
       <div className="flex items-center gap-3 mt-2 pt-2 border-t border-gray-100">
-        <span className="text-[11px] text-gray-500">{pedido.condicao_pagamento ?? '—'}</span>
+        <span className="text-xs text-gray-500">{pedido.condicao_pagamento ?? '—'}</span>
         {pedido.fonte && (
-          <span className="text-[11px] text-gray-400">{pedido.fonte}</span>
+          <span className="text-xs text-gray-500">{pedido.fonte}</span>
         )}
       </div>
     </button>
@@ -269,7 +269,7 @@ function ResumoStatus({ resumo }: { resumo: Record<string, number> }) {
             >
               {qtd}
             </p>
-            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mt-0.5">
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mt-0.5">
               {cfg.label}
             </p>
           </div>
@@ -496,11 +496,11 @@ function PedidosInner() {
         <div className="flex items-center gap-2 mb-2 sm:mb-0">
           {/* Busca — sempre visivel */}
           <div className="flex flex-col gap-1 flex-1 min-w-0">
-            <label htmlFor="pedidos-busca" className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide hidden sm:block">
+            <label htmlFor="pedidos-busca" className="text-xs font-semibold text-gray-500 uppercase tracking-wide hidden sm:block">
               Busca
             </label>
             <div className="relative">
-              <svg className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-500 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
               <input
@@ -518,7 +518,7 @@ function PedidosInner() {
                 <button type="button" onClick={() => {
                   setBuscaInput(''); setBusca('');
                   pushUrl(filtroStatus, filtroConsultor, filtroDataInicio, filtroDataFim, '');
-                }} aria-label="Limpar busca" className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                }} aria-label="Limpar busca" className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-600">
                   <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                   </svg>
@@ -547,7 +547,7 @@ function PedidosInner() {
         <div className={`${filtrosExpanded ? 'grid grid-cols-2 gap-2' : 'hidden'} sm:flex sm:flex-wrap sm:gap-2 sm:items-end mt-2`}>
           {/* Status */}
           <div className="flex flex-col gap-1">
-            <label htmlFor="pedidos-status" className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Status</label>
+            <label htmlFor="pedidos-status" className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Status</label>
             <select
               id="pedidos-status"
               value={filtroStatus}
@@ -567,7 +567,7 @@ function PedidosInner() {
 
           {/* Consultor */}
           <div className="flex flex-col gap-1">
-            <label htmlFor="pedidos-consultor" className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Consultor</label>
+            <label htmlFor="pedidos-consultor" className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Consultor</label>
             <select
               id="pedidos-consultor"
               value={filtroConsultor}
@@ -587,7 +587,7 @@ function PedidosInner() {
 
           {/* Data inicio */}
           <div className="flex flex-col gap-1">
-            <label htmlFor="pedidos-data-inicio" className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">De</label>
+            <label htmlFor="pedidos-data-inicio" className="text-xs font-semibold text-gray-500 uppercase tracking-wide">De</label>
             <input
               id="pedidos-data-inicio"
               type="date"
@@ -602,7 +602,7 @@ function PedidosInner() {
 
           {/* Data fim */}
           <div className="flex flex-col gap-1">
-            <label htmlFor="pedidos-data-fim" className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Ate</label>
+            <label htmlFor="pedidos-data-fim" className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Ate</label>
             <input
               id="pedidos-data-fim"
               type="date"
@@ -643,7 +643,7 @@ function PedidosInner() {
         </div>
       ) : grupos.length === 0 ? (
         <div className="bg-white rounded-xl border border-gray-200 py-16 flex flex-col items-center gap-3 shadow-sm">
-          <svg className="w-10 h-10 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-10 h-10 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
               d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
           </svg>
@@ -663,8 +663,8 @@ function PedidosInner() {
                 <span className="text-xs font-bold text-gray-700 uppercase tracking-wide">
                   {grupo.label}
                 </span>
-                <span className="text-[11px] text-gray-400">{formatarData(grupo.data)}</span>
-                <span className="text-[11px] text-gray-400">
+                <span className="text-xs text-gray-500">{formatarData(grupo.data)}</span>
+                <span className="text-xs text-gray-500">
                   ({grupo.pedidos.length} pedido{grupo.pedidos.length !== 1 ? 's' : ''})
                 </span>
                 <div className="flex-1 h-px bg-gray-200" />

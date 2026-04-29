@@ -112,7 +112,7 @@ function ClienteAutocomplete({ onSelect }: ClienteAutocompleteProps) {
     <div ref={containerRef} className="relative w-full sm:max-w-md">
       <div className="relative">
         <svg
-          className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
+          className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -149,11 +149,11 @@ function ClienteAutocomplete({ onSelect }: ClienteAutocompleteProps) {
               >
                 <div className="min-w-0">
                   <p className="text-sm font-medium text-gray-900 truncate">{c.nome_fantasia}</p>
-                  <p className="text-[11px] text-gray-500 font-mono">{c.cnpj}</p>
+                  <p className="text-xs text-gray-500 font-mono">{c.cnpj}</p>
                 </div>
                 <div className="flex-shrink-0 text-right ml-3">
-                  <span className="text-[11px] text-gray-400">{c.consultor}</span>
-                  <p className="text-[11px] text-gray-400">{c.uf}</p>
+                  <span className="text-xs text-gray-500">{c.consultor}</span>
+                  <p className="text-xs text-gray-500">{c.uf}</p>
                 </div>
               </button>
             </li>
@@ -192,12 +192,12 @@ function AgentCard({ title, subtitle, accentColor, icon, children, disabled, hig
           <div className="flex items-center gap-2 flex-wrap">
             <p className={`font-semibold text-gray-900 leading-tight ${highlighted ? 'text-lg sm:text-xl' : 'text-sm'}`}>{title}</p>
             {highlighted && (
-              <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-green-100 text-green-800 border border-green-300 flex-shrink-0">
+              <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-green-100 text-green-800 border border-green-300 flex-shrink-0">
                 Mais importante
               </span>
             )}
           </div>
-          {subtitle && <p className="text-[11px] text-gray-500 leading-tight mt-0.5">{subtitle}</p>}
+          {subtitle && <p className="text-xs text-gray-500 leading-tight mt-0.5">{subtitle}</p>}
         </div>
       </div>
       <div className={`px-4 ${highlighted ? 'py-5' : 'py-3'}`}>{children}</div>
@@ -206,7 +206,7 @@ function AgentCard({ title, subtitle, accentColor, icon, children, disabled, hig
 }
 
 function EmptyState({ msg }: { msg: string }) {
-  return <p className="text-xs text-gray-400 italic py-2">{msg}</p>;
+  return <p className="text-xs text-gray-500 italic py-2">{msg}</p>;
 }
 
 function ErrorState({ msg }: { msg: string }) {
@@ -280,7 +280,7 @@ function CardBriefing({ cnpj }: { cnpj: string | null }) {
           </div>
 
           <div>
-            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1">
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">
               Abordagem sugerida
             </p>
             <p className="text-xs text-gray-800 leading-relaxed">{data.sugestao_abordagem}</p>
@@ -288,13 +288,13 @@ function CardBriefing({ cnpj }: { cnpj: string | null }) {
 
           <div>
             <div className="flex items-center justify-between mb-1">
-              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
                 Script de venda
               </p>
               <button
                 type="button"
                 onClick={handleCopiar}
-                className="inline-flex items-center gap-1 px-3 py-2 min-h-[44px] text-[10px] font-semibold rounded transition-all focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="inline-flex items-center gap-1 px-3 py-2 min-h-[44px] text-xs font-semibold rounded transition-all focus:outline-none focus:ring-2 focus:ring-blue-500"
                 style={copiado
                   ? { backgroundColor: '#00B050', color: '#fff' }
                   : { backgroundColor: '#DBEAFE', color: '#1D4ED8' }
@@ -310,7 +310,7 @@ function CardBriefing({ cnpj }: { cnpj: string | null }) {
 
           {(data.ultimas_compras?.length ?? 0) > 0 && (
             <div>
-              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1">
+              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">
                 Ultimas compras
               </p>
               <ul className="space-y-0.5">
@@ -514,7 +514,7 @@ function CardChurn({ cnpj }: { cnpj: string | null }) {
 
           {(data.fatores?.length ?? 0) > 0 && (
             <div>
-              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1">
+              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">
                 Fatores de risco
               </p>
               <ul className="space-y-0.5">
@@ -592,8 +592,8 @@ function CardSugestaoProduto({ cnpj }: { cnpj: string | null }) {
                 <li key={p.id} className="flex items-start gap-2 p-2 bg-amber-50 rounded-lg border border-amber-100">
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-semibold text-gray-900 leading-tight">{p.nome}</p>
-                    <p className="text-[11px] text-amber-700">{p.categoria}</p>
-                    <p className="text-[11px] text-gray-600 mt-0.5">{p.motivo}</p>
+                    <p className="text-xs text-amber-700">{p.categoria}</p>
+                    <p className="text-xs text-gray-600 mt-0.5">{p.motivo}</p>
                   </div>
                 </li>
               ))}
@@ -644,7 +644,7 @@ function CardResumoSemanal() {
     >
       {/* Selector de consultor */}
       <div className="flex items-center gap-2 mb-3">
-        <label className="text-[11px] font-medium text-gray-600 flex-shrink-0">Consultor:</label>
+        <label className="text-xs font-medium text-gray-600 flex-shrink-0">Consultor:</label>
         <select
           value={consultor}
           onChange={(e) => setConsultor(e.target.value as Consultor)}
@@ -660,27 +660,27 @@ function CardResumoSemanal() {
       {error && <ErrorState msg={error} />}
       {data && !loading && (
         <div className="space-y-3">
-          <p className="text-[11px] text-gray-500">Periodo: {data.periodo}</p>
+          <p className="text-xs text-gray-500">Periodo: {data.periodo}</p>
 
           {/* Resumo IA (texto) */}
           {data.ia_configurada ? (
             <p className="text-xs text-gray-700 leading-snug whitespace-pre-line">{data.resumo}</p>
           ) : (
-            <p className="text-[11px] text-gray-400 italic">(IA descritiva nao configurada)</p>
+            <p className="text-xs text-gray-500 italic">(IA descritiva nao configurada)</p>
           )}
 
           {/* KPIs */}
           <div className="grid grid-cols-3 gap-2">
             <div className="text-center p-2 bg-purple-50 rounded-lg">
-              <p className="text-[10px] text-gray-500 leading-tight">Contactados</p>
+              <p className="text-xs text-gray-500 leading-tight">Contactados</p>
               <p className="text-lg font-bold text-purple-700 tabular-nums">{data.metricas.clientes_contactados_semana}</p>
             </div>
             <div className="text-center p-2 bg-green-50 rounded-lg">
-              <p className="text-[10px] text-gray-500 leading-tight">Vendas</p>
+              <p className="text-xs text-gray-500 leading-tight">Vendas</p>
               <p className="text-lg font-bold text-green-700 tabular-nums">{data.metricas.vendas_semana_qtd}</p>
             </div>
             <div className="text-center p-2 bg-blue-50 rounded-lg">
-              <p className="text-[10px] text-gray-500 leading-tight">Volume R$</p>
+              <p className="text-xs text-gray-500 leading-tight">Volume R$</p>
               <p className="text-sm font-bold text-blue-700 tabular-nums">{formatBRL(data.metricas.vendas_semana_volume)}</p>
             </div>
           </div>
@@ -688,13 +688,13 @@ function CardResumoSemanal() {
           {/* Pipeline */}
           {Object.keys(data.metricas.pipeline).length > 0 && (
             <div>
-              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1">
+              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">
                 Pipeline
               </p>
               <div className="flex flex-wrap gap-1.5">
                 {Object.entries(data.metricas.pipeline).map(([estagio, qtd]) => (
                   <span key={estagio}
-                    className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-purple-100 text-purple-800">
+                    className="text-xs font-medium px-2 py-0.5 rounded-full bg-purple-100 text-purple-800">
                     {estagio}: {qtd}
                   </span>
                 ))}
@@ -705,7 +705,7 @@ function CardResumoSemanal() {
           {/* Top clientes */}
           {data.metricas.top3_proxima_semana.length > 0 && (
             <div>
-              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1">
+              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">
                 Top clientes da semana
               </p>
               <ul className="space-y-1">
@@ -713,7 +713,7 @@ function CardResumoSemanal() {
                   <li key={c.cnpj} className="flex items-start justify-between gap-2 text-xs">
                     <div className="min-w-0">
                       <p className="font-medium text-gray-900 truncate leading-tight">{c.nome}</p>
-                      <p className="text-[11px] text-gray-500 leading-tight">{c.acao_futura}</p>
+                      <p className="text-xs text-gray-500 leading-tight">{c.acao_futura}</p>
                     </div>
                     <span className="font-bold tabular-nums flex-shrink-0" style={{ color: '#8B5CF6' }}>
                       {c.score}
@@ -839,13 +839,13 @@ function CardSentimento({ cnpj }: { cnpj: string | null }) {
           {/* Historico mini */}
           {(data.historico?.length ?? 0) > 0 && (
             <div>
-              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1">
+              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">
                 Historico recente
               </p>
               <ul className="space-y-0.5">
                 {(data.historico ?? []).slice(0, 4).map((h, i) => (
                   <li key={i} className="flex items-center justify-between text-xs text-gray-700 gap-2">
-                    <span className="text-gray-400 tabular-nums">{h.data}</span>
+                    <span className="text-gray-500 tabular-nums">{h.data}</span>
                     <span className="truncate flex-1 text-gray-600">{h.resultado}</span>
                     <span style={{ color: SENTIMENTO_COLOR[h.sentimento] ?? '#9CA3AF' }}>
                       {SENTIMENTO_EMOJI[h.sentimento] ?? '—'}
@@ -955,7 +955,7 @@ function CardPrevisaoFechamento({ cnpj }: { cnpj: string | null }) {
           {/* Fatores como barras */}
           {(data.fatores?.length ?? 0) > 0 && (
             <div>
-              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
+              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
                 Fatores
               </p>
               <ul className="space-y-1.5">
@@ -1033,7 +1033,7 @@ function CardCoach() {
     >
       {/* Selector */}
       <div className="flex items-center gap-2 mb-3">
-        <label className="text-[11px] font-medium text-gray-600 flex-shrink-0">Consultor:</label>
+        <label className="text-xs font-medium text-gray-600 flex-shrink-0">Consultor:</label>
         <select
           value={consultor}
           onChange={(e) => setConsultor(e.target.value)}
@@ -1049,30 +1049,30 @@ function CardCoach() {
       {error && <ErrorState msg={error} />}
       {data && !loading && (
         <div className="space-y-3">
-          <p className="text-[11px] text-gray-500">Periodo: {data.periodo}</p>
+          <p className="text-xs text-gray-500">Periodo: {data.periodo}</p>
 
           {/* 4 KPI cards */}
           <div className="grid grid-cols-2 gap-2">
             <div className="text-center p-2 bg-amber-50 rounded-lg">
-              <p className="text-[10px] text-gray-500 leading-tight">Conversao</p>
+              <p className="text-xs text-gray-500 leading-tight">Conversao</p>
               <p className="text-base font-bold text-amber-700 tabular-nums">
                 {(data.metricas.conversao_pct ?? 0).toFixed(1)}%
               </p>
             </div>
             <div className="text-center p-2 bg-green-50 rounded-lg">
-              <p className="text-[10px] text-gray-500 leading-tight">Ticket Medio</p>
+              <p className="text-xs text-gray-500 leading-tight">Ticket Medio</p>
               <p className="text-sm font-bold text-green-700 tabular-nums">
                 {formatBRL(data.metricas.ticket_medio)}
               </p>
             </div>
             <div className="text-center p-2 bg-blue-50 rounded-lg">
-              <p className="text-[10px] text-gray-500 leading-tight">Atend./Dia</p>
+              <p className="text-xs text-gray-500 leading-tight">Atend./Dia</p>
               <p className="text-base font-bold text-blue-700 tabular-nums">
                 {(data.metricas.atendimentos_dia ?? 0).toFixed(1)}
               </p>
             </div>
             <div className="text-center p-2 bg-purple-50 rounded-lg">
-              <p className="text-[10px] text-gray-500 leading-tight">Positivacao</p>
+              <p className="text-xs text-gray-500 leading-tight">Positivacao</p>
               <p className="text-base font-bold text-purple-700 tabular-nums">
                 {(data.metricas.positivacao_pct ?? 0).toFixed(1)}%
               </p>
@@ -1083,7 +1083,7 @@ function CardCoach() {
           <div className="grid grid-cols-2 gap-2">
             {(data.pontos_fortes?.length ?? 0) > 0 && (
               <div>
-                <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1">
+                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">
                   Pontos fortes
                 </p>
                 <ul className="space-y-0.5">
@@ -1098,7 +1098,7 @@ function CardCoach() {
             )}
             {(data.pontos_fracos?.length ?? 0) > 0 && (
               <div>
-                <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1">
+                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">
                   A melhorar
                 </p>
                 <ul className="space-y-0.5">
@@ -1116,14 +1116,14 @@ function CardCoach() {
           {/* Recomendacoes */}
           {(data.recomendacoes?.length ?? 0) > 0 && (
             <div>
-              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1">
+              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">
                 Recomendacoes
               </p>
               <ul className="space-y-1.5">
                 {(data.recomendacoes ?? []).map((r, i) => (
                   <li key={i} className="flex items-start gap-2 text-xs">
                     <span
-                      className="text-[10px] font-bold px-1.5 py-0.5 rounded flex-shrink-0"
+                      className="text-xs font-bold px-1.5 py-0.5 rounded flex-shrink-0"
                       style={{
                         backgroundColor: r.prioridade === 'ALTA' ? '#FEE2E2' : r.prioridade === 'MEDIA' ? '#FEF3C7' : '#F0FDF4',
                         color: r.prioridade === 'ALTA' ? '#DC2626' : r.prioridade === 'MEDIA' ? '#D97706' : '#15803D',
@@ -1133,7 +1133,7 @@ function CardCoach() {
                     </span>
                     <div className="min-w-0">
                       <p className="text-gray-800 leading-snug">{r.acao}</p>
-                      <p className="text-[10px] text-amber-600 mt-0.5">{r.impacto_estimado}</p>
+                      <p className="text-xs text-amber-600 mt-0.5">{r.impacto_estimado}</p>
                     </div>
                   </li>
                 ))}
@@ -1187,7 +1187,7 @@ function CardAlertaOportunidade({ highlighted }: { highlighted?: boolean }) {
       {error && <ErrorState msg={error} />}
       {data && !loading && (
         <div className="space-y-2">
-          <p className="text-[11px] text-gray-500">
+          <p className="text-xs text-gray-500">
             {data.total} oportunidade{data.total !== 1 ? 's' : ''} identificada{data.total !== 1 ? 's' : ''}
           </p>
 
@@ -1206,29 +1206,29 @@ function CardAlertaOportunidade({ highlighted }: { highlighted?: boolean }) {
                     <p className="text-xs font-semibold text-gray-900 truncate leading-tight">
                       {op.nome}
                     </p>
-                    <p className="text-[10px] text-gray-500 font-mono">{op.cnpj}</p>
+                    <p className="text-xs text-gray-500 font-mono">{op.cnpj}</p>
                   </div>
                   <div className="flex flex-col items-end gap-1 flex-shrink-0">
                     <span
-                      className="text-[10px] font-bold px-1.5 py-0.5 rounded text-white"
+                      className="text-xs font-bold px-1.5 py-0.5 rounded text-white"
                       style={{ backgroundColor: OPORTUNIDADE_TIPO_COLOR[op.tipo] ?? '#6B7280' }}
                     >
                       {op.tipo.replace(/_/g, ' ')}
                     </span>
-                    <span className="text-[10px] font-semibold text-green-700">
+                    <span className="text-xs font-semibold text-green-700">
                       {formatBRL(op.valor_potencial)}
                     </span>
                   </div>
                 </div>
-                <p className="text-[11px] text-gray-600 leading-snug mb-1.5">{op.motivo}</p>
+                <p className="text-xs text-gray-600 leading-snug mb-1.5">{op.motivo}</p>
                 <div className="flex items-center justify-between gap-2">
-                  <p className="text-[10px] text-amber-700 font-medium leading-snug flex-1">
+                  <p className="text-xs text-amber-700 font-medium leading-snug flex-1">
                     {op.acao_sugerida}
                   </p>
                   <button
                     type="button"
                     onClick={() => router.push(`/carteira?cnpj=${op.cnpj}`)}
-                    className="flex-shrink-0 text-[10px] font-semibold px-2 py-1 rounded bg-red-100 text-red-700 hover:bg-red-200 transition-colors"
+                    className="flex-shrink-0 text-xs font-semibold px-2 py-1 rounded bg-red-100 text-red-700 hover:bg-red-200 transition-colors"
                   >
                     Ver cliente
                   </button>
@@ -1281,12 +1281,12 @@ export default function CentralIAPage() {
             {clienteSelecionado && (
               <div className="flex items-center gap-2 text-sm text-gray-700">
                 <span className="font-medium text-gray-900">{clienteSelecionado.nome_fantasia}</span>
-                <span className="text-gray-400">|</span>
+                <span className="text-gray-500">|</span>
                 <span className="text-gray-500 font-mono text-xs">{clienteSelecionado.cnpj}</span>
                 <button
                   type="button"
                   onClick={() => setClienteSelecionado(null)}
-                  className="text-gray-400 hover:text-gray-700 transition-colors"
+                  className="text-gray-500 hover:text-gray-700 transition-colors"
                   aria-label="Limpar selecao de cliente"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

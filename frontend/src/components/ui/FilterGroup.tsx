@@ -102,7 +102,7 @@ function FilterFieldRenderer({ field, value, onChange }: RendererProps) {
           field.className,
         )}
       >
-        <svg className="w-4 h-4 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <svg className="w-4 h-4 text-gray-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z" />
         </svg>
         <input
@@ -178,7 +178,7 @@ function FilterFieldRenderer({ field, value, onChange }: RendererProps) {
               {opt.label}
               {opt.count != null && (
                 <span className={cn(
-                  'text-[10px] tabular-nums',
+                  'text-xs tabular-nums',
                   active ? 'opacity-80' : 'text-gray-500',
                 )}>
                   {opt.count}
@@ -193,7 +193,7 @@ function FilterFieldRenderer({ field, value, onChange }: RendererProps) {
 
   // date-range and number-range: TODO iteration 2
   return (
-    <div className={cn('text-xs text-gray-400 italic', field.className)}>
+    <div className={cn('text-xs text-gray-500 italic', field.className)}>
       {field.label} (em breve)
     </div>
   );

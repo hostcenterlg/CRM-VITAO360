@@ -151,8 +151,8 @@ function buildDueLabel(date: Date | null): string {
 }
 
 function getDueDateColor(date: Date | null, status: TarefaStatus): string {
-  if (status === 'done') return 'text-gray-400';
-  if (!date) return 'text-gray-400';
+  if (status === 'done') return 'text-gray-500';
+  if (!date) return 'text-gray-500';
   const now = new Date();
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
@@ -291,7 +291,7 @@ function TipoTag({ tipo }: { tipo: TarefaTipo }) {
   const c = cfg[tipo];
   return (
     <span
-      className="inline-flex items-center px-1.5 py-0.5 text-[9px] font-semibold rounded uppercase tracking-wide flex-shrink-0"
+      className="inline-flex items-center px-1.5 py-0.5 text-xs font-semibold rounded uppercase tracking-wide flex-shrink-0"
       style={{ backgroundColor: c.bg, color: c.color }}
     >
       {c.label}
@@ -302,7 +302,7 @@ function TipoTag({ tipo }: { tipo: TarefaTipo }) {
 function ConsultorAvatar({ consultor }: { consultor: string }) {
   return (
     <span
-      className="inline-flex items-center justify-center w-6 h-6 rounded-full text-[10px] font-bold text-white flex-shrink-0"
+      className="inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold text-white flex-shrink-0"
       style={{ backgroundColor: getConsultorColor(consultor) }}
       title={consultor}
       aria-label={`Consultor: ${consultor}`}
@@ -361,7 +361,7 @@ function TarefaRow({ tarefa, onToggle }: { tarefa: Tarefa; onToggle: (id: string
           <span
             className={`text-sm font-medium leading-snug ${
               tarefa.status === 'done'
-                ? 'line-through text-gray-400'
+                ? 'line-through text-gray-500'
                 : 'text-gray-900'
             }`}
           >
@@ -373,7 +373,7 @@ function TarefaRow({ tarefa, onToggle }: { tarefa: Tarefa; onToggle: (id: string
             {tarefa.cliente_nome}
           </span>
           {tarefa.cliente_cnpj && (
-            <span className="text-[10px] text-gray-300 font-mono hidden sm:inline">
+            <span className="text-xs text-gray-500 font-mono hidden sm:inline">
               {tarefa.cliente_cnpj}
             </span>
           )}
@@ -383,14 +383,14 @@ function TarefaRow({ tarefa, onToggle }: { tarefa: Tarefa; onToggle: (id: string
       {/* Right-side metadata */}
       <div className="flex flex-col items-end gap-1.5 flex-shrink-0 ml-2">
         {/* Due date */}
-        <span className={`text-[11px] ${getDueDateColor(tarefa.due_date, tarefa.status)}`}>
+        <span className={`text-xs ${getDueDateColor(tarefa.due_date, tarefa.status)}`}>
           {tarefa.due_label}
         </span>
 
         <div className="flex items-center gap-1.5">
           {/* Priority badge */}
           <span
-            className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-bold rounded uppercase"
+            className="inline-flex items-center px-1.5 py-0.5 text-xs font-bold rounded uppercase"
             style={getPriorityBadgeStyle(tarefa.prioridade)}
           >
             {tarefa.prioridade}
@@ -478,7 +478,7 @@ function NovaTarefaModal({ open, onClose, onAdd }: NovaTarefaModalProps) {
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 rounded text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
+            className="p-1.5 rounded text-gray-500 hover:text-gray-600 hover:bg-gray-100 transition-colors"
             aria-label="Fechar"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -848,7 +848,7 @@ export default function TarefasPage() {
               {tab.count !== undefined && tab.count > 0 && (
                 <span
                   className={`
-                    inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full text-[10px] font-bold
+                    inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full text-xs font-bold
                     ${activeFilter === tab.key
                       ? 'bg-white/25 text-white'
                       : tab.key === 'urgentes' || tab.key === 'rncs'
@@ -931,7 +931,7 @@ export default function TarefasPage() {
                     ? 'Nenhuma tarefa concluida ainda'
                     : 'Nenhuma tarefa pendente'}
                 </p>
-                <p className="text-xs text-gray-400 mt-1">
+                <p className="text-xs text-gray-500 mt-1">
                   {activeFilter === 'concluidas'
                     ? 'Conclua tarefas marcando o checkbox.'
                     : 'Todas as tarefas desta categoria estao em dia.'}
@@ -971,7 +971,7 @@ export default function TarefasPage() {
                         <span className={`text-xs font-bold uppercase tracking-wide ${grp.headerText}`}>
                           {grp.label}
                         </span>
-                        <span className={`ml-1 text-[10px] font-semibold ${grp.headerText} opacity-70`}>
+                        <span className={`ml-1 text-xs font-semibold ${grp.headerText} opacity-70`}>
                           ({items.length})
                         </span>
                       </div>
@@ -990,7 +990,7 @@ export default function TarefasPage() {
           {/* Footer count */}
           {!loading && !error && filtered.length > 0 && (
             <div className="px-4 py-2.5 border-t border-gray-100 bg-gray-50/50">
-              <p className="text-[11px] text-gray-400">
+              <p className="text-xs text-gray-500">
                 {filtered.length} tarefa{filtered.length !== 1 ? 's' : ''}
                 {activeFilter !== 'todas' && activeFilter !== 'concluidas'
                   ? ` — ${counts.total} total pendente${counts.total !== 1 ? 's' : ''}`

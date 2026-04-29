@@ -44,13 +44,13 @@ function CardConsultor({ resumo }: { resumo: ConsultorResumo }) {
       className="rounded-lg border p-4 flex flex-col gap-1"
       style={{ backgroundColor: cores.bg, borderColor: cores.border }}
     >
-      <p className="text-[11px] font-bold uppercase tracking-wider" style={{ color: cores.text }}>
+      <p className="text-xs font-bold uppercase tracking-wider" style={{ color: cores.text }}>
         {resumo.consultor}
       </p>
       <p className="text-xl font-bold text-gray-900">{resumo.total}</p>
-      <p className="text-[10px] text-gray-500">clientes</p>
+      <p className="text-xs text-gray-500">clientes</p>
       <p className="text-xs font-semibold text-gray-700 mt-1">{formatBRL(resumo.faturamento)}</p>
-      <p className="text-[10px] text-gray-400">faturamento acumulado</p>
+      <p className="text-xs text-gray-500">faturamento acumulado</p>
     </div>
   );
 }
@@ -109,7 +109,7 @@ function ModalConfirmacao({
             de <span className="font-bold">{origem}</span> para{' '}
             <span className="font-bold">{destino}</span>.
           </p>
-          <p className="text-[10px] text-gray-400 text-center mt-2">
+          <p className="text-xs text-gray-500 text-center mt-2">
             Esta operacao sera registrada em auditoria e nao pode ser desfeita automaticamente.
           </p>
         </div>
@@ -270,11 +270,11 @@ export default function RedistribuirCarteiraPage() {
       B: { bg: '#FFFF00', text: '#374151' },
       C: { bg: '#FFC000', text: '#1a1a1a' },
     };
-    if (!curva) return <span className="text-gray-300 text-[10px]">—</span>;
+    if (!curva) return <span className="text-gray-500 text-xs">—</span>;
     const cfg = cores[curva] ?? { bg: '#E5E7EB', text: '#374151' };
     return (
       <span
-        className="inline-flex items-center justify-center w-5 h-5 rounded text-[9px] font-bold"
+        className="inline-flex items-center justify-center w-5 h-5 rounded text-xs font-bold"
         style={{ backgroundColor: cfg.bg, color: cfg.text }}
       >
         {curva}
@@ -342,7 +342,7 @@ export default function RedistribuirCarteiraPage() {
           {resultado.erros.length > 0 && (
             <ul className="mt-2 space-y-0.5">
               {resultado.erros.map((e, i) => (
-                <li key={i} className="text-[10px] text-amber-700">
+                <li key={i} className="text-xs text-amber-700">
                   {e}
                 </li>
               ))}
@@ -368,7 +368,7 @@ export default function RedistribuirCarteiraPage() {
               <CardConsultor key={r.consultor} resumo={r} />
             ))}
             {resumos.length === 0 && (
-              <p className="col-span-4 text-xs text-gray-400">Nenhum dado de distribuicao.</p>
+              <p className="col-span-4 text-xs text-gray-500">Nenhum dado de distribuicao.</p>
             )}
           </div>
         )}
@@ -382,7 +382,7 @@ export default function RedistribuirCarteiraPage() {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {/* Origem */}
           <div>
-            <label className="block text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
+            <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">
               Consultor de Origem
             </label>
             <select
@@ -401,7 +401,7 @@ export default function RedistribuirCarteiraPage() {
 
           {/* Destino */}
           <div>
-            <label className="block text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
+            <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">
               Consultor Destino
             </label>
             <select
@@ -418,7 +418,7 @@ export default function RedistribuirCarteiraPage() {
 
           {/* Filtro UF */}
           <div>
-            <label className="block text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
+            <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">
               Filtrar por UF (opcional)
             </label>
             <select
@@ -487,22 +487,22 @@ export default function RedistribuirCarteiraPage() {
               <thead>
                 <tr className="border-b border-gray-100">
                   <th scope="col" className="w-10 px-4 py-2.5" aria-label="Selecao" />
-                  <th scope="col" className="px-4 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                  <th scope="col" className="px-4 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">
                     CNPJ
                   </th>
-                  <th scope="col" className="px-4 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                  <th scope="col" className="px-4 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">
                     Nome
                   </th>
-                  <th scope="col" className="px-4 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                  <th scope="col" className="px-4 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">
                     UF
                   </th>
-                  <th scope="col" className="px-4 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                  <th scope="col" className="px-4 py-2.5 text-right text-xs font-semibold text-gray-500 uppercase tracking-wide">
                     Faturamento
                   </th>
-                  <th scope="col" className="px-4 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                  <th scope="col" className="px-4 py-2.5 text-center text-xs font-semibold text-gray-500 uppercase tracking-wide">
                     ABC
                   </th>
-                  <th scope="col" className="px-4 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                  <th scope="col" className="px-4 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">
                     Situacao
                   </th>
                 </tr>
@@ -510,7 +510,7 @@ export default function RedistribuirCarteiraPage() {
               <tbody className="divide-y divide-gray-50">
                 {clientes.length === 0 ? (
                   <tr>
-                    <td colSpan={7} className="px-4 py-10 text-center text-xs text-gray-400">
+                    <td colSpan={7} className="px-4 py-10 text-center text-xs text-gray-500">
                       Nenhum cliente encontrado para {consultorOrigem}
                       {filtroUF ? ` / UF ${filtroUF}` : ''}.
                     </td>
@@ -534,25 +534,25 @@ export default function RedistribuirCarteiraPage() {
                             aria-label={`Selecionar ${c.nome_fantasia ?? c.cnpj}`}
                           />
                         </td>
-                        <td className="px-4 py-2.5 font-mono text-[10px] text-gray-500">
+                        <td className="px-4 py-2.5 font-mono text-xs text-gray-500">
                           {c.cnpj}
                         </td>
                         <td className="px-4 py-2.5 text-xs font-medium text-gray-900 max-w-[200px] truncate">
-                          {c.nome_fantasia ?? <span className="text-gray-400">—</span>}
+                          {c.nome_fantasia ?? <span className="text-gray-500">—</span>}
                         </td>
                         <td className="px-4 py-2.5 text-xs text-gray-600">
-                          {c.uf ?? <span className="text-gray-300">—</span>}
+                          {c.uf ?? <span className="text-gray-500">—</span>}
                         </td>
                         <td className="px-4 py-2.5 text-right text-xs text-gray-700 tabular-nums">
                           {c.faturamento_total != null
                             ? formatBRL(c.faturamento_total)
-                            : <span className="text-gray-300">—</span>}
+                            : <span className="text-gray-500">—</span>}
                         </td>
                         <td className="px-4 py-2.5 text-center">
                           <CurvaABCBadge curva={c.curva_abc} />
                         </td>
-                        <td className="px-4 py-2.5 text-[10px] text-gray-500 uppercase">
-                          {c.situacao ?? <span className="text-gray-300">—</span>}
+                        <td className="px-4 py-2.5 text-xs text-gray-500 uppercase">
+                          {c.situacao ?? <span className="text-gray-500">—</span>}
                         </td>
                       </tr>
                     );
@@ -561,7 +561,7 @@ export default function RedistribuirCarteiraPage() {
               </tbody>
             </table>
             {clientes.length > 0 && (
-              <div className="px-4 py-3 border-t border-gray-100 text-[10px] text-gray-400">
+              <div className="px-4 py-3 border-t border-gray-100 text-xs text-gray-500">
                 {clientes.length} cliente{clientes.length !== 1 ? 's' : ''} carregados
                 {filtroUF ? ` — UF: ${filtroUF}` : ''}
                 {selecionados.size > 0 ? ` — ${selecionados.size} selecionado${selecionados.size !== 1 ? 's' : ''}` : ''}

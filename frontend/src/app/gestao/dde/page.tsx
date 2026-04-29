@@ -113,7 +113,7 @@ function fmtPct(v: number): string {
 }
 
 function corValor(v: number): string {
-  if (v === 0) return 'text-gray-400';
+  if (v === 0) return 'text-gray-500';
   return v < 0 ? 'text-red-600' : 'text-gray-900';
 }
 
@@ -217,19 +217,19 @@ export default function DDEPage() {
           <h2 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Previsao de Entrega</h2>
           <dl className="space-y-3">
             <div>
-              <dt className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide">Sprint</dt>
+              <dt className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Sprint</dt>
               <dd className="text-sm font-bold text-gray-900 mt-0.5">Fase 3a — Maio / 2026</dd>
             </div>
             <div>
-              <dt className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide">Estimativa de dev</dt>
+              <dt className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Estimativa de dev</dt>
               <dd className="text-sm text-gray-700 mt-0.5">4 a 6 horas de implementacao</dd>
             </div>
             <div>
-              <dt className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide">Validacao</dt>
+              <dt className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Validacao</dt>
               <dd className="text-sm text-gray-700 mt-0.5">Cliente referência ±0,5% por linha</dd>
             </div>
             <div>
-              <dt className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide">Desbloqueio</dt>
+              <dt className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Desbloqueio</dt>
               <dd className="text-sm text-gray-700 mt-0.5">
                 Libera <span className="font-semibold text-gray-900">Analise Critica</span> imediatamente
               </dd>
@@ -239,8 +239,8 @@ export default function DDEPage() {
           {/* Progresso visual */}
           <div className="mt-4">
             <div className="flex items-center justify-between mb-1">
-              <span className="text-[10px] font-semibold text-gray-400 uppercase">Progresso</span>
-              <span className="text-[10px] font-bold text-orange-600">50%</span>
+              <span className="text-xs font-semibold text-gray-500 uppercase">Progresso</span>
+              <span className="text-xs font-bold text-orange-600">50%</span>
             </div>
             <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
               <div
@@ -248,7 +248,7 @@ export default function DDEPage() {
                 style={{ width: '50%', backgroundColor: '#F97316' }}
               />
             </div>
-            <p className="text-[10px] text-gray-400 mt-1">3 de 6 etapas concluidas</p>
+            <p className="text-xs text-gray-500 mt-1">3 de 6 etapas concluidas</p>
           </div>
         </div>
       </div>
@@ -257,11 +257,11 @@ export default function DDEPage() {
       <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
         <div className="flex items-center justify-between mb-1">
           <h2 className="text-xs font-bold text-gray-500 uppercase tracking-wider">Preview da Cascata P&amp;L</h2>
-          <span className="inline-flex items-center px-2 py-0.5 rounded text-[9px] font-semibold uppercase text-amber-700 bg-amber-50 border border-amber-200">
+          <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold uppercase text-amber-700 bg-amber-50 border border-amber-200">
             Mockup ilustrativo — dados reais em breve
           </span>
         </div>
-        <p className="text-[11px] text-gray-400 mb-4">
+        <p className="text-xs text-gray-500 mb-4">
           Cliente de exemplo — valores fictícios para demonstracao do layout.
           Faturamento anual R$ 1,25M (cliente A representativo).
         </p>
@@ -271,10 +271,10 @@ export default function DDEPage() {
             <table className="w-full text-xs border-collapse">
               <thead>
                 <tr className="border-b border-gray-200">
-                  <th className="text-left py-1.5 px-2 text-[10px] font-semibold text-gray-400 uppercase tracking-wide w-10">Cod.</th>
-                  <th className="text-left py-1.5 px-2 text-[10px] font-semibold text-gray-400 uppercase tracking-wide">Descricao</th>
-                  <th className="text-right py-1.5 px-2 text-[10px] font-semibold text-gray-400 uppercase tracking-wide w-32">Valor (R$)</th>
-                  <th className="text-right py-1.5 px-2 text-[10px] font-semibold text-gray-400 uppercase tracking-wide w-16">%</th>
+                  <th className="text-left py-1.5 px-2 text-xs font-semibold text-gray-500 uppercase tracking-wide w-10">Cod.</th>
+                  <th className="text-left py-1.5 px-2 text-xs font-semibold text-gray-500 uppercase tracking-wide">Descricao</th>
+                  <th className="text-right py-1.5 px-2 text-xs font-semibold text-gray-500 uppercase tracking-wide w-32">Valor (R$)</th>
+                  <th className="text-right py-1.5 px-2 text-xs font-semibold text-gray-500 uppercase tracking-wide w-16">%</th>
                 </tr>
               </thead>
               <tbody>
@@ -285,7 +285,7 @@ export default function DDEPage() {
                       key={`bloco-${bloco.titulo}`}
                       style={{ backgroundColor: bloco.cor }}
                     >
-                      <td colSpan={4} className="py-1.5 px-2 text-[10px] font-bold text-gray-700 uppercase tracking-wide">
+                      <td colSpan={4} className="py-1.5 px-2 text-xs font-bold text-gray-700 uppercase tracking-wide">
                         {bloco.titulo}
                       </td>
                     </tr>
@@ -298,7 +298,7 @@ export default function DDEPage() {
                         }`}
                         style={linha.destaque ? { backgroundColor: bloco.cor } : undefined}
                       >
-                        <td className={`py-1.5 px-2 font-mono text-[10px] ${linha.destaque ? 'text-gray-600 font-bold' : 'text-gray-300'}`}>
+                        <td className={`py-1.5 px-2 font-mono text-xs ${linha.destaque ? 'text-gray-600 font-bold' : 'text-gray-500'}`}>
                           {linha.codigo}
                         </td>
                         <td className={`py-1.5 px-2 ${linha.recuo ? 'pl-5' : 'pl-2'} ${linha.destaque ? 'text-gray-900' : 'text-gray-600'}`}>
@@ -319,7 +319,7 @@ export default function DDEPage() {
           </div>
         </div>
 
-        <div className="mt-4 flex items-center gap-2 text-[10px] text-gray-400">
+        <div className="mt-4 flex items-center gap-2 text-xs text-gray-500">
           <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
               d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -330,7 +330,7 @@ export default function DDEPage() {
       </div>
 
       {/* Nota de rodape */}
-      <p className="text-[10px] text-gray-400">
+      <p className="text-xs text-gray-500">
         DDE v1.0 — Motor Python pronto. Integracao FastAPI em desenvolvimento.
         Esta pagina e uma preview de roadmap para apresentacao interna.
       </p>

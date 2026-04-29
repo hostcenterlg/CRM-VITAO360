@@ -236,7 +236,7 @@ function ClienteDetailPanel({ cnpj, onClose }: ClienteDetailPanelProps) {
                 <h2 className="text-sm font-bold text-gray-900 truncate">
                   {cliente.nome_fantasia}
                 </h2>
-                <p className="text-xs text-gray-400 mt-0.5">{formatCnpj(cliente.cnpj)}</p>
+                <p className="text-xs text-gray-500 mt-0.5">{formatCnpj(cliente.cnpj)}</p>
               </>
             ) : error ? (
               <h2 className="text-sm font-bold text-red-700">Erro ao carregar</h2>
@@ -247,7 +247,7 @@ function ClienteDetailPanel({ cnpj, onClose }: ClienteDetailPanelProps) {
           <button
             type="button"
             onClick={onClose}
-            className="flex-shrink-0 ml-3 p-1.5 rounded text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors"
+            className="flex-shrink-0 ml-3 p-1.5 rounded text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-colors"
             aria-label="Fechar painel"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -280,7 +280,7 @@ function ClienteDetailPanel({ cnpj, onClose }: ClienteDetailPanelProps) {
                 <button
                   type="button"
                   onClick={() => doFetch(cnpj)}
-                  className="self-start px-3 py-1.5 text-[11px] font-semibold text-red-700 border border-red-300 rounded-lg hover:bg-red-100 transition-colors"
+                  className="self-start px-3 py-1.5 text-xs font-semibold text-red-700 border border-red-300 rounded-lg hover:bg-red-100 transition-colors"
                 >
                   Tentar novamente
                 </button>
@@ -330,7 +330,7 @@ function ClienteDetailPanel({ cnpj, onClose }: ClienteDetailPanelProps) {
 
               {/* Identidade */}
               <section>
-                <h3 className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-2">
+                <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
                   Identidade
                 </h3>
                 <dl className="space-y-1.5">
@@ -348,7 +348,7 @@ function ClienteDetailPanel({ cnpj, onClose }: ClienteDetailPanelProps) {
 
               {/* Status comercial */}
               <section>
-                <h3 className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-2">
+                <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
                   Status Comercial
                 </h3>
                 <dl className="space-y-1.5">
@@ -364,7 +364,7 @@ function ClienteDetailPanel({ cnpj, onClose }: ClienteDetailPanelProps) {
               {/* Financeiro — oculto para consultor externo */}
               {!isExterno && (
                 <section>
-                  <h3 className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-2">
+                  <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
                     Financeiro
                   </h3>
                   <dl className="space-y-1.5">
@@ -387,7 +387,7 @@ function DetailRow({ label, value }: { label: string; value?: string | null }) {
   if (!value) return null;
   return (
     <div className="flex items-baseline gap-2 text-xs">
-      <dt className="text-gray-400 flex-shrink-0 w-32">{label}</dt>
+      <dt className="text-gray-500 flex-shrink-0 w-32">{label}</dt>
       <dd className="text-gray-800 font-medium min-w-0 break-words">{value}</dd>
     </div>
   );
@@ -425,7 +425,7 @@ function MobileMoveModal({ cliente, currentStage, onMove, onClose }: MobileMoveM
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 rounded text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors"
+            className="p-1.5 rounded text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-colors"
             aria-label="Fechar"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -440,7 +440,7 @@ function MobileMoveModal({ cliente, currentStage, onMove, onClose }: MobileMoveM
             return (
               <div key={swimlane.id} className="mb-3">
                 <p
-                  className="text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded mb-1"
+                  className="text-xs font-bold uppercase tracking-wider px-2 py-1 rounded mb-1"
                   style={{ backgroundColor: swimlane.bg, color: swimlane.text }}
                 >
                   {swimlane.label}
@@ -456,7 +456,7 @@ function MobileMoveModal({ cliente, currentStage, onMove, onClose }: MobileMoveM
                     }}
                     className={`w-full text-left px-3 py-2.5 rounded-lg text-xs font-medium transition-colors flex items-center gap-2
                       ${cfg.id === currentStage
-                        ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                        ? 'bg-gray-100 text-gray-500 cursor-not-allowed'
                         : 'hover:bg-gray-50 text-gray-700 active:bg-gray-100'
                       }`}
                   >
@@ -466,7 +466,7 @@ function MobileMoveModal({ cliente, currentStage, onMove, onClose }: MobileMoveM
                     />
                     {cfg.label}
                     {cfg.id === currentStage && (
-                      <span className="ml-auto text-[10px] text-gray-400">atual</span>
+                      <span className="ml-auto text-xs text-gray-500">atual</span>
                     )}
                   </button>
                 ))}
@@ -531,7 +531,7 @@ function KanbanCard({ cliente, currentStage, onDragStart, onClick, onMobileMove,
       {/* Bottom row: score badge + value + consultor */}
       <div className="flex items-center gap-1.5 flex-wrap">
         <span
-          className="inline-flex items-center justify-center w-6 h-6 rounded-full text-[10px] font-bold flex-shrink-0"
+          className="inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold flex-shrink-0"
           style={{ backgroundColor: sc.bg, color: sc.text }}
           title={`Score: ${cliente.score?.toFixed(1) ?? '—'}`}
         >
@@ -539,13 +539,13 @@ function KanbanCard({ cliente, currentStage, onDragStart, onClick, onMobileMove,
         </span>
 
         {!isExterno && (cliente.valor_ultimo_pedido ?? 0) > 0 && (
-          <span className="text-[10px] text-gray-500 font-medium" title="Valor do ultimo pedido">
+          <span className="text-xs text-gray-500 font-medium" title="Valor do ultimo pedido">
             {formatBRL(cliente.valor_ultimo_pedido!)}
           </span>
         )}
 
         {cliente.consultor && (
-          <span className="ml-auto text-[10px] text-gray-400 font-medium uppercase tracking-wide flex-shrink-0">
+          <span className="ml-auto text-xs text-gray-500 font-medium uppercase tracking-wide flex-shrink-0">
             {cliente.consultor.slice(0, 4)}
           </span>
         )}
@@ -554,7 +554,7 @@ function KanbanCard({ cliente, currentStage, onDragStart, onClick, onMobileMove,
       {/* Prioridade chip — only when P0/P1 */}
       {(cliente.prioridade === 'P0' || cliente.prioridade === 'P1') && (
         <div className="mt-1.5">
-          <span className={`inline-block text-[9px] font-bold px-1 py-0.5 rounded ${
+          <span className={`inline-block text-xs font-bold px-1 py-0.5 rounded ${
             cliente.prioridade === 'P0'
               ? 'bg-red-100 text-red-700'
               : 'bg-orange-100 text-orange-700'
@@ -643,16 +643,16 @@ function KanbanColumn({
             {config.label}
           </h2>
           <span
-            className="flex-shrink-0 inline-flex items-center justify-center min-w-[20px] h-5 rounded-full text-[10px] font-bold px-1"
+            className="flex-shrink-0 inline-flex items-center justify-center min-w-[20px] h-5 rounded-full text-xs font-bold px-1"
             style={{ backgroundColor: config.borderColor, color: '#fff' }}
           >
             {cards.length}
           </span>
         </div>
         {totalUltimoPedido > 0 && (
-          <p className="text-[10px] text-gray-400 font-medium" title="Soma do ultimo pedido de cada cliente neste estagio">
+          <p className="text-xs text-gray-500 font-medium" title="Soma do ultimo pedido de cada cliente neste estagio">
             {formatBRL(totalUltimoPedido)}
-            <span className="text-gray-300 ml-1">ult.ped</span>
+            <span className="text-gray-500 ml-1">ult.ped</span>
           </p>
         )}
       </div>
@@ -671,8 +671,8 @@ function KanbanColumn({
         {cards.length === 0 ? (
           <div className="h-full flex items-center justify-center min-h-[100px]">
             <div className="text-center border-2 border-dashed border-gray-200 rounded-lg p-4 w-full">
-              <p className="text-[10px] text-gray-400">Nenhum cliente</p>
-              <p className="text-[10px] text-gray-300">neste estagio</p>
+              <p className="text-xs text-gray-500">Nenhum cliente</p>
+              <p className="text-xs text-gray-500">neste estagio</p>
             </div>
           </div>
         ) : (
@@ -727,7 +727,7 @@ function SummaryBar({
       {/* KPIs — grid 2x2 on mobile, single row on desktop */}
       <div className="grid grid-cols-2 sm:flex sm:items-center gap-3 sm:gap-4 mb-3 sm:mb-0">
         <div className="flex flex-col">
-          <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
+          <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
             Oportunidades
           </span>
           {loading ? (
@@ -742,7 +742,7 @@ function SummaryBar({
         <div className="hidden sm:block w-px h-8 bg-gray-200 flex-shrink-0" />
 
         <div className="flex flex-col">
-          <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
+          <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
             Ult. Pedidos
           </span>
           {loading ? (
@@ -757,7 +757,7 @@ function SummaryBar({
         <div className="hidden sm:block w-px h-8 bg-gray-200 flex-shrink-0" />
 
         <div className="flex flex-col">
-          <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
+          <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
             Fat. Acumulado
           </span>
           {loading ? (
@@ -772,7 +772,7 @@ function SummaryBar({
         <div className="hidden sm:block w-px h-8 bg-gray-200 flex-shrink-0" />
 
         <div className="flex flex-col">
-          <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
+          <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
             Engajamento
           </span>
           {loading ? (
@@ -790,7 +790,7 @@ function SummaryBar({
             <div className="hidden sm:block w-px h-8 bg-gray-200 flex-shrink-0" />
             <div className="flex items-center gap-1.5 col-span-2 sm:col-span-1">
               <div className="w-3.5 h-3.5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin flex-shrink-0" />
-              <span className="text-[10px] text-blue-600 font-medium">
+              <span className="text-xs text-blue-600 font-medium">
                 Salvando {pendingMoves} movimentacao{pendingMoves !== 1 ? 'oes' : ''}...
               </span>
             </div>
@@ -799,7 +799,7 @@ function SummaryBar({
 
         {/* Consultor filter — pushed to right on desktop, own row on mobile */}
         <div className="flex flex-col gap-1 col-span-2 sm:col-span-1 sm:ml-auto flex-shrink-0">
-          <label className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
+          <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
             Consultor
           </label>
           <select
@@ -867,13 +867,13 @@ function SwimlaneGroup({
         style={{ backgroundColor: swimlane.bg, borderColor: swimlane.border }}
       >
         <span
-          className="text-[10px] font-black uppercase tracking-widest"
+          className="text-xs font-black uppercase tracking-widest"
           style={{ color: swimlane.text }}
         >
           {swimlane.label}
         </span>
         <span
-          className="text-[10px] font-bold px-1.5 py-0.5 rounded-full"
+          className="text-xs font-bold px-1.5 py-0.5 rounded-full"
           style={{ backgroundColor: swimlane.border, color: swimlane.text }}
         >
           {totalCards}
@@ -1173,7 +1173,7 @@ export default function PipelinePage() {
                     {cfg.label}
                   </span>
                   <span
-                    className="text-[10px] font-bold px-1.5 py-0.5 rounded-full text-white"
+                    className="text-xs font-bold px-1.5 py-0.5 rounded-full text-white"
                     style={{ backgroundColor: cfg.borderColor }}
                   >
                     {cards.length}
@@ -1182,7 +1182,7 @@ export default function PipelinePage() {
                 <div className="space-y-2 p-2 bg-white border border-t-0 border-gray-200 rounded-b-lg">
                   {cards.length === 0 ? (
                     <div className="py-6 text-center border-2 border-dashed border-gray-200 rounded-lg">
-                      <p className="text-xs text-gray-400">Nenhum cliente neste estagio</p>
+                      <p className="text-xs text-gray-500">Nenhum cliente neste estagio</p>
                     </div>
                   ) : (
                     cards.map((c) => (
@@ -1367,7 +1367,7 @@ export default function PipelinePage() {
             <div className="flex-1 flex items-center justify-center min-h-[200px]">
               <div className="text-center">
                 <p className="text-sm font-medium text-gray-500">Nenhum cliente no pipeline</p>
-                <p className="text-xs text-gray-400 mt-1">
+                <p className="text-xs text-gray-500 mt-1">
                   Verifique os filtros ou aguarde a atualizacao dos dados
                 </p>
               </div>

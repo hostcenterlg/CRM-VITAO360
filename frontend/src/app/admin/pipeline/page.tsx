@@ -40,7 +40,7 @@ function formatarDuracao(ms: number | null): string {
 // ---------------------------------------------------------------------------
 
 function BadgeResultado({ resultado }: { resultado: string | null }) {
-  if (!resultado) return <span className="text-gray-400 text-sm">—</span>;
+  if (!resultado) return <span className="text-gray-500 text-sm">—</span>;
 
   const map: Record<string, { bg: string; text: string }> = {
     SUCESSO:  { bg: '#D1FAE5', text: '#065F46' },
@@ -78,7 +78,7 @@ function BadgeNivel({ nivel }: { nivel: string }) {
 
   return (
     <span
-      className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold uppercase"
+      className="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold uppercase"
       style={{ backgroundColor: cfg.bg, color: cfg.text }}
     >
       {nivel}
@@ -220,7 +220,7 @@ export default function PipelinePage() {
           {/* Card status */}
           <div className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
             <h2 className="text-sm font-semibold text-gray-700 mb-4 flex items-center gap-2">
-              <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
                   d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
               </svg>
@@ -234,30 +234,30 @@ export default function PipelinePage() {
             ) : status ? (
               <dl className="space-y-3">
                 <div>
-                  <dt className="text-xs text-gray-400 uppercase tracking-wide mb-0.5">Ultimo run</dt>
+                  <dt className="text-xs text-gray-500 uppercase tracking-wide mb-0.5">Ultimo run</dt>
                   <dd className="text-sm text-gray-800 font-medium">
                     {formatarDataHora(status.ultimo_run)}
                   </dd>
                 </div>
                 <div>
-                  <dt className="text-xs text-gray-400 uppercase tracking-wide mb-0.5">Resultado</dt>
+                  <dt className="text-xs text-gray-500 uppercase tracking-wide mb-0.5">Resultado</dt>
                   <dd><BadgeResultado resultado={status.resultado} /></dd>
                 </div>
                 <div>
-                  <dt className="text-xs text-gray-400 uppercase tracking-wide mb-0.5">Duracao</dt>
+                  <dt className="text-xs text-gray-500 uppercase tracking-wide mb-0.5">Duracao</dt>
                   <dd className="text-sm text-gray-800 font-medium">
                     {formatarDuracao(status.duracao_ms)}
                   </dd>
                 </div>
                 <div>
-                  <dt className="text-xs text-gray-400 uppercase tracking-wide mb-0.5">Proximo agendado</dt>
+                  <dt className="text-xs text-gray-500 uppercase tracking-wide mb-0.5">Proximo agendado</dt>
                   <dd className="text-sm text-gray-800 font-medium">
                     {formatarDataHora(status.proximo_agendado)}
                   </dd>
                 </div>
               </dl>
             ) : (
-              <p className="text-sm text-gray-400">Nenhum dado disponivel</p>
+              <p className="text-sm text-gray-500">Nenhum dado disponivel</p>
             )}
 
             {/* Botao atualizar status */}
@@ -321,7 +321,7 @@ export default function PipelinePage() {
               erroExecucao ? 'bg-red-50 border-red-200' : 'bg-white border-gray-200'
             }`}>
               <h2 className="text-sm font-semibold text-gray-700 mb-4 flex items-center gap-2">
-                <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
                     d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
@@ -368,7 +368,7 @@ export default function PipelinePage() {
                           >
                             <IconeEtapa status={etapa.status} />
                             <span className="flex-1 font-medium text-gray-800">{etapa.nome}</span>
-                            <span className="text-xs text-gray-400">{formatarDuracao(etapa.duracao_ms)}</span>
+                            <span className="text-xs text-gray-500">{formatarDuracao(etapa.duracao_ms)}</span>
                             {etapa.detalhes && (
                               <span className="text-xs text-gray-500 italic truncate max-w-[160px]">
                                 {etapa.detalhes}
@@ -388,19 +388,19 @@ export default function PipelinePage() {
           <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
             <div className="flex items-center justify-between px-5 py-3.5 border-b border-gray-100 bg-gray-50">
               <h2 className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
                     d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                 </svg>
                 Logs Recentes
               </h2>
               <div className="flex items-center gap-2">
-                <span className="text-xs text-gray-400">Atualiza a cada 30s</span>
+                <span className="text-xs text-gray-500">Atualiza a cada 30s</span>
                 <button
                   type="button"
                   onClick={buscarLogs}
                   title="Atualizar logs"
-                  className="p-1 rounded text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors"
+                  className="p-1 rounded text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-colors"
                 >
                   <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
@@ -425,7 +425,7 @@ export default function PipelinePage() {
             ) : erroLogs ? (
               <div className="p-5 text-sm text-red-600 bg-red-50">{erroLogs}</div>
             ) : logs.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-10 text-gray-400">
+              <div className="flex flex-col items-center justify-center py-10 text-gray-500">
                 <svg className="w-8 h-8 opacity-40 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
                     d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
@@ -454,7 +454,7 @@ export default function PipelinePage() {
                         key={idx}
                         className={idx % 2 === 0 ? 'bg-white' : 'bg-gray-50/50'}
                       >
-                        <td className="px-4 py-2 text-gray-400 font-mono whitespace-nowrap align-top">
+                        <td className="px-4 py-2 text-gray-500 font-mono whitespace-nowrap align-top">
                           {formatarDataHora(log.timestamp)}
                         </td>
                         <td className="px-4 py-2 align-top">

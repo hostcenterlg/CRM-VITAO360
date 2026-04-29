@@ -71,7 +71,7 @@ export function Tabs({
             {typeof t.count === 'number' && (
               <span
                 className={cn(
-                  'inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full text-[10px] font-bold tabular-nums',
+                  'inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full text-xs font-bold tabular-nums',
                   active ? 'bg-white/25 text-white' : 'bg-gray-300/60 text-gray-700',
                 )}
               >

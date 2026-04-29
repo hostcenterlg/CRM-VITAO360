@@ -45,7 +45,7 @@ function formatPercent(n: number): string {
 function BadgeAtivo({ ativo }: { ativo: boolean }) {
   return (
     <span
-      className="inline-flex items-center px-2 py-0.5 text-[10px] font-semibold rounded uppercase"
+      className="inline-flex items-center px-2 py-0.5 text-xs font-semibold rounded uppercase"
       style={ativo
         ? { backgroundColor: '#00B050', color: '#fff' }
         : { backgroundColor: '#FF0000', color: '#fff' }
@@ -118,7 +118,7 @@ function ModalProduto({ produtoId, onClose }: ModalProdutoProps) {
           <button
             type="button"
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 p-1 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="text-gray-500 hover:text-gray-600 p-1 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
             aria-label="Fechar modal"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -146,7 +146,7 @@ function ModalProduto({ produtoId, onClose }: ModalProdutoProps) {
               {/* Cabecalho do produto */}
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <p className="text-xs font-mono text-gray-400">{produto.codigo}</p>
+                  <p className="text-xs font-mono text-gray-500">{produto.codigo}</p>
                   <h3 className="text-base font-bold text-gray-900 mt-0.5">{produto.nome}</h3>
                   <p className="text-xs text-gray-500 mt-0.5">{produto.categoria}</p>
                 </div>
@@ -161,28 +161,28 @@ function ModalProduto({ produtoId, onClose }: ModalProdutoProps) {
               {/* Grid de detalhes */}
               <div className="grid grid-cols-2 gap-3">
                 <div className="bg-gray-50 rounded p-3">
-                  <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">Unidade</p>
+                  <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Unidade</p>
                   <p className="text-sm font-semibold text-gray-900">{produto.unidade}</p>
                 </div>
                 <div className="bg-gray-50 rounded p-3">
-                  <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">Preco Tabela</p>
+                  <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Preco Tabela</p>
                   <p className="text-sm font-semibold text-gray-900">{formatBRL(produto.preco_tabela)}</p>
                 </div>
                 <div className="bg-gray-50 rounded p-3">
-                  <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">Comissao</p>
+                  <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Comissao</p>
                   <p className="text-sm font-semibold" style={{ color: '#00B050' }}>
                     {formatPercent(produto.comissao_pct)}
                   </p>
                 </div>
                 {produto.peso_liquido != null && (
                   <div className="bg-gray-50 rounded p-3">
-                    <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">Peso Liquido</p>
+                    <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Peso Liquido</p>
                     <p className="text-sm font-semibold text-gray-900">{produto.peso_liquido} kg</p>
                   </div>
                 )}
                 {produto.validade_dias != null && (
                   <div className="bg-gray-50 rounded p-3">
-                    <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">Validade</p>
+                    <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Validade</p>
                     <p className="text-sm font-semibold text-gray-900">{produto.validade_dias} dias</p>
                   </div>
                 )}
@@ -191,7 +191,7 @@ function ModalProduto({ produtoId, onClose }: ModalProdutoProps) {
               {/* Precos regionais */}
               {produto.precos_regionais && produto.precos_regionais.length > 0 && (
                 <div>
-                  <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-2">
+                  <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
                     Precos Regionais
                   </p>
                   <div className="space-y-1.5">
@@ -231,13 +231,13 @@ function ThSort({ label, col, sort, onSort }: ThSortProps) {
   return (
     <th
       scope="col"
-      className="px-4 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide cursor-pointer select-none hover:text-gray-700 whitespace-nowrap"
+      className="px-4 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide cursor-pointer select-none hover:text-gray-700 whitespace-nowrap"
       onClick={() => onSort(col)}
       aria-sort={active ? (sort.dir === 'asc' ? 'ascending' : 'descending') : 'none'}
     >
       <span className="flex items-center gap-1">
         {label}
-        <svg className={`w-3 h-3 flex-shrink-0 ${active ? 'text-green-600' : 'text-gray-300'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg className={`w-3 h-3 flex-shrink-0 ${active ? 'text-green-600' : 'text-gray-500'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
           {active && sort.dir === 'asc' ? (
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
           ) : active && sort.dir === 'desc' ? (
@@ -279,7 +279,7 @@ function MaisVendidosSection() {
             d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
         </svg>
         <h2 className="text-sm font-bold text-gray-900">Mais Vendidos</h2>
-        <span className="text-[10px] text-gray-400">Top 5 produtos por volume</span>
+        <span className="text-xs text-gray-500">Top 5 produtos por volume</span>
       </div>
 
       {fetchError && (
@@ -303,7 +303,7 @@ function MaisVendidosSection() {
             >
               <div className="flex items-start justify-between mb-2">
                 <span
-                  className="inline-flex items-center justify-center w-5 h-5 rounded-full text-[10px] font-bold text-white flex-shrink-0"
+                  className="inline-flex items-center justify-center w-5 h-5 rounded-full text-xs font-bold text-white flex-shrink-0"
                   style={{ backgroundColor: idx === 0 ? '#FFC000' : idx === 1 ? '#9CA3AF' : idx === 2 ? '#CD7F32' : '#00B050' }}
                 >
                   {idx + 1}
@@ -311,7 +311,7 @@ function MaisVendidosSection() {
                 <BadgeAtivo ativo={item.ativo} />
               </div>
               <p className="text-xs font-semibold text-gray-900 leading-snug line-clamp-2">{item.nome}</p>
-              <p className="text-[10px] text-gray-500 mt-1">{item.categoria}</p>
+              <p className="text-xs text-gray-500 mt-1">{item.categoria}</p>
               <p className="text-xs font-semibold mt-1.5 tabular-nums" style={{ color: '#00B050' }}>
                 {formatBRL(item.preco_tabela)}
               </p>
@@ -544,12 +544,12 @@ function ProdutosInner() {
         <div className="flex flex-wrap items-end gap-3">
           {/* Busca */}
           <div className="flex flex-col gap-1 w-full sm:flex-1 sm:min-w-[160px]">
-            <label htmlFor="produtos-busca" className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+            <label htmlFor="produtos-busca" className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
               Busca
             </label>
             <div className="relative">
               <svg
-                className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none"
+                className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-500 pointer-events-none"
                 fill="none" viewBox="0 0 24 24" stroke="currentColor"
               >
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
@@ -576,7 +576,7 @@ function ProdutosInner() {
                     pushUrl('', categoria, apenasAtivos, 0);
                   }}
                   aria-label="Limpar busca"
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-600"
                 >
                   <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -588,7 +588,7 @@ function ProdutosInner() {
 
           {/* Categoria */}
           <div className="flex flex-col gap-1 w-full sm:w-auto sm:min-w-[140px]">
-            <label htmlFor="produtos-categoria" className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+            <label htmlFor="produtos-categoria" className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
               Categoria
             </label>
             <select
@@ -609,7 +609,7 @@ function ProdutosInner() {
 
           {/* Toggle apenas ativos */}
           <div className="flex flex-col gap-1 w-full sm:w-auto">
-            <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+            <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
               Status
             </span>
             <button
@@ -648,12 +648,12 @@ function ProdutosInner() {
                 <ThSort label="Codigo"   col="codigo"       sort={sort} onSort={handleSort} />
                 <ThSort label="Nome"     col="nome"         sort={sort} onSort={handleSort} />
                 <ThSort label="Categoria" col="categoria"   sort={sort} onSort={handleSort} />
-                <th scope="col" className="px-4 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                <th scope="col" className="px-4 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">
                   Unidade
                 </th>
                 <ThSort label="Preco"    col="preco_tabela" sort={sort} onSort={handleSort} />
                 <ThSort label="Comissao" col="comissao_pct" sort={sort} onSort={handleSort} />
-                <th scope="col" className="px-4 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                <th scope="col" className="px-4 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">
                   Status
                 </th>
               </tr>
@@ -665,7 +665,7 @@ function ProdutosInner() {
                 <tr>
                   <td colSpan={7} className="px-4 py-12 text-center">
                     <div className="flex flex-col items-center gap-2">
-                      <svg className="w-8 h-8 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-8 h-8 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
                           d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                       </svg>
@@ -693,7 +693,7 @@ function ProdutosInner() {
                     tabIndex={0}
                     onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setSelectedId(item.id); }}
                   >
-                    <td className="px-4 py-2.5 text-[11px] font-mono text-gray-500">{item.codigo}</td>
+                    <td className="px-4 py-2.5 text-xs font-mono text-gray-500">{item.codigo}</td>
                     <td className="px-4 py-2.5 text-xs font-medium text-gray-900 max-w-[200px]">
                       <span className="block truncate">{item.nome}</span>
                     </td>
@@ -732,7 +732,7 @@ function ProdutosInner() {
                 }}
                 className={`px-3 py-1.5 rounded text-xs font-medium border transition-colors ${
                   offset === 0
-                    ? 'border-gray-200 text-gray-300 cursor-not-allowed'
+                    ? 'border-gray-200 text-gray-500 cursor-not-allowed'
                     : 'border-gray-300 text-gray-600 hover:bg-gray-50'
                 }`}
               >
@@ -748,7 +748,7 @@ function ProdutosInner() {
                 }}
                 className={`px-3 py-1.5 rounded text-xs font-medium border transition-colors ${
                   offset + PAGE_SIZE >= response.total
-                    ? 'border-gray-200 text-gray-300 cursor-not-allowed'
+                    ? 'border-gray-200 text-gray-500 cursor-not-allowed'
                     : 'border-gray-300 text-gray-600 hover:bg-gray-50'
                 }`}
               >

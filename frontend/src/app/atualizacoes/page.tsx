@@ -389,7 +389,7 @@ function StatusBadge({ status }: { status: Status }) {
 function CatBadge({ cat }: { cat: Category }) {
   const cfg = CAT_CONFIG[cat];
   return (
-    <span className={`inline-flex items-center px-2 py-0.5 text-[10px] font-bold rounded ${cfg.color}`}>
+    <span className={`inline-flex items-center px-2 py-0.5 text-xs font-bold rounded ${cfg.color}`}>
       {cfg.label}
     </span>
   );
@@ -531,11 +531,11 @@ export default function AtualizacoesPage() {
 
                 {/* Session + expand */}
                 <div className="flex items-center gap-2 flex-shrink-0">
-                  <span className="text-[10px] font-medium text-gray-400 bg-gray-50 px-2 py-0.5 rounded">
+                  <span className="text-xs font-medium text-gray-500 bg-gray-50 px-2 py-0.5 rounded">
                     {item.sessao}
                   </span>
                   <svg
-                    className={`w-4 h-4 text-gray-400 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+                    className={`w-4 h-4 text-gray-500 transition-transform ${isOpen ? 'rotate-180' : ''}`}
                     fill="none" viewBox="0 0 24 24" stroke="currentColor"
                   >
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -549,9 +549,9 @@ export default function AtualizacoesPage() {
                   <p className="text-xs text-gray-700 leading-relaxed mt-3">{item.detalhes}</p>
                   {item.commits && item.commits.length > 0 && (
                     <div className="mt-2 flex items-center gap-1 flex-wrap">
-                      <span className="text-[10px] font-semibold text-gray-500">Commits:</span>
+                      <span className="text-xs font-semibold text-gray-500">Commits:</span>
                       {item.commits.map((c) => (
-                        <code key={c} className="text-[10px] font-mono bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded">
+                        <code key={c} className="text-xs font-mono bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded">
                           {c}
                         </code>
                       ))}

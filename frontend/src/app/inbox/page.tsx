@@ -163,7 +163,7 @@ interface AvatarProps {
 function Avatar({ nome, size = 'md', bgClass = 'bg-vitao-green' }: AvatarProps) {
   const dim =
     size === 'sm'
-      ? 'w-8 h-8 text-[10px]'
+      ? 'w-8 h-8 text-xs'
       : size === 'lg'
         ? 'w-12 h-12 text-sm'
         : 'w-10 h-10 text-xs';
@@ -195,7 +195,7 @@ function StatusBadge({ ticket }: { ticket: InboxTicket }) {
     return (
       <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-gray-100 border border-gray-200">
         <span className="w-1.5 h-1.5 rounded-full bg-gray-400" />
-        <span className="text-[10px] font-medium text-gray-600">Finalizado</span>
+        <span className="text-xs font-medium text-gray-600">Finalizado</span>
       </span>
     );
   }
@@ -203,14 +203,14 @@ function StatusBadge({ ticket }: { ticket: InboxTicket }) {
     return (
       <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-orange-50 border border-orange-200">
         <span className="w-1.5 h-1.5 rounded-full bg-vitao-orange animate-pulse" />
-        <span className="text-[10px] font-medium text-orange-700">Aguardando</span>
+        <span className="text-xs font-medium text-orange-700">Aguardando</span>
       </span>
     );
   }
   return (
     <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-vitao-lightgreen border border-green-200">
       <span className="w-1.5 h-1.5 rounded-full bg-vitao-green" />
-      <span className="text-[10px] font-medium text-vitao-darkgreen">Em atendimento</span>
+      <span className="text-xs font-medium text-vitao-darkgreen">Em atendimento</span>
     </span>
   );
 }
@@ -296,7 +296,7 @@ function ColunaLista({
               <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
             </svg>
             <h2 className="text-sm font-bold text-gray-900">Conversas Ativas</h2>
-            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-vitao-green text-white">
+            <span className="text-xs font-bold px-1.5 py-0.5 rounded-full bg-vitao-green text-white">
               {tickets.filter(t => t.status === 'open').length}
             </span>
           </div>
@@ -316,7 +316,7 @@ function ColunaLista({
               onClick={onRefresh}
               disabled={refreshing}
               aria-label="Atualizar"
-              className="p-1 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors disabled:opacity-40"
+              className="p-1 rounded-md text-gray-500 hover:text-gray-600 hover:bg-gray-100 transition-colors disabled:opacity-40"
             >
               <svg
                 className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`}
@@ -332,7 +332,7 @@ function ColunaLista({
 
         {/* Busca */}
         <div className="relative mb-2">
-          <svg className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-500 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
           <input
@@ -352,13 +352,13 @@ function ColunaLista({
               key={tab.key}
               type="button"
               onClick={() => setFilterTab(tab.key)}
-              className={`flex-1 flex items-center justify-center gap-1 py-1 rounded-md text-[10px] font-semibold transition-colors focus:outline-none ${
+              className={`flex-1 flex items-center justify-center gap-1 py-1 rounded-md text-xs font-semibold transition-colors focus:outline-none ${
                 filterTab === tab.key ? 'bg-vitao-green text-white shadow-sm' : 'text-gray-600 hover:text-gray-800'
               }`}
             >
               {tab.label}
               {tab.key === 'aguardando' && countAguardando > 0 && (
-                <span className={`text-[8px] font-bold px-1 py-0.5 rounded-full leading-none min-w-[14px] text-center ${
+                <span className={`text-xs font-bold px-1 py-0.5 rounded-full leading-none min-w-[14px] text-center ${
                   filterTab === tab.key ? 'bg-white text-vitao-darkgreen' : 'bg-vitao-orange text-white'
                 }`}>
                   {countAguardando}
@@ -377,11 +377,11 @@ function ColunaLista({
 
         {!loading && filtered.length === 0 && (
           <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
-            <svg className="w-12 h-12 text-gray-300 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg className="w-12 h-12 text-gray-500 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
             </svg>
             <p className="text-sm font-medium text-gray-500">Nenhuma conversa</p>
-            <p className="text-xs text-gray-400 mt-1">
+            <p className="text-xs text-gray-500 mt-1">
               {busca ? 'Tente outro termo de busca' : filterTab !== 'todos' ? 'Tente outro filtro' : 'Sem conversas no período'}
             </p>
           </div>
@@ -451,24 +451,24 @@ function ItemConversa({ ticket, selected, onClick }: ItemConversaProps) {
           </p>
           <div className="flex items-center gap-1 flex-shrink-0">
             {naoLidas > 0 && (
-              <span className="bg-vitao-blue text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+              <span className="bg-vitao-blue text-white text-xs font-bold w-4 h-4 rounded-full flex items-center justify-center">
                 {naoLidas > 9 ? '9+' : naoLidas}
               </span>
             )}
-            <span className="text-[10px] text-gray-400">{formatTime(ticket.ultima_mensagem_data ?? ticket.ultima_msg_cliente_data)}</span>
+            <span className="text-xs text-gray-500">{formatTime(ticket.ultima_mensagem_data ?? ticket.ultima_msg_cliente_data)}</span>
           </div>
         </div>
 
-        <p className={`text-[11px] truncate leading-tight mb-1 ${naoLidas > 0 ? 'text-gray-800 font-medium' : 'text-gray-500'}`}>
+        <p className={`text-xs truncate leading-tight mb-1 ${naoLidas > 0 ? 'text-gray-800 font-medium' : 'text-gray-500'}`}>
           {ticket.ultima_mensagem ? truncatePreview(ticket.ultima_mensagem) : ' '}
         </p>
 
         <div className="flex items-center gap-1.5">
-          <span className={`text-[9px] font-semibold px-1.5 py-0.5 rounded-full ${tempBadge.classes}`}>
+          <span className={`text-xs font-semibold px-1.5 py-0.5 rounded-full ${tempBadge.classes}`}>
             {isAguardando ? 'Quente' : tempBadge.label}
           </span>
           {ticket.atendente_nome && (
-            <span className="text-[9px] text-gray-400 truncate">
+            <span className="text-xs text-gray-500 truncate">
               {ticket.atendente_nome.replace(/-\s*Vitao/i, '').trim()}
             </span>
           )}
@@ -506,13 +506,13 @@ function BolhaMensagem({ msg, contatoNome }: { msg: DeskrioMensagem; contatoNome
   return (
     <div className={`flex ${enviado ? 'justify-end' : 'justify-start'}`}>
       {!enviado && (
-        <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-white text-[9px] font-bold mr-2 mt-auto mb-0.5 bg-gray-400">
+        <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-white text-xs font-bold mr-2 mt-auto mb-0.5 bg-gray-400">
           {getInitials(msg.nome_contato ?? contatoNome)}
         </div>
       )}
       <div className="max-w-xs lg:max-w-sm xl:max-w-md">
         {enviado && msg.nome_contato && (
-          <p className="text-[9px] text-gray-400 text-right mb-0.5 mr-1 truncate max-w-[200px] ml-auto">
+          <p className="text-xs text-gray-500 text-right mb-0.5 mr-1 truncate max-w-[200px] ml-auto">
             {msg.nome_contato.replace(/-\s*Vitao/i, '').trim()}
           </p>
         )}
@@ -525,7 +525,7 @@ function BolhaMensagem({ msg, contatoNome }: { msg: DeskrioMensagem; contatoNome
           <span className="whitespace-pre-wrap break-words">{msg.texto}</span>
         </div>
         <div className={`flex items-center gap-1 mt-0.5 ${enviado ? 'justify-end' : 'justify-start'}`}>
-          <span className="text-[9px] text-gray-400">{formatMsgTime(msg.timestamp)}</span>
+          <span className="text-xs text-gray-500">{formatMsgTime(msg.timestamp)}</span>
           {enviado && (
             <svg className="w-3 h-3 text-vitao-green/70" fill="currentColor" viewBox="0 0 24 24">
               <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
@@ -598,7 +598,7 @@ function ColunaChat({
           </svg>
         </div>
         <h3 className="text-sm font-semibold text-gray-700">Selecione uma conversa</h3>
-        <p className="text-xs text-gray-400 mt-1 text-center">Escolha um cliente na lista ao lado para ver o historico</p>
+        <p className="text-xs text-gray-500 mt-1 text-center">Escolha um cliente na lista ao lado para ver o historico</p>
       </div>
     );
   }
@@ -628,7 +628,7 @@ function ColunaChat({
           <p className="text-sm font-semibold text-gray-900 truncate leading-tight">{ticket.contato_nome || '(sem nome)'}</p>
           <div className="flex items-center gap-1.5">
             <span className="w-1.5 h-1.5 rounded-full bg-vitao-green animate-pulse inline-block" />
-            <span className="text-[11px] text-vitao-darkgreen">Online agora</span>
+            <span className="text-xs text-vitao-darkgreen">Online agora</span>
           </div>
         </div>
 
@@ -689,10 +689,10 @@ function ColunaChat({
       {/* Closed notice */}
       {isClosed && (
         <div className="flex items-center justify-center gap-2 px-4 py-2 bg-gray-100 border-t border-gray-200 flex-shrink-0">
-          <svg className="w-3.5 h-3.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg className="w-3.5 h-3.5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
           </svg>
-          <span className="text-[11px] text-gray-500">Ticket finalizado</span>
+          <span className="text-xs text-gray-500">Ticket finalizado</span>
         </div>
       )}
 
@@ -704,7 +704,7 @@ function ColunaChat({
               key={pill.label}
               type="button"
               onClick={() => setInputTexto(pill.msg)}
-              className="flex items-center gap-1 px-3 py-1 text-[11px] font-medium text-gray-700 bg-gray-100 border border-gray-200 rounded-full hover:bg-vitao-lightgreen hover:border-vitao-green hover:text-vitao-darkgreen transition-colors whitespace-nowrap flex-shrink-0 min-h-[36px]"
+              className="flex items-center gap-1 px-3 py-1 text-xs font-medium text-gray-700 bg-gray-100 border border-gray-200 rounded-full hover:bg-vitao-lightgreen hover:border-vitao-green hover:text-vitao-darkgreen transition-colors whitespace-nowrap flex-shrink-0 min-h-[36px]"
             >
               {pill.label}
             </button>
@@ -723,7 +723,7 @@ function ColunaChat({
             <button
               type="button"
               aria-label="Anexar arquivo"
-              className="p-1.5 text-gray-400 hover:text-gray-600 transition-colors flex-shrink-0 min-h-[36px] flex items-center"
+              className="p-1.5 text-gray-500 hover:text-gray-600 transition-colors flex-shrink-0 min-h-[36px] flex items-center"
               onClick={() => alert('Em breve: envio de arquivos')}
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -780,9 +780,9 @@ interface ColunaPainelProps {
 function DadoRow({ label, value, bg, textColor, badge }: { label: string; value: string; bg: string; textColor: string; badge?: boolean }) {
   return (
     <div className={`${bg} px-3 py-2 rounded-lg flex items-center justify-between`}>
-      <span className="text-[11px] text-gray-700">{label}</span>
+      <span className="text-xs text-gray-700">{label}</span>
       {badge ? (
-        <span className="text-[10px] font-bold rounded-full px-2 py-0.5 bg-vitao-green text-white">{value}</span>
+        <span className="text-xs font-bold rounded-full px-2 py-0.5 bg-vitao-green text-white">{value}</span>
       ) : (
         <span className={`text-xs font-semibold ${textColor}`}>{value}</span>
       )}
@@ -819,7 +819,7 @@ function ColunaPainel({ ticket, cliente, mockDados, loadingCliente, onVoltarMobi
       </div>
 
       {!ticket ? (
-        <div className="p-4 flex-1 flex flex-col items-center justify-center text-center text-gray-400">
+        <div className="p-4 flex-1 flex flex-col items-center justify-center text-center text-gray-500">
           <svg className="w-10 h-10 text-gray-200 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
           </svg>
@@ -832,19 +832,19 @@ function ColunaPainel({ ticket, cliente, mockDados, loadingCliente, onVoltarMobi
             <Avatar nome={nomeExibir} size="lg" bgClass="bg-vitao-green" />
             <div className="flex-1 min-w-0">
               <h3 className="text-sm font-bold text-gray-900 truncate">{nomeExibir}</h3>
-              <p className="text-[11px] text-gray-500 truncate">{cnpjRaw ? formatCNPJ(cnpjRaw) : '—'}</p>
-              {consultor && <p className="text-[10px] text-vitao-darkgreen font-medium truncate">Consultor: {consultor}</p>}
+              <p className="text-xs text-gray-500 truncate">{cnpjRaw ? formatCNPJ(cnpjRaw) : '—'}</p>
+              {consultor && <p className="text-xs text-vitao-darkgreen font-medium truncate">Consultor: {consultor}</p>}
             </div>
           </div>
 
           {/* IA placeholder */}
           <div className="bg-gray-100 rounded-xl p-5 text-gray-500 text-center text-sm">
-            <svg className="w-8 h-8 text-gray-300 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg className="w-8 h-8 text-gray-500 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
             </svg>
             <p className="font-semibold text-gray-600 text-[13px] mb-1">Inteligencia (Em breve)</p>
-            <p className="text-xs text-gray-400">Sugestoes de IA para este cliente aparecerão aqui em breve.</p>
-            <p className="text-xs text-gray-400 mt-1">Dados do cliente abaixo</p>
+            <p className="text-xs text-gray-500">Sugestoes de IA para este cliente aparecerão aqui em breve.</p>
+            <p className="text-xs text-gray-500 mt-1">Dados do cliente abaixo</p>
           </div>
 
           {/* Loading */}
@@ -857,7 +857,7 @@ function ColunaPainel({ ticket, cliente, mockDados, loadingCliente, onVoltarMobi
           {/* Dados Mercos */}
           {(dados || cliente) && (
             <div>
-              <h4 className="text-[11px] font-semibold text-gray-700 uppercase tracking-wider mb-2">Dados do Cliente (Mercos)</h4>
+              <h4 className="text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">Dados do Cliente (Mercos)</h4>
               <div className="space-y-2">
                 <DadoRow
                   label="Ticket Medio"
@@ -891,19 +891,19 @@ function ColunaPainel({ ticket, cliente, mockDados, loadingCliente, onVoltarMobi
           {/* Produtos de foco (demo) */}
           {isDemo && dados?.produtos_foco && dados.produtos_foco.length > 0 && (
             <div>
-              <h4 className="text-[11px] font-semibold text-gray-700 uppercase tracking-wider mb-2">Produtos de Foco</h4>
+              <h4 className="text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">Produtos de Foco</h4>
               <div className="space-y-2">
                 {dados.produtos_foco.map((p, idx) => (
                   <div key={idx} className="bg-gray-50 border border-gray-200 rounded-lg p-3">
                     <div className="flex items-start justify-between gap-1 mb-1">
                       <p className="text-xs font-semibold text-gray-800 truncate flex-1">{p.nome}</p>
                       {p.recompra_proxima && (
-                        <span className="flex-shrink-0 text-[9px] font-semibold bg-vitao-orange/10 text-vitao-orange px-1.5 py-0.5 rounded-full whitespace-nowrap">
+                        <span className="flex-shrink-0 text-xs font-semibold bg-vitao-orange/10 text-vitao-orange px-1.5 py-0.5 rounded-full whitespace-nowrap">
                           Recompra proxima
                         </span>
                       )}
                     </div>
-                    <p className="text-[10px] text-gray-500">{p.caixas_mes} cx/mes · Ultima: {p.ultima_compra_label}</p>
+                    <p className="text-xs text-gray-500">{p.caixas_mes} cx/mes · Ultima: {p.ultima_compra_label}</p>
                   </div>
                 ))}
               </div>
@@ -913,16 +913,16 @@ function ColunaPainel({ ticket, cliente, mockDados, loadingCliente, onVoltarMobi
           {/* Tarefas do cliente (demo) */}
           {isDemo && dados?.tarefas && dados.tarefas.length > 0 && (
             <div>
-              <h4 className="text-[11px] font-semibold text-gray-700 uppercase tracking-wider mb-2">Tarefas</h4>
+              <h4 className="text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">Tarefas</h4>
               <div className="space-y-2">
                 {dados.tarefas.map((t) => (
                   <div key={t.id} className={`flex items-start gap-2 p-2 rounded-lg border ${t.atrasada ? 'bg-red-50 border-red-200' : 'bg-gray-50 border-gray-200'}`}>
-                    <svg className={`w-4 h-4 flex-shrink-0 mt-0.5 ${t.atrasada ? 'text-vitao-red' : 'text-gray-400'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className={`w-4 h-4 flex-shrink-0 mt-0.5 ${t.atrasada ? 'text-vitao-red' : 'text-gray-500'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                     </svg>
                     <div className="flex-1 min-w-0">
                       <p className={`text-xs font-medium truncate ${t.atrasada ? 'text-vitao-red' : 'text-gray-800'}`}>{t.titulo}</p>
-                      <p className={`text-[10px] ${t.atrasada ? 'text-red-500 font-semibold' : 'text-gray-400'}`}>{t.prazo_label}</p>
+                      <p className={`text-xs ${t.atrasada ? 'text-red-500 font-semibold' : 'text-gray-500'}`}>{t.prazo_label}</p>
                     </div>
                   </div>
                 ))}
@@ -933,12 +933,12 @@ function ColunaPainel({ ticket, cliente, mockDados, loadingCliente, onVoltarMobi
           {/* Atalhos (producao) */}
           {!isDemo && cliente && (
             <div>
-              <h4 className="text-[11px] font-semibold text-gray-700 uppercase tracking-wider mb-2">Atalhos</h4>
+              <h4 className="text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">Atalhos</h4>
               <div className="grid grid-cols-2 gap-2">
-                <a href={`/carteira?busca=${encodeURIComponent(cliente.cnpj)}`} className="px-3 py-2 bg-vitao-lightgreen text-vitao-darkgreen text-[11px] font-medium rounded-lg text-center hover:bg-green-100 transition-colors">
+                <a href={`/carteira?busca=${encodeURIComponent(cliente.cnpj)}`} className="px-3 py-2 bg-vitao-lightgreen text-vitao-darkgreen text-xs font-medium rounded-lg text-center hover:bg-green-100 transition-colors">
                   Ver na Carteira
                 </a>
-                <a href={`/clientes/${cliente.cnpj}`} className="px-3 py-2 bg-blue-50 text-vitao-blue text-[11px] font-medium rounded-lg text-center hover:bg-blue-100 transition-colors">
+                <a href={`/clientes/${cliente.cnpj}`} className="px-3 py-2 bg-blue-50 text-vitao-blue text-xs font-medium rounded-lg text-center hover:bg-blue-100 transition-colors">
                   Ficha 360
                 </a>
               </div>

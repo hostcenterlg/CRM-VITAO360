@@ -73,7 +73,7 @@ function FollowUpBadge({ followUp }: { followUp?: string }) {
   if (upper.includes('HOJE') || upper.includes('VENCID')) {
     return (
       <span
-        className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold text-white"
+        className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-bold text-white"
         style={{
           backgroundColor: '#FF0000',
           animation: upper.includes('HOJE') ? 'pulse 1.5s ease-in-out infinite' : undefined,
@@ -85,12 +85,12 @@ function FollowUpBadge({ followUp }: { followUp?: string }) {
   }
   if (upper.includes('AMANHA')) {
     return (
-      <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold text-gray-800 bg-yellow-100">
+      <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-bold text-gray-800 bg-yellow-100">
         {followUp}
       </span>
     );
   }
-  return <span className="text-[11px] text-gray-500">{followUp}</span>;
+  return <span className="text-xs text-gray-500">{followUp}</span>;
 }
 
 // ---------------------------------------------------------------------------
@@ -163,14 +163,14 @@ function WhatsAppAgendaModal({ item, waStatus, onClose }: WhatsAppAgendaModalPro
             </div>
             <div className="min-w-0">
               <p className="text-sm font-bold text-gray-900 truncate">{item.nome_fantasia}</p>
-              <p className="text-[10px] text-gray-400 font-mono">{item.cnpj}</p>
+              <p className="text-xs text-gray-500 font-mono">{item.cnpj}</p>
             </div>
           </div>
           <button
             type="button"
             onClick={onClose}
             aria-label="Fechar modal"
-            className="flex-shrink-0 p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-md transition-colors"
+            className="flex-shrink-0 p-1.5 text-gray-500 hover:text-gray-600 hover:bg-gray-100 rounded-md transition-colors"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -182,7 +182,7 @@ function WhatsAppAgendaModal({ item, waStatus, onClose }: WhatsAppAgendaModalPro
         <div className="p-4 space-y-3">
           {/* Status WA */}
           {waStatus && (
-            <div className={`flex items-center gap-1.5 text-[11px] font-medium px-2 py-1.5 rounded-md ${
+            <div className={`flex items-center gap-1.5 text-xs font-medium px-2 py-1.5 rounded-md ${
               waStatus.alguma_conectada
                 ? 'bg-green-50 text-green-700'
                 : 'bg-gray-50 text-gray-500'
@@ -200,7 +200,7 @@ function WhatsAppAgendaModal({ item, waStatus, onClose }: WhatsAppAgendaModalPro
           {/* Acao prescrita como contexto */}
           {item.acao && (
             <div className="px-3 py-2 bg-gray-50 rounded-md border border-gray-100">
-              <p className="text-[10px] text-gray-400 uppercase font-semibold tracking-wide mb-0.5">Acao prescrita</p>
+              <p className="text-xs text-gray-500 uppercase font-semibold tracking-wide mb-0.5">Acao prescrita</p>
               <p className="text-xs text-gray-700">{item.acao}</p>
             </div>
           )}
@@ -219,7 +219,7 @@ function WhatsAppAgendaModal({ item, waStatus, onClose }: WhatsAppAgendaModalPro
               disabled={resultado?.enviado}
               className="w-full p-3 text-xs border border-gray-200 rounded-lg bg-white text-gray-800 resize-none focus:outline-none focus:ring-2 focus:ring-green-500 leading-relaxed disabled:bg-gray-50 disabled:text-gray-500"
             />
-            <p className="text-[10px] text-gray-400 text-right">{mensagem.length}/4096</p>
+            <p className="text-xs text-gray-500 text-right">{mensagem.length}/4096</p>
           </div>
 
           {/* Feedback */}
@@ -388,7 +388,7 @@ function AgendaCard({ item, idx, concluido, onRegistrar, onWhatsApp }: AgendaCar
             type="button"
             tabIndex={swipeRevealed ? 0 : -1}
             onClick={() => { handleSwipeClose(); onRegistrar(item); }}
-            className="flex-1 flex flex-col items-center justify-center gap-0.5 bg-yellow-500 text-white text-[10px] font-bold"
+            className="flex-1 flex flex-col items-center justify-center gap-0.5 bg-yellow-500 text-white text-xs font-bold"
             aria-label={`Adiar ${item.nome_fantasia}`}
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -402,7 +402,7 @@ function AgendaCard({ item, idx, concluido, onRegistrar, onWhatsApp }: AgendaCar
             type="button"
             tabIndex={swipeRevealed ? 0 : -1}
             onClick={() => { handleSwipeClose(); onRegistrar(item); }}
-            className="flex-1 flex flex-col items-center justify-center gap-0.5 bg-green-600 text-white text-[10px] font-bold"
+            className="flex-1 flex flex-col items-center justify-center gap-0.5 bg-green-600 text-white text-xs font-bold"
             aria-label={`Registrar atendimento de ${item.nome_fantasia}`}
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -426,7 +426,7 @@ function AgendaCard({ item, idx, concluido, onRegistrar, onWhatsApp }: AgendaCar
         {/* Tag PRIORITARIO para P0/P1/P3 */}
         {isUrgente && !concluido && (
           <div
-            className="absolute top-0 right-0 px-2 py-0.5 text-[9px] font-bold text-white rounded-bl-md"
+            className="absolute top-0 right-0 px-2 py-0.5 text-xs font-bold text-white rounded-bl-md"
             style={{ backgroundColor: prio === 'P0' ? '#FF0000' : prio === 'P1' ? '#FF6600' : prio === 'P2' ? '#FFC000' : '#FFFF00', color: prio === 'P3' ? '#1a1a1a' : '#fff' }}
           >
             PRIORITARIO
@@ -466,7 +466,7 @@ function AgendaCard({ item, idx, concluido, onRegistrar, onWhatsApp }: AgendaCar
         {/* Bloco de ACAO SUGERIDA */}
         {item.acao && (
           <div className="mb-3 px-3 py-2.5 rounded-r-md bg-gray-50 border-l-4 border-gray-300">
-            <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1 flex items-center gap-1">
+            <p className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-1 flex items-center gap-1">
               <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5}
                   d="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -479,7 +479,7 @@ function AgendaCard({ item, idx, concluido, onRegistrar, onWhatsApp }: AgendaCar
 
         {/* Metadados adicionais: follow-up + tentativa */}
         {(item.follow_up || item.tentativa) && (
-          <div className="flex flex-wrap items-center gap-3 mb-3 text-[11px] text-gray-500">
+          <div className="flex flex-wrap items-center gap-3 mb-3 text-xs text-gray-500">
             {item.tentativa && (
               <span>Tentativa <span className="font-semibold text-gray-700">{item.tentativa}</span></span>
             )}
@@ -592,7 +592,7 @@ function ResumoSemanalIA({ consultorAtivo }: { consultorAtivo: string }) {
           </span>
         </div>
         <svg
-          className="w-4 h-4 text-gray-400 flex-shrink-0"
+          className="w-4 h-4 text-gray-500 flex-shrink-0"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -631,7 +631,7 @@ function ResumoSemanalIA({ consultorAtivo }: { consultorAtivo: string }) {
           </span>
         </div>
         <svg
-          className={`w-4 h-4 text-gray-400 flex-shrink-0 transition-transform duration-200 ${aberto ? 'rotate-180' : ''}`}
+          className={`w-4 h-4 text-gray-500 flex-shrink-0 transition-transform duration-200 ${aberto ? 'rotate-180' : ''}`}
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -702,7 +702,7 @@ function ResumoSemanalIA({ consultorAtivo }: { consultorAtivo: string }) {
           {resumo && (
             <div className="space-y-4">
               {!resumo.ia_configurada && (
-                <p className="text-[10px] text-amber-600 bg-amber-50 border border-amber-200 rounded px-2 py-1 italic">
+                <p className="text-xs text-amber-600 bg-amber-50 border border-amber-200 rounded px-2 py-1 italic">
                   IA nao configurada — resumo baseado em regras locais
                 </p>
               )}
@@ -710,50 +710,50 @@ function ResumoSemanalIA({ consultorAtivo }: { consultorAtivo: string }) {
               {/* Cards de metricas */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                 <div className="bg-gray-50 border border-gray-100 rounded-lg px-3 py-2 text-center">
-                  <p className="text-[10px] text-gray-500 font-medium uppercase tracking-wide">Carteira</p>
+                  <p className="text-xs text-gray-500 font-medium uppercase tracking-wide">Carteira</p>
                   <p className="text-xl font-bold text-gray-900 mt-0.5 tabular-nums">
                     {resumo.metricas.total_carteira}
                   </p>
-                  <p className="text-[10px] text-gray-400">clientes</p>
+                  <p className="text-xs text-gray-500">clientes</p>
                 </div>
 
                 <div className="bg-gray-50 border border-gray-100 rounded-lg px-3 py-2 text-center">
-                  <p className="text-[10px] text-gray-500 font-medium uppercase tracking-wide">Vendas Semana</p>
+                  <p className="text-xs text-gray-500 font-medium uppercase tracking-wide">Vendas Semana</p>
                   <p
                     className="text-xl font-bold mt-0.5 tabular-nums"
                     style={{ color: '#00B050' }}
                   >
                     {resumo.metricas.vendas_semana_qtd}
                   </p>
-                  <p className="text-[10px] text-gray-400">pedidos</p>
+                  <p className="text-xs text-gray-500">pedidos</p>
                 </div>
 
                 <div className="bg-gray-50 border border-gray-100 rounded-lg px-3 py-2 text-center">
-                  <p className="text-[10px] text-gray-500 font-medium uppercase tracking-wide">Em Risco</p>
+                  <p className="text-xs text-gray-500 font-medium uppercase tracking-wide">Em Risco</p>
                   <p
                     className="text-xl font-bold mt-0.5 tabular-nums"
                     style={{ color: metricaColor(resumo.metricas.clientes_em_risco, 5) }}
                   >
                     {resumo.metricas.clientes_em_risco}
                   </p>
-                  <p className="text-[10px] text-gray-400">clientes</p>
+                  <p className="text-xs text-gray-500">clientes</p>
                 </div>
 
                 <div className="bg-gray-50 border border-gray-100 rounded-lg px-3 py-2 text-center">
-                  <p className="text-[10px] text-gray-500 font-medium uppercase tracking-wide">FU Vencidos</p>
+                  <p className="text-xs text-gray-500 font-medium uppercase tracking-wide">FU Vencidos</p>
                   <p
                     className="text-xl font-bold mt-0.5 tabular-nums"
                     style={{ color: metricaColor(resumo.metricas.followups_vencidos, 3) }}
                   >
                     {resumo.metricas.followups_vencidos}
                   </p>
-                  <p className="text-[10px] text-gray-400">follow-ups</p>
+                  <p className="text-xs text-gray-500">follow-ups</p>
                 </div>
               </div>
 
               {/* Texto do resumo IA */}
               <div className="bg-green-50 border border-green-100 rounded-lg p-3">
-                <p className="text-[10px] font-semibold text-green-700 uppercase tracking-wide mb-1.5">
+                <p className="text-xs font-semibold text-green-700 uppercase tracking-wide mb-1.5">
                   Analise IA — {resumo.consultor} — {resumo.periodo}
                 </p>
                 <p className="text-xs text-gray-800 whitespace-pre-wrap leading-relaxed">
@@ -765,7 +765,7 @@ function ResumoSemanalIA({ consultorAtivo }: { consultorAtivo: string }) {
 
           {/* Estado vazio (ainda nao gerado) */}
           {!resumo && !loading && !erro && (
-            <p className="text-xs text-gray-400 italic text-center py-2">
+            <p className="text-xs text-gray-500 italic text-center py-2">
               Clique em &quot;Gerar Resumo&quot; para ver a analise da semana de {consultorSelecionado}.
             </p>
           )}
@@ -1008,7 +1008,7 @@ export default function AgendaPage() {
             <p className="text-sm sm:text-base text-gray-500 mt-0.5 truncate">
               {hoje}
               {(compromissosHoje > 0 || tarefasHojeCount > 0) && (
-                <span className="ml-2 text-xs text-gray-400">
+                <span className="ml-2 text-xs text-gray-500">
                   {compromissosHoje > 0 && `${compromissosHoje} compromisso${compromissosHoje !== 1 ? 's' : ''}`}
                   {compromissosHoje > 0 && tarefasHojeCount > 0 && ' · '}
                   {tarefasHojeCount > 0 && `${tarefasHojeCount} task${tarefasHojeCount !== 1 ? 's' : ''}`}
@@ -1069,7 +1069,7 @@ export default function AgendaPage() {
             Compromissos
             {compromissosHoje > 0 && (
               <span
-                className="inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full text-[10px] font-bold"
+                className="inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full text-xs font-bold"
                 style={pageTab === 'compromissos'
                   ? { backgroundColor: 'rgba(255,255,255,0.3)', color: '#fff' }
                   : { backgroundColor: '#00B05018', color: '#00B050' }}
@@ -1094,7 +1094,7 @@ export default function AgendaPage() {
             Tarefas
             {tarefasHojeCount > 0 && (
               <span
-                className="inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full text-[10px] font-bold"
+                className="inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full text-xs font-bold"
                 style={pageTab === 'tarefas'
                   ? { backgroundColor: 'rgba(255,255,255,0.3)', color: '#fff' }
                   : { backgroundColor: '#FFC00020', color: '#b45309' }}
@@ -1149,7 +1149,7 @@ export default function AgendaPage() {
             <div className="relative w-full">
               <svg
                 aria-hidden="true"
-                className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400"
+                className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-500"
                 fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
               >
                 <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" />
@@ -1234,7 +1234,7 @@ export default function AgendaPage() {
             {isLoading ? (
               <AgendaSkeleton />
             ) : itemsFiltrados.length === 0 && !errorMsg ? (
-              <div className="py-14 text-center text-gray-400">
+              <div className="py-14 text-center text-gray-500">
                 <svg aria-hidden="true" className="w-10 h-10 mx-auto mb-3 text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                 </svg>
@@ -1244,7 +1244,7 @@ export default function AgendaPage() {
                     : 'Nenhum atendimento agendado para hoje.'}
                 </p>
                 {!temFiltrosAtivos && (
-                  <p className="text-xs text-gray-400 mt-1 mb-3">
+                  <p className="text-xs text-gray-500 mt-1 mb-3">
                     Clique em &quot;Gerar Agenda&quot; para criar a agenda do dia.
                   </p>
                 )}
@@ -1284,7 +1284,7 @@ export default function AgendaPage() {
                   <section aria-label="Clientes prioritarios">
                     <div className="flex items-center gap-3 mb-3">
                       <div className="h-px flex-1 bg-red-200" />
-                      <span className="flex-shrink-0 text-[11px] font-bold text-red-600 uppercase tracking-wider px-2 py-0.5 rounded border border-red-200 bg-red-50">
+                      <span className="flex-shrink-0 text-xs font-bold text-red-600 uppercase tracking-wider px-2 py-0.5 rounded border border-red-200 bg-red-50">
                         Prioritarios (P0-P3)
                       </span>
                       <div className="h-px flex-1 bg-red-200" />
@@ -1311,7 +1311,7 @@ export default function AgendaPage() {
                     {prioritarios.length > 0 && (
                       <div className="flex items-center gap-3 mb-3 mt-5">
                         <div className="h-px flex-1 bg-gray-200" />
-                        <span className="flex-shrink-0 text-[11px] font-semibold text-gray-500 uppercase tracking-wider px-2 py-0.5 rounded border border-gray-200 bg-gray-50">
+                        <span className="flex-shrink-0 text-xs font-semibold text-gray-500 uppercase tracking-wider px-2 py-0.5 rounded border border-gray-200 bg-gray-50">
                           Outros Clientes (P4-P7)
                         </span>
                         <div className="h-px flex-1 bg-gray-200" />
@@ -1335,7 +1335,7 @@ export default function AgendaPage() {
 
                 {/* Rodape com contagem */}
                 {itemsFiltrados.length > 0 && (
-                  <p className="text-center text-xs text-gray-400 pt-2">
+                  <p className="text-center text-xs text-gray-500 pt-2">
                     {itemsFiltrados.length} cliente{itemsFiltrados.length > 1 ? 's' : ''} na agenda
                     {temFiltrosAtivos && ` (filtrado${itemsFiltrados.length > 1 ? 's' : ''})`}
                   </p>

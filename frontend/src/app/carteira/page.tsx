@@ -584,7 +584,7 @@ function PaginationButton({ label, disabled, onClick }: PaginationButtonProps) {
       onClick={onClick}
       className={`min-h-11 sm:min-h-0 px-3 py-2 sm:py-1.5 rounded text-xs font-medium border transition-colors ${
         disabled
-          ? 'border-gray-200 text-gray-300 cursor-not-allowed'
+          ? 'border-gray-200 text-gray-500 cursor-not-allowed'
           : 'border-gray-300 text-gray-600 hover:bg-gray-50 hover:border-gray-400'
       }`}
     >

@@ -93,13 +93,13 @@ function Bloco({ title, open, onToggle, children, badge, id }: BlocoProps) {
         aria-controls={panelId}
       >
         <div className="flex items-center gap-2">
-          <span className="text-[11px] font-semibold text-gray-600 uppercase tracking-wider">
+          <span className="text-xs font-semibold text-gray-600 uppercase tracking-wider">
             {title}
           </span>
           {badge}
         </div>
         <svg
-          className={`w-4 h-4 text-gray-400 flex-shrink-0 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
+          className={`w-4 h-4 text-gray-500 flex-shrink-0 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -180,8 +180,8 @@ function ScoreBarRow({ label, peso, valor, pontos }: ScoreBarProps) {
 
   return (
     <div className="flex items-center gap-2 py-0.5">
-      <span className="text-[11px] text-gray-500 w-32 flex-shrink-0">
-        {label} <span className="text-gray-400">({peso})</span>
+      <span className="text-xs text-gray-500 w-32 flex-shrink-0">
+        {label} <span className="text-gray-500">({peso})</span>
       </span>
       <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
         <div
@@ -189,10 +189,10 @@ function ScoreBarRow({ label, peso, valor, pontos }: ScoreBarProps) {
           style={{ width: `${pct}%`, background: color, transition: 'width 400ms ease-out' }}
         />
       </div>
-      <span className="text-[11px] font-semibold text-gray-700 w-8 text-right tabular-nums">
+      <span className="text-xs font-semibold text-gray-700 w-8 text-right tabular-nums">
         {safeValor.toFixed(0)}
       </span>
-      <span className="text-[11px] text-gray-400 w-10 text-right tabular-nums">
+      <span className="text-xs text-gray-500 w-10 text-right tabular-nums">
         {safePontos.toFixed(1)}pt
       </span>
     </div>
@@ -268,14 +268,14 @@ function ScoreBreakdownDisplay({
             pontos={breakdown.situacao * 0.05}
           />
           <div className="flex justify-between items-center pt-1 mt-1 border-t border-gray-100">
-            <span className="text-[11px] font-semibold text-gray-600 uppercase tracking-wide">
+            <span className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
               Score Total
             </span>
             <span className="text-sm font-bold tabular-nums" style={{ color: scoreColor }}>
               {score.toFixed(1)}
             </span>
           </div>
-          <p className="text-[10px] text-gray-400 italic">
+          <p className="text-xs text-gray-500 italic">
             Calculado automaticamente pelo Motor
           </p>
         </div>
@@ -294,7 +294,7 @@ function VendasMiniChart({ vendas }: { vendas: VendaMensal[] }) {
 
   return (
     <div className="pt-1">
-      <p className="text-[11px] text-gray-500 mb-1.5 font-medium">Vendas mes a mes</p>
+      <p className="text-xs text-gray-500 mb-1.5 font-medium">Vendas mes a mes</p>
       <div className="flex items-end gap-0.5 h-12">
         {vendas.map((v) => {
           const pct = v.valor > 0 ? (v.valor / max) * 100 : 0;
@@ -315,7 +315,7 @@ function VendasMiniChart({ vendas }: { vendas: VendaMensal[] }) {
                   }}
                 />
               </div>
-              <span className="text-[9px] text-gray-400 leading-none">{v.mes}</span>
+              <span className="text-xs text-gray-500 leading-none">{v.mes}</span>
             </div>
           );
         })}
@@ -344,7 +344,7 @@ function ScoreSparkline({ vendas, score }: ScoreSparklineProps) {
 
   return (
     <div className="pt-1">
-      <p className="text-[11px] text-gray-500 mb-1 font-medium">Evolucao faturamento</p>
+      <p className="text-xs text-gray-500 mb-1 font-medium">Evolucao faturamento</p>
       <div style={{ width: '100%', height: 40 }}>
         <ResponsiveContainer width="100%" height={40}>
           <LineChart data={data} margin={{ top: 2, right: 2, bottom: 2, left: 2 }}>
@@ -418,7 +418,7 @@ function UltimasComprasBloco({ cnpj }: UltimasComprasProps) {
 
   if ((vendas ?? []).length === 0) {
     return (
-      <p className="text-xs text-gray-400 py-2 italic">
+      <p className="text-xs text-gray-500 py-2 italic">
         Nenhum pedido encontrado para este cliente.
       </p>
     );
@@ -429,9 +429,9 @@ function UltimasComprasBloco({ cnpj }: UltimasComprasProps) {
       <table className="w-full text-xs">
         <thead>
           <tr className="border-b border-gray-100">
-            <th className="text-left text-[10px] font-semibold text-gray-500 uppercase py-1.5 px-1">Data</th>
-            <th className="text-right text-[10px] font-semibold text-gray-500 uppercase py-1.5 px-1">Valor</th>
-            <th className="text-right text-[10px] font-semibold text-gray-500 uppercase py-1.5 px-1">Status</th>
+            <th className="text-left text-xs font-semibold text-gray-500 uppercase py-1.5 px-1">Data</th>
+            <th className="text-right text-xs font-semibold text-gray-500 uppercase py-1.5 px-1">Valor</th>
+            <th className="text-right text-xs font-semibold text-gray-500 uppercase py-1.5 px-1">Status</th>
           </tr>
         </thead>
         <tbody>
@@ -447,7 +447,7 @@ function UltimasComprasBloco({ cnpj }: UltimasComprasProps) {
                 </td>
                 <td className="py-1.5 px-1 text-right whitespace-nowrap">
                   <span
-                    className="inline-block text-[10px] font-semibold px-1.5 py-0.5 rounded"
+                    className="inline-block text-xs font-semibold px-1.5 py-0.5 rounded"
                     style={{ backgroundColor: cor + '18', color: cor }}
                   >
                     {v.status_pedido}
@@ -515,20 +515,20 @@ function TimelineEvent({ item }: TimelineEventProps) {
         <div className="flex items-start justify-between gap-2 flex-wrap">
           <div className="flex items-center gap-1.5 flex-wrap">
             <span
-              className="text-[10px] font-bold px-1.5 py-0.5 rounded"
+              className="text-xs font-bold px-1.5 py-0.5 rounded"
               style={{ backgroundColor: cor + '18', color: cor }}
             >
               {label}
             </span>
             <StatusBadge value={item.resultado} small />
           </div>
-          <span className="text-[10px] text-gray-400 flex-shrink-0 tabular-nums">
+          <span className="text-xs text-gray-500 flex-shrink-0 tabular-nums">
             {formatDate(item.data_registro)}
           </span>
         </div>
 
         {item.consultor && (
-          <p className="text-[11px] text-gray-500 mt-0.5">{item.consultor}</p>
+          <p className="text-xs text-gray-500 mt-0.5">{item.consultor}</p>
         )}
 
         <button
@@ -537,7 +537,7 @@ function TimelineEvent({ item }: TimelineEventProps) {
           onClick={() => needsExpand && setExpanded((v) => !v)}
           aria-expanded={needsExpand ? expanded : undefined}
         >
-          <p className={`text-[11px] text-gray-600 italic leading-relaxed ${needsExpand && !expanded ? 'line-clamp-2' : ''}`}>
+          <p className={`text-xs text-gray-600 italic leading-relaxed ${needsExpand && !expanded ? 'line-clamp-2' : ''}`}>
             &quot;{item.descricao}&quot;
           </p>
         </button>
@@ -546,15 +546,15 @@ function TimelineEvent({ item }: TimelineEventProps) {
           <button
             type="button"
             onClick={() => setExpanded((v) => !v)}
-            className="text-[10px] text-green-600 hover:underline mt-0.5"
+            className="text-xs text-green-600 hover:underline mt-0.5"
           >
             {expanded ? 'Ver menos' : 'Ver mais'}
           </button>
         )}
 
         {item.acao_futura && (
-          <p className="text-[11px] text-gray-500 mt-0.5">
-            <span className="text-gray-400">Acao futura:</span> {item.acao_futura}
+          <p className="text-xs text-gray-500 mt-0.5">
+            <span className="text-gray-500">Acao futura:</span> {item.acao_futura}
           </p>
         )}
       </div>
@@ -614,7 +614,7 @@ function TimelineVisual({ cnpj }: TimelineVisualProps) {
 
   if ((itens ?? []).length === 0) {
     return (
-      <p className="text-xs text-gray-400 py-2 italic">
+      <p className="text-xs text-gray-500 py-2 italic">
         Nenhum evento registrado.
       </p>
     );
@@ -625,7 +625,7 @@ function TimelineVisual({ cnpj }: TimelineVisualProps) {
       {(itens ?? []).map((item) => (
         <TimelineEvent key={item.id} item={item} />
       ))}
-      <p className="text-[10px] text-gray-400 mt-1 text-right">
+      <p className="text-xs text-gray-500 mt-1 text-right">
         Ultimos {(itens ?? []).length} eventos
       </p>
     </div>
@@ -669,7 +669,7 @@ function TimelineItem({ item }: { item: AtendimentoHistoricoItem }) {
     <div className="flex gap-3 py-2 border-b border-gray-50 last:border-0">
       {/* Data + dot */}
       <div className="flex flex-col items-center flex-shrink-0 w-10">
-        <span className="text-[10px] text-gray-400 leading-none text-right w-full">
+        <span className="text-xs text-gray-500 leading-none text-right w-full">
           {formatDate(item.data_registro)}
         </span>
         <div
@@ -683,13 +683,13 @@ function TimelineItem({ item }: { item: AtendimentoHistoricoItem }) {
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-1.5 flex-wrap">
           <span
-            className="text-[10px] font-bold px-1 py-0.5 rounded"
+            className="text-xs font-bold px-1 py-0.5 rounded"
             style={{ background: tipoColor + '20', color: tipoColor }}
           >
             {tipoLabel}
           </span>
           {item.consultor && (
-            <span className="text-[11px] font-semibold text-gray-700">{item.consultor}</span>
+            <span className="text-xs font-semibold text-gray-700">{item.consultor}</span>
           )}
           <StatusBadge value={item.resultado} small />
         </div>
@@ -699,14 +699,14 @@ function TimelineItem({ item }: { item: AtendimentoHistoricoItem }) {
           className="mt-0.5 text-left"
           onClick={() => needsExpand && setExpanded(!expanded)}
         >
-          <p className={`text-[11px] text-gray-600 italic ${needsExpand && !expanded ? 'line-clamp-2' : ''}`}>
+          <p className={`text-xs text-gray-600 italic ${needsExpand && !expanded ? 'line-clamp-2' : ''}`}>
             &quot;{item.descricao}&quot;
           </p>
         </button>
 
         {item.acao_futura && (
-          <p className="text-[11px] text-gray-500 mt-0.5">
-            <span className="text-gray-400">Acao futura:</span> {item.acao_futura}
+          <p className="text-xs text-gray-500 mt-0.5">
+            <span className="text-gray-500">Acao futura:</span> {item.acao_futura}
           </p>
         )}
       </div>
@@ -787,7 +787,7 @@ function HistoricoBloco({ cnpj }: { cnpj: string }) {
 
   if ((itens ?? []).length === 0) {
     return (
-      <p className="text-xs text-gray-400 py-2 italic">
+      <p className="text-xs text-gray-500 py-2 italic">
         Nenhum atendimento registrado.
       </p>
     );
@@ -814,7 +814,7 @@ function HistoricoBloco({ cnpj }: { cnpj: string }) {
         </button>
       )}
 
-      <p className="text-[10px] text-gray-400 mt-2 text-right">
+      <p className="text-xs text-gray-500 mt-2 text-right">
         {itens.length} de {total} atendimentos
       </p>
     </div>
@@ -830,7 +830,7 @@ function WhatsAppStatusDot({ status }: { status: WhatsAppStatus | null; loading:
   if (!status.configurado) {
     return (
       <span
-        className="inline-flex items-center gap-1 text-[10px] text-gray-400"
+        className="inline-flex items-center gap-1 text-xs text-gray-500"
         title="WhatsApp nao configurado"
       >
         <span className="w-2 h-2 rounded-full bg-gray-300 flex-shrink-0" />
@@ -841,7 +841,7 @@ function WhatsAppStatusDot({ status }: { status: WhatsAppStatus | null; loading:
   const conectado = status.alguma_conectada;
   return (
     <span
-      className="inline-flex items-center gap-1 text-[10px] font-medium"
+      className="inline-flex items-center gap-1 text-xs font-medium"
       style={{ color: conectado ? '#00A651' : '#9CA3AF' }}
       title={conectado ? 'WhatsApp conectado' : 'WhatsApp desconectado'}
     >
@@ -971,7 +971,7 @@ function BlocoIA({ cnpj }: { cnpj: string }) {
         {briefing && (
           <div className="rounded-lg border border-green-100 bg-green-50 p-3 space-y-1.5">
             {!briefing.ia_configurada && (
-              <p className="text-[10px] text-amber-600 bg-amber-50 border border-amber-200 rounded px-2 py-1 italic">
+              <p className="text-xs text-amber-600 bg-amber-50 border border-amber-200 rounded px-2 py-1 italic">
                 IA nao configurada — briefing baseado em regras locais
               </p>
             )}
@@ -979,7 +979,7 @@ function BlocoIA({ cnpj }: { cnpj: string }) {
               {briefing.briefing}
             </p>
             {briefing.cached && (
-              <p className="text-[10px] text-gray-400 italic">Resultado em cache</p>
+              <p className="text-xs text-gray-500 italic">Resultado em cache</p>
             )}
           </div>
         )}
@@ -1034,7 +1034,7 @@ function BlocoIA({ cnpj }: { cnpj: string }) {
         {mensagem && (
           <div className="space-y-1.5">
             {!mensagem.ia_configurada && (
-              <p className="text-[10px] text-amber-600 bg-amber-50 border border-amber-200 rounded px-2 py-1 italic">
+              <p className="text-xs text-amber-600 bg-amber-50 border border-amber-200 rounded px-2 py-1 italic">
                 IA nao configurada — mensagem baseada em regras locais
               </p>
             )}
@@ -1050,7 +1050,7 @@ function BlocoIA({ cnpj }: { cnpj: string }) {
                 type="button"
                 onClick={handleCopiar}
                 aria-label="Copiar mensagem para area de transferencia"
-                className="absolute top-2 right-2 inline-flex items-center gap-1 px-2 py-1 text-[10px] font-semibold rounded transition-all focus:outline-none focus:ring-2 focus:ring-green-500"
+                className="absolute top-2 right-2 inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold rounded transition-all focus:outline-none focus:ring-2 focus:ring-green-500"
                 style={copiado
                   ? { backgroundColor: '#00B050', color: '#fff' }
                   : { backgroundColor: '#F3F4F6', color: '#374151' }
@@ -1114,7 +1114,7 @@ function BlocoIA({ cnpj }: { cnpj: string }) {
               </button>
 
               {resultadoEnvio?.enviado && resultadoEnvio.numero && (
-                <span className="text-[10px] text-gray-400">
+                <span className="text-xs text-gray-500">
                   Enviado para {resultadoEnvio.numero}
                 </span>
               )}
@@ -1216,7 +1216,7 @@ function BriefingLigacaoPainel({ cnpj }: { cnpj: string }) {
         </span>
         {churn && (
           <span
-            className="text-[10px] font-bold px-2 py-0.5 rounded-full text-white"
+            className="text-xs font-bold px-2 py-0.5 rounded-full text-white"
             style={{ backgroundColor: churnColor }}
           >
             Churn {churn.nivel} — {(churn.risco_pct ?? 0).toFixed(0)}%
@@ -1226,7 +1226,7 @@ function BriefingLigacaoPainel({ cnpj }: { cnpj: string }) {
 
       <div className="px-4 py-3 space-y-3">
         <div>
-          <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1">
+          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">
             Abordagem sugerida
           </p>
           <p className="text-xs text-gray-800 leading-relaxed">{briefing.sugestao_abordagem}</p>
@@ -1234,7 +1234,7 @@ function BriefingLigacaoPainel({ cnpj }: { cnpj: string }) {
 
         {briefing.ultimo_contato && (
           <div>
-            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1">
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">
               Ultimo contato
             </p>
             <p className="text-xs text-gray-700">
@@ -1246,13 +1246,13 @@ function BriefingLigacaoPainel({ cnpj }: { cnpj: string }) {
 
         <div>
           <div className="flex items-center justify-between mb-1">
-            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
               Script de venda
             </p>
             <button
               type="button"
               onClick={handleCopiarScript}
-              className="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-semibold rounded transition-all focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-semibold rounded transition-all focus:outline-none focus:ring-2 focus:ring-blue-500"
               style={copiado
                 ? { backgroundColor: '#00B050', color: '#fff' }
                 : { backgroundColor: '#DBEAFE', color: '#1D4ED8' }
@@ -1283,7 +1283,7 @@ function BriefingLigacaoPainel({ cnpj }: { cnpj: string }) {
 
         {churn && (churn.fatores?.length ?? 0) > 0 && (
           <div>
-            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1">
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">
               Fatores de risco
             </p>
             <ul className="space-y-0.5">
@@ -1352,7 +1352,7 @@ function BolhaChat({ msg }: { msg: WhatsAppMensagem }) {
             {msg.texto || '—'}
           </p>
         )}
-        <p className={`text-[10px] text-right ${nosso ? 'text-white/60' : 'text-gray-400'}`}>
+        <p className={`text-xs text-right ${nosso ? 'text-white/60' : 'text-gray-500'}`}>
           {formatTimestampHHMM(msg.timestamp)}
         </p>
       </div>
@@ -1422,7 +1422,7 @@ function ConversasWhatsAppBloco({ cnpj }: { cnpj: string }) {
 
   if (!conversa || !conversa.encontrado) {
     return (
-      <p className="text-xs text-gray-400 py-2 italic">
+      <p className="text-xs text-gray-500 py-2 italic">
         Cliente nao encontrado no WhatsApp.
       </p>
     );
@@ -1432,7 +1432,7 @@ function ConversasWhatsAppBloco({ cnpj }: { cnpj: string }) {
 
   if (mensagens.length === 0) {
     return (
-      <p className="text-xs text-gray-400 py-2 italic">
+      <p className="text-xs text-gray-500 py-2 italic">
         Nenhuma conversa encontrada.
       </p>
     );
@@ -1446,20 +1446,20 @@ function ConversasWhatsAppBloco({ cnpj }: { cnpj: string }) {
       {conversa.contato && (
         <div className="flex items-center gap-2 pb-1.5 border-b border-gray-100">
           <div
-            className="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-bold text-white"
+            className="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-bold text-white"
             style={{ backgroundColor: '#00B050' }}
             aria-hidden="true"
           >
             {(conversa.contato.nome ?? '?').charAt(0).toUpperCase()}
           </div>
           <div className="min-w-0">
-            <p className="text-[11px] font-semibold text-gray-800 truncate">{conversa.contato.nome}</p>
+            <p className="text-xs font-semibold text-gray-800 truncate">{conversa.contato.nome}</p>
             {conversa.contato.telefone && (
-              <p className="text-[10px] text-gray-400 font-mono">{conversa.contato.telefone}</p>
+              <p className="text-xs text-gray-500 font-mono">{conversa.contato.telefone}</p>
             )}
           </div>
           {conversa.ticket_recente && (
-            <span className="ml-auto text-[10px] text-gray-400 flex-shrink-0">
+            <span className="ml-auto text-xs text-gray-500 flex-shrink-0">
               Ticket #{conversa.ticket_recente.id} — {conversa.ticket_recente.status}
             </span>
           )}
@@ -1477,7 +1477,7 @@ function ConversasWhatsAppBloco({ cnpj }: { cnpj: string }) {
         ))}
       </div>
 
-      <p className="text-[10px] text-gray-400 text-right">
+      <p className="text-xs text-gray-500 text-right">
         Ultimas {ultimas.length} mensagens
       </p>
     </div>
@@ -1632,15 +1632,15 @@ export default function ClienteDetalhe({ cnpj, onClose }: ClienteDetalheProps) {
             >
               {loading ? 'Carregando...' : (cliente?.nome_fantasia ?? cnpj)}
             </h2>
-            <p className="text-xs text-gray-400 font-mono mt-0.5">{formatCnpj(cnpj)}</p>
+            <p className="text-xs text-gray-500 font-mono mt-0.5">{formatCnpj(cnpj)}</p>
             {cliente && !loading && (
               <div className="flex flex-wrap gap-1.5 mt-1.5">
                 <StatusBadge value={cliente.situacao} variant="situacao" small />
                 {cliente.consultor && (
-                  <span className="text-[11px] text-gray-500">{cliente.consultor}</span>
+                  <span className="text-xs text-gray-500">{cliente.consultor}</span>
                 )}
                 {cliente.uf && (
-                  <span className="text-[11px] text-gray-500">{cliente.uf}</span>
+                  <span className="text-xs text-gray-500">{cliente.uf}</span>
                 )}
               </div>
             )}
@@ -1758,7 +1758,7 @@ export default function ClienteDetalhe({ cnpj, onClose }: ClienteDetalheProps) {
                   onToggle={() => toggleBloco('ia')}
                   badge={
                     <span
-                      className="inline-flex items-center text-[10px] font-bold px-1.5 py-0.5 rounded"
+                      className="inline-flex items-center text-xs font-bold px-1.5 py-0.5 rounded"
                       style={{ backgroundColor: '#00B05018', color: '#00B050' }}
                     >
                       IA
@@ -1827,7 +1827,7 @@ export default function ClienteDetalhe({ cnpj, onClose }: ClienteDetalheProps) {
                         <div className="flex flex-col items-end gap-0.5">
                           <StatusBadge value={cliente.prioridade} variant="prioridade" large />
                           {cliente.fase && (
-                            <span className="text-[10px] text-gray-500">{cliente.fase}</span>
+                            <span className="text-xs text-gray-500">{cliente.fase}</span>
                           )}
                         </div>
                       ) : undefined
@@ -1937,7 +1937,7 @@ export default function ClienteDetalhe({ cnpj, onClose }: ClienteDetalheProps) {
                 open={open.timeline}
                 onToggle={() => toggleBloco('timeline')}
                 badge={
-                  <span className="text-[10px] font-medium text-gray-400">(ultimos 10)</span>
+                  <span className="text-xs font-medium text-gray-500">(ultimos 10)</span>
                 }
               >
                 <TimelineVisual cnpj={cnpj} />
@@ -1950,7 +1950,7 @@ export default function ClienteDetalhe({ cnpj, onClose }: ClienteDetalheProps) {
                   open={open.compras}
                   onToggle={() => toggleBloco('compras')}
                   badge={
-                    <span className="text-[10px] font-medium text-gray-400">(max 5)</span>
+                    <span className="text-xs font-medium text-gray-500">(max 5)</span>
                   }
                 >
                   <UltimasComprasBloco cnpj={cnpj} />
@@ -1973,7 +1973,7 @@ export default function ClienteDetalhe({ cnpj, onClose }: ClienteDetalheProps) {
                 onToggle={() => toggleBloco('conversas')}
                 badge={
                   <span
-                    className="inline-flex items-center gap-1 text-[10px] font-medium px-1.5 py-0.5 rounded"
+                    className="inline-flex items-center gap-1 text-xs font-medium px-1.5 py-0.5 rounded"
                     style={{ backgroundColor: '#00B05018', color: '#00B050' }}
                   >
                     Deskrio

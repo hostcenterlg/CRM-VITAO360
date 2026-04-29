@@ -49,7 +49,7 @@ function RoleBadgeAdmin({ role }: { role: RoleUsuario }) {
   const cfg = ROLE_CONFIG[role] ?? { label: role, bg: '#e5e7eb', text: '#374151' };
   return (
     <span
-      className="inline-flex items-center px-2 py-0.5 text-[10px] font-semibold rounded uppercase"
+      className="inline-flex items-center px-2 py-0.5 text-xs font-semibold rounded uppercase"
       style={{ backgroundColor: cfg.bg, color: cfg.text }}
     >
       {cfg.label}
@@ -172,7 +172,7 @@ function ModalUsuario({ usuario, canaisDisponiveis, onClose, onSalvar }: ModalUs
           <button
             type="button"
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 p-1 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="text-gray-500 hover:text-gray-600 p-1 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
             aria-label="Fechar modal"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -201,7 +201,7 @@ function ModalUsuario({ usuario, canaisDisponiveis, onClose, onSalvar }: ModalUs
               placeholder="Nome do usuario"
               className={`w-full h-9 px-3 text-xs border rounded focus:outline-none focus:ring-2 focus:ring-green-500 ${errors.nome ? 'border-red-500' : 'border-gray-300'}`}
             />
-            {errors.nome && <p className="mt-1 text-[10px] text-red-600">{errors.nome}</p>}
+            {errors.nome && <p className="mt-1 text-xs text-red-600">{errors.nome}</p>}
           </div>
 
           {/* Email */}
@@ -216,7 +216,7 @@ function ModalUsuario({ usuario, canaisDisponiveis, onClose, onSalvar }: ModalUs
               placeholder="usuario@vitao.com.br"
               className={`w-full h-9 px-3 text-xs border rounded focus:outline-none focus:ring-2 focus:ring-green-500 ${errors.email ? 'border-red-500' : 'border-gray-300'}`}
             />
-            {errors.email && <p className="mt-1 text-[10px] text-red-600">{errors.email}</p>}
+            {errors.email && <p className="mt-1 text-xs text-red-600">{errors.email}</p>}
           </div>
 
           {/* Role */}
@@ -267,17 +267,17 @@ function ModalUsuario({ usuario, canaisDisponiveis, onClose, onSalvar }: ModalUs
               placeholder={isEdicao ? 'Deixe vazio para nao alterar' : 'Senha inicial'}
               className={`w-full h-9 px-3 text-xs border rounded focus:outline-none focus:ring-2 focus:ring-green-500 ${errors.senha ? 'border-red-500' : 'border-gray-300'}`}
             />
-            {errors.senha && <p className="mt-1 text-[10px] text-red-600">{errors.senha}</p>}
+            {errors.senha && <p className="mt-1 text-xs text-red-600">{errors.senha}</p>}
           </div>
 
           {/* Canais de Acesso */}
           <div className="pt-1">
             <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wide">
-              Canais de Acesso {form.role === 'admin' && <span className="text-[10px] text-gray-400 normal-case ml-1">(admin ve tudo)</span>}
+              Canais de Acesso {form.role === 'admin' && <span className="text-xs text-gray-500 normal-case ml-1">(admin ve tudo)</span>}
             </label>
 
             {form.role === 'admin' ? (
-              <p className="text-[11px] text-gray-500 italic px-2 py-1.5 bg-gray-50 border border-gray-200 rounded">
+              <p className="text-xs text-gray-500 italic px-2 py-1.5 bg-gray-50 border border-gray-200 rounded">
                 Administradores tem acesso a todos os canais automaticamente.
               </p>
             ) : isEdicao && carregandoCanais ? (
@@ -285,7 +285,7 @@ function ModalUsuario({ usuario, canaisDisponiveis, onClose, onSalvar }: ModalUs
                 <div className="w-4 h-4 border-2 border-gray-300 border-t-green-600 rounded-full animate-spin" />
               </div>
             ) : canaisDisponiveis.length === 0 ? (
-              <p className="text-[11px] text-red-500 italic">Nenhum canal cadastrado no sistema.</p>
+              <p className="text-xs text-red-500 italic">Nenhum canal cadastrado no sistema.</p>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 max-h-48 overflow-y-auto p-2 border border-gray-200 rounded bg-gray-50">
                 {canaisDisponiveis.map(canal => {
@@ -305,14 +305,14 @@ function ModalUsuario({ usuario, canaisDisponiveis, onClose, onSalvar }: ModalUs
                         className="w-3.5 h-3.5 rounded border-gray-300 text-green-600 focus:ring-green-500"
                       />
                       <span aria-hidden="true" className="inline-block w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: dotColor }} />
-                      <span className="text-[11px] font-medium text-gray-800 truncate">{canal.nome}</span>
+                      <span className="text-xs font-medium text-gray-800 truncate">{canal.nome}</span>
                     </label>
                   );
                 })}
               </div>
             )}
             {form.role !== 'admin' && canaisDisponiveis.length > 0 && (
-              <p className="mt-1 text-[10px] text-gray-400">
+              <p className="mt-1 text-xs text-gray-500">
                 {canalIds.length === 0
                   ? 'Sem canal: usuario nao vera clientes ou vendas.'
                   : `${canalIds.length} canal(is) selecionado(s).`}
@@ -505,19 +505,19 @@ export default function AdminUsuariosPage() {
             <table className="w-full min-w-[600px]" role="table">
               <thead>
                 <tr className="border-b border-gray-200 bg-gray-50">
-                  <th scope="col" className="px-4 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Nome</th>
-                  <th scope="col" className="px-4 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Email</th>
-                  <th scope="col" className="px-4 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Role</th>
-                  <th scope="col" className="px-4 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Consultor</th>
-                  <th scope="col" className="px-4 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Status</th>
-                  <th scope="col" className="px-4 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Ultimo Login</th>
-                  <th scope="col" className="px-4 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Acoes</th>
+                  <th scope="col" className="px-4 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Nome</th>
+                  <th scope="col" className="px-4 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Email</th>
+                  <th scope="col" className="px-4 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Role</th>
+                  <th scope="col" className="px-4 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Consultor</th>
+                  <th scope="col" className="px-4 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Status</th>
+                  <th scope="col" className="px-4 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Ultimo Login</th>
+                  <th scope="col" className="px-4 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Acoes</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {usuarios.length === 0 ? (
                   <tr>
-                    <td colSpan={7} className="px-4 py-10 text-center text-xs text-gray-400">
+                    <td colSpan={7} className="px-4 py-10 text-center text-xs text-gray-500">
                       {apiError ? 'Erro ao carregar usuarios.' : 'Nenhum usuario cadastrado.'}
                     </td>
                   </tr>
@@ -531,7 +531,7 @@ export default function AdminUsuariosPage() {
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-2">
                           <div
-                            className="w-6 h-6 rounded-full flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0"
+                            className="w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
                             style={{ backgroundColor: '#00B050' }}
                           >
                             {u.nome.charAt(0).toUpperCase()}
@@ -544,7 +544,7 @@ export default function AdminUsuariosPage() {
                         <RoleBadgeAdmin role={u.role as RoleUsuario} />
                       </td>
                       <td className="px-4 py-3 text-xs text-gray-600">
-                        {u.consultor_nome ?? <span className="text-gray-300">—</span>}
+                        {u.consultor_nome ?? <span className="text-gray-500">—</span>}
                       </td>
                       <td className="px-4 py-3">
                         <AtivoToggle ativo={u.ativo} onChange={() => void handleToggleAtivo(u)} />

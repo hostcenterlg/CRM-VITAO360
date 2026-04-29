@@ -125,7 +125,7 @@ function SinoBell() {
         {total > 0 && (
           <span
             className="absolute -top-0.5 -right-0.5 flex items-center justify-center
-                       min-w-[16px] h-4 px-1 rounded-full text-[10px] font-bold text-white leading-none"
+                       min-w-[16px] h-4 px-1 rounded-full text-xs font-bold text-white leading-none"
             style={{ backgroundColor: '#EF4444' }}
           >
             {total > 99 ? '99+' : total}
@@ -162,7 +162,7 @@ function SinoBell() {
                   </svg>
                 </div>
                 <span className="text-sm font-medium text-gray-700">Nenhuma notificacao pendente</span>
-                <span className="text-xs text-gray-400">Tudo em ordem por agora</span>
+                <span className="text-xs text-gray-500">Tudo em ordem por agora</span>
               </div>
             ) : (
               alertas.map((alerta, idx) => {
@@ -182,7 +182,7 @@ function SinoBell() {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-0.5">
                         <span
-                          className="text-[10px] font-semibold px-1.5 py-0.5 rounded uppercase"
+                          className="text-xs font-semibold px-1.5 py-0.5 rounded uppercase"
                           style={{ backgroundColor: `${cfg.cor}18`, color: cfg.cor }}
                         >
                           {cfg.rotulo}
@@ -273,7 +273,7 @@ function RoleBadge({ role }: { role: string }) {
   };
   const entry = map[role] ?? map['viewer'];
   return (
-    <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded ${entry.cls}`}>
+    <span className={`text-xs font-semibold px-1.5 py-0.5 rounded ${entry.cls}`}>
       {entry.label}
     </span>
   );
@@ -372,7 +372,7 @@ export default function AppShell({ children, pageTitle }: AppShellProps) {
                 {breadcrumbs.map((crumb, idx) => (
                   <span key={idx} className="flex items-center gap-1">
                     {idx > 0 && (
-                      <svg className="w-3.5 h-3.5 text-gray-300 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <svg className="w-3.5 h-3.5 text-gray-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                       </svg>
                     )}
@@ -380,14 +380,14 @@ export default function AppShell({ children, pageTitle }: AppShellProps) {
                       <button
                         type="button"
                         onClick={() => router.push(crumb.href!)}
-                        className="text-xs text-gray-400 hover:text-gray-700 transition-colors whitespace-nowrap"
+                        className="text-xs text-gray-500 hover:text-gray-700 transition-colors whitespace-nowrap"
                       >
                         {crumb.label}
                       </button>
                     ) : (
                       <span className={idx === breadcrumbs.length - 1
                         ? 'text-sm font-semibold text-gray-900 whitespace-nowrap'
-                        : 'text-xs text-gray-400 whitespace-nowrap'
+                        : 'text-xs text-gray-500 whitespace-nowrap'
                       }>
                         {crumb.label}
                       </span>
@@ -438,7 +438,7 @@ export default function AppShell({ children, pageTitle }: AppShellProps) {
           {/* Meta inline — TODO Wave 3: conectar com /api/metas/atual */}
           <div className="hidden md:flex items-center gap-2 text-sm" title="Meta em integração">
             <span className="text-gray-500">Meta:</span>
-            <span className="font-semibold text-gray-400">—</span>
+            <span className="font-semibold text-gray-500">—</span>
           </div>
 
           {/* Sino de notificacoes */}

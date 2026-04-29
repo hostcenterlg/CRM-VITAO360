@@ -92,7 +92,7 @@ export default function MotorFeedback({
           {/* Estagio Funil */}
           {data.estagio_funil && (
             <div className="col-span-2">
-              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
+              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">
                 Estagio do Funil
               </p>
               <span
@@ -107,7 +107,7 @@ export default function MotorFeedback({
           {/* Temperatura */}
           {data.temperatura && (
             <div>
-              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
+              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">
                 Temperatura
               </p>
               <span
@@ -126,7 +126,7 @@ export default function MotorFeedback({
           {/* Fase */}
           {data.fase && (
             <div>
-              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
+              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">
                 Fase
               </p>
               <p className="text-sm font-medium text-gray-900">{data.fase}</p>
@@ -136,7 +136,7 @@ export default function MotorFeedback({
           {/* Proximo follow-up */}
           {data.follow_up && (
             <div className="col-span-2">
-              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
+              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">
                 Proximo Follow-up
               </p>
               <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-blue-50 border border-blue-200 rounded-lg">
@@ -160,7 +160,7 @@ export default function MotorFeedback({
       {/* Acao futura */}
       {data.acao_futura && (
         <div>
-          <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1.5">
+          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">
             Acao Futura Recomendada
           </p>
           <div className="px-3 py-2.5 bg-blue-50 border-l-[3px] border-blue-400 rounded-r-lg">

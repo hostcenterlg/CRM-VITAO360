@@ -337,7 +337,7 @@ export default function SinaleiroPage() {
                           aria-hidden="true"
                         />
                         <span
-                          className="text-[10px] font-bold uppercase tracking-wider"
+                          className="text-xs font-bold uppercase tracking-wider"
                           style={{ color: hex }}
                           aria-label={`Sinaleiro ${cor.toLowerCase()}`}
                         >
@@ -347,7 +347,7 @@ export default function SinaleiroPage() {
                       <p className="text-3xl font-bold text-gray-900 leading-tight">
                         {item ? (item.count ?? 0).toLocaleString('pt-BR') : '—'}
                       </p>
-                      <p className="text-xs text-gray-400 mt-0.5">
+                      <p className="text-xs text-gray-500 mt-0.5">
                         {item ? formatPercent(item.pct) : '0%'} da carteira
                       </p>
                       {item && item.faturamento > 0 && (
@@ -369,7 +369,7 @@ export default function SinaleiroPage() {
               <div className="flex items-center justify-between mb-3">
                 <div>
                   <p className="text-sm font-bold text-gray-800">DISTRIBUICAO DO SINALEIRO</p>
-                  <p className="text-[11px] text-gray-500">Participacao de cada cor na carteira total</p>
+                  <p className="text-xs text-gray-500">Participacao de cada cor na carteira total</p>
                 </div>
                 <div
                   className="px-4 py-1.5 rounded-full text-xs font-bold text-white"
@@ -399,7 +399,7 @@ export default function SinaleiroPage() {
                       title={`${cor}: ${formatPercent(pct)}`}
                     >
                       {pct > 8 && (
-                        <span className="text-[10px] font-bold" style={{ color: COR_TEXT[cor] }}>
+                        <span className="text-xs font-bold" style={{ color: COR_TEXT[cor] }}>
                           {formatPercent(pct, 0)}
                         </span>
                       )}
@@ -408,7 +408,7 @@ export default function SinaleiroPage() {
                 })}
               </div>
 
-              <div className="flex justify-between text-[10px] text-gray-500">
+              <div className="flex justify-between text-xs text-gray-500">
                 <span style={{ color: '#7030A0' }}>ROXO &lt;1%</span>
                 <span style={{ color: '#FF0000' }}>VERMELHO 1-40%</span>
                 <span style={{ color: '#B8860B' }}>AMARELO 40-60%</span>
@@ -420,7 +420,7 @@ export default function SinaleiroPage() {
           {/* Filters row */}
           <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:items-end sm:gap-3">
             <div className="flex flex-col gap-1">
-              <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Cor</label>
+              <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Cor</label>
               <select
                 value={filtroCor}
                 onChange={(e) => setFiltroCor(e.target.value)}
@@ -433,7 +433,7 @@ export default function SinaleiroPage() {
               </select>
             </div>
             <div className="flex flex-col gap-1">
-              <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Consultor</label>
+              <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Consultor</label>
               <select
                 value={filtroConsultor}
                 onChange={(e) => setFiltroConsultor(e.target.value)}
@@ -467,7 +467,7 @@ export default function SinaleiroPage() {
           >
             <div className="px-4 py-3 bg-white border-b border-gray-100 flex items-center justify-between">
               <h2 className="text-sm font-semibold text-gray-700">Ranking de Clientes</h2>
-              <span className="text-xs text-gray-400">
+              <span className="text-xs text-gray-500">
                 {loadingCarteira ? 'carregando...' : `${itens.length.toLocaleString('pt-BR')} clientes`}
               </span>
             </div>
@@ -475,7 +475,7 @@ export default function SinaleiroPage() {
               {loadingCarteira ? (
                 <TableSkeleton cols={9} rows={8} />
               ) : itens.length === 0 ? (
-                <div className="py-12 text-center text-gray-400 text-sm">
+                <div className="py-12 text-center text-gray-500 text-sm">
                   Nenhum cliente encontrado com os filtros selecionados
                 </div>
               ) : (
@@ -529,14 +529,14 @@ export default function SinaleiroPage() {
                     boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
                   }}
                 >
-                  <div className="text-[10px] font-semibold text-gray-400 tracking-wider mb-1">{k.label}</div>
+                  <div className="text-xs font-semibold text-gray-500 tracking-wider mb-1">{k.label}</div>
                   <div
                     className="font-extrabold leading-tight"
                     style={{ fontSize: k.small ? 16 : 24, color: k.color }}
                   >
                     {k.value}
                   </div>
-                  <div className="text-[10px] text-gray-400 mt-1">{k.sub}</div>
+                  <div className="text-xs text-gray-500 mt-1">{k.sub}</div>
                 </div>
               ))}
             </div>
@@ -573,7 +573,7 @@ export default function SinaleiroPage() {
               ))
             : sortedRedes.length === 0
             ? (
-                <div className="py-12 text-center text-gray-400 text-sm rounded-xl border border-gray-200">
+                <div className="py-12 text-center text-gray-500 text-sm rounded-xl border border-gray-200">
                   Nenhuma rede encontrada. Verifique a conexao com o backend.
                 </div>
               )
@@ -638,7 +638,7 @@ export default function SinaleiroPage() {
                           />
                           <span className="text-sm font-bold text-gray-900">{cor}</span>
                           <span
-                            className="px-2 py-0.5 rounded-full text-[10px] font-bold"
+                            className="px-2 py-0.5 rounded-full text-xs font-bold"
                             style={{ background: bgLight, color: hex }}
                           >
                             {plano.titulo}
@@ -664,7 +664,7 @@ export default function SinaleiroPage() {
                           className="flex gap-2 px-3 py-2 rounded-lg"
                           style={{ background: bgLight, border: `1px solid ${hex}20` }}
                         >
-                          <span className="text-[10px] mt-0.5 font-bold" style={{ color: hex }}>◆</span>
+                          <span className="text-xs mt-0.5 font-bold" style={{ color: hex }}>◆</span>
                           <span className="text-xs text-gray-700 leading-relaxed">{acao}</span>
                         </div>
                       ))}
@@ -673,7 +673,7 @@ export default function SinaleiroPage() {
                     {/* Top 5 clientes desta cor */}
                     {clientes.length > 0 && (
                       <div>
-                        <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-2">
+                        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
                           Top clientes por realizado
                         </p>
                         <div className="space-y-1">
@@ -692,7 +692,7 @@ export default function SinaleiroPage() {
                                   <span className="text-xs font-medium text-gray-800 truncate">
                                     {c.nome_fantasia}
                                   </span>
-                                  <span className="text-[10px] text-gray-400 flex-shrink-0">{c.uf}</span>
+                                  <span className="text-xs text-gray-500 flex-shrink-0">{c.uf}</span>
                                 </div>
                                 <span className="text-xs font-semibold flex-shrink-0 ml-2" style={{ color: hex }}>
                                   {formatBRL(c.realizado)}
@@ -762,7 +762,7 @@ function RedeCard({ rede, expanded, onToggle }: { rede: RedeEnriquecida; expande
           </div>
           <div>
             <p className="text-sm font-bold text-gray-900">{rede.nome}</p>
-            <p className="text-[11px] text-gray-500">
+            <p className="text-xs text-gray-500">
               {rede.consultor} &bull; {rede.total_lojas} lojas
             </p>
           </div>
@@ -772,15 +772,15 @@ function RedeCard({ rede, expanded, onToggle }: { rede: RedeEnriquecida; expande
             <div className="text-xl font-extrabold" style={{ color: hex }}>
               {formatPercent(rede.sinaleiroPct)}
             </div>
-            <div className="text-[10px] text-gray-400">sinaleiro</div>
+            <div className="text-xs text-gray-500">sinaleiro</div>
           </div>
           <span
-            className="px-2.5 py-1 rounded-full text-[10px] font-bold"
+            className="px-2.5 py-1 rounded-full text-xs font-bold"
             style={{ background: matCor + '18', color: matCor }}
           >
             {rede.maturidade}
           </span>
-          <span className="text-gray-400 text-xs ml-1">{expanded ? '▲' : '▼'}</span>
+          <span className="text-gray-500 text-xs ml-1">{expanded ? '▲' : '▼'}</span>
         </div>
       </div>
 
@@ -798,7 +798,7 @@ function RedeCard({ rede, expanded, onToggle }: { rede: RedeEnriquecida; expande
             className="rounded-lg p-2"
             style={{ background: '#FAFAFA', border: '1px solid #E5E7EB' }}
           >
-            <div className="text-[9px] text-gray-400">{s.l}</div>
+            <div className="text-xs text-gray-500">{s.l}</div>
             <div className="text-xs font-bold mt-0.5" style={{ color: s.c }}>{s.v}</div>
           </div>
         ))}
@@ -814,10 +814,10 @@ function RedeCard({ rede, expanded, onToggle }: { rede: RedeEnriquecida; expande
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {/* Distribuicao por cor */}
             <div>
-              <p className="text-[11px] font-bold text-green-700 mb-2">COMPOSICAO DA CARTEIRA</p>
+              <p className="text-xs font-bold text-green-700 mb-2">COMPOSICAO DA CARTEIRA</p>
               {distArr.map((d) => (
                 <div key={d.label} className="flex items-center gap-2 mb-1.5">
-                  <div className="w-14 text-[10px] font-bold flex-shrink-0" style={{ color: d.hex }}>
+                  <div className="w-14 text-xs font-bold flex-shrink-0" style={{ color: d.hex }}>
                     {d.label}
                   </div>
                   <div className="flex-1 h-3.5 rounded bg-gray-100 overflow-hidden">
@@ -829,7 +829,7 @@ function RedeCard({ rede, expanded, onToggle }: { rede: RedeEnriquecida; expande
                       }}
                     />
                   </div>
-                  <div className="w-14 text-[10px] text-gray-500 text-right flex-shrink-0">
+                  <div className="w-14 text-xs text-gray-500 text-right flex-shrink-0">
                     {d.value} ({rede.total_lojas > 0 ? formatPercent((d.value / rede.total_lojas) * 100, 0) : '0%'})
                   </div>
                 </div>
@@ -838,7 +838,7 @@ function RedeCard({ rede, expanded, onToggle }: { rede: RedeEnriquecida; expande
 
             {/* Dados comerciais */}
             <div>
-              <p className="text-[11px] font-bold text-green-700 mb-2">DADOS COMERCIAIS</p>
+              <p className="text-xs font-bold text-green-700 mb-2">DADOS COMERCIAIS</p>
               {[
                 { l: 'Total Lojas', v: rede.total_lojas },
                 { l: 'Fat. Real', v: formatBRL(rede.fat_real) },
@@ -863,7 +863,7 @@ function RedeCard({ rede, expanded, onToggle }: { rede: RedeEnriquecida; expande
             className="mt-4 p-4 rounded-lg"
             style={{ background: bgLight, borderLeft: `3px solid ${hex}` }}
           >
-            <p className="text-[11px] font-bold mb-1" style={{ color: hex }}>
+            <p className="text-xs font-bold mb-1" style={{ color: hex }}>
               ACAO RECOMENDADA — {rede.maturidade}
             </p>
             <p className="text-xs text-gray-700 leading-relaxed">
@@ -883,7 +883,7 @@ function RedeCard({ rede, expanded, onToggle }: { rede: RedeEnriquecida; expande
           {/* Top lojas */}
           {rede.lojas && rede.lojas.length > 0 && (
             <div className="mt-4">
-              <p className="text-[11px] font-bold text-green-700 mb-2">
+              <p className="text-xs font-bold text-green-700 mb-2">
                 TOP LOJAS ({rede.lojas.length} total)
               </p>
               <div className="overflow-x-auto">
@@ -891,7 +891,7 @@ function RedeCard({ rede, expanded, onToggle }: { rede: RedeEnriquecida; expande
                   <thead>
                     <tr style={{ background: '#FAFAFA' }}>
                       {['Nome', 'Cidade/UF', 'Fat.Real', '% Ating.', 'Cor'].map((h) => (
-                        <th key={h} scope="col" className="px-2 py-1.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide whitespace-nowrap">
+                        <th key={h} scope="col" className="px-2 py-1.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide whitespace-nowrap">
                           {h}
                         </th>
                       ))}
@@ -928,7 +928,7 @@ function RedeCard({ rede, expanded, onToggle }: { rede: RedeEnriquecida; expande
                             </td>
                             <td className="px-2 py-1.5 whitespace-nowrap">
                               <span
-                                className="inline-block px-2 py-0.5 rounded text-[10px] font-bold"
+                                className="inline-block px-2 py-0.5 rounded text-xs font-bold"
                                 style={{ background: lojaHex, color: COR_TEXT[lojaCor] ?? '#fff' }}
                               >
                                 {lojaCor}
@@ -966,7 +966,7 @@ function RankingTable({ itens, onRowClick }: { itens: SinaleiroItem[]; onRowClic
             <th
               key={h}
               scope="col"
-              className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide whitespace-nowrap"
+              className="px-3 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide whitespace-nowrap"
             >
               {h}
             </th>
@@ -988,13 +988,13 @@ function RankingTable({ itens, onRowClick }: { itens: SinaleiroItem[]; onRowClic
               title="Clique para ver detalhes do cliente"
             >
               {/* # */}
-              <td className="px-3 py-2 text-xs text-gray-400 w-8">
+              <td className="px-3 py-2 text-xs text-gray-500 w-8">
                 {idx + 1}
               </td>
               {/* Nome */}
               <td className="px-3 py-2 max-w-[180px]">
                 <p className="text-xs font-medium text-gray-900 truncate">{item.nome_fantasia}</p>
-                <p className="text-[10px] font-mono text-gray-400">{formatCnpj(item.cnpj)}</p>
+                <p className="text-xs font-mono text-gray-500">{formatCnpj(item.cnpj)}</p>
               </td>
               {/* UF */}
               <td className="px-3 py-2 text-xs text-gray-600 whitespace-nowrap">{item.uf || '—'}</td>
@@ -1029,7 +1029,7 @@ function RankingTable({ itens, onRowClick }: { itens: SinaleiroItem[]; onRowClic
                     </span>
                   </div>
                 ) : (
-                  <span className="text-gray-400 text-xs">—</span>
+                  <span className="text-gray-500 text-xs">—</span>
                 )}
               </td>
               {/* Gap */}
@@ -1047,7 +1047,7 @@ function RankingTable({ itens, onRowClick }: { itens: SinaleiroItem[]; onRowClic
               <td className="px-3 py-2 whitespace-nowrap">
                 <span
                   role="status"
-                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase"
+                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-bold uppercase"
                   style={{ background: hex, color: COR_TEXT[cor] ?? '#fff' }}
                   aria-label={`Sinaleiro ${cor.toLowerCase()} — penetracao ${cor === 'VERDE' ? 'acima de 60%' : cor === 'AMARELO' ? 'entre 40% e 60%' : cor === 'VERMELHO' ? 'entre 1% e 40%' : 'abaixo de 1%'}`}
                 >

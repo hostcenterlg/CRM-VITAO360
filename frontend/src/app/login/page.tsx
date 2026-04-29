@@ -62,7 +62,7 @@ export default function LoginPage() {
           <p className="text-sm font-medium mt-2" style={{ color: '#00B050' }}>
             Sistema de Inteligencia Comercial
           </p>
-          <p className="text-xs text-gray-400 mt-1">VITAO Alimentos — CRM B2B</p>
+          <p className="text-xs text-gray-500 mt-1">VITAO Alimentos — CRM B2B</p>
         </div>
 
         {/* Card de login */}
@@ -168,7 +168,7 @@ export default function LoginPage() {
           </form>
         </div>
 
-        <p className="text-center text-xs text-gray-400 mt-6">
+        <p className="text-center text-xs text-gray-500 mt-6">
           CRM VITAO360 v1.0 — Motor de Inteligencia Comercial
         </p>
       </div>

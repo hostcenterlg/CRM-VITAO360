@@ -93,7 +93,7 @@ export default function InstallPrompt() {
         {/* Text */}
         <div className="flex-1 min-w-0">
           <p className="text-sm font-semibold text-gray-900 leading-tight">Instalar CRM VITAO360</p>
-          <p className="text-[11px] text-gray-500 mt-0.5">Acesso rapido direto na tela inicial</p>
+          <p className="text-xs text-gray-500 mt-0.5">Acesso rapido direto na tela inicial</p>
         </div>
 
         {/* Actions */}
@@ -102,7 +102,7 @@ export default function InstallPrompt() {
             type="button"
             onClick={handleDismiss}
             aria-label="Dispensar banner de instalacao"
-            className="p-1.5 text-gray-400 hover:text-gray-600 rounded-md transition-colors"
+            className="p-1.5 text-gray-500 hover:text-gray-600 rounded-md transition-colors"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />

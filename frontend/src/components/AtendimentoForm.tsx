@@ -230,7 +230,7 @@ export default function AtendimentoForm({
               type="button"
               onClick={onClose}
               aria-label="Fechar modal"
-              className="flex-shrink-0 p-1.5 rounded-md text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500"
+              className="flex-shrink-0 p-1.5 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500"
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -241,7 +241,7 @@ export default function AtendimentoForm({
           {/* Linha de identidade do cliente */}
           {!motorFeedback && (
             <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-gray-500">
-              <span className="font-mono text-gray-400">{formatCnpj(cliente.cnpj)}</span>
+              <span className="font-mono text-gray-500">{formatCnpj(cliente.cnpj)}</span>
               {cliente.uf && (
                 <span className="font-medium text-gray-600">{cliente.uf}</span>
               )}
@@ -370,12 +370,12 @@ export default function AtendimentoForm({
                       {errors.descricao}
                     </p>
                   ) : (
-                    <p id="atform-hint-descricao" className="text-xs text-gray-400">
+                    <p id="atform-hint-descricao" className="text-xs text-gray-500">
                       Minimo 10 caracteres
                     </p>
                   )}
                   <p
-                    className={`text-xs tabular-nums ${descricao.length < 10 ? 'text-gray-400' : 'text-green-600 font-medium'}`}
+                    className={`text-xs tabular-nums ${descricao.length < 10 ? 'text-gray-500' : 'text-green-600 font-medium'}`}
                     aria-live="polite"
                   >
                     {descricao.length} car.
@@ -384,7 +384,7 @@ export default function AtendimentoForm({
               </div>
 
               {/* Nota Two-Base */}
-              <p className="text-[10px] text-gray-400 mt-3 pt-3 border-t border-gray-100">
+              <p className="text-xs text-gray-500 mt-3 pt-3 border-t border-gray-100">
                 Valor: R$ 0,00 — log de atendimento (Two-Base Architecture)
               </p>
             </form>

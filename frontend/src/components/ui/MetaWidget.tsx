@@ -35,7 +35,7 @@ export function MetaWidget({
     return (
       <div
         className={cn(
-          'relative w-9 h-9 mx-auto rounded-lg bg-gradient-to-br from-vitao-green to-vitao-darkgreen flex items-center justify-center text-white text-[10px] font-bold',
+          'relative w-9 h-9 mx-auto rounded-lg bg-gradient-to-br from-vitao-green to-vitao-darkgreen flex items-center justify-center text-white text-xs font-bold',
           className,
         )}
         title={`Meta ${mes}: ${pct}%`}
@@ -53,13 +53,13 @@ export function MetaWidget({
       )}
     >
       <div className="flex items-center justify-between mb-1">
-        <span className="text-[10px] uppercase tracking-wider opacity-80 font-semibold">
+        <span className="text-xs uppercase tracking-wider opacity-80 font-semibold">
           Meta {mes}
         </span>
         <span className="text-xs font-bold tabular-nums">{pct}%</span>
       </div>
       <div className="text-sm font-bold tabular-nums">{format(realizado)}</div>
-      <div className="text-[10px] opacity-75 tabular-nums">de {format(meta)}</div>
+      <div className="text-xs opacity-75 tabular-nums">de {format(meta)}</div>
       <div className="mt-2 h-1.5 bg-white/25 rounded-full overflow-hidden">
         <div
           className="h-full bg-white rounded-full transition-[width] duration-500"
@@ -72,7 +72,7 @@ export function MetaWidget({
         />
       </div>
       {typeof diasRestantes === 'number' && (
-        <div className="text-[10px] opacity-75 mt-1">
+        <div className="text-xs opacity-75 mt-1">
           {diasRestantes} dia{diasRestantes !== 1 ? 's' : ''} restante{diasRestantes !== 1 ? 's' : ''}
         </div>
       )}

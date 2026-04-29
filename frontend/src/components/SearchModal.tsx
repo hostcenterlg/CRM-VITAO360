@@ -265,7 +265,7 @@ export default function SearchModal({ open, onClose }: SearchModalProps) {
             {loading ? (
               <div className="w-4 h-4 border-2 border-green-500 border-t-transparent rounded-full animate-spin flex-shrink-0" />
             ) : (
-              <svg className="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 text-gray-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
                   d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
@@ -285,7 +285,7 @@ export default function SearchModal({ open, onClose }: SearchModalProps) {
               <button
                 type="button"
                 onClick={() => setQuery('')}
-                className="flex-shrink-0 text-gray-400 hover:text-gray-600 transition-colors"
+                className="flex-shrink-0 text-gray-500 hover:text-gray-600 transition-colors"
                 aria-label="Limpar busca"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -293,7 +293,7 @@ export default function SearchModal({ open, onClose }: SearchModalProps) {
                 </svg>
               </button>
             )}
-            <kbd className="flex-shrink-0 hidden sm:inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-mono bg-gray-100 text-gray-500 border border-gray-200">
+            <kbd className="flex-shrink-0 hidden sm:inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-mono bg-gray-100 text-gray-500 border border-gray-200">
               Esc
             </kbd>
           </div>
@@ -301,7 +301,7 @@ export default function SearchModal({ open, onClose }: SearchModalProps) {
           {/* Results */}
           <div ref={listRef} className="overflow-y-auto flex-1 py-1">
             {query.length < 2 && (
-              <div className="flex flex-col items-center justify-center py-10 text-gray-400">
+              <div className="flex flex-col items-center justify-center py-10 text-gray-500">
                 <svg className="w-8 h-8 mb-2 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
                     d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -311,7 +311,7 @@ export default function SearchModal({ open, onClose }: SearchModalProps) {
             )}
 
             {query.length >= 2 && !loading && results.length === 0 && (
-              <div className="flex flex-col items-center justify-center py-10 text-gray-400">
+              <div className="flex flex-col items-center justify-center py-10 text-gray-500">
                 <svg className="w-8 h-8 mb-2 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
                     d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -324,10 +324,10 @@ export default function SearchModal({ open, onClose }: SearchModalProps) {
               <div key={type}>
                 {/* Group header */}
                 <div className="px-4 py-1.5 flex items-center gap-2">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400">
+                  <span className="text-xs font-bold uppercase tracking-wider text-gray-500">
                     {GROUP_LABELS[type]}
                   </span>
-                  <span className="text-[10px] text-gray-300">{items.length}</span>
+                  <span className="text-xs text-gray-500">{items.length}</span>
                 </div>
 
                 {/* Items */}
@@ -352,7 +352,7 @@ export default function SearchModal({ open, onClose }: SearchModalProps) {
                         <p className="text-xs text-gray-500 truncate">{result.subtitle}</p>
                       </div>
                       {isActive && (
-                        <svg className="w-4 h-4 text-gray-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-4 h-4 text-gray-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                         </svg>
                       )}
@@ -366,16 +366,16 @@ export default function SearchModal({ open, onClose }: SearchModalProps) {
           {/* Footer hints */}
           {results.length > 0 && (
             <div className="flex-shrink-0 flex items-center gap-4 px-4 py-2 border-t border-gray-100 bg-gray-50">
-              <span className="flex items-center gap-1 text-[10px] text-gray-400">
-                <kbd className="px-1 py-0.5 rounded bg-white border border-gray-200 font-mono text-[9px]">Enter</kbd>
+              <span className="flex items-center gap-1 text-xs text-gray-500">
+                <kbd className="px-1 py-0.5 rounded bg-white border border-gray-200 font-mono text-xs">Enter</kbd>
                 Abrir
               </span>
-              <span className="flex items-center gap-1 text-[10px] text-gray-400">
-                <kbd className="px-1 py-0.5 rounded bg-white border border-gray-200 font-mono text-[9px]">↑↓</kbd>
+              <span className="flex items-center gap-1 text-xs text-gray-500">
+                <kbd className="px-1 py-0.5 rounded bg-white border border-gray-200 font-mono text-xs">↑↓</kbd>
                 Navegar
               </span>
-              <span className="flex items-center gap-1 text-[10px] text-gray-400">
-                <kbd className="px-1 py-0.5 rounded bg-white border border-gray-200 font-mono text-[9px]">Esc</kbd>
+              <span className="flex items-center gap-1 text-xs text-gray-500">
+                <kbd className="px-1 py-0.5 rounded bg-white border border-gray-200 font-mono text-xs">Esc</kbd>
                 Fechar
               </span>
             </div>

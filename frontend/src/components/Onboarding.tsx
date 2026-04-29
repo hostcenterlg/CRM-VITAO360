@@ -231,7 +231,7 @@ export default function Onboarding() {
                 <button
                   type="button"
                   onClick={handleDismiss}
-                  className="text-xs text-gray-400 hover:text-gray-600 transition-colors px-2 py-1.5"
+                  className="text-xs text-gray-500 hover:text-gray-600 transition-colors px-2 py-1.5"
                 >
                   Pular
                 </button>

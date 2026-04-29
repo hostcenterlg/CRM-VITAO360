@@ -94,25 +94,25 @@ function MotorResultPanel({ motor, onClose }: MotorResultProps) {
       <div className="grid grid-cols-2 gap-x-6 gap-y-3 text-sm">
         {motor.estagio_funil && (
           <div>
-            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">Estagio Funil</p>
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-0.5">Estagio Funil</p>
             <p className="font-medium text-gray-900">{motor.estagio_funil}</p>
           </div>
         )}
         {motor.temperatura && (
           <div>
-            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">Temperatura</p>
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-0.5">Temperatura</p>
             <p className="font-medium text-gray-900">{motor.temperatura}</p>
           </div>
         )}
         {motor.fase && (
           <div>
-            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">Fase</p>
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-0.5">Fase</p>
             <p className="font-medium text-gray-900">{motor.fase}</p>
           </div>
         )}
         {motor.follow_up && (
           <div>
-            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">Proximo Follow-up</p>
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-0.5">Proximo Follow-up</p>
             <p className="font-medium text-gray-900">{motor.follow_up}</p>
           </div>
         )}
@@ -120,7 +120,7 @@ function MotorResultPanel({ motor, onClose }: MotorResultProps) {
 
       {motor.acao_futura && (
         <div>
-          <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">Acao Futura</p>
+          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Acao Futura</p>
           <div className="p-2.5 bg-blue-50 border-l-[3px] border-blue-400 rounded-r-md">
             <p className="text-sm font-semibold text-gray-900">{motor.acao_futura}</p>
           </div>
@@ -291,7 +291,7 @@ export default function AtendimentoModal({ item, onClose, onSaved }: Atendimento
               type="button"
               onClick={onClose}
               aria-label="Fechar modal"
-              className="flex-shrink-0 p-1.5 rounded-md text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500"
+              className="flex-shrink-0 p-1.5 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500"
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -302,7 +302,7 @@ export default function AtendimentoModal({ item, onClose, onSaved }: Atendimento
           {/* Linha de identidade do cliente */}
           {!motorFeedback && (
             <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-gray-500">
-              <span className="font-mono text-gray-400">{formatCnpj(item.cnpj)}</span>
+              <span className="font-mono text-gray-500">{formatCnpj(item.cnpj)}</span>
               {item.situacao && (
                 <StatusBadge value={item.situacao} variant="situacao" small />
               )}
@@ -329,7 +329,7 @@ export default function AtendimentoModal({ item, onClose, onSaved }: Atendimento
               {/* Acao prescrita (contexto visual) */}
               {item.acao && (
                 <div className={`mb-5 p-2.5 border-l-[3px] rounded-r-md ${acaoBgClass()}`}>
-                  <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
+                  <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
                     Acao prescrita pelo Motor
                   </p>
                   <p className="text-sm font-semibold text-gray-900">{item.acao}</p>
@@ -413,12 +413,12 @@ export default function AtendimentoModal({ item, onClose, onSaved }: Atendimento
                       {errors.descricao}
                     </p>
                   ) : (
-                    <p id="hint-descricao" className="text-xs text-gray-400">
+                    <p id="hint-descricao" className="text-xs text-gray-500">
                       Minimo 10 caracteres
                     </p>
                   )}
                   <p
-                    className={`text-xs ${descricao.length < 10 ? 'text-gray-400' : 'text-green-600'}`}
+                    className={`text-xs ${descricao.length < 10 ? 'text-gray-500' : 'text-green-600'}`}
                     aria-live="polite"
                   >
                     {descricao.length} car.
@@ -454,7 +454,7 @@ export default function AtendimentoModal({ item, onClose, onSaved }: Atendimento
               </div>
 
               {/* Nota Two-Base */}
-              <p className="text-[10px] text-gray-400 mt-3 pt-3 border-t border-gray-100">
+              <p className="text-xs text-gray-500 mt-3 pt-3 border-t border-gray-100">
                 Valor: R$ 0,00 (log de atendimento — Two-Base Architecture)
               </p>
             </form>
