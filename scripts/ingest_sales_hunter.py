@@ -853,6 +853,9 @@ def phase_4_vendas(
         "itens_inseridos": 0, "produtos_criados": 0,
     }
 
+    # Detecta dialeto uma vez para toda a fase (usado nas queries PG-only)
+    is_pg = "postgresql" in str(session.bind.url) if session.bind else False
+
     # Pre-load: clientes existentes (cnpj set) para validar FK
     clientes_existentes: set[str] = {
         r[0] for r in session.execute(text("SELECT cnpj FROM clientes")).fetchall()
@@ -976,7 +979,6 @@ def phase_4_vendas(
                     "mes_referencia": mes_ref,
                     "now": datetime.now(timezone.utc).replace(tzinfo=None),
                 }
-                is_pg = "postgresql" in str(session.bind.url) if session.bind else False
                 if is_pg:
                     result = session.execute(
                         text("""
@@ -1029,7 +1031,6 @@ def phase_4_vendas(
                         "peso": it["peso"],
                         "now": datetime.now(timezone.utc).replace(tzinfo=None),
                     }
-                    is_pg = "postgresql" in str(session.bind.url) if session.bind else False
                     if is_pg:
                         result = session.execute(
                             text("""
@@ -1074,27 +1075,49 @@ def phase_4_vendas(
             # venda_id pode ser -1 em dry-run; valor_total > 0 ja garantido
             preco_unit = it["valor_total"] / it["quantidade"] if it["quantidade"] > 0 else it["valor_total"]
             if not dry_run and venda_id > 0 and produto_id > 0:
-                # Idempotencia ITENS: nao inserimos se venda ja existia
-                # (evita duplicar itens em rerun). Se venda foi inserida agora,
-                # OK inserir itens.
+                # Idempotencia ITENS: guard primario — nao inserimos se venda
+                # ja existia (evita reprocessar itens em rerun).
+                # Guard secundario defensivo: ON CONFLICT DO NOTHING (PG) —
+                # protege contra corridas ou reruns parciais agora que existe
+                # unique constraint em (venda_id, produto_id).
                 if existente is None:
-                    session.execute(
-                        text("""
-                            INSERT INTO venda_itens (
-                              venda_id, produto_id, quantidade, preco_unitario,
-                              desconto_pct, valor_total
-                            ) VALUES (
-                              :venda_id, :produto_id, :qtd, :preco, 0.0, :total
-                            )
-                        """),
-                        {
-                            "venda_id": venda_id,
-                            "produto_id": produto_id,
-                            "qtd": it["quantidade"],
-                            "preco": preco_unit,
-                            "total": it["valor_total"],
-                        },
-                    )
+                    if is_pg:
+                        session.execute(
+                            text("""
+                                INSERT INTO venda_itens (
+                                  venda_id, produto_id, quantidade, preco_unitario,
+                                  desconto_pct, valor_total
+                                ) VALUES (
+                                  :venda_id, :produto_id, :qtd, :preco, 0.0, :total
+                                )
+                                ON CONFLICT (venda_id, produto_id) DO NOTHING
+                            """),
+                            {
+                                "venda_id": venda_id,
+                                "produto_id": produto_id,
+                                "qtd": it["quantidade"],
+                                "preco": preco_unit,
+                                "total": it["valor_total"],
+                            },
+                        )
+                    else:
+                        session.execute(
+                            text("""
+                                INSERT INTO venda_itens (
+                                  venda_id, produto_id, quantidade, preco_unitario,
+                                  desconto_pct, valor_total
+                                ) VALUES (
+                                  :venda_id, :produto_id, :qtd, :preco, 0.0, :total
+                                )
+                            """),
+                            {
+                                "venda_id": venda_id,
+                                "produto_id": produto_id,
+                                "qtd": it["quantidade"],
+                                "preco": preco_unit,
+                                "total": it["valor_total"],
+                            },
+                        )
                     stats["itens_inseridos"] += 1
 
         pedidos_processados += 1
