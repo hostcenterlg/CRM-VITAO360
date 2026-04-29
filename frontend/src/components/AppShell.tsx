@@ -7,6 +7,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { fetchNotificacoes, Alerta } from '@/lib/api';
 import CanalSelector from './CanalSelector';
 import SearchModal from './SearchModal';
+import { SearchInput } from '@/components/ui';
 import Onboarding from './Onboarding';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import BottomNav from './BottomNav';
@@ -407,29 +408,39 @@ export default function AppShell({ children, pageTitle }: AppShellProps) {
           {/* Spacer */}
           <div className="flex-1" />
 
-          {/* Busca global — desktop: hint Ctrl+K; mobile: icone lupa */}
+          {/* Busca global — SearchInput trigger (abre modal Ctrl+K) */}
+          <div className="hidden md:block w-56">
+            <SearchInput
+              variant="trigger"
+              placeholder="Buscar cliente, conversa, pedido..."
+              onTriggerClick={handleOpenSearch}
+              ariaLabel="Busca global (Ctrl+K)"
+              showShortcut
+            />
+          </div>
+          {/* Mobile: apenas icone lupa */}
           <button
             type="button"
             onClick={handleOpenSearch}
-            aria-label="Busca global (Ctrl+K)"
-            className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg border border-gray-200 text-gray-400
-                       hover:text-gray-700 hover:border-gray-300 hover:bg-gray-50 transition-colors
-                       focus:outline-none focus:ring-2 focus:ring-green-500"
+            aria-label="Busca global"
+            className="md:hidden flex items-center justify-center w-10 h-10 rounded-lg
+                       text-gray-500 hover:text-gray-800 hover:bg-gray-100 transition-colors"
           >
-            <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
                 d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
-            <span className="hidden md:flex items-center gap-1.5 text-xs text-gray-400">
-              Buscar
-              <kbd className="px-1 py-0.5 rounded bg-gray-100 border border-gray-200 font-mono text-[9px] leading-none">
-                Ctrl+K
-              </kbd>
-            </span>
           </button>
 
           {/* Seletor de canal — admin (todos) / consultor (canais permitidos) */}
           <CanalSelector />
+
+          {/* Meta inline — TODO Wave 3: conectar com /api/metas/atual */}
+          <div className="hidden md:flex items-center gap-2 text-sm">
+            <span className="text-gray-500">Meta:</span>
+            <span className="font-semibold text-vitao-green">R$ 187k / R$ 250k</span>
+            <span className="text-gray-400">(75%)</span>
+          </div>
 
           {/* Sino de notificacoes */}
           <SinoBell />
