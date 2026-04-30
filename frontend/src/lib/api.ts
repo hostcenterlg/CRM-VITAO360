@@ -2050,4 +2050,46 @@ export async function fetchDDEScore(cnpj: string): Promise<DDEScoreResponse> {
   return fetchJson<DDEScoreResponse>(`/api/dde/score/${encodeURIComponent(cnpj)}`);
 }
 
+/**
+ * POST /api/dde/cliente/{cnpj}/resumo-ceo
+ * Gera e faz download do PDF Resumo CEO (1 página A4).
+ * Se LLM disponível no backend: texto gerado por IA.
+ * Caso contrário: template determinístico.
+ * Dispara download via <a> element.
+ */
+export async function downloadResumoCEO(cnpj: string, ano?: number): Promise<void> {
+  const token = getToken();
+  const qs = ano ? `?ano=${ano}` : '';
+  const url = `${BASE_URL}/api/dde/cliente/${encodeURIComponent(cnpj)}/resumo-ceo${qs}`;
+
+  const res = await fetch(url, {
+    method: 'POST',
+    cache: 'no-store',
+    headers: {
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+  });
+
+  if (res.status === 401) {
+    if (typeof window !== 'undefined') window.location.href = '/login';
+    throw new Error('Sessao expirada');
+  }
+
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({})) as Record<string, unknown>;
+    throw new Error((body.detail as string) || `API error ${res.status}`);
+  }
+
+  // Obtém blob PDF e dispara download via <a> element
+  const blob = await res.blob();
+  const objectUrl = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = objectUrl;
+  a.download = `resumo_ceo_${cnpj}_${ano ?? new Date().getFullYear()}.pdf`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(objectUrl);
+}
+
 // redeploy trigger 1776136763
