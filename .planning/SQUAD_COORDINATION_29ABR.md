@@ -90,14 +90,58 @@ Quando o Leandro mandar nova demanda enquanto squads atuais ainda rodam:
 
 ## STATUS POR WAVE
 
-### WAVE 1 — Audit + Foundation (rodando)
-- ALPHA, BRAVO, CHARLIE, DELTA em paralelo
+### WAVE 1 — Audit + Foundation ✅ CONCLUÍDA (29/Abr 21:10 UTC)
+- ALPHA ✅ — 47 issues priorizadas em `.planning/AUDIT_VISUAL_29ABR.md`
+- BRAVO ✅ — RBAC + migration + 26 pytest
+- CHARLIE ✅ — bug Food (0→29 clientes)
+- DELTA ✅ — design tokens + Inter + typography
+- Push: `127d450..b6887eb` (14 commits) — Vercel READY
 
-### WAVE 2 — Application (após WAVE 1)
-- Aplicar design tokens (DELTA outputs) nas páginas
-- Aplicar `RequireRole` (BRAVO outputs) nas rotas e componentes
-- Resolver os Top-N issues do AUDIT (ALPHA outputs)
-- Smoke test PROD + push
+### WAVE 2 — Application (rodando)
+
+#### 🌊 SQUAD ECHO — Visual Sweep (P0/P1 do audit ALPHA)
+- **Tipo:** ui-designer (sonnet)
+- **Arquivos exclusivos (write):**
+  - `frontend/src/components/ui/Badge.tsx` (token xs)
+  - `frontend/src/components/ui/StatusPill.tsx` (R9 INAT.ANT)
+  - `frontend/src/components/ui/CurvaPill.tsx`
+  - `frontend/src/components/ui/PriorityPill.tsx`
+  - `frontend/src/components/ui/ScoreBar.tsx`
+  - `frontend/src/components/ui/ProgressBar.tsx`
+  - `frontend/src/components/ui/Tabs.tsx`
+  - `frontend/src/components/ui/Sinaleiro.tsx`
+  - `frontend/src/components/ClienteDetalhe.tsx`
+  - `frontend/src/components/ClienteTable.tsx`
+  - `frontend/src/components/ClienteModal.tsx`
+  - `frontend/src/components/dashboard/CurvaABCBars.tsx`
+  - `frontend/src/components/dashboard/Top5ClientesTable.tsx`
+  - `frontend/src/components/TarefasPanel.tsx`
+  - `frontend/src/app/page.tsx`
+  - `frontend/src/app/carteira/page.tsx`
+  - `frontend/src/app/inbox/page.tsx`
+  - `frontend/src/app/agenda/page.tsx`
+  - `frontend/src/app/pedidos/page.tsx`
+  - `frontend/src/app/produtos/page.tsx`
+  - `frontend/src/app/manual/page.tsx`
+  - `frontend/src/app/pipeline/page.tsx`
+  - `frontend/src/app/atualizacoes/page.tsx`
+- **NÃO TOCA:** `Sidebar.tsx`, `AppShell.tsx`, `/gestao/*`, `/admin/*`, `/redes`, `/sinaleiro`, `/relatorios` (FOXTROT)
+- **ETA:** ~3h
+
+#### 🦊 SQUAD FOXTROT — RBAC Application + Shell Cleanup
+- **Tipo:** deep-executor (sonnet)
+- **Arquivos exclusivos (write):**
+  - `frontend/src/components/Sidebar.tsx` (RoleGuard nos groups + esconder meta hardcoded)
+  - `frontend/src/components/AppShell.tsx` (esconder meta hardcoded R$ 187k)
+  - `frontend/src/app/gestao/dde/page.tsx` (RequireRole + visual sweep local)
+  - `frontend/src/app/gestao/analise-critica/page.tsx` (idem)
+  - `frontend/src/app/redes/page.tsx` (RequireRole min=GERENTE + sweep)
+  - `frontend/src/app/sinaleiro/page.tsx` (RequireRole min=GERENTE + sweep)
+  - `frontend/src/app/relatorios/page.tsx` (RequireRole min=GERENTE + sweep)
+  - `frontend/src/app/admin/redistribuir/page.tsx` (RequireRole min=ADMIN + sweep)
+  - `frontend/src/app/admin/**/page.tsx` (qualquer outro admin/*)
+- **NÃO TOCA:** páginas core, componentes UI genéricos (ECHO)
+- **ETA:** ~2h
 
 ---
 
