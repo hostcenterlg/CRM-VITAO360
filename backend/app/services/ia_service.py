@@ -3,7 +3,7 @@ CRM VITAO360 — Serviço de Inteligência Artificial (IA Service)
 
 Gera briefings pré-ligação, rascunhos de mensagens WhatsApp, resumos semanais,
 scores de churn, sugestões de produto e mensagens WA automáticas por situação,
-utilizando o modelo Claude via API Anthropic.
+utilizando LLM via cascata provider-agnostic (DeepInfra→Groq→Anthropic→OpenAI).
 
 Comportamento sem chave configurada:
   - Retorna mensagem explicativa em vez de levantar exceção (graceful degradation).
@@ -14,20 +14,22 @@ R5 — CNPJ: normalizado para String(14) antes de qualquer consulta.
 R4 — Two-Base: este serviço lê vendas e logs separadamente — nunca mistura valores.
 
 Dependências:
-  - httpx (async HTTP client)
-  - ANTHROPIC_API_KEY no ambiente (opcional — degrada graciosamente se ausente)
+  - llm_client (camada LLM provider-agnostic)
+  - Pelo menos uma key LLM no ambiente (opcional — degrada graciosamente se ausente)
 """
 
 from __future__ import annotations
 
+import asyncio
 import logging
 import os
 import re
 from datetime import date, datetime, timedelta
 from typing import Any
 
-import httpx
 from sqlalchemy.orm import Session
+
+from backend.app.services.llm_client import LLMClient
 
 from backend.app.models.cliente import Cliente
 from backend.app.models.log_interacao import LogInteracao
@@ -45,19 +47,16 @@ logger = logging.getLogger(__name__)
 # Constantes
 # ---------------------------------------------------------------------------
 
-ANTHROPIC_API_KEY: str = os.getenv("ANTHROPIC_API_KEY", "")
-CLAUDE_MODEL: str = "claude-sonnet-4-20250514"
-_ANTHROPIC_URL: str = "https://api.anthropic.com/v1/messages"
-_ANTHROPIC_VERSION: str = "2023-06-01"
+_llm = LLMClient()
+
 _MAX_TOKENS_BRIEFING: int = 1536
 _MAX_TOKENS_WHATSAPP: int = 512
 _MAX_TOKENS_RESUMO: int = 2048
 _MAX_TOKENS_CHURN: int = 512
 _MAX_TOKENS_PRODUTO: int = 768
-_TIMEOUT_SEGUNDOS: float = 30.0
 
-# Mensagem exibida quando a chave não está configurada
-_MSG_SEM_CHAVE: str = "[IA não configurada — defina ANTHROPIC_API_KEY no .env]"
+# Mensagem exibida quando nenhum provider LLM está configurado
+_MSG_SEM_CHAVE: str = "[IA não configurada — defina DEEPINFRA_API_KEY no .env (ou GROQ/ANTHROPIC/OPENAI)]"
 
 # ---------------------------------------------------------------------------
 # Prompts do sistema
@@ -124,79 +123,57 @@ _SYSTEM_PRODUTO: str = (
 
 
 # ---------------------------------------------------------------------------
-# Função interna: chamada à API Anthropic
+# Função interna: chamada LLM via cascata provider-agnostic
 # ---------------------------------------------------------------------------
 
-async def _call_claude(
+async def _call_llm(
     system: str,
     user: str,
     max_tokens: int = _MAX_TOKENS_BRIEFING,
+    use_case: str = "ia_service",
 ) -> tuple[str, int]:
     """
-    Realiza chamada assíncrona à API Anthropic (Claude).
+    Chamada LLM via cascata provider-agnostic (DeepInfra→Groq→Anthropic→OpenAI).
 
     Retorna tupla (texto_gerado, tokens_usados).
-    Em caso de chave ausente ou erro de API, retorna mensagem de fallback
+    Em caso de nenhum provider configurado, retorna mensagem de fallback
     sem levantar exceção (graceful degradation).
 
     Args:
         system: Prompt do sistema que define o papel e tom do assistente.
         user:   Mensagem do usuário com os dados do cliente/consultor.
         max_tokens: Limite de tokens na resposta gerada.
+        use_case: Identificador do caso de uso (logging futuro).
 
     Returns:
         Tupla (texto: str, tokens_usados: int).
     """
-    if not ANTHROPIC_API_KEY:
+    if not _llm.available_providers():
         logger.warning(
-            "ANTHROPIC_API_KEY nao configurada — retornando mensagem de fallback"
+            "Nenhum provider LLM configurado — retornando mensagem de fallback"
         )
         return _MSG_SEM_CHAVE, 0
 
-    headers = {
-        "x-api-key": ANTHROPIC_API_KEY,
-        "anthropic-version": _ANTHROPIC_VERSION,
-        "content-type": "application/json",
-    }
-    payload: dict[str, Any] = {
-        "model": CLAUDE_MODEL,
-        "max_tokens": max_tokens,
-        "system": system,
-        "messages": [{"role": "user", "content": user}],
-    }
-
     try:
-        async with httpx.AsyncClient(timeout=_TIMEOUT_SEGUNDOS) as client:
-            resp = await client.post(_ANTHROPIC_URL, headers=headers, json=payload)
-            resp.raise_for_status()
-            data: dict[str, Any] = resp.json()
-
-        texto: str = data["content"][0]["text"]
-        tokens_usados: int = data.get("usage", {}).get("output_tokens", 0)
-
+        resp = await asyncio.to_thread(
+            _llm.generate,
+            prompt=user,
+            system_prompt=system,
+            max_tokens=max_tokens,
+            model_tier="cheap",
+            use_case=use_case,
+        )
         logger.info(
-            "Chamada Claude bem-sucedida | modelo=%s tokens_saida=%d",
-            CLAUDE_MODEL,
-            tokens_usados,
+            "LLM OK | provider=%s model=%s tokens_in=%d tokens_out=%d cost_usd=$%.4f duration_ms=%d",
+            resp.provider, resp.model,
+            resp.tokens_input, resp.tokens_output,
+            resp.cost_usd, resp.duration_ms,
         )
-        return texto, tokens_usados
+        return resp.text, resp.tokens_output
 
-    except httpx.HTTPStatusError as exc:
-        logger.error(
-            "Erro HTTP na API Anthropic | status=%d corpo=%s",
-            exc.response.status_code,
-            exc.response.text[:500],
-        )
-        return (
-            f"[Erro na API de IA: HTTP {exc.response.status_code} — tente novamente]",
-            0,
-        )
-    except httpx.TimeoutException:
-        logger.error("Timeout na chamada à API Anthropic (%.1fs)", _TIMEOUT_SEGUNDOS)
-        return "[Erro na API de IA: timeout — tente novamente]", 0
     except Exception as exc:  # noqa: BLE001
-        logger.exception("Erro inesperado na chamada à API Anthropic: %s", exc)
-        return "[Erro interno na IA — contate o administrador]", 0
+        logger.exception("Erro na chamada LLM: %s", exc)
+        return f"[Erro de IA: {str(exc)[:100]}]", 0
 
 
 # ---------------------------------------------------------------------------
