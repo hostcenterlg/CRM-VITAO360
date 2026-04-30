@@ -421,3 +421,53 @@ def get_dde_score(
         breakdown=resultado.indicadores,
         veredito=resultado.veredito,
     )
+
+
+@router.post(
+    "/cliente/{cnpj}/resumo-ceo",
+    summary="Gera PDF 1 página do Resumo CEO",
+    description=(
+        "Gera PDF A4 1 página com análise executiva do cliente. "
+        "Se ANTHROPIC_API_KEY ou outro provider LLM estiver configurado, "
+        "usa LLM para gerar o texto; caso contrário, usa template determinístico. "
+        "Valida valores R$ gerados contra dados reais do ResultadoDDE. "
+        "Returns: application/pdf"
+    ),
+    response_class=None,
+)
+def gerar_resumo_ceo_endpoint(
+    cnpj: str,
+    ano: Optional[int] = Query(default=None, description="Ano de referência (padrão: ano atual)"),
+    user=Depends(require_consultor_or_above),
+    user_canal_ids=Depends(get_user_canal_ids),
+    db: Session = Depends(get_db),
+):
+    """Gera PDF 1 página do Resumo CEO. Returns: application/pdf."""
+    from fastapi.responses import Response as FastAPIResponse
+    from backend.app.services.resumo_ceo import gerar_resumo_ceo
+    from backend.app.services.pdf_generator import gerar_pdf_resumo_ceo
+
+    cnpj = _normaliza_cnpj(cnpj)
+    ano = _ano_default(ano)
+
+    cliente = _check_canal_e_scoping(cnpj, db, user_canal_ids)
+
+    resultado = calcula_dre_comercial(cnpj, ano, db)
+    resumo = gerar_resumo_ceo(resultado, cliente.razao_social or "")
+    pdf_bytes = gerar_pdf_resumo_ceo(resumo["texto"], {
+        "cnpj": cnpj,
+        "ano": ano,
+        "razao_social": cliente.razao_social or "",
+        "veredito": resultado.veredito,
+        "fonte": resumo["fonte"],
+        "validacao": resumo["validacao"],
+        "gerado_em": datetime.now().strftime("%d/%m/%Y %H:%M"),
+    })
+
+    return FastAPIResponse(
+        content=pdf_bytes,
+        media_type="application/pdf",
+        headers={
+            "Content-Disposition": f'attachment; filename="resumo_ceo_{cnpj}_{ano}.pdf"'
+        },
+    )
