@@ -73,11 +73,7 @@ function FollowUpBadge({ followUp }: { followUp?: string }) {
   if (upper.includes('HOJE') || upper.includes('VENCID')) {
     return (
       <span
-        className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-bold text-white"
-        style={{
-          backgroundColor: '#FF0000',
-          animation: upper.includes('HOJE') ? 'pulse 1.5s ease-in-out infinite' : undefined,
-        }}
+        className={`inline-flex items-center px-1.5 py-0.5 rounded text-xs font-bold text-white bg-red-600 ${upper.includes('HOJE') ? 'animate-pulse' : ''}`}
       >
         {followUp}
       </span>
