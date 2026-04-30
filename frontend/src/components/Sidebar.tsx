@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
+import { useRoleGuard } from '@/components/auth';
 import { fetchJson } from '@/lib/api';
 import { MetaWidget } from '@/components/ui';
 
@@ -437,9 +437,8 @@ interface SidebarProps {
 
 export default function Sidebar({ mobileOpen, onClose, collapsed = false, onToggleCollapse }: SidebarProps) {
   const pathname = usePathname();
-  const { user, isAdmin } = useAuth();
-
-  const isGerenteOuAdmin = isAdmin || user?.role === 'gerente';
+  const isGerenteOuAdmin = useRoleGuard('GERENTE');
+  const isAdmin = useRoleGuard('ADMIN');
 
   const isActive = (href: string) => {
     if (href === '/') return pathname === '/';
