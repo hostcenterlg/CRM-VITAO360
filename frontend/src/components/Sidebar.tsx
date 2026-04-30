@@ -472,7 +472,7 @@ export default function Sidebar({ mobileOpen, onClose, collapsed = false, onTogg
           transition-all duration-200
           md:static md:translate-x-0
           ${mobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
-          ${collapsed ? 'w-14' : 'w-56 max-w-[80vw]'}
+          ${collapsed ? 'w-14' : 'w-64 max-w-[85vw]'}
         `}
         role="navigation"
         aria-label="Menu principal"
@@ -616,7 +616,7 @@ export default function Sidebar({ mobileOpen, onClose, collapsed = false, onTogg
 
           {!collapsed && (
             <>
-              <p className="text-xs text-gray-500">VITAO Alimentos B2B</p>
+              <p className="text-xs text-gray-600">VITAO Alimentos B2B</p>
               <p className="text-xs text-gray-500">v1.0 — 2026</p>
             </>
           )}
