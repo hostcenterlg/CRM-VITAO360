@@ -428,7 +428,7 @@ def get_dde_score(
     summary="Gera PDF 1 página do Resumo CEO",
     description=(
         "Gera PDF A4 1 página com análise executiva do cliente. "
-        "Se ANTHROPIC_API_KEY ou outro provider LLM estiver configurado, "
+        "Se alguma key LLM estiver configurada (DEEPINFRA/GROQ/ANTHROPIC/OPENAI), "
         "usa LLM para gerar o texto; caso contrário, usa template determinístico. "
         "Valida valores R$ gerados contra dados reais do ResultadoDDE. "
         "Returns: application/pdf"

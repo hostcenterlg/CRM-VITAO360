@@ -12,7 +12,7 @@ Endpoints:
   GET  /api/ia/churn-risk/{cnpj}           — score de risco de churn
   GET  /api/ia/sugestao-produto/{cnpj}     — sugestão de cross-sell/up-sell
 
-Comportamento sem ANTHROPIC_API_KEY configurada:
+Comportamento sem nenhuma key LLM configurada:
   - Retorna HTTP 200 com campo 'ia_configurada: false' e conteúdo via template local.
   - O CRM continua funcional — a IA é um recurso adicional, não um bloqueador.
 
@@ -216,7 +216,7 @@ def _verificar_cnpj_no_escopo(
     description=(
         "Gera um briefing completo com histórico de compras (últimas 5), último contato, "
         "score/prioridade/temperatura, sugestão de abordagem e script de venda sugerido. "
-        "Se ANTHROPIC_API_KEY não estiver configurada, retorna briefing via template local "
+        "Se nenhuma key LLM estiver configurada, retorna briefing via template local "
         "com HTTP 200 (graceful degradation)."
     ),
 )
@@ -274,7 +274,7 @@ async def get_briefing(
         "Gera mensagem WhatsApp personalizada baseada automaticamente na situação atual "
         "do cliente (ATIVO, INAT.REC, INAT.ANT, PROSPECT, EM_RISCO). "
         "Sem necessidade de informar objetivo — o sistema determina o tom adequado. "
-        "Se ANTHROPIC_API_KEY não estiver configurada, usa template local por situação."
+        "Se nenhuma key LLM estiver configurada, usa template local por situação."
     ),
 )
 async def get_mensagem_wa_automatica(
@@ -334,7 +334,7 @@ async def get_mensagem_wa_automatica(
     description=(
         "Gera um rascunho de mensagem WhatsApp personalizada para o objetivo informado. "
         "O consultor pode editar antes de enviar. "
-        "Se a chave ANTHROPIC_API_KEY não estiver configurada, retorna mensagem explicativa."
+        "Se nenhuma key LLM estiver configurada, retorna mensagem explicativa."
     ),
 )
 async def post_mensagem_whatsapp(
@@ -478,7 +478,7 @@ async def get_resumo_semanal(
         "Calcula o percentual de risco de churn baseado em: dias sem compra vs ciclo médio, "
         "sinaleiro atual, temperatura, situação comercial e tendência de ticket. "
         "Retorna nível BAIXO/MEDIO/ALTO/CRITICO e lista de fatores de risco identificados. "
-        "Se ANTHROPIC_API_KEY não estiver configurada, gera recomendação via template local."
+        "Se nenhuma key LLM estiver configurada, gera recomendação via template local."
     ),
 )
 async def get_churn_risk(
@@ -540,7 +540,7 @@ async def get_churn_risk(
         "Analisa o histórico de compras do cliente (venda_itens + produtos), "
         "identifica as categorias mais frequentes e sugere produtos complementares "
         "que o cliente ainda não comprou. "
-        "Se ANTHROPIC_API_KEY não estiver configurada, gera estratégia via template local."
+        "Se nenhuma key LLM estiver configurada, gera estratégia via template local."
     ),
 )
 async def get_sugestao_produto(
