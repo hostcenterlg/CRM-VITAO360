@@ -2,342 +2,646 @@
 
 import Link from 'next/link';
 import { RequireRole } from '@/components/auth';
+import { PreviewBanner } from '../_components/PreviewBanner';
+import { CascataPL } from '../_components/CascataPL';
+import type { CascataBlocoData } from '../_components/CascataPL';
 
 // ---------------------------------------------------------------------------
-// DDE — Diagnostico Demonstrativo do Cliente
-// Placeholder demo-quality para apresentacao de roadmap (Missao B9)
-// Motor Python ja existe — falta integracao FastAPI + endpoint /api/dde/cliente
+// DDE — Diagnóstico Demonstrativo do Equilíbrio (cascata P&L por cliente)
+// Spec: docs/specs/cowork/SPEC_DDE_CASCATA_REAL.md
+// Motor Python pronto — integração FastAPI pendente (Fase 3a)
 // ---------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------
-// Cascata mockup: 7 blocos, 25 linhas
-// AVISO: valores sao illustrativos — mockup apenas
+// Dados mockup — plausíveis para B2B alimentar, cliente referência (GMR-001)
+// AVISO R8: valores ilustrativos, sinalizados em 2 pontos na UI
+// Cliente referência: ticket ~R$1.07M/ano, margem negativa (-12.3%)
+// Fonte: GOLDEN_MASTER_REFERENCIA.md + SPEC_DDE_CASCATA_REAL.md
 // ---------------------------------------------------------------------------
 
-interface CascataLinha {
-  codigo: string;
-  descricao: string;
-  valor: number;
-  percentual: number;
-  destaque?: boolean;
-  recuo?: boolean;
-}
-
-interface CascataBloco {
-  titulo: string;
-  cor: string;
-  linhas: CascataLinha[];
-}
-
-const CASCATA: CascataBloco[] = [
+const CASCATA_MOCKUP: CascataBlocoData[] = [
   {
-    titulo: 'Bloco 1 — Receita Bruta',
-    cor: '#00B05012',
+    numero: 1,
+    titulo: 'Receita Bruta',
     linhas: [
-      { codigo: 'L1', descricao: 'Vendas Brutas', valor: 1250000, percentual: 100.0, recuo: true },
-      { codigo: 'L2', descricao: 'Devoluções e Cancelamentos', valor: -25000, percentual: -2.0, recuo: true },
-      { codigo: 'B1', descricao: 'Receita Bruta Ajustada', valor: 1225000, percentual: 98.0, destaque: true },
+      {
+        codigo: 'L1',
+        conta: 'Faturamento bruto a tabela (valor produtos NF)',
+        sinal: '+',
+        valor: 1076343,
+        pctRL: null,
+        tier: 'REAL',
+        fase: 'A',
+        status: 'detalhe',
+        observacao: 'Fonte: Sales Hunter fat_cliente — valor pós-desconto na tabela',
+      },
+      {
+        codigo: 'L2',
+        conta: 'IPI sobre vendas',
+        sinal: '+',
+        valor: null,
+        pctRL: null,
+        tier: 'PENDENTE',
+        fase: 'A',
+        status: 'detalhe',
+        observacao: 'Pendente: ingest não persiste IPI (D1)',
+      },
+      {
+        codigo: 'L3',
+        conta: '= Receita Bruta com IPI',
+        sinal: '=',
+        valor: 1076343,
+        pctRL: null,
+        tier: 'SINTETICO',
+        fase: 'A',
+        status: 'subtotal',
+        observacao: 'L2 ainda pendente — L3 equivale a L1 nesta fase',
+      },
     ],
   },
   {
-    titulo: 'Bloco 2 — Deduções Fiscais',
-    cor: '#FFC00012',
+    numero: 2,
+    titulo: 'Deduções da Receita',
     linhas: [
-      { codigo: 'L3', descricao: 'PIS/COFINS (9,25%)', valor: -113312, percentual: -9.1, recuo: true },
-      { codigo: 'L4', descricao: 'ICMS (8,0% médio)', valor: -98000, percentual: -7.8, recuo: true },
-      { codigo: 'L5', descricao: 'ISS / Outras Retenções', valor: -6125, percentual: -0.5, recuo: true },
-      { codigo: 'B2', descricao: 'Receita Líquida', valor: 1007563, percentual: 80.6, destaque: true },
+      {
+        codigo: 'L4',
+        conta: '(-) Devoluções (NF cliente + própria)',
+        sinal: '-',
+        valor: -180251,
+        pctRL: 21.4,
+        tier: 'REAL',
+        fase: 'A',
+        status: 'detalhe',
+        observacao: 'Fonte: SH devolucao_cliente — devolução TOTAL (não só troca NF)',
+      },
+      {
+        codigo: 'L5',
+        conta: '(-) Desconto comercial + contrato',
+        sinal: '-',
+        valor: null,
+        pctRL: null,
+        tier: 'PENDENTE',
+        fase: 'A',
+        status: 'detalhe',
+        observacao: 'Pendente: ingest não persiste desc_comercial_pct (D1)',
+      },
+      {
+        codigo: 'L6',
+        conta: '(-) Desconto financeiro',
+        sinal: '-',
+        valor: null,
+        pctRL: null,
+        tier: 'PENDENTE',
+        fase: 'A',
+        status: 'detalhe',
+        observacao: 'Pendente: ingest não persiste desc_financeiro_pct (D1)',
+      },
+      {
+        codigo: 'L7',
+        conta: '(-) Bonificações',
+        sinal: '-',
+        valor: null,
+        pctRL: null,
+        tier: 'PENDENTE',
+        fase: 'A',
+        status: 'detalhe',
+        observacao: 'Pendente: ingest não persiste total_bonificacao (D1)',
+      },
+      {
+        codigo: 'L8',
+        conta: '(-) IPI faturado',
+        sinal: '-',
+        valor: null,
+        pctRL: null,
+        tier: 'PENDENTE',
+        fase: 'A',
+        status: 'detalhe',
+        observacao: 'Pendente: ingest não persiste ipi_total (D1)',
+      },
+      {
+        codigo: 'L9',
+        conta: '(-) ICMS',
+        sinal: '-',
+        valor: null,
+        pctRL: null,
+        tier: 'PENDENTE',
+        fase: 'B',
+        status: 'detalhe',
+        observacao: 'Fase B — aguarda SAP módulo fiscal',
+      },
+      {
+        codigo: 'L10a',
+        conta: '(-) PIS',
+        sinal: '-',
+        valor: null,
+        pctRL: null,
+        tier: 'PENDENTE',
+        fase: 'B',
+        status: 'detalhe',
+        observacao: 'Fase B — aguarda SAP fiscal',
+      },
+      {
+        codigo: 'L10b',
+        conta: '(-) COFINS',
+        sinal: '-',
+        valor: null,
+        pctRL: null,
+        tier: 'PENDENTE',
+        fase: 'B',
+        status: 'detalhe',
+        observacao: 'Fase B — aguarda SAP fiscal',
+      },
+      {
+        codigo: 'L10c',
+        conta: '(-) ICMS-ST',
+        sinal: '-',
+        valor: null,
+        pctRL: null,
+        tier: 'PENDENTE',
+        fase: 'B',
+        status: 'detalhe',
+        observacao: 'Fase B — aguarda SAP fiscal',
+      },
+      {
+        codigo: 'L11',
+        conta: '= Receita Líquida Comercial (Fase A)',
+        sinal: '=',
+        valor: 842321,
+        pctRL: 100.0,
+        tier: 'REAL',
+        fase: 'A',
+        status: 'subtotal',
+        observacao: 'L1 - L4 (sem impostos — Fase A). Golden Master: R$842.320,94',
+      },
     ],
   },
   {
-    titulo: 'Bloco 3 — Custo dos Produtos',
-    cor: '#FF000010',
+    numero: 3,
+    titulo: 'CMV — Custo dos Produtos Vendidos',
     linhas: [
-      { codigo: 'L6', descricao: 'CMV — Custo Mercadoria Vendida', valor: -602500, percentual: -48.2, recuo: true },
-      { codigo: 'L7', descricao: 'Frete CIF (inbound)', valor: -37500, percentual: -3.0, recuo: true },
-      { codigo: 'B3', descricao: 'Margem Bruta', valor: 367563, percentual: 29.4, destaque: true },
+      {
+        codigo: 'L12',
+        conta: '(-) CMV — custo comercial produto (ZSD062 × ZSDFAT)',
+        sinal: '-',
+        valor: -520153,
+        pctRL: 61.7,
+        tier: 'REAL',
+        fase: 'A',
+        status: 'detalhe',
+        observacao: 'Fonte: ZSD062 col.23 Custo Comercial × ZSDFAT qtd. Golden Master: R$520.152,78',
+      },
+      {
+        codigo: 'L13',
+        conta: '= Margem Bruta',
+        sinal: '=',
+        valor: -125961,
+        pctRL: -14.9,
+        tier: 'REAL',
+        fase: 'A',
+        status: 'subtotal',
+        observacao: 'NEGATIVA — cliente destrói valor. Golden Master: -R$125.961,21',
+      },
     ],
   },
   {
-    titulo: 'Bloco 4 — Despesas Variáveis',
-    cor: '#FFC00012',
+    numero: 4,
+    titulo: 'Despesas Variáveis do Cliente (Custo de Servir)',
     linhas: [
-      { codigo: 'L8', descricao: 'Comissão Consultor (3,0%)', valor: -37500, percentual: -3.0, recuo: true },
-      { codigo: 'L9', descricao: 'Frete Outbound (entrega)', valor: -25000, percentual: -2.0, recuo: true },
-      { codigo: 'L10', descricao: 'Desconto Comercial', valor: -18750, percentual: -1.5, recuo: true },
-      { codigo: 'L11', descricao: 'Bonificações / Degustação', valor: -12500, percentual: -1.0, recuo: true },
-      { codigo: 'B4', descricao: 'Margem de Contribuição Bruta', valor: 273813, percentual: 21.9, destaque: true },
+      {
+        codigo: 'L14',
+        conta: '(-) Frete CT-e mensal (229 CT-es)',
+        sinal: '-',
+        valor: -185834,
+        pctRL: 22.1,
+        tier: 'REAL',
+        fase: 'A',
+        status: 'detalhe',
+        observacao: 'Fonte: LOG Frete por Cliente 2025 — 229 CT-es. Golden Master: R$185.834,10',
+      },
+      {
+        codigo: 'L15',
+        conta: '(-) Comissão representante (4,6% — não 3% default)',
+        sinal: '-',
+        valor: -38747,
+        pctRL: 4.6,
+        tier: 'REAL',
+        fase: 'A',
+        status: 'detalhe',
+        observacao: 'Comissão 4,6% sobre RL — confirmar SAP CL1. Golden Master: R$38.746,76',
+      },
+      {
+        codigo: 'L16',
+        conta: '(-) Verbas efetivadas (LOG)',
+        sinal: '-',
+        valor: -4824,
+        pctRL: 0.6,
+        tier: 'REAL',
+        fase: 'A',
+        status: 'detalhe',
+        observacao: 'Fonte: LOG Verbas por Cliente 2025. Golden Master: R$4.824,46',
+      },
+      {
+        codigo: 'L17',
+        conta: '(-) Promotor PDV (3 agências)',
+        sinal: '-',
+        valor: -45408,
+        pctRL: 5.4,
+        tier: 'REAL',
+        fase: 'A',
+        status: 'detalhe',
+        observacao: 'Fonte: LOG Despesas Clientes 2025. Golden Master: R$45.408,00',
+      },
+      {
+        codigo: 'L18',
+        conta: '(-) Bonificação financeira (rebate)',
+        sinal: '-',
+        valor: null,
+        pctRL: null,
+        tier: 'PENDENTE',
+        fase: 'A',
+        status: 'detalhe',
+        observacao: 'Aberto D5 — confirmar se comissao_pct é rebate ou vendedor',
+      },
+      {
+        codigo: 'L19',
+        conta: '(-) Custo de inadimplência (provisão aging)',
+        sinal: '-',
+        valor: -8423,
+        pctRL: 1.0,
+        tier: 'SINTETICO',
+        fase: 'A',
+        status: 'detalhe',
+        observacao: 'Estimativa: títulos vencidos × prob_perda. Fonte: debitos_clientes',
+      },
+      {
+        codigo: 'L20',
+        conta: '(-) Custo financeiro — capital de giro',
+        sinal: '-',
+        valor: -12635,
+        pctRL: 1.5,
+        tier: 'SINTETICO',
+        fase: 'A',
+        status: 'detalhe',
+        observacao: 'Estimativa: aging médio × CDI fixo × valor em aberto',
+      },
+      {
+        codigo: 'L21',
+        conta: '= Margem de Contribuição (Fase A)',
+        sinal: '=',
+        valor: -125961,
+        pctRL: -14.9,
+        tier: 'SINTETICO',
+        fase: 'A',
+        status: 'subtotal',
+        observacao: 'Parcial Fase A — sem CMV implica MC sobre RL Comercial. Com CMV: -14,9%',
+      },
     ],
   },
   {
-    titulo: 'Bloco 5 — Rateio de Estrutura',
-    cor: '#00000008',
+    numero: 5,
+    titulo: 'Despesas Fixas Alocadas',
     linhas: [
-      { codigo: 'L12', descricao: 'Rateio Estrutura Comercial', valor: -31250, percentual: -2.5, recuo: true },
-      { codigo: 'L13', descricao: 'Rateio Logística e Armazém', valor: -18750, percentual: -1.5, recuo: true },
-      { codigo: 'L14', descricao: 'Rateio TI e Sistemas', valor: -6250, percentual: -0.5, recuo: true },
-      { codigo: 'B5', descricao: 'Margem de Contribuição Líquida', valor: 217563, percentual: 17.4, destaque: true },
+      {
+        codigo: 'L22',
+        conta: '(-) Estrutura comercial alocada (rateio % fat.)',
+        sinal: '-',
+        valor: null,
+        pctRL: null,
+        tier: 'PENDENTE',
+        fase: 'B',
+        status: 'detalhe',
+        observacao: 'Fase B — aguarda SAP folha comercial',
+      },
+      {
+        codigo: 'L23',
+        conta: '(-) Estrutura administrativa alocada',
+        sinal: '-',
+        valor: null,
+        pctRL: null,
+        tier: 'PENDENTE',
+        fase: 'B',
+        status: 'detalhe',
+        observacao: 'Fase B — aguarda SAP folha adm',
+      },
+      {
+        codigo: 'L24',
+        conta: '(-) Marketing alocado (% fat.)',
+        sinal: '-',
+        valor: null,
+        pctRL: null,
+        tier: 'PENDENTE',
+        fase: 'B',
+        status: 'detalhe',
+        observacao: 'Fase B — aguarda SAP/contábil',
+      },
+      {
+        codigo: 'L25',
+        conta: '= Resultado Operacional Cliente (EBITDA)',
+        sinal: '=',
+        valor: null,
+        pctRL: null,
+        tier: 'PENDENTE',
+        fase: 'B',
+        status: 'total',
+        observacao: 'Disponível na Fase B quando fixas forem integradas',
+      },
     ],
   },
   {
-    titulo: 'Bloco 6 — Encargos e Financeiro',
-    cor: '#FFC00012',
+    numero: 6,
+    titulo: 'Indicadores Derivados (I1–I9)',
     linhas: [
-      { codigo: 'L15', descricao: 'Inadimplência Provisionada (0,8%)', valor: -10000, percentual: -0.8, recuo: true },
-      { codigo: 'L16', descricao: 'Custo Financeiro Prazo (1,2%)', valor: -15000, percentual: -1.2, recuo: true },
-      { codigo: 'L17', descricao: 'IOF / Tarifas Bancárias', valor: -2500, percentual: -0.2, recuo: true },
-      { codigo: 'L18', descricao: 'Desconto Antecipação', valor: -3125, percentual: -0.3, recuo: true },
-      { codigo: 'B6', descricao: 'Resultado Operacional', valor: 186938, percentual: 15.0, destaque: true },
+      { codigo: 'I1', conta: 'Margem Bruta % (L13 ÷ L11)', sinal: '=', valor: -14.9, pctRL: null, tier: 'REAL', fase: 'A', status: 'detalhe', observacao: 'NEGATIVA — CMV desbloqueado via ZSD062' },
+      { codigo: 'I2', conta: 'Margem Contribuição % (L21 ÷ L11)', sinal: '=', valor: -14.9, pctRL: null, tier: 'SINTETICO', fase: 'A', status: 'detalhe' },
+      { codigo: 'I4', conta: 'Custo de Servir % (L14+L15+L17+L18) ÷ L11', sinal: '=', valor: 32.5, pctRL: null, tier: 'SINTETICO', fase: 'A', status: 'detalhe' },
+      { codigo: 'I5', conta: 'Verba % Receita (L16 ÷ L11)', sinal: '=', valor: 0.6, pctRL: null, tier: 'REAL', fase: 'A', status: 'detalhe' },
+      { codigo: 'I6', conta: 'Inadimplência % (L19 ÷ L11)', sinal: '=', valor: 1.0, pctRL: null, tier: 'SINTETICO', fase: 'A', status: 'detalhe' },
+      { codigo: 'I7', conta: 'Devolução % (L4 ÷ L1)', sinal: '=', valor: 21.7, pctRL: null, tier: 'REAL', fase: 'A', status: 'detalhe', observacao: 'CRÍTICO: >10% — anomalia A1' },
+      { codigo: 'I8', conta: 'Aging Médio / DSO (dias)', sinal: '=', valor: 52, pctRL: null, tier: 'REAL', fase: 'A', status: 'detalhe', observacao: 'Fonte: debitos_clientes' },
+      { codigo: 'I9', conta: 'Score Saúde Financeira (composto I1–I8)', sinal: '=', valor: 32, pctRL: null, tier: 'SINTETICO', fase: 'A', status: 'subtotal', observacao: '<40 = SUBSTITUIR' },
     ],
   },
   {
-    titulo: 'Bloco 7 — Resultado Final',
-    cor: '#00B05018',
+    numero: 7,
+    titulo: 'Veredito Determinístico',
     linhas: [
-      { codigo: 'L19', descricao: 'Ajuste Devolução Pós-Período', valor: -1250, percentual: -0.1, recuo: true },
-      { codigo: 'L20', descricao: 'Créditos de Campanha', valor: 2500, percentual: 0.2, recuo: true },
-      { codigo: 'L21', descricao: 'Margem de Contribuição Final', valor: 188188, percentual: 15.1, destaque: true },
-      { codigo: 'L22', descricao: 'Margem sobre Receita Bruta', valor: 0, percentual: 15.1, recuo: true },
-      { codigo: 'L23', descricao: 'Validação ±0,5% (cliente de referência)', valor: 0, percentual: 0.0, recuo: true },
+      {
+        codigo: 'V1',
+        conta: 'Veredito: SUBSTITUIR — "Margem negativa — cliente destrói valor"',
+        sinal: '=',
+        valor: null,
+        pctRL: null,
+        tier: 'REAL',
+        fase: 'A',
+        status: 'total',
+        observacao: 'Regra: MC < 0 → SUBSTITUIR. Veredito determinístico, não LLM.',
+      },
     ],
   },
 ];
 
-function fmtValor(v: number): string {
-  if (v === 0) return '—';
-  return v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 });
-}
-
-function fmtPct(v: number): string {
-  if (v === 0) return '—';
-  return `${v > 0 ? '+' : ''}${v.toFixed(1)}%`;
-}
-
-function corValor(v: number): string {
-  if (v === 0) return 'text-gray-500';
-  return v < 0 ? 'text-red-600' : 'text-gray-900';
-}
-
-// ---------------------------------------------------------------------------
-// Checklist de status
-// ---------------------------------------------------------------------------
-
-interface StatusItem {
-  feito: boolean;
-  texto: string;
-}
-
-const STATUS_ITEMS: StatusItem[] = [
-  { feito: true, texto: 'Engine Python — cascata 25 linhas' },
-  { feito: true, texto: 'Schema banco aprovado (venda_itens)' },
-  { feito: true, texto: 'Algoritmo validado manualmente em cliente de referência' },
-  { feito: false, texto: 'Integração FastAPI — service layer' },
-  { feito: false, texto: 'Endpoint /api/dde/cliente/{cnpj}' },
-  { feito: false, texto: 'Pytest Golden Master ±0,5%' },
+// Checklist de desenvolvimento
+const STATUS_ITEMS: { feito: boolean; texto: string; fase: 'A' | 'B' | 'aguarda' }[] = [
+  { feito: true,  texto: 'Engine Python — cascata 25 linhas (dde_engine.py)',    fase: 'A' },
+  { feito: true,  texto: 'Schema banco aprovado (cliente_dre_periodo, venda_itens)', fase: 'A' },
+  { feito: true,  texto: 'Golden Master validado — Cliente Referência (GMR-001) ±0,5% por linha', fase: 'A' },
+  { feito: false, texto: 'Integração FastAPI — service layer DDE',               fase: 'A' },
+  { feito: false, texto: 'Endpoint GET /api/dde/cliente/{cnpj}?ano=X',           fase: 'A' },
+  { feito: false, texto: 'Pytest Golden Master automatizado ±0,5%',              fase: 'A' },
 ];
-
-// ---------------------------------------------------------------------------
-// Page
-// ---------------------------------------------------------------------------
 
 export default function DDEPage() {
   return (
     <RequireRole minRole="GERENTE">
-    <div className="space-y-6 px-3 md:px-4 lg:px-6 pb-10">
+      <div className="space-y-6 px-3 md:px-4 lg:px-6 pb-12">
 
-      {/* Voltar */}
-      <div className="pt-1">
-        <Link
-          href="/dashboard"
-          className="inline-flex items-center gap-1.5 text-xs text-gray-500 hover:text-gray-800 transition-colors min-h-[44px] py-2"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-          </svg>
-          Voltar ao Dashboard
-        </Link>
-      </div>
+        {/* Breadcrumb */}
+        <div className="pt-1 flex items-center gap-1.5 text-xs text-gray-400">
+          <Link href="/dashboard" className="hover:text-gray-700 transition-colors">Dashboard</Link>
+          <span>/</span>
+          <span className="text-gray-600">DDE</span>
+        </div>
 
-      {/* Cabecalho */}
-      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
-        <div>
-          <div className="flex items-center gap-3 flex-wrap">
-            <h1 className="text-xl font-bold text-gray-900">DDE</h1>
-            <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold uppercase tracking-wide bg-orange-100 text-orange-700 border border-orange-200 animate-pulse">
-              EM CONSTRUCAO
+        {/* ---------------------------------------------------------------- */}
+        {/* Header principal */}
+        {/* ---------------------------------------------------------------- */}
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+          <div className="flex-1">
+            <div className="flex items-center gap-3 flex-wrap mb-2">
+              {/* Ícone */}
+              <div
+                className="flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center"
+                style={{ backgroundColor: '#00A85915' }}
+              >
+                <svg className="w-5 h-5" fill="none" stroke="#00A859" viewBox="0 0 24 24" aria-hidden="true">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                </svg>
+              </div>
+              <h1 className="text-2xl font-bold text-gray-900 tracking-tight">DDE</h1>
+              <span className="text-sm font-normal text-gray-500">Diagnóstico Demonstrativo do Equilíbrio</span>
+            </div>
+            <p className="text-sm text-gray-600 leading-relaxed max-w-2xl">
+              Cascata P&amp;L por cliente — 7 blocos, 25 linhas — do Faturamento Bruto ao
+              EBITDA Cliente. Cada linha classificada como <strong>REAL</strong>, <strong>SINTÉTICO</strong> ou{' '}
+              <strong>PENDENTE</strong>. Validação automática ±0,5% contra Golden Master (Cliente Referência GMR-001).
+            </p>
+          </div>
+
+          {/* Badge "em construção" — discreto, não pulsante */}
+          <div className="flex-shrink-0">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wide bg-orange-50 text-orange-700 border border-orange-200">
+              <span className="w-1.5 h-1.5 rounded-full bg-orange-400 flex-shrink-0" />
+              Em Construção
             </span>
           </div>
-          <p className="text-sm text-gray-500 mt-1 leading-snug max-w-xl">
-            Diagnostico Demonstrativo do Cliente — cascata de margem P&amp;L cliente-a-cliente,
-            25 linhas, 7 blocos, validacao automatica ±0,5% (calibrado em cliente de referência).
-          </p>
-        </div>
-        <div
-          className="flex-shrink-0 w-9 h-9 rounded-xl flex items-center justify-center"
-          style={{ backgroundColor: '#00B05015' }}
-        >
-          <svg className="w-5 h-5" fill="none" stroke="#00B050" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-              d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-          </svg>
-        </div>
-      </div>
-
-      {/* Cards de Status + Previsao */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-
-        {/* Card Status */}
-        <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
-          <h2 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Status de Desenvolvimento</h2>
-          <ul className="space-y-2.5">
-            {STATUS_ITEMS.map((s, i) => (
-              <li key={i} className="flex items-start gap-2.5">
-                {s.feito ? (
-                  <span className="mt-0.5 flex-shrink-0 w-4 h-4 rounded-full flex items-center justify-center" style={{ backgroundColor: '#00B05020' }}>
-                    <svg className="w-2.5 h-2.5" fill="none" stroke="#00B050" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                    </svg>
-                  </span>
-                ) : (
-                  <span className="mt-0.5 flex-shrink-0 w-4 h-4 rounded-full flex items-center justify-center bg-amber-50 border border-amber-200">
-                    <svg className="w-2.5 h-2.5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5}
-                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                  </span>
-                )}
-                <span className={`text-xs leading-snug ${s.feito ? 'text-gray-700' : 'text-amber-700'}`}>
-                  {s.texto}
-                </span>
-              </li>
-            ))}
-          </ul>
         </div>
 
-        {/* Card Previsao */}
-        <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
-          <h2 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Previsao de Entrega</h2>
-          <dl className="space-y-3">
-            <div>
-              <dt className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Sprint</dt>
-              <dd className="text-sm font-bold text-gray-900 mt-0.5">Fase 3a — Maio / 2026</dd>
-            </div>
-            <div>
-              <dt className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Estimativa de dev</dt>
-              <dd className="text-sm text-gray-700 mt-0.5">4 a 6 horas de implementacao</dd>
-            </div>
-            <div>
-              <dt className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Validacao</dt>
-              <dd className="text-sm text-gray-700 mt-0.5">Cliente referência ±0,5% por linha</dd>
-            </div>
-            <div>
-              <dt className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Desbloqueio</dt>
-              <dd className="text-sm text-gray-700 mt-0.5">
-                Libera <span className="font-semibold text-gray-900">Analise Critica</span> imediatamente
-              </dd>
-            </div>
-          </dl>
+        {/* ---------------------------------------------------------------- */}
+        {/* Banner obrigatório — Mockup ilustrativo (R8) */}
+        {/* ---------------------------------------------------------------- */}
+        <PreviewBanner
+          mensagem="PREVIEW — dados ilustrativos baseados em Cliente Referência (GMR-001). Integração real em Fase 3a."
+          fase="Fase 3a — Maio/2026 (4–6h estimado)"
+        />
 
-          {/* Progresso visual */}
-          <div className="mt-4">
-            <div className="flex items-center justify-between mb-1">
-              <span className="text-xs font-semibold text-gray-500 uppercase">Progresso</span>
-              <span className="text-xs font-bold text-orange-600">50%</span>
+        {/* ---------------------------------------------------------------- */}
+        {/* Grid: Status + Previsão */}
+        {/* ---------------------------------------------------------------- */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+          {/* Sidebar de Status */}
+          <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
+            <h2 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">
+              Status de Desenvolvimento
+            </h2>
+            <ul className="space-y-3">
+              {STATUS_ITEMS.map((s, i) => (
+                <li key={i} className="flex items-start gap-3">
+                  {s.feito ? (
+                    <span
+                      className="mt-0.5 flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center"
+                      style={{ backgroundColor: '#00A85920' }}
+                    >
+                      <svg className="w-3 h-3" fill="none" stroke="#00A859" viewBox="0 0 24 24" aria-hidden="true">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </span>
+                  ) : (
+                    <span className="mt-0.5 flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center bg-amber-50 border border-amber-200">
+                      <svg className="w-3 h-3 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </span>
+                  )}
+                  <div className="min-w-0 flex-1">
+                    <span className={`text-xs leading-snug ${s.feito ? 'text-gray-700' : 'text-amber-700'}`}>
+                      {s.texto}
+                    </span>
+                    <span
+                      className={`ml-1.5 text-[10px] font-bold px-1 rounded uppercase ${
+                        s.fase === 'A' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'
+                      }`}
+                    >
+                      {s.fase}
+                    </span>
+                  </div>
+                </li>
+              ))}
+            </ul>
+
+            {/* Barra de progresso */}
+            <div className="mt-5 pt-4 border-t border-gray-100">
+              <div className="flex items-center justify-between mb-1.5">
+                <span className="text-xs font-semibold text-gray-400 uppercase tracking-wide">Progresso Fase A</span>
+                <span className="text-xs font-bold text-orange-600">50%</span>
+              </div>
+              <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                <div
+                  className="h-full rounded-full"
+                  style={{ width: '50%', backgroundColor: '#F97316' }}
+                />
+              </div>
+              <p className="text-xs text-gray-400 mt-1.5">3 de 6 etapas concluídas</p>
             </div>
-            <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
-              <div
-                className="h-full rounded-full transition-all"
-                style={{ width: '50%', backgroundColor: '#F97316' }}
-              />
+          </div>
+
+          {/* Previsão e Validação */}
+          <div className="space-y-4">
+            {/* Card Previsão */}
+            <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
+              <h2 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">
+                Previsão de Entrega
+              </h2>
+              <dl className="space-y-3">
+                <div>
+                  <dt className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide">Sprint</dt>
+                  <dd className="text-sm font-bold text-gray-900 mt-0.5">Fase 3a — Maio/2026</dd>
+                </div>
+                <div>
+                  <dt className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide">Estimativa Dev</dt>
+                  <dd className="text-sm text-gray-700 mt-0.5">4 a 6 horas de implementação</dd>
+                </div>
+                <div>
+                  <dt className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide">Desbloqueio</dt>
+                  <dd className="text-sm text-gray-700 mt-0.5">
+                    Libera <strong className="text-gray-900">Análise Crítica</strong> imediatamente
+                  </dd>
+                </div>
+              </dl>
             </div>
-            <p className="text-xs text-gray-500 mt-1">3 de 6 etapas concluidas</p>
+
+            {/* Card Validação — Cliente Referência GMR-001 */}
+            <div
+              className="rounded-xl border p-4"
+              style={{ backgroundColor: '#F0FDF4', borderColor: '#BBF7D0' }}
+            >
+              <h2 className="text-xs font-bold text-green-800 uppercase tracking-wider mb-2">
+                Cliente Referência (GMR-001) — Validado
+              </h2>
+              <p className="text-xs text-green-700 leading-snug mb-3">
+                Cascata calibrada contra Golden Master manual. Tolerância ±0,5% por linha.
+              </p>
+              <ul className="space-y-1.5 text-xs text-green-800">
+                <li className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-green-500 flex-shrink-0" />
+                  L1 = R$ 1.076.343 (Fat. bruto)
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-green-500 flex-shrink-0" />
+                  L11 = R$ 842.321 (RL Comercial)
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-green-500 flex-shrink-0" />
+                  L14 = R$ 185.834 (Frete CT-e)
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-red-400 flex-shrink-0" />
+                  L21 = -R$ 125.961 (MC negativa)
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-green-500 flex-shrink-0" />
+                  Veredito: SUBSTITUIR (regra determinística)
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Preview da Cascata */}
-      <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
-        <div className="flex items-center justify-between mb-1">
-          <h2 className="text-xs font-bold text-gray-500 uppercase tracking-wider">Preview da Cascata P&amp;L</h2>
-          <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold uppercase text-amber-700 bg-amber-50 border border-amber-200">
-            Mockup ilustrativo — dados reais em breve
-          </span>
+        {/* ---------------------------------------------------------------- */}
+        {/* Cascata P&L — Tabela principal */}
+        {/* ---------------------------------------------------------------- */}
+        <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
+          <div className="flex flex-wrap items-center justify-between gap-3 mb-1">
+            <div>
+              <h2 className="text-sm font-bold text-gray-900">
+                Demonstração de Resultado — Cascata P&amp;L
+              </h2>
+              <p className="text-xs text-gray-500 mt-0.5">
+                7 blocos · 25 linhas · Ano 2025 · Cliente Referência (GMR-001) — ilustrativo
+              </p>
+            </div>
+            {/* Badge mockup — segundo ponto de sinalização R8 */}
+            <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold uppercase text-amber-700 bg-amber-50 border border-amber-200">
+              Mockup ilustrativo
+            </span>
+          </div>
+
+          <CascataPL blocos={CASCATA_MOCKUP} showTier showFase />
         </div>
-        <p className="text-xs text-gray-500 mb-4">
-          Cliente de exemplo — valores fictícios para demonstracao do layout.
-          Faturamento anual R$ 1,25M (cliente A representativo).
+
+        {/* ---------------------------------------------------------------- */}
+        {/* Decisões L3 pendentes */}
+        {/* ---------------------------------------------------------------- */}
+        <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
+          <h2 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">
+            Decisões L3 Pendentes (Leandro Aprova)
+          </h2>
+          <div className="space-y-3">
+            {[
+              { id: 'D1', titulo: 'Persistir 4 campos do Sales Hunter no Cliente', detalhe: 'desc_comercial_pct, desc_financeiro_pct, total_bonificacao, ipi_total — sem isso L7-L9 vazias', urgencia: 'alta' },
+              { id: 'D3', titulo: 'Linhas de imposto sem dado real: NULL vs alíquota sintética', detalhe: 'Recomendação: NULL — DDE parcial honesta > inventada', urgencia: 'media' },
+              { id: 'D5', titulo: 'produtos.comissao_pct é comissão vendedor ou rebate cliente?', detalhe: 'Afeta L18 vs L15. Confirmar com SAP.', urgencia: 'media' },
+              { id: 'D6', titulo: 'Baixar RelatorioDeMargemPorProduto — tem custo unitário?', detalhe: 'Se sim, desbloqueia CMV (L12) na Fase A. ZSD062 já confirmado via Golden Master.', urgencia: 'resolvido' },
+            ].map((d) => (
+              <div
+                key={d.id}
+                className={`flex items-start gap-3 px-3 py-2.5 rounded-lg ${
+                  d.urgencia === 'resolvido' ? 'bg-green-50 border border-green-100' :
+                  d.urgencia === 'alta' ? 'bg-amber-50 border border-amber-200' :
+                  'bg-gray-50 border border-gray-200'
+                }`}
+              >
+                <span
+                  className={`flex-shrink-0 text-xs font-bold px-1.5 py-0.5 rounded mt-0.5 ${
+                    d.urgencia === 'resolvido' ? 'bg-green-100 text-green-700' :
+                    d.urgencia === 'alta' ? 'bg-amber-100 text-amber-700' :
+                    'bg-gray-200 text-gray-600'
+                  }`}
+                >
+                  {d.id}
+                </span>
+                <div className="min-w-0">
+                  <p className={`text-xs font-semibold ${d.urgencia === 'resolvido' ? 'text-green-800' : 'text-gray-800'}`}>
+                    {d.titulo}
+                    {d.urgencia === 'resolvido' && (
+                      <span className="ml-2 text-[10px] font-bold text-green-600">RESOLVIDO</span>
+                    )}
+                  </p>
+                  <p className="text-xs text-gray-500 mt-0.5">{d.detalhe}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Rodapé */}
+        <p className="text-xs text-gray-400">
+          DDE v1.1 — Spec: SPEC_DDE_CASCATA_REAL.md v1.0 · Motor Python pronto (dde_engine.py) ·
+          Integração FastAPI em desenvolvimento (Fase 3a) ·
+          Esta página é preview de roadmap para apresentação interna — dados ilustrativos.
         </p>
 
-        <div className="overflow-x-auto -mx-5">
-          <div className="min-w-[560px] px-5">
-            <table className="w-full text-xs border-collapse">
-              <thead>
-                <tr className="border-b border-gray-200">
-                  <th className="text-left py-1.5 px-2 text-xs font-semibold text-gray-500 uppercase tracking-wide w-10">Cod.</th>
-                  <th className="text-left py-1.5 px-2 text-xs font-semibold text-gray-500 uppercase tracking-wide">Descricao</th>
-                  <th className="text-right py-1.5 px-2 text-xs font-semibold text-gray-500 uppercase tracking-wide w-32">Valor (R$)</th>
-                  <th className="text-right py-1.5 px-2 text-xs font-semibold text-gray-500 uppercase tracking-wide w-16">%</th>
-                </tr>
-              </thead>
-              <tbody>
-                {CASCATA.map((bloco) => (
-                  <>
-                    {/* Header do bloco */}
-                    <tr
-                      key={`bloco-${bloco.titulo}`}
-                      style={{ backgroundColor: bloco.cor }}
-                    >
-                      <td colSpan={4} className="py-1.5 px-2 text-xs font-bold text-gray-700 uppercase tracking-wide">
-                        {bloco.titulo}
-                      </td>
-                    </tr>
-                    {/* Linhas do bloco */}
-                    {bloco.linhas.map((linha) => (
-                      <tr
-                        key={linha.codigo}
-                        className={`border-b border-gray-50 transition-colors hover:bg-gray-50 ${
-                          linha.destaque ? 'font-semibold' : ''
-                        }`}
-                        style={linha.destaque ? { backgroundColor: bloco.cor } : undefined}
-                      >
-                        <td className={`py-1.5 px-2 font-mono text-xs ${linha.destaque ? 'text-gray-600 font-bold' : 'text-gray-500'}`}>
-                          {linha.codigo}
-                        </td>
-                        <td className={`py-1.5 px-2 ${linha.recuo ? 'pl-5' : 'pl-2'} ${linha.destaque ? 'text-gray-900' : 'text-gray-600'}`}>
-                          {linha.descricao}
-                        </td>
-                        <td className={`py-1.5 px-2 text-right font-mono ${linha.destaque ? 'font-bold text-gray-900' : corValor(linha.valor)}`}>
-                          {fmtValor(linha.valor)}
-                        </td>
-                        <td className={`py-1.5 px-2 text-right font-mono ${linha.destaque ? 'font-bold text-gray-900' : corValor(linha.percentual)}`}>
-                          {fmtPct(linha.percentual)}
-                        </td>
-                      </tr>
-                    ))}
-                  </>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <div className="mt-4 flex items-center gap-2 text-xs text-gray-500">
-          <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          Valores totalmente ilustrativos. O motor real usa dados SAP + Mercos por CNPJ.
-          Validacao automatica em cada linha com tolerancia ±0,5% (R9).
-        </div>
       </div>
-
-      {/* Nota de rodape */}
-      <p className="text-xs text-gray-500">
-        DDE v1.0 — Motor Python pronto. Integracao FastAPI em desenvolvimento.
-        Esta pagina e uma preview de roadmap para apresentacao interna.
-      </p>
-
-    </div>
     </RequireRole>
   );
 }
