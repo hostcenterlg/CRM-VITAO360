@@ -30,12 +30,14 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Badge } from '@/components/ui/Badge';
 import {
-  fetchInbox,
-  fetchTicketMensagens,
+  fetchInboxConversas,
+  fetchInboxMensagens,
+  sendInboxMensagem,
   fetchWhatsAppStatus,
   fetchCliente,
-  enviarWhatsApp,
   formatDateBR,
+  type ConversaInbox,
+  type MensagemInbox,
   type InboxTicket,
   type DeskrioMensagem,
   type WhatsAppStatus,
@@ -51,6 +53,53 @@ import {
   getTemperaturaAvatarBg,
   type DadosMercosMock,
 } from './_mockData';
+
+// ---------------------------------------------------------------------------
+// Adapters: novos shapes /api/inbox -> shapes legados usados pela UI
+// ---------------------------------------------------------------------------
+
+/**
+ * Converte ConversaInbox (novo /api/inbox/conversas) para InboxTicket (shape UI).
+ * Preserva compatibilidade com todos os componentes existentes.
+ */
+function conversaToTicket(c: ConversaInbox): InboxTicket {
+  return {
+    ticket_id: c.ticket_id,
+    status: c.status,
+    contato_nome: c.contato_nome,
+    contato_numero: c.contato_numero,
+    cnpj: c.cnpj,
+    atendente_nome: c.atendente_nome,
+    ultima_mensagem: c.ultima_mensagem,
+    ultima_mensagem_data: c.hora,
+    ultima_msg_cliente_data: c.hora,
+    mensagens_nao_lidas: c.nao_lidas,
+    origem: null,
+    aguardando_resposta: c.aguardando_resposta,
+    // Dados Mercos embutidos — usados pelo ColunaPainel sem fetch adicional
+    _temperatura: c.temperatura,
+    _curva_abc: c.curva_abc,
+    _ticket_medio: c.ticket_medio,
+    _dias_sem_compra: c.dias_sem_compra,
+    _sinaleiro: c.sinaleiro,
+    _nome_fantasia: c.nome_fantasia,
+  } as unknown as InboxTicket;
+}
+
+/**
+ * Converte MensagemInbox (novo /api/inbox) para DeskrioMensagem (shape UI).
+ */
+function mensagemInboxToLegacy(m: MensagemInbox): DeskrioMensagem {
+  return {
+    id: typeof m.id === 'number' ? m.id : Number(m.id) || Date.now(),
+    texto: m.body,
+    de_cliente: !m.fromMe,
+    timestamp: m.timestamp,
+    tipo: m.mediaType ?? 'chat',
+    media_url: m.mediaUrl ?? undefined,
+    nome_contato: m.nomeContato ?? undefined,
+  };
+}
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -996,15 +1045,12 @@ export default function InboxPage() {
     if (!silent) setLoadingTickets(true);
     else setRefreshingTickets(true);
     try {
-      const data = await fetchInbox(6);
-      const sorted = [...(data.tickets ?? [])].sort((a, b) => {
-        const da = a.ultima_mensagem_data ?? a.ultima_msg_cliente_data ?? '';
-        const db = b.ultima_mensagem_data ?? b.ultima_msg_cliente_data ?? '';
-        return db.localeCompare(da);
-      });
+      // Fase 2a: usar novo endpoint /api/inbox/conversas com enriquecimento Mercos
+      const conversas = await fetchInboxConversas(7);
+      const tickets = (conversas ?? []).map(conversaToTicket);
 
-      if (sorted.length === 0) {
-        // Modo demo: usar mock data
+      if (tickets.length === 0) {
+        // Modo demo: usar mock data quando Deskrio nao tem dados
         setIsDemo(true);
         setTickets(MOCK_CONVERSAS);
         // Selecionar primeira conversa automaticamente
@@ -1018,7 +1064,7 @@ export default function InboxPage() {
         }
       } else {
         setIsDemo(false);
-        setTickets(sorted);
+        setTickets(tickets);
       }
     } catch {
       // Em caso de erro de rede, tambem ativa modo demo
@@ -1041,8 +1087,9 @@ export default function InboxPage() {
   const loadMensagens = useCallback(async (ticketId: number, silent = false) => {
     if (!silent) setLoadingMensagens(true);
     try {
-      const data = await fetchTicketMensagens(ticketId, 1);
-      setMensagens(data.messages ?? []);
+      // Fase 2a: usar novo endpoint /api/inbox/conversas/{id}/mensagens
+      const msgs = await fetchInboxMensagens(ticketId, 1);
+      setMensagens((msgs ?? []).map(mensagemInboxToLegacy));
     } catch {
       if (!silent) setMensagens([]);
     } finally {
@@ -1079,12 +1126,12 @@ export default function InboxPage() {
     setMobileView('chat');
     setMensagens([]);
     setInputTexto('');
-    setCliente(null);
     setShowTyping(false);
 
     if (isDemo) {
       setMensagens(MOCK_MENSAGENS[t.ticket_id] ?? []);
       setMockDadosAtual(MOCK_DADOS_MERCOS[t.ticket_id] ?? null);
+      setCliente(null);
       // Typing indicator por 2.5s se conversa esta aguardando resposta
       if (t.aguardando_resposta) {
         setTimeout(() => setShowTyping(true), 500);
@@ -1093,7 +1140,32 @@ export default function InboxPage() {
     } else {
       setMockDadosAtual(null);
       void loadMensagens(t.ticket_id, false);
-      if (t.cnpj) void loadCliente(t.cnpj);
+
+      // Fase 2a: dados Mercos ja vem embutidos na conversa (ConversaInbox).
+      // Montar um ClienteRegistro parcial a partir dos dados embutidos para
+      // alimentar ColunaPainel sem fetch adicional a /api/clientes/{cnpj}.
+      const tAny = t as unknown as Record<string, unknown>;
+      if (
+        tAny['_temperatura'] != null ||
+        tAny['_curva_abc'] != null ||
+        tAny['_ticket_medio'] != null
+      ) {
+        const clienteEmbutido: Partial<ClienteRegistro> = {
+          cnpj: t.cnpj ?? '',
+          nome_fantasia: (tAny['_nome_fantasia'] as string | undefined) ?? t.contato_nome,
+          temperatura: tAny['_temperatura'] as string | undefined,
+          curva_abc: tAny['_curva_abc'] as string | undefined,
+          ticket_medio: tAny['_ticket_medio'] as number | undefined,
+          dias_sem_compra: tAny['_dias_sem_compra'] as number | undefined,
+          sinaleiro: tAny['_sinaleiro'] as string | undefined,
+          consultor: t.atendente_nome ?? undefined,
+        };
+        setCliente(clienteEmbutido as ClienteRegistro);
+      } else {
+        // Fallback: buscar dados do cliente separadamente se nao vieram embutidos
+        setCliente(null);
+        if (t.cnpj) void loadCliente(t.cnpj);
+      }
     }
   }
 
@@ -1132,8 +1204,8 @@ export default function InboxPage() {
       return;
     }
 
-    // Producao: requer ticket com CNPJ
-    if (!selectedTicket?.cnpj) return;
+    // Producao: enviar via ticket_id (Fase 2a — novo endpoint /api/inbox/conversas/{id}/enviar)
+    if (!selectedTicket?.ticket_id) return;
     void (async () => {
       const tempMsg: DeskrioMensagem = {
         id: -Date.now(),
@@ -1146,7 +1218,7 @@ export default function InboxPage() {
       setInputTexto('');
       setSending(true);
       try {
-        const res = await enviarWhatsApp(selectedTicket.cnpj!, texto);
+        const res = await sendInboxMensagem(selectedTicket.ticket_id, texto);
         if (!res.enviado) {
           setMensagens((prev) => prev.filter((m) => m.id !== tempMsg.id));
           setInputTexto(texto);
