@@ -63,6 +63,7 @@ import {
 import StatusBadge from '@/components/StatusBadge';
 import ChartTooltip from '@/components/ChartTooltip';
 import { ProjecaoView } from '@/components/dashboard/ProjecaoView';
+import { ScrollFade } from '@/components/ui';
 
 // ---------------------------------------------------------------------------
 // Tab definitions
@@ -569,7 +570,7 @@ export default function DashboardPage() {
       {/* Tab navigation — sticky no topo, acima do hero                      */}
       {/* ------------------------------------------------------------------ */}
       <div className="sticky top-0 z-20 bg-white border-b border-gray-200 -mx-3 md:-mx-4 lg:-mx-6 px-3 md:px-4 lg:px-6 py-3 mb-4">
-        <div className="overflow-x-auto scrollbar-hide">
+        <ScrollFade fadeWidth={24}>
           <div className="flex gap-2 min-w-max sm:flex-wrap sm:min-w-0">
             {TABS.map((tab) => {
               const isActive = activeTab === tab.id;
@@ -581,17 +582,17 @@ export default function DashboardPage() {
                   className={[
                     'px-4 py-2 text-xs sm:text-sm uppercase tracking-wider whitespace-nowrap rounded-md border-2 font-semibold transition-all duration-150',
                     isActive
-                      ? 'bg-vitao-green text-white border-vitao-green shadow-sm'
+                      ? 'bg-vitao-verde text-white border-vitao-verde shadow-sm'
                       : 'bg-gray-100 text-gray-800 border-transparent hover:bg-gray-200',
                   ].join(' ')}
                 >
-                  <span className="sm:hidden">{tab.labelMobile}</span>
+                  <span className="sm:hidden" title={tab.label}>{tab.labelMobile}</span>
                   <span className="hidden sm:inline">{tab.label}</span>
                 </button>
               );
             })}
           </div>
-        </div>
+        </ScrollFade>
       </div>
 
       {/* ------------------------------------------------------------------ */}
