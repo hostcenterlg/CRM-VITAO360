@@ -126,6 +126,22 @@ Quando o Leandro mandar nova demanda enquanto squads atuais ainda rodam:
 - **NÃO TOCA:** `/inbox/*` (INDIA), `/gestao/*` (HOTEL), `/admin/*`, `/redes`, `/sinaleiro`, `/relatorios`, backend, tailwind/tokens
 - **ETA:** ~3-4h
 
+#### 🚨 REGRA DE NEGÓCIO CRÍTICA PARA HOTEL (adicionada 29/Abr 21:50)
+
+**DDE/Análise Crítica NÃO se aplica a todos os clientes.** Confirmado por Leandro:
+
+- ✅ **Aplicável**: canal **Direto**, **Indireto**, **Food Service** (com dados estruturados)
+- ❌ **NÃO aplicável**: **Varejo**, **PME**, **Interno** (sem contrato, sem verba, sem frete dedicado)
+
+**Por quê:** R8 zero alucinação. Calcular cascata P&L para cliente sem contrato/verba/promotor seria forçar dados inexistentes (foi o erro do ChatGPT que inflou faturamento 742%).
+
+**Como aplicar na reformulação:**
+- Banner de preview já planejado deve incluir nota "**DDE aplicável apenas a clientes com contrato estruturado** (Direto/Indireto/Food Service)"
+- Se a UI tem dropdown ou seletor de cliente, **filtrar canais aplicáveis**
+- Em `analise-critica/page.tsx`, preparar fallback "Análise Crítica não aplicável a clientes do canal X" (mock pode mostrar isso para um exemplo de varejo)
+
+Memória completa: `memory/project_dde_aplicabilidade_canais.md`
+
 #### 🏨 SQUAD HOTEL — DDE + Análise Crítica fix
 - **Tipo:** deep-executor (sonnet)
 - **Goal:** Reformular `/gestao/dde` e `/gestao/analise-critica` (Leandro chamou de "péssimos"). Alinhar com `docs/specs/cowork/SPEC_DDE_CASCATA_REAL.md`, `SPEC_FEATURE_ANALISE_CRITICA_CRM_VITAO360.md`, `BRIEFING_UI_ABA_ANALISE_CRITICA.md`. **Preservar `RequireRole(GERENTE)` que FOXTROT envolveu.**
