@@ -12,7 +12,7 @@ import { RequireRole } from '@/components/auth';
 import { ScoreGauge } from '../../_components/ScoreGauge';
 import { VeredictoBadge } from '../../_components/VeredictoBadge';
 import { CanalIneligivelMessage } from '../../_components/CanalIneligivelMessage';
-import { fetchDDECliente } from '@/lib/api';
+import { fetchDDECliente, downloadResumoCEO } from '@/lib/api';
 import type { ResultadoDDE, LinhaDRE, IndicadoresDDE } from '@/lib/api';
 import { formatBRL } from '@/lib/api';
 
@@ -151,6 +151,8 @@ function AnaliseCriticaClienteContent() {
   const [erroTipo, setErroTipo] = useState<ErrorType>(null);
   const [erroMsg, setErroMsg] = useState<string | null>(null);
   const [canalInelegivel, setCanalInelegivel] = useState<string | undefined>(undefined);
+  const [downloadingPdf, setDownloadingPdf] = useState(false);
+  const [pdfErro, setPdfErro] = useState<string | null>(null);
 
   useEffect(() => {
     if (!cnpj) return;
@@ -183,6 +185,20 @@ function AnaliseCriticaClienteContent() {
 
   const anomalias = resultado ? detectarAnomalias(resultado.indicadores) : [];
   const acoes = resultado ? gerarAcoes(resultado) : [];
+
+  async function handleDownloadResumoCEO() {
+    if (!cnpj) return;
+    setDownloadingPdf(true);
+    setPdfErro(null);
+    try {
+      await downloadResumoCEO(cnpj);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Erro ao gerar PDF';
+      setPdfErro(msg);
+    } finally {
+      setDownloadingPdf(false);
+    }
+  }
 
   return (
     <div className="space-y-6 px-3 md:px-4 lg:px-6 pb-12">
@@ -243,6 +259,34 @@ function AnaliseCriticaClienteContent() {
                   descricao={resultado.veredito_descricao}
                   size="lg"
                 />
+                <div className="mt-3">
+                  <button
+                    onClick={handleDownloadResumoCEO}
+                    disabled={downloadingPdf}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg border border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    title="Gera PDF A4 de 1 página com análise executiva do cliente"
+                  >
+                    {downloadingPdf ? (
+                      <>
+                        <svg className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                        </svg>
+                        Gerando PDF...
+                      </>
+                    ) : (
+                      <>
+                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        Gerar Resumo CEO
+                      </>
+                    )}
+                  </button>
+                  {pdfErro && (
+                    <p className="mt-1.5 text-xs text-red-600">{pdfErro}</p>
+                  )}
+                </div>
               </div>
               <ScoreGauge score={resultado.indicadores.I9} size={130} />
             </div>
