@@ -405,11 +405,11 @@ function CarteiraInner() {
       {/* Curva ABC + Top 5 Clientes — bloco de inteligencia de clientes */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
         <div className="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-100 p-5">
-          <h2 className="text-sm font-bold text-gray-900 mb-4">Curva ABC</h2>
+          <h3 className="text-sm font-bold text-gray-900 mb-4">Curva ABC</h3>
           <CurvaABCBars data={hero?.curva_abc} loading={heroLoading} />
         </div>
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
-          <h2 className="text-sm font-bold text-gray-900 mb-4">Top 5 Clientes (Mes)</h2>
+          <h3 className="text-sm font-bold text-gray-900 mb-4">Top 5 Clientes (Mes)</h3>
           <Top5ClientesTable rows={hero?.top_5 ?? []} loading={heroLoading} />
         </div>
       </div>
@@ -441,7 +441,7 @@ function CarteiraInner() {
       <div className="flex items-start justify-between gap-3">
         <div>
           <h1 className="text-lg sm:text-xl font-bold text-gray-900">Carteira de Clientes</h1>
-          <p className="text-xs text-gray-500 mt-0.5">
+          <p className="text-xs text-gray-600 mt-0.5">
             {response
               ? hasClientFilters
                 ? `Mostrando ${totalFiltrado.toLocaleString('pt-BR')} de ${totalServidor.toLocaleString('pt-BR')} clientes (filtro local aplicado)`
