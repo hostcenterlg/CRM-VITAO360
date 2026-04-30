@@ -24,6 +24,10 @@ Ordem de importação respeita dependências de FK:
  16. DebitoCliente  — FK lógica → clientes.cnpj    (Two-Base: metade VENDA — R1)
  17. Canal          — sem FK externa (workspace dimension — DECISAO L3)
  18. UsuarioCanal   — FK → usuarios.id, canais.id (associacao N:N)
+ 19. ClienteFretesMensal — sem FK (cnpj lógico → clientes) — DDE L14
+ 20. ClienteVerbaAnual   — sem FK (cnpj lógico → clientes) — DDE L16
+ 21. ClientePromotorMensal — sem FK (cnpj lógico → clientes) — DDE L17
+ 22. ClienteDrePeriodo   — sem FK (cnpj lógico → clientes) — DDE cache cascata
 """
 
 # Canal antes de Cliente porque Cliente.canal_id -> canais.id
@@ -45,6 +49,10 @@ from .produto import Produto
 from .preco_regional import PrecoRegional
 from .venda_item import VendaItem
 from .debito_cliente import DebitoCliente
+from .cliente_frete import ClienteFretesMensal
+from .cliente_verba import ClienteVerbaAnual
+from .cliente_promotor import ClientePromotorMensal
+from .cliente_dre import ClienteDrePeriodo
 
 __all__ = [
     "Canal",
@@ -65,4 +73,8 @@ __all__ = [
     "PrecoRegional",
     "VendaItem",
     "DebitoCliente",
+    "ClienteFretesMensal",
+    "ClienteVerbaAnual",
+    "ClientePromotorMensal",
+    "ClienteDrePeriodo",
 ]
