@@ -422,8 +422,15 @@ function AgendaCard({ item, idx, concluido, onRegistrar, onWhatsApp }: AgendaCar
         {/* Tag PRIORITARIO para P0/P1/P3 */}
         {isUrgente && !concluido && (
           <div
-            className="absolute top-0 right-0 px-2 py-0.5 text-xs font-bold text-white rounded-bl-md"
-            style={{ backgroundColor: prio === 'P0' ? '#FF0000' : prio === 'P1' ? '#FF6600' : prio === 'P2' ? '#FFC000' : '#FFFF00', color: prio === 'P3' ? '#1a1a1a' : '#fff' }}
+            className={`absolute top-0 right-0 px-2 py-0.5 text-xs font-bold rounded-bl-md ${
+              prio === 'P0'
+                ? 'bg-vitao-vermelho text-white'
+                : prio === 'P1'
+                ? 'bg-orange-600 text-white'
+                : prio === 'P2'
+                ? 'bg-vitao-amarelo text-gray-900'
+                : 'bg-yellow-200 text-gray-800'
+            }`}
           >
             PRIORITARIO
           </div>
@@ -432,7 +439,7 @@ function AgendaCard({ item, idx, concluido, onRegistrar, onWhatsApp }: AgendaCar
         {/* Linha 1: número + nome + prioridade */}
         <div className="flex items-start justify-between mb-3">
           <div className="min-w-0 pr-2">
-            <span className="text-xs font-medium text-gray-500">#{idx + 1}</span>
+            <span className="text-xs font-medium text-gray-700">#{idx + 1}</span>
             <h3 className="text-base font-semibold text-gray-900 mt-1 leading-snug">
               {item.nome_fantasia}
             </h3>
