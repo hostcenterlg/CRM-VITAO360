@@ -1861,4 +1861,90 @@ export async function fetchAlertaOportunidade(): Promise<AlertaOportunidadeRespo
 export async function fetchIADashboard(): Promise<IADashboardResponse> {
   return fetchJson<IADashboardResponse>('/api/ia/dashboard');
 }
+
+// ---------------------------------------------------------------------------
+// Inbox Fase 2a — endpoints reais /api/inbox (INDIA Squad)
+// ---------------------------------------------------------------------------
+
+/**
+ * Conversa enriquecida retornada por /api/inbox/conversas.
+ * Inclui dados Mercos (temperatura, curva_abc, ticket_medio, etc.)
+ * sem necessidade de segundo fetch ao backend.
+ */
+export interface ConversaInbox {
+  ticket_id: number;
+  status: string;
+  contato_nome: string;
+  contato_numero: string;
+  cnpj: string | null;
+  ultima_mensagem: string;
+  hora: string | null;
+  nao_lidas: number;
+  aguardando_resposta: boolean;
+  atendente_nome: string | null;
+  // Enriquecimento Mercos — null se cliente nao cadastrado localmente
+  temperatura: string | null;
+  curva_abc: string | null;
+  ticket_medio: number | null;
+  dias_sem_compra: number | null;
+  sinaleiro: string | null;
+  nome_fantasia: string | null;
+  canal_id: number | null;
+}
+
+/** Mensagem de um ticket Deskrio (padrao novo /api/inbox). */
+export interface MensagemInbox {
+  id: number | string | null;
+  body: string;
+  fromMe: boolean;
+  timestamp: string;
+  mediaType: string | null;
+  mediaUrl: string | null;
+  nomeContato: string | null;
+}
+
+/**
+ * Busca conversas Deskrio enriquecidas com dados Mercos.
+ * Substitui fetchInbox (que usa /api/whatsapp/inbox sem enriquecimento).
+ *
+ * @param days - Numero de dias para buscar (1-30, padrao 7)
+ */
+export async function fetchInboxConversas(days = 7): Promise<ConversaInbox[]> {
+  return fetchJson<ConversaInbox[]>(`/api/inbox/conversas?days=${days}`);
+}
+
+/**
+ * Busca mensagens de um ticket especifico (paginadas).
+ *
+ * @param ticketId - ID do ticket Deskrio
+ * @param page     - Pagina (1-based, padrao 1)
+ */
+export async function fetchInboxMensagens(
+  ticketId: number,
+  page = 1
+): Promise<MensagemInbox[]> {
+  return fetchJson<MensagemInbox[]>(
+    `/api/inbox/conversas/${ticketId}/mensagens?page=${page}`
+  );
+}
+
+/**
+ * Envia mensagem em um ticket existente (por ticket_id — novo padrao).
+ * Diferente de enviarWhatsApp que usa CNPJ.
+ *
+ * @param ticketId - ID do ticket Deskrio
+ * @param message  - Texto da mensagem
+ */
+export async function sendInboxMensagem(
+  ticketId: number,
+  message: string
+): Promise<{ enviado: boolean; mensagem_id?: string | null; erro?: string | null }> {
+  return fetchJson<{ enviado: boolean; mensagem_id?: string | null; erro?: string | null }>(
+    `/api/inbox/conversas/${ticketId}/enviar`,
+    {
+      method: 'POST',
+      body: JSON.stringify({ message }),
+    }
+  );
+}
 // redeploy trigger 1776136763
