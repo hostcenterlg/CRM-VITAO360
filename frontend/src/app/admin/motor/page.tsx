@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { fetchMotorRegras, RegraMotor } from '@/lib/api';
+import { RequireRole } from '@/components/auth';
 
 // ---------------------------------------------------------------------------
 // Admin Motor — visualizacao read-only das regras do Motor v4
@@ -80,6 +81,7 @@ export default function AdminMotorPage() {
     : regras;
 
   return (
+    <RequireRole minRole="ADMIN">
     <div className="space-y-5">
       {/* Titulo */}
       <div className="flex items-start justify-between">
@@ -209,5 +211,6 @@ export default function AdminMotorPage() {
         )}
       </div>
     </div>
+    </RequireRole>
   );
 }

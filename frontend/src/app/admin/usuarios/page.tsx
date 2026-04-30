@@ -11,6 +11,7 @@ import {
   UsuarioAdmin,
   type Canal,
 } from '@/lib/api';
+import { RequireRole } from '@/components/auth';
 
 // ---------------------------------------------------------------------------
 // Admin Usuarios — CRUD de usuarios do sistema
@@ -457,6 +458,7 @@ export default function AdminUsuariosPage() {
   const mostrarModal = modalUsuario !== null;
 
   return (
+    <RequireRole minRole="ADMIN">
     <div className="space-y-5">
       {/* Titulo */}
       <div className="flex items-center justify-between">
@@ -581,5 +583,6 @@ export default function AdminUsuariosPage() {
         />
       )}
     </div>
+    </RequireRole>
   );
 }

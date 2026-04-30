@@ -10,6 +10,7 @@ import {
   PipelineRunResult,
   PipelineLogEntry,
 } from '@/lib/api';
+import { RequireRole } from '@/components/auth';
 
 // ---------------------------------------------------------------------------
 // Helpers de formatacao
@@ -205,6 +206,7 @@ export default function PipelinePage() {
   }
 
   return (
+    <RequireRole minRole="ADMIN">
     <AppShell>
       {/* Header da pagina */}
       <div className="mb-6">
@@ -473,5 +475,6 @@ export default function PipelinePage() {
         </div>
       </div>
     </AppShell>
+    </RequireRole>
   );
 }

@@ -7,6 +7,7 @@ import {
   ImportResult,
   ImportHistoryItem,
 } from '@/lib/api';
+import { RequireRole } from '@/components/auth';
 
 // ---------------------------------------------------------------------------
 // Import page — Importacao de dados (.xlsx Mercos / SAP)
@@ -442,6 +443,7 @@ export default function ImportPage() {
   }, []);
 
   return (
+    <RequireRole minRole="ADMIN">
     <div className="space-y-6 max-w-5xl">
       {/* Header */}
       <div className="pb-3 border-b border-gray-200">
@@ -528,5 +530,6 @@ export default function ImportPage() {
         )}
       </section>
     </div>
+    </RequireRole>
   );
 }

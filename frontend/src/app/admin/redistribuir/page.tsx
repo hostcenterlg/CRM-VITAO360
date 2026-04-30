@@ -10,6 +10,7 @@ import {
   ConsultorResumo,
   ClienteRegistro,
 } from '@/lib/api';
+import { RequireRole } from '@/components/auth';
 
 // ---------------------------------------------------------------------------
 // Admin — Redistribuicao de Carteira (FR-022)
@@ -285,6 +286,7 @@ export default function RedistribuirCarteiraPage() {
   const todosSelecionados = clientes.length > 0 && selecionados.size === clientes.length;
 
   return (
+    <RequireRole minRole="ADMIN">
     <div className="space-y-5">
       {/* Cabecalho */}
       <div>
@@ -583,5 +585,6 @@ export default function RedistribuirCarteiraPage() {
         />
       )}
     </div>
+    </RequireRole>
   );
 }
