@@ -376,15 +376,14 @@ function NavItemCollapsed({ item, active, onClose }: NavItemCollapsedProps) {
         className={`
           relative flex items-center justify-center w-11 h-11 rounded-lg transition-colors mx-auto
           ${active
-            ? 'text-green-700'
+            ? 'text-vitao-verde bg-vitao-lightgreen'
             : 'text-gray-500 hover:bg-gray-100 hover:text-gray-900'
           }
         `}
-        style={active ? { backgroundColor: '#00B05018' } : undefined}
         aria-label={item.label}
         aria-current={active ? 'page' : undefined}
       >
-        <span style={active ? { color: '#00B050' } : undefined}>
+        <span className={active ? 'text-vitao-verde' : ''}>
           {item.icon}
         </span>
         {item.showInboxBadge && (
@@ -532,14 +531,14 @@ export default function Sidebar({ mobileOpen, onClose, collapsed = false, onTogg
                           className={`
                             flex items-center gap-3 py-2.5 px-4 min-h-[44px] rounded text-sm font-medium transition-colors
                             ${active
-                              ? 'bg-green-50 border-l-4 border-vitao-green text-vitao-green font-semibold pl-3'
+                              ? 'bg-vitao-lightgreen border-l-4 border-vitao-verde text-vitao-verde font-semibold pl-3'
                               : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
                             }
                           `}
                           aria-current={active ? 'page' : undefined}
                         >
                           <span
-                            className={active ? 'text-vitao-green' : 'text-gray-500'}
+                            className={active ? 'text-vitao-verde' : 'text-gray-500'}
                           >
                             {item.icon}
                           </span>

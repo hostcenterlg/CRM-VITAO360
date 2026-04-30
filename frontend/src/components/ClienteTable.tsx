@@ -79,11 +79,11 @@ function SortIcon({ col, sort }: { col: string; sort?: SortState }) {
     );
   }
   return sort.dir === 'asc' ? (
-    <svg className="w-3 h-3 text-green-600 inline ml-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <svg className="w-3 h-3 text-vitao-verde inline ml-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
     </svg>
   ) : (
-    <svg className="w-3 h-3 text-green-600 inline ml-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <svg className="w-3 h-3 text-vitao-verde inline ml-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
     </svg>
   );

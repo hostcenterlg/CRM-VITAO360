@@ -460,8 +460,7 @@ export default function AppShell({ children, pageTitle }: AppShellProps) {
 
               {/* Avatar inicial */}
               <div
-                className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 text-white text-xs font-bold"
-                style={{ backgroundColor: '#00B050' }}
+                className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 text-white text-xs font-bold bg-vitao-verde"
                 title={user.nome}
               >
                 {user.nome.charAt(0).toUpperCase()}
