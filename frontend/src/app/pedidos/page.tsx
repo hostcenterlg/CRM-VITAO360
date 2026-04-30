@@ -25,12 +25,22 @@ const DEBOUNCE_MS = 300;
 // Config de status
 // ---------------------------------------------------------------------------
 
+// Status config — cores alinhadas com R9 (ATIVO=#00B050, INAT.ANT=#FF0000)
+// Evita hardcoded inline; Tailwind tokens usados para garantir design system consistente.
+const STATUS_BG_CLASSES: Record<StatusPedido, string> = {
+  DIGITADO:  'bg-gray-500',
+  LIBERADO:  'bg-vitao-blue',
+  FATURADO:  'bg-vitao-verde',
+  ENTREGUE:  'bg-vitao-darkgreen',
+  CANCELADO: 'bg-vitao-vermelho',
+};
+
 const STATUS_CONFIG: Record<StatusPedido, { label: string; bg: string; text: string }> = {
-  DIGITADO:  { label: 'DIGITADO',  bg: '#6B7280', text: '#fff' },
-  LIBERADO:  { label: 'LIBERADO',  bg: '#3B82F6', text: '#fff' },
-  FATURADO:  { label: 'FATURADO',  bg: '#00B050', text: '#fff' },
-  ENTREGUE:  { label: 'ENTREGUE',  bg: '#166534', text: '#fff' },
-  CANCELADO: { label: 'CANCELADO', bg: '#FF0000', text: '#fff' },
+  DIGITADO:  { label: 'DIGITADO',  bg: '', text: '#fff' },
+  LIBERADO:  { label: 'LIBERADO',  bg: '', text: '#fff' },
+  FATURADO:  { label: 'FATURADO',  bg: '', text: '#fff' },
+  ENTREGUE:  { label: 'ENTREGUE',  bg: '', text: '#fff' },
+  CANCELADO: { label: 'CANCELADO', bg: '', text: '#fff' },
 };
 
 const STATUS_LIST: StatusPedido[] = ['DIGITADO', 'LIBERADO', 'FATURADO', 'ENTREGUE', 'CANCELADO'];
@@ -90,10 +100,10 @@ function agruparPorData(items: VendaPedidoItem[]): { label: string; data: string
 
 function StatusBadge({ status }: { status: StatusPedido }) {
   const cfg = STATUS_CONFIG[status] ?? STATUS_CONFIG.DIGITADO;
+  const bgClass = STATUS_BG_CLASSES[status] ?? 'bg-gray-500';
   return (
     <span
-      className="inline-flex items-center px-2 py-0.5 text-xs font-semibold rounded uppercase"
-      style={{ backgroundColor: cfg.bg, color: cfg.text }}
+      className={`inline-flex items-center px-2 py-0.5 text-xs font-semibold rounded uppercase text-white ${bgClass}`}
     >
       {cfg.label}
     </span>
@@ -544,7 +554,7 @@ function PedidosInner() {
         </div>
 
         {/* Filtros expandidos */}
-        <div className={`${filtrosExpanded ? 'grid grid-cols-2 gap-2' : 'hidden'} sm:flex sm:flex-wrap sm:gap-2 sm:items-end mt-2`}>
+        <div className={`${filtrosExpanded ? 'grid grid-cols-1 xs:grid-cols-2 gap-2' : 'hidden'} sm:flex sm:flex-wrap sm:gap-2 sm:items-end mt-2`}>
           {/* Status */}
           <div className="flex flex-col gap-1">
             <label htmlFor="pedidos-status" className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Status</label>
