@@ -97,7 +97,60 @@ Quando o Leandro mandar nova demanda enquanto squads atuais ainda rodam:
 - DELTA ✅ — design tokens + Inter + typography
 - Push: `127d450..b6887eb` (14 commits) — Vercel READY
 
-### WAVE 2 — Application (rodando)
+### WAVE 2 — Application ✅ CONCLUÍDA (29/Abr 21:30 UTC)
+- ECHO ✅ — 3 commits (FollowUpBadge, AcaoPrescrita, IA contrast)
+- FOXTROT ✅ — 4 commits (Sidebar useRoleGuard + RequireRole em 10 páginas)
+- + 4 commits paralelos do Leandro [WAVE2] (Badge, StatusPill, meta R8, sub-12px sweep 48 arquivos)
+- Push: `b6887eb..079951e` (12 commits) — Vercel READY
+
+### WAVE 3 — P1 Sweep + DDE/Análise Fix + Inbox Real (rodando)
+
+#### 🏌️ SQUAD GOLF — P1 Visual Sweep (resíduos do audit)
+- **Tipo:** ui-designer (sonnet)
+- **Goal:** Resolver 11 P1 restantes do audit (verde duplicado, Kanban mobile, dashboard tabs, loading states, pedidos cores hardcoded, emoji vs SVG, skeleton, avatar 10px, breadcrumb, sidebar width mobile)
+- **Arquivos exclusivos (write):**
+  - `frontend/src/components/AppShell.tsx`
+  - `frontend/src/components/Sidebar.tsx` (width mobile, group labels, footer — NÃO mexer em useRoleGuard que FOXTROT colocou)
+  - `frontend/src/components/ClienteTable.tsx`
+  - `frontend/src/components/ClienteDetalhe.tsx`
+  - `frontend/src/components/ClienteModal.tsx`
+  - `frontend/src/components/ui/*` (refinos pontuais — verde duplicado)
+  - `frontend/src/app/page.tsx` (dashboard tabs truncadas)
+  - `frontend/src/app/carteira/page.tsx`
+  - `frontend/src/app/agenda/page.tsx` (tag amarelo puro, idx)
+  - `frontend/src/app/pedidos/page.tsx` (STATUS_CONFIG → tokens)
+  - `frontend/src/app/produtos/page.tsx` (BadgeAtivo + Skeleton)
+  - `frontend/src/app/pipeline/page.tsx` (Kanban mobile scroll)
+  - `frontend/src/app/manual/page.tsx`
+  - `frontend/src/app/atualizacoes/page.tsx`
+- **NÃO TOCA:** `/inbox/*` (INDIA), `/gestao/*` (HOTEL), `/admin/*`, `/redes`, `/sinaleiro`, `/relatorios`, backend, tailwind/tokens
+- **ETA:** ~3-4h
+
+#### 🏨 SQUAD HOTEL — DDE + Análise Crítica fix
+- **Tipo:** deep-executor (sonnet)
+- **Goal:** Reformular `/gestao/dde` e `/gestao/analise-critica` (Leandro chamou de "péssimos"). Alinhar com `docs/specs/cowork/SPEC_DDE_CASCATA_REAL.md`, `SPEC_FEATURE_ANALISE_CRITICA_CRM_VITAO360.md`, `BRIEFING_UI_ABA_ANALISE_CRITICA.md`. **Preservar `RequireRole(GERENTE)` que FOXTROT envolveu.**
+- **Arquivos exclusivos (write):**
+  - `frontend/src/app/gestao/dde/page.tsx`
+  - `frontend/src/app/gestao/analise-critica/page.tsx`
+  - `frontend/src/app/gestao/_components/*` (novo — componentes locais se ajudar)
+- **Pode READ:** `docs/specs/cowork/*` (SPEC_DDE_CASCATA_REAL, BRIEFING_UI_ABA_ANALISE_CRITICA, dde_engine.py, GOLDEN_MASTER_REFERENCIA.md)
+- **NÃO TOCA:** Componentes globais (criar novos em /gestao/_components/), backend, RequireRole wrapper (preservar do FOXTROT)
+- **ETA:** ~3-4h
+
+#### 🇮🇳 SQUAD INDIA — Inbox Fase 2a Real
+- **Tipo:** deep-executor (sonnet)
+- **Goal:** Implementar SSR migration + 3 endpoints backend + integração Deskrio + remover mocks. Preserva os 3 P1 do audit no inbox (avatar 10px linha 509, badge "Recompra próxima" 9px linha 901, preview text-[11px] linha 462).
+- **Arquivos exclusivos (write):**
+  - `backend/app/api/routes_inbox.py` (NOVO)
+  - `backend/app/main.py` (apenas registrar router novo — coordenar)
+  - `backend/tests/test_inbox_routes.py` (NOVO)
+  - `frontend/src/app/inbox/page.tsx` (SSR migration + plug endpoints reais)
+  - `frontend/src/app/inbox/_mockData.ts` (manter como fallback OU deletar)
+  - `frontend/src/app/inbox/layout.tsx` (se SSR exigir)
+  - `frontend/src/lib/api.ts` (adicionar fetchInboxConversas, fetchInboxMensagens, sendInboxMensagem — NÃO mexer em outras funções)
+- **Pode READ:** `backend/app/services/deskrio_service.py` (reusar funções existentes)
+- **NÃO TOCA:** `routes_whatsapp.py` (legacy — INDIA cria endpoints novos sem mexer nos antigos), `/gestao/*`, `/admin/*`, componentes globais, tailwind
+- **ETA:** ~5-6h
 
 #### 🌊 SQUAD ECHO — Visual Sweep (P0/P1 do audit ALPHA)
 - **Tipo:** ui-designer (sonnet)
