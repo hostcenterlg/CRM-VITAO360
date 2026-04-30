@@ -16,7 +16,7 @@ Garantias verificadas:
 
 Estratégia:
   - SQLite em memória com seed controlado (engine de módulo para compartilhar).
-  - ANTHROPIC_API_KEY removida em todos os testes (graceful degradation).
+  - Todas as keys LLM removidas em todos os testes (graceful degradation).
   - dependency_overrides para bypassar JWT nas rotas.
   - Testes de serviço chamam métodos async via asyncio.run() (sem pytest-asyncio).
   - 30+ testes distribuídos entre serviço (unitário) e rotas (integração).
@@ -45,23 +45,27 @@ def _run(coro):
 
 
 # ---------------------------------------------------------------------------
-# Garantir ausência de chave Anthropic em todos os testes
+# Garantir ausência de todas as keys LLM em todos os testes
 # ---------------------------------------------------------------------------
 
-@pytest.fixture(autouse=True, scope="module")
-def _sem_anthropic_key():
-    """Remove ANTHROPIC_API_KEY e força graceful degradation."""
-    import backend.app.services.ia_service as _svc
+_LLM_KEYS = ("DEEPINFRA_API_KEY", "GROQ_API_KEY", "ANTHROPIC_API_KEY", "OPENAI_API_KEY")
 
-    original_env = os.environ.pop("ANTHROPIC_API_KEY", None)
-    original_attr = _svc.ANTHROPIC_API_KEY
-    _svc.ANTHROPIC_API_KEY = ""
+
+@pytest.fixture(autouse=True, scope="module")
+def _sem_llm_keys():
+    """Remove TODAS as keys LLM e força graceful degradation."""
+    import backend.app.services.ia_service as _svc
+    from backend.app.services.llm_client import LLMClient
+
+    saved = {k: os.environ.pop(k, None) for k in _LLM_KEYS}
+    _svc._llm = LLMClient()
 
     yield
 
-    _svc.ANTHROPIC_API_KEY = original_attr
-    if original_env is not None:
-        os.environ["ANTHROPIC_API_KEY"] = original_env
+    for k, v in saved.items():
+        if v is not None:
+            os.environ[k] = v
+    _svc._llm = LLMClient()
 
 
 # ---------------------------------------------------------------------------

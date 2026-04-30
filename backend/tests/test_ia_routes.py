@@ -3,7 +3,7 @@ CRM VITAO360 — Testes de integração dos endpoints /api/ia.
 
 Estratégia: banco SQLite em memória com seed mínimo (usuários + clientes).
 Sem override de get_current_user — autenticação JWT permanece real.
-ANTHROPIC_API_KEY ausente em todos os testes → graceful degradation (ia_configurada=false).
+Sem nenhuma key LLM em todos os testes → graceful degradation (ia_configurada=false).
 
 Cobertura:
   1. GET  /api/ia/briefing/{cnpj}         — autenticação, 404, 200 + campos de resposta
@@ -35,30 +35,32 @@ from backend.app.security import hash_password
 
 
 # ---------------------------------------------------------------------------
-# Garantia: ANTHROPIC_API_KEY não pode estar definida durante os testes
+# Garantia: nenhuma key LLM pode estar definida durante os testes
 # ---------------------------------------------------------------------------
 
-@pytest.fixture(autouse=True, scope="module")
-def _sem_anthropic_key():
-    """
-    Remove ANTHROPIC_API_KEY do ambiente para forçar o caminho de graceful
-    degradation em todos os testes deste módulo.
+_LLM_KEYS = ("DEEPINFRA_API_KEY", "GROQ_API_KEY", "ANTHROPIC_API_KEY", "OPENAI_API_KEY")
 
-    O módulo ia_service lê a variável no nível de módulo via os.getenv(),
-    então o monkeypatch precisa acontecer antes da importação — mas como o
-    módulo já foi importado, também patchamos o atributo diretamente.
+
+@pytest.fixture(autouse=True, scope="module")
+def _sem_llm_keys():
+    """
+    Remove TODAS as keys LLM do ambiente para forçar graceful degradation
+    (fallback template) em todos os testes deste módulo.
+
+    Reinstancia _svc._llm para que LLMClient re-detecte provedores disponíveis.
     """
     import backend.app.services.ia_service as _svc
+    from backend.app.services.llm_client import LLMClient
 
-    original_env = os.environ.pop("ANTHROPIC_API_KEY", None)
-    original_attr = _svc.ANTHROPIC_API_KEY
-    _svc.ANTHROPIC_API_KEY = ""
+    saved = {k: os.environ.pop(k, None) for k in _LLM_KEYS}
+    _svc._llm = LLMClient()
 
     yield
 
-    _svc.ANTHROPIC_API_KEY = original_attr
-    if original_env is not None:
-        os.environ["ANTHROPIC_API_KEY"] = original_env
+    for k, v in saved.items():
+        if v is not None:
+            os.environ[k] = v
+    _svc._llm = LLMClient()
 
 
 # ---------------------------------------------------------------------------
@@ -268,7 +270,7 @@ class TestBriefing:
         )
         assert "detail" in resp.json()
 
-    # --- 200 com graceful degradation (sem ANTHROPIC_API_KEY) ---
+    # --- 200 com graceful degradation (sem nenhuma key LLM) ---
 
     def test_briefing_cliente_ativo_retorna_200(self, client):
         token = _login(client)
@@ -279,7 +281,7 @@ class TestBriefing:
         assert resp.status_code == 200
 
     def test_briefing_retorna_ia_configurada_false(self, client):
-        """Sem ANTHROPIC_API_KEY o serviço degrada graciosamente."""
+        """Sem nenhuma key LLM o serviço degrada graciosamente."""
         token = _login(client)
         resp = client.get(
             f"/api/ia/briefing/{CNPJ_ATIVO}",

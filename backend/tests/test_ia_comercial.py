@@ -9,7 +9,7 @@ Cobre:
   5. GET  /api/ia/sugestao-produto/{cnpj}      — cross-sell/up-sell
 
 Estratégia: banco SQLite em memória com seed completo (usuários + clientes + vendas + itens + produtos).
-ANTHROPIC_API_KEY ausente em todos os testes → graceful degradation (ia_configurada=false).
+Sem nenhuma key LLM em todos os testes → graceful degradation (ia_configurada=false).
 
 Garantias verificadas:
   R4  — Two-Base: vendas e logs lidos em tabelas separadas, sem mistura de valores.
@@ -40,26 +40,32 @@ from backend.app.security import hash_password
 
 
 # ---------------------------------------------------------------------------
-# Garantia: ANTHROPIC_API_KEY não pode estar definida durante os testes
+# Garantia: nenhuma key LLM pode estar definida durante os testes
 # ---------------------------------------------------------------------------
 
+_LLM_KEYS = ("DEEPINFRA_API_KEY", "GROQ_API_KEY", "ANTHROPIC_API_KEY", "OPENAI_API_KEY")
+
+
 @pytest.fixture(autouse=True, scope="module")
-def _sem_anthropic_key():
+def _sem_llm_keys():
     """
-    Remove ANTHROPIC_API_KEY para forçar graceful degradation (templates locais).
-    Patcha tanto os.environ quanto o atributo do módulo.
+    Remove TODAS as keys LLM do ambiente para forçar graceful degradation
+    (fallback template) em todos os testes deste módulo.
+
+    Reinstancia _svc._llm para que LLMClient re-detecte provedores disponíveis.
     """
     import backend.app.services.ia_service as _svc
+    from backend.app.services.llm_client import LLMClient
 
-    original_env = os.environ.pop("ANTHROPIC_API_KEY", None)
-    original_attr = _svc.ANTHROPIC_API_KEY
-    _svc.ANTHROPIC_API_KEY = ""
+    saved = {k: os.environ.pop(k, None) for k in _LLM_KEYS}
+    _svc._llm = LLMClient()
 
     yield
 
-    _svc.ANTHROPIC_API_KEY = original_attr
-    if original_env is not None:
-        os.environ["ANTHROPIC_API_KEY"] = original_env
+    for k, v in saved.items():
+        if v is not None:
+            os.environ[k] = v
+    _svc._llm = LLMClient()
 
 
 # ---------------------------------------------------------------------------
@@ -478,7 +484,7 @@ class TestBriefingExpandido:
             assert campo in data, f"Campo ausente: '{campo}'"
 
     def test_briefing_retorna_ia_configurada_false(self, client):
-        """Sem ANTHROPIC_API_KEY, ia_configurada deve ser False."""
+        """Sem nenhuma key LLM, ia_configurada deve ser False."""
         token = _login(client)
         resp = client.get(f"/api/ia/briefing/{CNPJ_ATIVO}", headers=_auth(token))
         assert resp.json()["ia_configurada"] is False
