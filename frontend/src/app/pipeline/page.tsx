@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { fetchClientes, fetchCliente, atualizarEstagioCliente, ClienteRegistro, formatBRL, formatDateBR } from '@/lib/api';
 import { useAuth } from '@/contexts/AuthContext';
+import { ScrollFade } from '@/components/ui';
 
 // ---------------------------------------------------------------------------
 // Pipeline Kanban — CRM VITAO360
@@ -1340,9 +1341,10 @@ export default function PipelinePage() {
 
       {/* Kanban board — swimlane groups side by side, horizontally scrollable */}
       {!loading && (
+        <ScrollFade className="flex-1" innerClassName="pb-4 flex-1" fadeWidth={40}>
         <div
           ref={boardRef}
-          className="flex gap-6 overflow-x-auto pb-4 scrollbar-thin flex-1"
+          className="flex gap-6 pb-4 scrollbar-thin flex-1"
           style={{ minHeight: 0 }}
         >
           {swimlaneData.map(({ swimlane, stages }) => (
@@ -1374,6 +1376,7 @@ export default function PipelinePage() {
             </div>
           )}
         </div>
+        </ScrollFade>
       )}
 
       {/* Client detail panel */}

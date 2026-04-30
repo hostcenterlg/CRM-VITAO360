@@ -53,3 +53,13 @@ export type { MetaWidgetProps } from './MetaWidget';
 // Density elements
 export { Sinaleiro } from './Sinaleiro';
 export type { SinaleiroProps, SinaleiroCor } from './Sinaleiro';
+
+// Scroll + loading states
+export { ScrollFade } from './ScrollFade';
+export type { ScrollFadeProps } from './ScrollFade';
+
+export { SkeletonRow, SkeletonRows } from './SkeletonRow';
+export type { SkeletonRowProps, SkeletonCol } from './SkeletonRow';
+
+export { EmptyState } from './EmptyState';
+export type { EmptyStateProps } from './EmptyState';
