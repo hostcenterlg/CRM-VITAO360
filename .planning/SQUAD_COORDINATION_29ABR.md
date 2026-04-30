@@ -167,6 +167,81 @@ Memória completa: `memory/project_dde_aplicabilidade_canais.md`
 - **Embute regra de canais**: páginas devem mencionar que feature atende Direto/Indireto/Food Service apenas
 - **ETA:** ~3-4h
 
+### 🌊 ONDAS DE IMPLEMENTAÇÃO DDE/AC (sequencial cronológica)
+
+> **Spec**: `docs/specs/cowork/README_TIME_TECNICO_DDE_AC.md`
+> **Filosofia**: cada onda depende da anterior. Notification automática encadeia.
+
+#### 🅼 SQUAD MIKE — Onda 1: Schema PostgreSQL + Migration
+- **Tipo:** deep-executor (sonnet)
+- **Goal:** Criar 4 tabelas (cliente_frete_mensal, cliente_verba_anual, cliente_promotor_mensal, cliente_dre_periodo) + ALTERs em clientes/vendas (D1) via Alembic; criar 4 modelos SQLAlchemy; atualizar `ingest_sales_hunter.py` para persistir 4 campos D1
+- **Arquivos exclusivos:**
+  - `backend/alembic/versions/<auto>_add_dde_tables.py` (NOVO)
+  - `backend/app/models/cliente_frete.py` (NOVO)
+  - `backend/app/models/cliente_verba.py` (NOVO)
+  - `backend/app/models/cliente_promotor.py` (NOVO)
+  - `backend/app/models/cliente_dre.py` (NOVO)
+  - `backend/app/models/__init__.py` (registrar novos)
+  - `backend/app/models/cliente.py` (ALTER colunas D1)
+  - `backend/app/models/venda.py` (ALTER colunas D1)
+  - `scripts/ingest_sales_hunter.py` (persistir 4 campos)
+  - `backend/tests/test_dde_schema.py` (NOVO)
+- **NÃO TOCA:** /gestao (KILO), /inbox (LIMA), /admin, frontend, tailwind
+- **Dispara em PARALELO** com KILO/LIMA (sem conflito — backend exclusivo)
+- **ETA:** ~2-3h
+
+#### 🅽 SQUAD NOVEMBER — Onda 2: Parsers + 22 regex DRE
+- **Tipo:** deep-executor (sonnet)
+- **Goal:** BaseParser + 5 parsers específicos + 22 regex DRE + endpoint upload + testes com fixtures
+- **Pré-requisito:** MIKE concluído (modelos disponíveis)
+- **Arquivos exclusivos:**
+  - `scripts/parsers/__init__.py` (NOVO)
+  - `scripts/parsers/base_parser.py` (NOVO)
+  - `scripts/parsers/parser_zsdfat.py` (NOVO — 22 regex)
+  - `scripts/parsers/parser_verbas.py` (NOVO)
+  - `scripts/parsers/parser_frete.py` (NOVO)
+  - `scripts/parsers/parser_contratos.py` (NOVO)
+  - `scripts/parsers/parser_promotores.py` (NOVO)
+  - `scripts/parsers/dre_corrections.py` (NOVO — 22 regex)
+  - `backend/app/api/routes_upload_dde.py` (NOVO)
+  - `backend/tests/test_parsers.py` (NOVO)
+- **ETA:** ~3-4h
+
+#### 🅾 SQUAD OSCAR — Onda 3: Engine DDE
+- **Tipo:** deep-executor (sonnet)
+- **Goal:** dde_engine.py com calcula_dre_comercial + indicadores + veredito determinístico + recalc_dde.py
+- **Pré-requisito:** MIKE concluído (tabelas para queries)
+- **Arquivos exclusivos:**
+  - `backend/app/services/dde_engine.py` (NOVO)
+  - `scripts/recalc_dde.py` (NOVO — trigger pós-ingestão)
+  - `backend/tests/test_dde_engine.py` (NOVO)
+- **ETA:** ~3-4h
+
+#### 🅿 SQUAD PAPA — Onda 4: API REST 5 endpoints
+- **Tipo:** deep-executor (sonnet)
+- **Goal:** routes_dde.py com 5 endpoints + canal scoping + testes integração
+- **Pré-requisito:** OSCAR concluído (engine para chamar)
+- **Arquivos exclusivos:**
+  - `backend/app/api/routes_dde.py` (NOVO)
+  - `backend/app/main.py` (registrar router)
+  - `backend/tests/test_routes_dde.py` (NOVO)
+- **ETA:** ~2-3h
+
+#### 🆀 SQUAD QUEBEC — Onda 5: UI React (DDE + AC plug API real)
+- **Tipo:** deep-executor (sonnet)
+- **Goal:** Substituir páginas honestas do KILO por dashboard real consumindo API. Cascata 25 linhas + veredito + 9 indicadores + comparativo.
+- **Pré-requisito:** PAPA concluído (API disponível) + KILO concluído (páginas honestas em produção como base)
+- **Arquivos exclusivos:**
+  - `frontend/src/app/gestao/dde/page.tsx` (substitui KILO)
+  - `frontend/src/app/gestao/analise-critica/page.tsx` (substitui KILO)
+  - `frontend/src/app/gestao/_components/CascadeP&L.tsx`, `ScoreGauge.tsx`, `KPIGrid.tsx`, etc.
+  - `frontend/src/lib/api.ts` (adicionar fetchDDE*, sendDDEParams — NÃO mexer em outras funções)
+- **ETA:** ~3-4h
+
+#### 🆁 SQUAD ROMEO — Onda 6: LLM + PDF Resumo CEO (futuro)
+- **Status:** AGUARDANDO Sprint 2+
+- **ETA:** futuro
+
 #### 🔧 SQUAD LIMA — Inbox visual residual (3 P1 do audit)
 - **Tipo:** ui-designer (sonnet)
 - **Goal:** Resolver os 3 P1 visuais de `/inbox/page.tsx` que sobraram (avatar 10px linha 509, badge "Recompra próxima" 9px linha 901, preview text-[11px] linha 462). NÃO mexer em lógica de fetch (INDIA acabou de aplicar SSR).
