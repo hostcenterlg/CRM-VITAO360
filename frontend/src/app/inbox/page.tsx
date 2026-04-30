@@ -504,11 +504,11 @@ function ItemConversa({ ticket, selected, onClick }: ItemConversaProps) {
                 {naoLidas > 9 ? '9+' : naoLidas}
               </span>
             )}
-            <span className="text-xs text-gray-500">{formatTime(ticket.ultima_mensagem_data ?? ticket.ultima_msg_cliente_data)}</span>
+            <span className="text-xs text-gray-600">{formatTime(ticket.ultima_mensagem_data ?? ticket.ultima_msg_cliente_data)}</span>
           </div>
         </div>
 
-        <p className={`text-xs truncate leading-tight mb-1 ${naoLidas > 0 ? 'text-gray-800 font-medium' : 'text-gray-500'}`}>
+        <p className={`text-xs truncate leading-tight mb-1 ${naoLidas > 0 ? 'text-gray-800 font-medium' : 'text-gray-600'}`}>
           {ticket.ultima_mensagem ? truncatePreview(ticket.ultima_mensagem) : ' '}
         </p>
 
@@ -517,7 +517,7 @@ function ItemConversa({ ticket, selected, onClick }: ItemConversaProps) {
             {isAguardando ? 'Quente' : tempBadge.label}
           </span>
           {ticket.atendente_nome && (
-            <span className="text-xs text-gray-500 truncate">
+            <span className="text-xs text-gray-600 truncate">
               {ticket.atendente_nome.replace(/-\s*Vitao/i, '').trim()}
             </span>
           )}
@@ -561,7 +561,7 @@ function BolhaMensagem({ msg, contatoNome }: { msg: DeskrioMensagem; contatoNome
       )}
       <div className="max-w-xs lg:max-w-sm xl:max-w-md">
         {enviado && msg.nome_contato && (
-          <p className="text-xs text-gray-500 text-right mb-0.5 mr-1 truncate max-w-[200px] ml-auto">
+          <p className="text-xs text-gray-700 text-right mb-0.5 mr-1 truncate max-w-[200px] ml-auto">
             {msg.nome_contato.replace(/-\s*Vitao/i, '').trim()}
           </p>
         )}
@@ -574,7 +574,7 @@ function BolhaMensagem({ msg, contatoNome }: { msg: DeskrioMensagem; contatoNome
           <span className="whitespace-pre-wrap break-words">{msg.texto}</span>
         </div>
         <div className={`flex items-center gap-1 mt-0.5 ${enviado ? 'justify-end' : 'justify-start'}`}>
-          <span className="text-xs text-gray-500">{formatMsgTime(msg.timestamp)}</span>
+          <span className="text-xs text-gray-600">{formatMsgTime(msg.timestamp)}</span>
           {enviado && (
             <svg className="w-3 h-3 text-vitao-green/70" fill="currentColor" viewBox="0 0 24 24">
               <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
@@ -881,7 +881,7 @@ function ColunaPainel({ ticket, cliente, mockDados, loadingCliente, onVoltarMobi
             <Avatar nome={nomeExibir} size="lg" bgClass="bg-vitao-green" />
             <div className="flex-1 min-w-0">
               <h3 className="text-sm font-bold text-gray-900 truncate">{nomeExibir}</h3>
-              <p className="text-xs text-gray-500 truncate">{cnpjRaw ? formatCNPJ(cnpjRaw) : '—'}</p>
+              <p className="text-xs text-gray-600 truncate">{cnpjRaw ? formatCNPJ(cnpjRaw) : '—'}</p>
               {consultor && <p className="text-xs text-vitao-darkgreen font-medium truncate">Consultor: {consultor}</p>}
             </div>
           </div>
@@ -891,7 +891,7 @@ function ColunaPainel({ ticket, cliente, mockDados, loadingCliente, onVoltarMobi
             <svg className="w-8 h-8 text-gray-500 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
             </svg>
-            <p className="font-semibold text-gray-600 text-[13px] mb-1">Inteligencia (Em breve)</p>
+            <p className="font-semibold text-gray-600 text-sm mb-1">Inteligencia (Em breve)</p>
             <p className="text-xs text-gray-500">Sugestoes de IA para este cliente aparecerão aqui em breve.</p>
             <p className="text-xs text-gray-500 mt-1">Dados do cliente abaixo</p>
           </div>
