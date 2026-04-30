@@ -9,16 +9,13 @@ import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { RequireRole } from '@/components/auth';
-import { CascataPL } from '../_components/CascataPL';
-import { ScoreGauge } from '../_components/ScoreGauge';
-import { IndicadoresGrid } from '../_components/IndicadoresGrid';
-import { VeredictoBadge } from '../_components/VeredictoBadge';
-import { CanalIneligivelMessage } from '../_components/CanalIneligivelMessage';
+import { CascataPL } from '../../_components/CascataPL';
+import { ScoreGauge } from '../../_components/ScoreGauge';
+import { IndicadoresGrid } from '../../_components/IndicadoresGrid';
+import { VeredictoBadge } from '../../_components/VeredictoBadge';
+import { CanalIneligivelMessage } from '../../_components/CanalIneligivelMessage';
 import { fetchDDECliente } from '@/lib/api';
 import type { ResultadoDDE } from '@/lib/api';
-
-// Re-export dos componentes do dir pai para satisfazer Next.js
-import '../_components/CascataPL';
 
 type ErrorType = 'canal_inelegivel' | 'fora_escopo' | 'nao_encontrado' | 'generico' | null;
 
