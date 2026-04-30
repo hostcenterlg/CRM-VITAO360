@@ -625,8 +625,12 @@ def phase_3_clientes(
 
     Schema (1-indexed):
       1=cod_cliente, 2=cliente, 3=cpf_cnpj, 4=grupo (tipo_cliente_sap),
-      5=canal_venda (tipo_cliente), 9=estado, 10=cidade, 17=faturado_mes,
-      23=total_faturado.
+      5=canal_venda (tipo_cliente), 7=desc_comercial (R$), 8=desc_financeiro (R$),
+      9=estado, 10=cidade, 16=bonificacao (R$), 17=faturado_mes, 23=total_faturado.
+
+    D1 (Onda 1 MIKE): colunas 7, 8, 16 persistidas como desc_comercial_pct (valor
+      bruto aqui — engine DDE calculara pct sobre L1), total_bonificacao.
+      ipi_total do cliente sera preenchido em Phase 5 via pedidos_produto.
 
     Dedup CWB+VV:
       DESCOBERTA EM 25/Abr/2026: os XLSX VV retornam dados IDENTICOS aos
@@ -672,6 +676,12 @@ def phase_3_clientes(
             canal_venda_raw = to_str(row[4], max_len=80)
             # tipo_cliente extrai parte antes do ' - ' (ex.: "31 - IN - DISTR. VAREJO" -> "31")
             tipo_cliente = canal_venda_raw.split(" - ", 1)[0][:30] if canal_venda_raw else None
+            # D1 (Onda 1 MIKE): cols 7, 8, 16 do fat_cliente (1-indexed)
+            # Armazenados como valor absoluto R$ — engine DDE calcula % sobre L1
+            desc_comercial_val = to_float(row[6]) if len(row) > 6 else None
+            desc_financeiro_val = to_float(row[7]) if len(row) > 7 else None
+            total_bonificacao = to_float(row[15]) if len(row) > 15 else None
+            # Nota: ipi_total do cliente sera preenchido via pedidos_produto (Phase 5)
             faturado_mes = to_float(row[16])
             total_faturado = to_float(row[22])
             canal_nome = extrair_canal(row[3], row[4])
@@ -691,6 +701,10 @@ def phase_3_clientes(
                 "faturado_mes": faturado_mes,
                 "faturamento_total": total_faturado,
                 "situacao": "ATIVO" if faturado_mes > 0 else "INATIVO",
+                # D1 — campos DDE (Onda 1 MIKE — desbloqueiam L5, L6, L7)
+                "desc_comercial_pct": desc_comercial_val if desc_comercial_val else None,
+                "desc_financeiro_pct": desc_financeiro_val if desc_financeiro_val else None,
+                "total_bonificacao": total_bonificacao if total_bonificacao else None,
             }
 
             # Dedup CWB+VV: politica MAX (XLSX VV duplica CWB neste momento)
@@ -708,6 +722,10 @@ def phase_3_clientes(
                           "tipo_cliente", "canal_id", "uf", "cidade"):
                     if not ag.get(k) and registro.get(k):
                         ag[k] = registro[k]
+                # D1: para campos DDE, somar (registros distintos podem ter valores parciais)
+                for k in ("desc_comercial_pct", "desc_financeiro_pct", "total_bonificacao"):
+                    if registro.get(k):
+                        ag[k] = (ag.get(k) or 0.0) + registro[k]
             else:
                 agregado[cnpj] = registro
 
@@ -730,11 +748,15 @@ def phase_3_clientes(
                     INSERT INTO clientes (
                       cnpj, nome_fantasia, codigo_cliente, tipo_cliente_sap,
                       tipo_cliente, canal_id, uf, cidade, faturamento_total, situacao,
-                      classificacao_3tier, created_at, updated_at
+                      classificacao_3tier,
+                      desc_comercial_pct, desc_financeiro_pct, total_bonificacao,
+                      created_at, updated_at
                     ) VALUES (
                       :cnpj, :nome_fantasia, :codigo_cliente, :tipo_cliente_sap,
                       :tipo_cliente, :canal_id, :uf, :cidade, :faturamento_total, :situacao,
-                      'REAL', :now, :now
+                      'REAL',
+                      :desc_comercial_pct, :desc_financeiro_pct, :total_bonificacao,
+                      :now, :now
                     )
                     ON CONFLICT (cnpj) DO UPDATE SET
                       nome_fantasia = COALESCE(EXCLUDED.nome_fantasia, clientes.nome_fantasia),
@@ -747,6 +769,9 @@ def phase_3_clientes(
                       faturamento_total = EXCLUDED.faturamento_total,
                       situacao = EXCLUDED.situacao,
                       classificacao_3tier = COALESCE(clientes.classificacao_3tier, 'REAL'),
+                      desc_comercial_pct = COALESCE(EXCLUDED.desc_comercial_pct, clientes.desc_comercial_pct),
+                      desc_financeiro_pct = COALESCE(EXCLUDED.desc_financeiro_pct, clientes.desc_financeiro_pct),
+                      total_bonificacao = COALESCE(EXCLUDED.total_bonificacao, clientes.total_bonificacao),
                       updated_at = EXCLUDED.updated_at
                 """),
                 params,
@@ -774,6 +799,9 @@ def phase_3_clientes(
                               faturamento_total = :faturamento_total,
                               situacao = :situacao,
                               classificacao_3tier = COALESCE(classificacao_3tier, 'REAL'),
+                              desc_comercial_pct = COALESCE(:desc_comercial_pct, desc_comercial_pct),
+                              desc_financeiro_pct = COALESCE(:desc_financeiro_pct, desc_financeiro_pct),
+                              total_bonificacao = COALESCE(:total_bonificacao, total_bonificacao),
                               updated_at = :now
                             WHERE cnpj = :cnpj
                         """),
@@ -787,11 +815,15 @@ def phase_3_clientes(
                             INSERT INTO clientes (
                               cnpj, nome_fantasia, codigo_cliente, tipo_cliente_sap,
                               tipo_cliente, canal_id, uf, cidade, faturamento_total, situacao,
-                              classificacao_3tier, created_at, updated_at
+                              classificacao_3tier,
+                              desc_comercial_pct, desc_financeiro_pct, total_bonificacao,
+                              created_at, updated_at
                             ) VALUES (
                               :cnpj, :nome_fantasia, :codigo_cliente, :tipo_cliente_sap,
                               :tipo_cliente, :canal_id, :uf, :cidade, :faturamento_total, :situacao,
-                              'REAL', :now, :now
+                              'REAL',
+                              :desc_comercial_pct, :desc_financeiro_pct, :total_bonificacao,
+                              :now, :now
                             )
                         """),
                         params,
