@@ -153,6 +153,15 @@ Memória completa: `memory/project_dde_aplicabilidade_canais.md`
 - **NÃO TOCA:** Componentes globais (criar novos em /gestao/_components/), backend, RequireRole wrapper (preservar do FOXTROT)
 - **ETA:** ~3-4h
 
+#### 📋 SQUAD JULIET — Auditoria Paridade Mercos (read-only)
+- **Tipo:** general-purpose (sonnet)
+- **Goal:** Comparar `docs/specs/MERCOS_PARIDADE_SPEC.md` (40 itens-chave + 11 seções) contra estado atual do CRM. Gerar matriz `implementado/parcial/ausente` com referências a arquivos+linhas. **NÃO IMPLEMENTAR NADA** — apenas mapear gaps.
+- **Arquivos exclusivos (write):**
+  - `.planning/AUDITORIA_PARIDADE_MERCOS_29ABR.md`
+- **Pode READ:** todo `frontend/`, `backend/`, `.planning/`, `docs/`, `memory/`
+- **NÃO TOCA:** nenhum código — read-only puro
+- **ETA:** ~2h
+
 #### 🇮🇳 SQUAD INDIA — Inbox Fase 2a Real
 - **Tipo:** deep-executor (sonnet)
 - **Goal:** Implementar SSR migration + 3 endpoints backend + integração Deskrio + remover mocks. Preserva os 3 P1 do audit no inbox (avatar 10px linha 509, badge "Recompra próxima" 9px linha 901, preview text-[11px] linha 462).
