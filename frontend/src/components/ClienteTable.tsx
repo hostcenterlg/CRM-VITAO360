@@ -51,18 +51,41 @@ const TEMP_VARIANT: Record<string, 'danger' | 'warning' | 'info' | 'neutral'> = 
   CRITICO: 'danger',
 };
 
-const TEMP_ICON: Record<string, string> = {
-  QUENTE:  '🔥',
-  MORNO:   '⚠️',
-  FRIO:    '❄️',
-  CRITICO: '🚨',
+// SVG icons for temperature — consistent with lucide-react style used elsewhere
+const TEMP_SVG: Record<string, React.ReactNode> = {
+  QUENTE: (
+    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+        d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" />
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+        d="M9.879 16.121A3 3 0 1012.015 11L11 14H9c0 .768.293 1.536.879 2.121z" />
+    </svg>
+  ),
+  MORNO: (
+    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+    </svg>
+  ),
+  FRIO: (
+    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+        d="M4 12h16M12 4v16M7.757 7.757l8.486 8.486M16.243 7.757l-8.486 8.486" />
+    </svg>
+  ),
+  CRITICO: (
+    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+        d="M12 8v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+    </svg>
+  ),
 };
 
 function TemperatureCell({ value }: { value?: string }) {
   if (!value) return <span className="text-gray-500">—</span>;
   const key = value.toUpperCase();
   const variant = TEMP_VARIANT[key] ?? 'neutral';
-  const icon = TEMP_ICON[key];
+  const icon = TEMP_SVG[key];
   return (
     <Badge variant={variant} size="sm" icon={icon}>
       {key.charAt(0) + key.slice(1).toLowerCase()}
