@@ -12,7 +12,7 @@ REGRAS CRÍTICAS:
 
 from __future__ import annotations
 
-from sqlalchemy import Boolean, Column, DateTime, Float, ForeignKey, Integer, String
+from sqlalchemy import Boolean, Column, DateTime, Float, ForeignKey, Integer, Numeric, String
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
@@ -123,6 +123,20 @@ class Cliente(Base):
     total_devolucao = Column(Float, nullable=True)
     # Risco classificado: 'BAIXO' (<5%) | 'MEDIO' (5-15%) | 'ALTO' (>15%)
     risco_devolucao = Column(String(10), nullable=True)
+
+    # ------------------------------------------------------------------
+    # DDE — Decisão D1: campos Sales Hunter fat_cliente (Onda 1 MIKE)
+    # Persistidos pelo ingest_sales_hunter.py Phase 3.
+    # Desbloqueiam linhas L5, L6, L7, L8 da cascata DDE.
+    # ------------------------------------------------------------------
+    # Percentual médio de desconto comercial concedido ao cliente
+    desc_comercial_pct = Column(Numeric(5, 2), nullable=True)
+    # Percentual médio de desconto financeiro concedido ao cliente
+    desc_financeiro_pct = Column(Numeric(5, 2), nullable=True)
+    # Valor total de bonificações concedidas ao cliente (R$)
+    total_bonificacao = Column(Numeric(14, 2), nullable=True)
+    # Valor total de IPI nas notas fiscais do cliente (R$)
+    ipi_total = Column(Numeric(14, 2), nullable=True)
 
     # SAP sales channel — FK para canais (DECISAO L3 Leandro 25/Apr/2026).
     # NULL = cliente legado nao-classificado (Mercos pre-SAP).

@@ -25,6 +25,7 @@ from sqlalchemy import (
     ForeignKey,
     Index,
     Integer,
+    Numeric,
     String,
     Text,
 )
@@ -109,6 +110,20 @@ class Venda(Base):
 
     # Observações livres sobre o pedido (ex.: restrições de entrega)
     observacao = Column(Text, nullable=True)
+
+    # ------------------------------------------------------------------
+    # DDE — Decisão D1: campos Sales Hunter fat_nf_det (Onda 1 MIKE)
+    # Persistidos pelo ingest_sales_hunter.py Phase 4.
+    # Desbloqueiam linhas L2, L5, L6, L7 da cascata DDE por NF.
+    # ------------------------------------------------------------------
+    # IPI total da nota fiscal (R$) — DDE L2/L8
+    ipi_total = Column(Numeric(12, 2), nullable=True)
+    # Desconto comercial concedido na NF (R$) — DDE L5
+    desconto_comercial = Column(Numeric(12, 2), nullable=True)
+    # Desconto financeiro concedido na NF (R$) — DDE L6
+    desconto_financeiro = Column(Numeric(12, 2), nullable=True)
+    # Bonificação concedida na NF (R$) — DDE L7
+    bonificacao = Column(Numeric(12, 2), nullable=True)
 
     # ------------------------------------------------------------------
     # Auditoria
