@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { RequireRole } from '@/components/auth';
 
 // ---------------------------------------------------------------------------
 // Analise Critica do Cliente
@@ -147,6 +148,7 @@ const KPIS: KPIItem[] = [
 
 export default function AnaliseCriticaPage() {
   return (
+    <RequireRole minRole="GERENTE">
     <div className="space-y-6 px-3 md:px-4 lg:px-6 pb-10">
 
       {/* Voltar */}
@@ -349,5 +351,6 @@ export default function AnaliseCriticaPage() {
       </p>
 
     </div>
+    </RequireRole>
   );
 }

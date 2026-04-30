@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { RequireRole } from '@/components/auth';
 
 // ---------------------------------------------------------------------------
 // DDE — Diagnostico Demonstrativo do Cliente
@@ -141,6 +142,7 @@ const STATUS_ITEMS: StatusItem[] = [
 
 export default function DDEPage() {
   return (
+    <RequireRole minRole="GERENTE">
     <div className="space-y-6 px-3 md:px-4 lg:px-6 pb-10">
 
       {/* Voltar */}
@@ -336,5 +338,6 @@ export default function DDEPage() {
       </p>
 
     </div>
+    </RequireRole>
   );
 }
