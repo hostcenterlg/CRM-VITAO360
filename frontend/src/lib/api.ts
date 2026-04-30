@@ -1947,4 +1947,107 @@ export async function sendInboxMensagem(
     }
   );
 }
+// ---------------------------------------------------------------------------
+// DDE — Demonstração de Desempenho Econômico
+// Espelha backend/app/schemas/dde.py (PAPA squad)
+// R8: valor=null → renderizado como "—" no frontend, nunca inferido
+// ---------------------------------------------------------------------------
+
+export interface LinhaDRE {
+  codigo: string;
+  conta: string;
+  sinal: string;
+  valor: number | null;
+  pct_receita: number | null;
+  fonte: string;
+  classificacao: 'REAL' | 'SINTETICO' | 'PENDENTE' | 'NULL';
+  fase: string;
+  observacao: string;
+}
+
+export interface IndicadoresDDE {
+  I1: number | null; // margem bruta % — PENDENTE Fase B
+  I2: number | null; // margem contribuição %
+  I3: number | null; // comissão %
+  I4: number | null; // frete %
+  I5: number | null; // verba %
+  I6: number | null; // inadimplência %
+  I7: number | null; // devolução %
+  I8: number | null; // DSO/aging médio (dias)
+  I9: number | null; // score 0-100
+}
+
+export interface ResultadoDDE {
+  cnpj: string;
+  ano: number;
+  linhas: LinhaDRE[];
+  indicadores: IndicadoresDDE;
+  veredito: 'SAUDAVEL' | 'REVISAR' | 'RENEGOCIAR' | 'SUBSTITUIR' | 'ALERTA_CREDITO' | 'SEM_DADOS';
+  veredito_descricao: string;
+  fase_ativa: string;
+}
+
+export interface DDEComparativoItem {
+  cnpj: string;
+  razao_social?: string | null;
+  receita_bruta: number | null;
+  margem_contribuicao: number | null;
+  mc_pct: number | null;
+  score: number | null;
+  veredito: string;
+}
+
+export interface DDEComparativoResponse {
+  ano: number;
+  items: DDEComparativoItem[];
+}
+
+export interface DDEScoreResponse {
+  cnpj: string;
+  score: number | null;
+  breakdown: Partial<IndicadoresDDE>;
+  veredito: string;
+}
+
+/** GET /api/dde/cliente/{cnpj}?ano=YYYY */
+export async function fetchDDECliente(cnpj: string, ano?: number): Promise<ResultadoDDE> {
+  const qs = ano ? `?ano=${ano}` : '';
+  return fetchJson<ResultadoDDE>(`/api/dde/cliente/${encodeURIComponent(cnpj)}${qs}`);
+}
+
+/** GET /api/dde/consultor/{nome}?ano=YYYY */
+export async function fetchDDEConsultor(
+  nome: string,
+  ano?: number
+): Promise<DDEComparativoResponse> {
+  const qs = ano ? `?ano=${ano}` : '';
+  return fetchJson<DDEComparativoResponse>(
+    `/api/dde/consultor/${encodeURIComponent(nome)}${qs}`
+  );
+}
+
+/** GET /api/dde/canal/{canal_id}?ano=YYYY */
+export async function fetchDDECanal(
+  canalId: number,
+  ano?: number
+): Promise<DDEComparativoResponse> {
+  const qs = ano ? `?ano=${ano}` : '';
+  return fetchJson<DDEComparativoResponse>(`/api/dde/canal/${canalId}${qs}`);
+}
+
+/** GET /api/dde/comparativo?cnpjs=cnpj1,cnpj2&ano=YYYY */
+export async function fetchDDEComparativo(
+  cnpjs: string[],
+  ano?: number
+): Promise<DDEComparativoResponse> {
+  const qs = new URLSearchParams({ cnpjs: cnpjs.join(',') });
+  if (ano) qs.set('ano', String(ano));
+  return fetchJson<DDEComparativoResponse>(`/api/dde/comparativo?${qs.toString()}`);
+}
+
+/** GET /api/dde/score/{cnpj} */
+export async function fetchDDEScore(cnpj: string): Promise<DDEScoreResponse> {
+  return fetchJson<DDEScoreResponse>(`/api/dde/score/${encodeURIComponent(cnpj)}`);
+}
+
 // redeploy trigger 1776136763
