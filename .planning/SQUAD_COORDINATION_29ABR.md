@@ -153,6 +153,28 @@ Memória completa: `memory/project_dde_aplicabilidade_canais.md`
 - **NÃO TOCA:** Componentes globais (criar novos em /gestao/_components/), backend, RequireRole wrapper (preservar do FOXTROT)
 - **ETA:** ~3-4h
 
+#### 🔥 SQUAD KILO — DDE/Análise REBUILD honesto (delete+recreate)
+- **Tipo:** deep-executor (sonnet)
+- **Goal:** **DELETAR** as 2 pages do HOTEL e **RECRIAR** seguindo `docs/specs/cowork/BRIEFING_REBUILD_DDE_ANALISE_CRITICA.md`. Filosofia: zero R$, zero CNPJ/nomes, zero mockups. Páginas EXPLICATIVAS sobre o que a feature É e o que vai aparecer.
+- **Arquivos exclusivos (write):**
+  - `frontend/src/app/gestao/dde/page.tsx` (DELETE + RECREATE)
+  - `frontend/src/app/gestao/dde/layout.tsx` (manter ou ajustar)
+  - `frontend/src/app/gestao/analise-critica/page.tsx` (DELETE + RECREATE)
+  - `frontend/src/app/gestao/analise-critica/layout.tsx`
+  - `frontend/src/app/gestao/_components/*` (deletar componentes do HOTEL não usados na nova abordagem)
+- **NÃO TOCA:** Sidebar (mantém links + badges), backend, outras páginas
+- **Preserva:** `<RequireRole minRole="GERENTE">` wrapper + badges "EM CONSTRUÇÃO"/"BLOQUEADO" na sidebar
+- **Embute regra de canais**: páginas devem mencionar que feature atende Direto/Indireto/Food Service apenas
+- **ETA:** ~3-4h
+
+#### 🔧 SQUAD LIMA — Inbox visual residual (3 P1 do audit)
+- **Tipo:** ui-designer (sonnet)
+- **Goal:** Resolver os 3 P1 visuais de `/inbox/page.tsx` que sobraram (avatar 10px linha 509, badge "Recompra próxima" 9px linha 901, preview text-[11px] linha 462). NÃO mexer em lógica de fetch (INDIA acabou de aplicar SSR).
+- **Arquivos exclusivos (write):**
+  - `frontend/src/app/inbox/page.tsx` (apenas classes Tailwind de tipografia)
+- **NÃO TOCA:** `_mockData.ts`, lógica de hooks, fetch, layout
+- **ETA:** ~30min
+
 #### 📋 SQUAD JULIET — Auditoria Paridade Mercos (read-only)
 - **Tipo:** general-purpose (sonnet)
 - **Goal:** Comparar `docs/specs/MERCOS_PARIDADE_SPEC.md` (40 itens-chave + 11 seções) contra estado atual do CRM. Gerar matriz `implementado/parcial/ausente` com referências a arquivos+linhas. **NÃO IMPLEMENTAR NADA** — apenas mapear gaps.
