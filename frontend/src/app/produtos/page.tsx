@@ -12,6 +12,7 @@ import {
   formatBRL,
 } from '@/lib/api';
 import { exportToCSV } from '@/lib/export';
+import { SkeletonRows } from '@/components/ui';
 
 // ---------------------------------------------------------------------------
 // Produtos — catálogo com filtros, ordenação, detalhe e mais vendidos
@@ -45,11 +46,9 @@ function formatPercent(n: number): string {
 function BadgeAtivo({ ativo }: { ativo: boolean }) {
   return (
     <span
-      className="inline-flex items-center px-2 py-0.5 text-xs font-semibold rounded uppercase"
-      style={ativo
-        ? { backgroundColor: '#00B050', color: '#fff' }
-        : { backgroundColor: '#FF0000', color: '#fff' }
-      }
+      className={`inline-flex items-center px-2 py-0.5 text-xs font-semibold rounded uppercase text-white ${
+        ativo ? 'bg-vitao-verde' : 'bg-vitao-vermelho'
+      }`}
     >
       {ativo ? 'Ativo' : 'Inativo'}
     </span>
@@ -57,20 +56,19 @@ function BadgeAtivo({ ativo }: { ativo: boolean }) {
 }
 
 // ---------------------------------------------------------------------------
-// Skeleton de linha de tabela
+// Skeleton de linha de tabela — usa SkeletonRow do design system
+// Colunas com larguras variadas: codigo / nome / categoria / preco / comissao / ativo / acoes
 // ---------------------------------------------------------------------------
 
-function SkeletonRow() {
-  return (
-    <tr className="border-b border-gray-100">
-      {[40, 120, 100, 60, 60, 80, 50, 60].map((w, i) => (
-        <td key={i} className="px-4 py-3">
-          <div className="h-3 rounded animate-pulse bg-gray-100" style={{ width: w }} />
-        </td>
-      ))}
-    </tr>
-  );
-}
+const PRODUTO_SKELETON_COLS = [
+  { width: '40px' },
+  { width: '40%' },
+  { width: '20%' },
+  { width: '12%', align: 'right' as const },
+  { width: '10%', align: 'right' as const },
+  { width: '10%' },
+  { width: '8%' },
+];
 
 // ---------------------------------------------------------------------------
 // Modal de detalhe de produto
@@ -660,7 +658,7 @@ function ProdutosInner() {
             </thead>
             <tbody className="divide-y divide-gray-100">
               {loading ? (
-                Array.from({ length: 8 }, (_, i) => <SkeletonRow key={i} />)
+                <SkeletonRows count={8} cols={PRODUTO_SKELETON_COLS} />
               ) : itensOrdenados.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="px-4 py-12 text-center">
