@@ -64,6 +64,7 @@ from backend.app.api.routes_dashboard import router as dashboard_router
 from backend.app.api.routes_ia import router as ia_router
 from backend.app.api.routes_import import router as import_router
 from backend.app.api.routes_relatorios import router as relatorios_router
+from backend.app.api.routes_inbox import router as inbox_router
 from backend.app.api.routes_whatsapp import router as whatsapp_router
 from backend.app.api.routes_motor import router as motor_router
 from backend.app.api.routes_projecao import router as projecao_router
@@ -333,6 +334,7 @@ app.include_router(motor_router)
 app.include_router(rnc_router)
 app.include_router(import_router)
 app.include_router(ia_router)
+app.include_router(inbox_router)
 app.include_router(whatsapp_router)
 app.include_router(produtos_router)
 app.include_router(relatorios_router)
