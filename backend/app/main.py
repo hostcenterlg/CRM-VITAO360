@@ -75,6 +75,7 @@ from backend.app.api.routes_usuarios import router as usuarios_router
 from backend.app.api.routes_vendas import router as vendas_router
 from backend.app.api.routes_produtos import router as produtos_router
 from backend.app.api.routes_upload_dde import router as upload_dde_router
+from backend.app.api.routes_dde import router as dde_router
 from backend.app.database import Base, SessionLocal, engine
 from backend.app.services.seed_auth import seed_regras_motor, seed_usuarios
 
@@ -341,6 +342,7 @@ app.include_router(produtos_router)
 app.include_router(relatorios_router)
 app.include_router(pipeline_router)
 app.include_router(upload_dde_router)
+app.include_router(dde_router)
 
 
 # ---------------------------------------------------------------------------
