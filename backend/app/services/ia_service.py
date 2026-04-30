@@ -292,12 +292,12 @@ def _construir_contexto_cliente(
 
 
 # ---------------------------------------------------------------------------
-# Templates de fallback local (sem ANTHROPIC_API_KEY)
+# Templates de fallback local (sem LLM configurado)
 # ---------------------------------------------------------------------------
 
 def _template_briefing_local(cliente: Cliente, ultimas_interacoes: list[LogInteracao], ultimas_vendas: list[Venda]) -> str:
     """
-    Gera briefing local quando ANTHROPIC_API_KEY não está configurada.
+    Gera briefing local quando nenhum LLM está configurado.
     Baseado na situação, sinaleiro e histórico do cliente.
     """
     nome = cliente.nome_fantasia or cliente.razao_social or cliente.cnpj
@@ -376,7 +376,7 @@ def _template_briefing_local(cliente: Cliente, ultimas_interacoes: list[LogInter
         f"  Valor último pedido: {_formatar_moeda(cliente.valor_ultimo_pedido)}\n\n"
         f"AÇÃO RECOMENDADA: {sugestao}\n\n"
         f"SCRIPT SUGERIDO:\n{script}\n\n"
-        "[Briefing gerado por template local — configure ANTHROPIC_API_KEY para IA completa]"
+        "[Briefing gerado por template local — configure DEEPINFRA_API_KEY (ou outra key LLM) para IA completa]"
     )
 
 
@@ -522,7 +522,7 @@ class IAService:
               - cached (bool): sempre False — sem cache implementado ainda
               - cnpj (str): CNPJ normalizado consultado
               - nome_cliente (str): nome fantasia do cliente
-              - ia_configurada (bool): se ANTHROPIC_API_KEY está presente
+              - ia_configurada (bool): se algum LLM está configurado
 
         Raises:
             ValueError: se o CNPJ não for encontrado na base.
@@ -559,8 +559,8 @@ class IAService:
             cliente.score or 0.0,
         )
 
-        # Sem API key: usar template local rico
-        if not ANTHROPIC_API_KEY:
+        # Sem LLM configurado: usar template local rico
+        if not _llm.available_providers():
             briefing_texto = _template_briefing_local(cliente, ultimas_interacoes, ultimas_vendas)
             return {
                 "cnpj": cnpj_n,
@@ -576,10 +576,11 @@ class IAService:
             f"Gere o briefing pré-ligação para o cliente abaixo:\n\n{contexto}"
         )
 
-        texto, tokens = await _call_claude(
+        texto, tokens = await _call_llm(
             system=_SYSTEM_BRIEFING,
             user=prompt_usuario,
             max_tokens=_MAX_TOKENS_BRIEFING,
+            use_case="briefing_pre_ligacao",
         )
 
         return {
@@ -615,7 +616,7 @@ class IAService:
               - tokens_usados (int): tokens consumidos
               - cnpj (str): CNPJ normalizado
               - nome_cliente (str): nome fantasia do cliente
-              - ia_configurada (bool): se ANTHROPIC_API_KEY está presente
+              - ia_configurada (bool): se algum LLM está configurado
 
         Raises:
             ValueError: se o CNPJ não for encontrado.
@@ -656,10 +657,11 @@ class IAService:
             "Escreva a mensagem WhatsApp que o consultor deve enviar."
         )
 
-        texto, tokens = await _call_claude(
+        texto, tokens = await _call_llm(
             system=_SYSTEM_WHATSAPP,
             user=prompt_usuario,
             max_tokens=_MAX_TOKENS_WHATSAPP,
+            use_case="whatsapp_rascunho",
         )
 
         return {
@@ -667,7 +669,7 @@ class IAService:
             "nome_cliente": cliente.nome_fantasia or cliente.razao_social or cnpj_n,
             "mensagem": texto,
             "tokens_usados": tokens,
-            "ia_configurada": bool(ANTHROPIC_API_KEY),
+            "ia_configurada": bool(_llm.available_providers()),
         }
 
     # ------------------------------------------------------------------
@@ -712,8 +714,8 @@ class IAService:
             situacao,
         )
 
-        # Sem API key: usar template local por situação
-        if not ANTHROPIC_API_KEY:
+        # Sem LLM configurado: usar template local por situação
+        if not _llm.available_providers():
             resultado_template = _template_mensagem_wa_local(cliente, situacao)
             return {
                 "cnpj": cnpj_n,
@@ -725,7 +727,7 @@ class IAService:
                 "ia_configurada": False,
             }
 
-        # Com API key: contexto reduzido para WA automático
+        # Com LLM configurado: contexto reduzido para WA automático
         ultimas_vendas = (
             db.query(Venda)
             .filter(Venda.cnpj == cnpj_n)
@@ -761,10 +763,11 @@ class IAService:
             "CONTEXTO: [contexto resumido em 1 linha]"
         )
 
-        texto_completo, tokens = await _call_claude(
+        texto_completo, tokens = await _call_llm(
             system=_SYSTEM_WHATSAPP,
             user=prompt_usuario,
             max_tokens=_MAX_TOKENS_WHATSAPP,
+            use_case="whatsapp_situacao",
         )
 
         # Extrair campos do texto gerado
@@ -822,7 +825,7 @@ class IAService:
               - tokens_usados (int): tokens consumidos
               - periodo (str): período de referência (DD/MM-DD/MM/AAAA)
               - metricas (dict): dados brutos que alimentaram o prompt
-              - ia_configurada (bool): se ANTHROPIC_API_KEY está presente
+              - ia_configurada (bool): se algum LLM está configurado
         """
         consultor_norm = consultor.upper().strip()
 
@@ -955,10 +958,11 @@ class IAService:
             _formatar_moeda(total_vendas_semana),
         )
 
-        texto, tokens = await _call_claude(
+        texto, tokens = await _call_llm(
             system=_SYSTEM_RESUMO_SEMANAL,
             user=prompt_usuario,
             max_tokens=_MAX_TOKENS_RESUMO,
+            use_case="resumo_semanal",
         )
 
         return {
@@ -985,7 +989,7 @@ class IAService:
                     for c in top_score
                 ],
             },
-            "ia_configurada": bool(ANTHROPIC_API_KEY),
+            "ia_configurada": bool(_llm.available_providers()),
         }
 
     # ------------------------------------------------------------------
@@ -1124,7 +1128,7 @@ class IAService:
         )
 
         # Gerar recomendação via IA ou template local
-        if not ANTHROPIC_API_KEY:
+        if not _llm.available_providers():
             recomendacao = _template_churn_local(cliente, risco_pct, nivel, fatores)
             return {
                 "cnpj": cnpj_n,
@@ -1136,7 +1140,7 @@ class IAService:
                 "ia_configurada": False,
             }
 
-        # Com API key: gerar recomendação contextual
+        # Com LLM configurado: gerar recomendação contextual
         nome = cliente.nome_fantasia or cliente.razao_social or cnpj_n
         contexto_churn = (
             f"Cliente: {nome} | Situação: {situacao} | Sinaleiro: {sinaleiro}\n"
@@ -1153,10 +1157,11 @@ class IAService:
             f"{contexto_churn}"
         )
 
-        texto, tokens = await _call_claude(
+        texto, tokens = await _call_llm(
             system=_SYSTEM_CHURN,
             user=prompt_usuario,
             max_tokens=_MAX_TOKENS_CHURN,
+            use_case="churn_analise",
         )
 
         return {
@@ -1293,8 +1298,8 @@ class IAService:
                 "preco_tabela": p.preco_tabela,
             })
 
-        # Sem API key: gerar estratégia por template local
-        if not ANTHROPIC_API_KEY:
+        # Sem LLM configurado: gerar estratégia por template local
+        if not _llm.available_providers():
             nome = cliente.nome_fantasia or cliente.razao_social or cnpj_n
             if categorias_frequentes:
                 cats_str = ", ".join(categorias_frequentes)
@@ -1320,7 +1325,7 @@ class IAService:
                 "ia_configurada": False,
             }
 
-        # Com API key: gerar estratégia contextual
+        # Com LLM configurado: gerar estratégia contextual
         produtos_nomes = ", ".join(p["nome"] for p in produtos_sugeridos[:5]) if produtos_sugeridos else "sem sugestões disponíveis"
         historico_cats = ", ".join(f"{c} ({categorias_compradas.get(c, 0)} compras)" for c in categorias_frequentes) if categorias_frequentes else "sem histórico de categorias"
 
@@ -1339,10 +1344,11 @@ class IAService:
             "Explique como o consultor deve abordar esses produtos na próxima ligação."
         )
 
-        texto, tokens = await _call_claude(
+        texto, tokens = await _call_llm(
             system=_SYSTEM_PRODUTO,
             user=prompt_usuario,
             max_tokens=_MAX_TOKENS_PRODUTO,
+            use_case="cross_sell",
         )
 
         return {
