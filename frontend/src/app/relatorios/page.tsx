@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from 'react';
 import { downloadRelatorio } from '@/lib/api';
+import { RequireRole } from '@/components/auth';
 
 // ---------------------------------------------------------------------------
 // Relatorios — hub de download de relatórios xlsx por tipo e filtros
@@ -406,6 +407,7 @@ export default function RelatoriosPage() {
   const anoOptions = ANOS.map((a) => ({ value: a, label: a }));
 
   return (
+    <RequireRole minRole="GERENTE">
     <div className="space-y-5 px-3 md:px-4 lg:px-6">
       {/* Cabecalho */}
       <div>
@@ -582,5 +584,6 @@ export default function RelatoriosPage() {
       {/* Toasts */}
       <ToastContainer toasts={toasts} onRemove={removeToast} />
     </div>
+    </RequireRole>
   );
 }

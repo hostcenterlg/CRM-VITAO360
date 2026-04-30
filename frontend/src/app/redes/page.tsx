@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { fetchJson } from '@/lib/api-internal';
 import { formatBRL } from '@/lib/api';
+import { RequireRole } from '@/components/auth';
 
 // ---------------------------------------------------------------------------
 // Tela Redes — sinaleiro por rede/franquia com accordion drill-down
@@ -149,6 +150,7 @@ export default function RedesPage() {
     : 0;
 
   return (
+    <RequireRole minRole="GERENTE">
     <div className="space-y-5 px-3 md:px-4 lg:px-6">
       {/* Titulo */}
       <div>
@@ -353,5 +355,6 @@ export default function RedesPage() {
         Redes com % atingimento abaixo de 40% sao destacadas como CRITICAS.
       </p>
     </div>
+    </RequireRole>
   );
 }

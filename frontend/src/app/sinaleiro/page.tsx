@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback, useMemo } from 'react';
+import { RequireRole } from '@/components/auth';
 import {
   fetchSinaleiro,
   fetchRedes,
@@ -268,6 +269,7 @@ export default function SinaleiroPage() {
   ];
 
   return (
+    <RequireRole minRole="GERENTE">
     <div className="space-y-5 animate-fadeIn">
       {/* Header */}
       <div className="flex items-center justify-between">
@@ -718,6 +720,7 @@ export default function SinaleiroPage() {
         />
       )}
     </div>
+    </RequireRole>
   );
 }
 
