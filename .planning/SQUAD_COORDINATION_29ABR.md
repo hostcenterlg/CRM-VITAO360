@@ -238,9 +238,20 @@ Memória completa: `memory/project_dde_aplicabilidade_canais.md`
   - `frontend/src/lib/api.ts` (adicionar fetchDDE*, sendDDEParams — NÃO mexer em outras funções)
 - **ETA:** ~3-4h
 
-#### 🆁 SQUAD ROMEO — Onda 6: LLM + PDF Resumo CEO (futuro)
-- **Status:** AGUARDANDO Sprint 2+
-- **ETA:** futuro
+#### 🆁 SQUAD ROMEO — Onda 6: LLM + PDF Resumo CEO (rodando)
+- **Tipo:** deep-executor (sonnet)
+- **Goal:** Gerar Resumo CEO (1 página PDF) a partir do ResultadoDDE. Estrutura LLM-ready com fallback template-based (porque ANTHROPIC_API_KEY ainda ausente em PROD).
+- **Pré-requisitos ✅:** OSCAR (engine), PAPA (API), QUEBEC (UI)
+- **Arquivos exclusivos (write):**
+  - `backend/app/services/llm_client.py` (NOVO ou refatorar se existir — Anthropic SDK + fallback)
+  - `backend/app/services/resumo_ceo.py` (NOVO — prompt + template fallback + validação regex)
+  - `backend/app/services/pdf_generator.py` (NOVO — reportlab/weasyprint para PDF 1 página)
+  - `backend/app/api/routes_dde.py` (ADICIONAR endpoint POST `/api/dde/cliente/{cnpj}/resumo-ceo`)
+  - `backend/tests/test_resumo_ceo.py` (NOVO)
+  - `frontend/src/app/gestao/analise-critica/[cnpj]/page.tsx` (ADICIONAR botão "Gerar Resumo CEO" + download)
+  - `frontend/src/lib/api.ts` (ADICIONAR `downloadResumoCEO(cnpj)`)
+- **NÃO TOCA:** outras páginas, outros endpoints, schema (MIKE), parsers (NOVEMBER), engine (OSCAR), schemas dde.py (PAPA)
+- **ETA:** ~3-4h
 
 #### 🔧 SQUAD LIMA — Inbox visual residual (3 P1 do audit)
 - **Tipo:** ui-designer (sonnet)
