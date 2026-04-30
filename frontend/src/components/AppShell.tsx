@@ -380,14 +380,14 @@ export default function AppShell({ children, pageTitle }: AppShellProps) {
                       <button
                         type="button"
                         onClick={() => router.push(crumb.href!)}
-                        className="text-xs text-gray-500 hover:text-gray-700 transition-colors whitespace-nowrap"
+                        className="text-xs text-gray-600 hover:text-gray-800 transition-colors whitespace-nowrap"
                       >
                         {crumb.label}
                       </button>
                     ) : (
                       <span className={idx === breadcrumbs.length - 1
                         ? 'text-sm font-semibold text-gray-900 whitespace-nowrap'
-                        : 'text-xs text-gray-500 whitespace-nowrap'
+                        : 'text-xs text-gray-600 whitespace-nowrap'
                       }>
                         {crumb.label}
                       </span>
